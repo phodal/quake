@@ -1,0 +1,7 @@
+type,code,description,notes
+总结文章,summary_blog,针对于某一特定领域进行总结性的介绍,
+书籍笔记,book_notes,记录某一本书相关的内容,
+书籍评论,book_review,以“书”为对象，分析书籍的形式和内容,
+简易信息聚合,RSS,用于聚合多个网站更新内容的消息来源格式规范,
+
+
