@@ -3,7 +3,7 @@ type,code,description,notes
 日常文章,normal_blog,针对于某一特定领域进行一般性的介绍,
 文章草稿,draft_blog,未正式发表的文章,
 
-笔记,notes,
+备忘录,memo,一种能够帮助记忆，简单说明主题与相关事件的书面资料，
 
 书籍笔记,book_notes,记录某一本书相关的内容,
 书籍评论,book_review,以“书”为对象，分析书籍的形式和内容,
@@ -14,10 +14,26 @@ type,code,description,notes
 简易信息聚合,RSS,用于聚合多个网站更新内容的消息来源格式规范,
 网络文章快照,web_article_snapshot，网络文章的抓取生成的快照,
 网络文章剪取器,clipper,互联网上的文章进行抓取,
+网络书签,network_bookmark,互联网内容的书签,
 
 自定义条目,custom_item,按自身需求对内容分类的细目,
 
 搜索,search,对内容索引性的搜索,
+搜索条目类型,search_type,有针对性地进行搜索,
+搜索表达式,search_expression,使用特定的表达式进行搜索,
+
+数据流表达式,data_flow_expression,自定义的表达式来对数据进行处理,
+通用数据流图,general_data_flow_chart,用于展示数据的通用图表,
+
+任务计划,task_plan,针对于选定数据的迭代计划, 可以用于设计任意数据的计划
+
+标签图片,tagged_image,已标注的图片,
+
+白板,whiteboard,可自由绘制内容的白板,
+双向绑定白板,two_way_binding_whiteboard,双向绑定白板,
+
+评论,comments,针对于某一特定问题的评论,
+位置评论,position_comment,可定位置的评论,
 
 大纲式目录,outline_toc,对于文章内容的索引,
 标签标记,tag_it,使用标签对内容进行标记,
