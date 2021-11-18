@@ -1,7 +1,16 @@
 type,code,description,notes
-总结文章,summary_blog,针对于某一特定领域进行总结性的介绍,
+总结文章,summary_blog,针对于某一特定领域进行总结性的介绍,可以考虑以权重区别不同的文章类型？
+日常文章,normal_blog,针对于某一特定领域进行一般性的介绍,
+文章草稿,draft_blog,未正式发表的文章,
+
 书籍笔记,book_notes,记录某一本书相关的内容,
 书籍评论,book_review,以“书”为对象，分析书籍的形式和内容,
+
+待办事项,todo_list,接下来一段时间内要完成的事物,
+项目计划,project_plan,对未来的项目决策,
+
 简易信息聚合,RSS,用于聚合多个网站更新内容的消息来源格式规范,
+网络文章快照,web_article_snapshot，网络文章的抓取生成的快照,
+网络文章剪取器,clipper,互联网上的文章进行抓取,
 
-
+自定义条目,custom_item,按自身需求对内容分类的细目,
