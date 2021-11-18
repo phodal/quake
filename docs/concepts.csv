@@ -3,6 +3,8 @@ type,code,description,notes
 日常文章,normal_blog,针对于某一特定领域进行一般性的介绍,
 文章草稿,draft_blog,未正式发表的文章,
 
+笔记,notes,
+
 书籍笔记,book_notes,记录某一本书相关的内容,
 书籍评论,book_review,以“书”为对象，分析书籍的形式和内容,
 
@@ -14,3 +16,11 @@ type,code,description,notes
 网络文章剪取器,clipper,互联网上的文章进行抓取,
 
 自定义条目,custom_item,按自身需求对内容分类的细目,
+
+搜索,search,对内容索引性的搜索,
+
+大纲式目录,outline_toc,对于文章内容的索引,
+标签标记,tag_it,使用标签对内容进行标记,
+模块化内容,modular_content,以特定的形式组织文章内容，
+网状知识,network_knowledge,可视化形式,
+捷径,shortcuts,快速的访问知识,
