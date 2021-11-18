@@ -23,3 +23,5 @@ spikes:
   - [ ] try `.plist`?
   - [ ] libs: [daemonize](https://github.com/knsd/daemonize)
   - [ ] sample: [https://github.com/Spotifyd/spotifyd](https://github.com/Spotifyd/spotifyd)
+- [ ] Webview?
+  - [ ] [https://github.com/Boscop/web-view](https://github.com/Boscop/web-view)

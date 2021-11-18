@@ -15,6 +15,18 @@ fn main() -> Result<(), ()> {
     env_logger::init();
     info!("starting up");
 
+    // create_daemonize(stdout, stderr);
+
+    let mut core = Core::new().unwrap();
+    let handle = core.handle();
+
+    let initial_state = setup::initial_state(handle);
+    core.run(initial_state).unwrap();
+
+    Ok(())
+}
+
+fn create_daemonize(stdout: File, stderr: File) {
     let stdout = File::create("/tmp/daemon.out").unwrap();
     let stderr = File::create("/tmp/daemon.err").unwrap();
 
@@ -36,12 +48,4 @@ fn main() -> Result<(), ()> {
         Ok(_) => println!("Success, daemonized"),
         Err(e) => eprintln!("Error, {}", e),
     }
-
-    let mut core = Core::new().unwrap();
-    let handle = core.handle();
-
-    let initial_state = setup::initial_state(handle);
-    core.run(initial_state).unwrap();
-
-    Ok(())
 }
