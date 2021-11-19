@@ -1,16 +1,32 @@
+use serde::{Serialize, Deserialize};
+
 use std::time::SystemTime;
 
-pub enum EntryType {
+pub mod search_text_parser;
+
+pub enum MetaField {
     Title(String),
     Tagged(String),
     Searchable(String),
     Filterable(String),
-    CreatedDate(String),
-    ModifiedDate(String)
+}
+
+pub enum MetaType {
+    Summary,
+    Note,
+    Normal,
+    Review
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct SummaryBlog {
+
 }
 
 pub struct EntryDate {
     created: SystemTime,
-    modified: SystemTime,
+    updated: SystemTime,
+    due_date: SystemTime,
+    resolution_date: SystemTime,
 }
 

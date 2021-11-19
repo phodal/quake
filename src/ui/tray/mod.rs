@@ -5,7 +5,7 @@ pub fn tray(toggle: fn()) {
 
     tray.add_menu_item("Toggle", toggle).unwrap();
 
-    let mut inner = tray.inner_mut();
+    let inner = tray.inner_mut();
     inner.add_quit_item("Quit");
     inner.display();
 }

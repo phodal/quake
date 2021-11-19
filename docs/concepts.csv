@@ -40,3 +40,8 @@ type,code,description,notes
 模块化内容,modular_content,以特定的形式组织文章内容，
 网状知识,network_knowledge,可视化形式,
 捷径,shortcuts,快速的访问知识,
+
+开始时间,created,某个事项的开始时间,
+更新时间,updated,某个事项的修改时间,
+截止时间,due,某个事项所需要完成的时间,
+完成时间,resolution,某个事项的真正完成时间,
