@@ -1,4 +1,6 @@
-pub enum KnowType {
+use std::time::SystemTime;
+
+pub enum EntryType {
     Title(String),
     Tagged(String),
     Searchable(String),
@@ -6,3 +8,9 @@ pub enum KnowType {
     CreatedDate(String),
     ModifiedDate(String)
 }
+
+pub struct EntryDate {
+    created: SystemTime,
+    modified: SystemTime,
+}
+
