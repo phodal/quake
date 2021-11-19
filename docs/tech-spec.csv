@@ -1,0 +1,5 @@
+type,code,description,notes
+托盘,tray,在系统的状态栏中可访问系统的状态,
+搜索框,search_box,用于搜索功能,
+守护进程,daemon,后台运行,
+分词,participle,,

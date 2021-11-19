@@ -25,3 +25,5 @@ spikes:
   - [ ] sample: [https://github.com/Spotifyd/spotifyd](https://github.com/Spotifyd/spotifyd)
 - [ ] Webview?
   - [ ] [https://github.com/Boscop/web-view](https://github.com/Boscop/web-view)
+- [ ] Global auto fill
+  - [ ] [espanso](https://github.com/federico-terzi/espanso) is a  Cross-platform Text Expander written in Rust.

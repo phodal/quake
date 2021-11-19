@@ -24,6 +24,7 @@ Mac App Framework:
 
 Tray:
 
+- ~~[Trayicon](https://github.com/ciantic/trayicon-rs/)~~ not support macOS.
 - [tray-item-rs](https://github.com/olback/tray-item-rs) is a  Multi-platform Tray Indicator.
 - [ksni](https://github.com/iovxw/ksni) is A Rust implementation of the KDE/freedesktop StatusNotifierItem specification.
 
