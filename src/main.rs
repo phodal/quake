@@ -5,30 +5,43 @@ use std::fs::File;
 
 use daemonize::Daemonize;
 use tokio_core::reactor::Core;
+use crate::ui::tray::tray;
 
 pub mod model;
 mod main_loop;
 mod setup;
-
+mod ui;
 
 fn main() -> Result<(), ()> {
     env_logger::init();
     info!("starting up");
 
-    // create_daemonize(stdout, stderr);
+    // #[cfg(unix)]
+    // daemon();
 
-    let mut core = Core::new().unwrap();
-    let handle = core.handle();
+    // todo: notify
 
-    let initial_state = setup::initial_state(handle);
-    core.run(initial_state).unwrap();
+    // todo: tray
+
+    // run in other application ?
+    let toggle = || {
+        // todo: ui
+        let mut core = Core::new().unwrap();
+        let handle = core.handle();
+
+        let initial_state = setup::initial_state(handle);
+        core.run(initial_state).unwrap();
+    };
+
+    tray(toggle);
 
     Ok(())
 }
 
-fn create_daemonize(stdout: File, stderr: File) {
-    let stdout = File::create("/tmp/daemon.out").unwrap();
-    let stderr = File::create("/tmp/daemon.err").unwrap();
+#[allow(dead_code)]
+fn daemon() {
+    let stdout = File::create("/tmp/quake.out").unwrap();
+    let stderr = File::create("/tmp/quake.err").unwrap();
 
     let daemonize = Daemonize::new()
         .pid_file("/tmp/quake.pid")
@@ -42,7 +55,6 @@ fn create_daemonize(stdout: File, stderr: File) {
         .stderr(stderr)  // Redirect stderr to `/tmp/daemon.err`.
         .exit_action(|| println!("Executed before master process exits"))
         .privileged_action(|| "Executed before drop privileges");
-
 
     match daemonize.start() {
         Ok(_) => println!("Success, daemonized"),
