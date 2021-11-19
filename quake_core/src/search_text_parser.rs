@@ -1,16 +1,23 @@
+pub struct ConceptExpr {
+    pub object: String,
+    pub action: String,
+    pub tag: String,
+    pub keyword: String,
+}
+
 pub struct SearchTextParser {}
 
 impl SearchTextParser {
-    pub fn parse(text: String) {
-
-    }
+    pub fn parse(text: &str) {}
 }
 
 
 #[cfg(test)]
 mod tests {
+    use crate::search_text_parser::SearchTextParser;
+
     #[test]
     fn it_works() {
-        assert_eq!(2 + 2, 4);
+        SearchTextParser::parse("todo")
     }
 }

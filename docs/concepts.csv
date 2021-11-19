@@ -45,3 +45,9 @@ type,code,description,notes
 更新时间,updated,某个事项的修改时间,
 截止时间,due,某个事项所需要完成的时间,
 完成时间,resolution,某个事项的真正完成时间,
+
+概念表达式,concept_expression,结构化后的概念查询条件,
+概念对象,concept_object,概念条目,
+概念行动,concept_action,概念行动,
+概念标签,concept_tag,概念标签,
+概念关键词,concept_keyword，概念关键词,
