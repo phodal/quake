@@ -986,6 +986,7 @@ dependencies = [
 name = "quake_core"
 version = "0.1.0"
 dependencies = [
+ "lazy_static",
  "regex",
  "serde",
 ]
