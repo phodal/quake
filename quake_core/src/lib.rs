@@ -2,7 +2,7 @@ use serde::{Serialize, Deserialize};
 
 use std::time::SystemTime;
 
-pub mod search_text_parser;
+pub mod concept_parser;
 
 pub enum MetaField {
     Title(String),

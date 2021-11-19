@@ -22,7 +22,7 @@ type,code,description,notes
 搜索条目类型,search_type,有针对性地进行搜索,
 搜索表达式,search_expression,使用特定的表达式进行搜索,
 
-数据流表达式,data_flow_expression,自定义的表达式来对数据进行处理,
+数据流表达式,data_flow_expression,自定义的表达式来对数据进行处理, JavaScript 进行编排支持
 通用数据流图,general_data_flow_chart,用于展示数据的通用图表,
 
 任务计划,task_plan,针对于选定数据的迭代计划, 可以用于设计任意数据的计划
@@ -50,4 +50,7 @@ type,code,description,notes
 概念对象,concept_object,概念条目,
 概念行动,concept_action,概念行动,
 概念标签,concept_tag,概念标签,
-概念关键词,concept_keyword，概念关键词,
+概念关键词,concept_text，概念关键词,
+
+概念对象建议,concept_object_suggest,相关概念对象的自动建议,
+概念运动建议,concept_action_suggest,相关概念行动的自动建议,
