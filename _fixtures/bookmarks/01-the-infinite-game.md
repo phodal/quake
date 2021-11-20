@@ -1,5 +1,4 @@
 ---
-layout: Bookmarks 
 title: The Infinite Game
 created:
 updated:
