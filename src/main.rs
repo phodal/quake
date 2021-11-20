@@ -11,6 +11,7 @@ pub mod model;
 mod main_loop;
 mod setup;
 mod ui;
+mod repository;
 
 fn main() -> Result<(), ()> {
     env_logger::init();
