@@ -6,26 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio-core = "0.1"
-tokio-io = "0.1"
-tokio-signal = "0.1"
-
-futures = "0.1"
-
-# gui
-#druid = "0.7.0"
-
-tray-item = "0.6.0"
-
-daemonize = "0.4.1"
-
-#livesplit-hotkey = { version = "0.6.0", default-features = false }
-
-log = "0.4.0"
-env_logger = "0.8.4"
 
 [workspace]
 members = [
     'quake_core',
+    'quake_gui',
     'quake_tui'
 ]

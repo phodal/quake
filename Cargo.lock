@@ -971,6 +971,19 @@ dependencies = [
 [[package]]
 name = "quake"
 version = "0.1.0"
+
+[[package]]
+name = "quake_core"
+version = "0.1.0"
+dependencies = [
+ "lazy_static",
+ "regex",
+ "serde",
+]
+
+[[package]]
+name = "quake_gui"
+version = "0.1.0"
 dependencies = [
  "daemonize",
  "env_logger",
@@ -980,15 +993,6 @@ dependencies = [
  "tokio-io",
  "tokio-signal",
  "tray-item",
-]
-
-[[package]]
-name = "quake_core"
-version = "0.1.0"
-dependencies = [
- "lazy_static",
- "regex",
- "serde",
 ]
 
 [[package]]
