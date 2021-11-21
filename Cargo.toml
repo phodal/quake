@@ -26,5 +26,6 @@ env_logger = "0.8.4"
 
 [workspace]
 members = [
-    'quake_core'
+    'quake_core',
+    'quake_tui'
 ]
