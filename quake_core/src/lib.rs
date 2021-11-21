@@ -1,4 +1,7 @@
-use serde::{Serialize, Deserialize};
+extern crate serde;
+
+#[macro_use]
+extern crate serde_derive;
 
 pub mod concept_parser;
 pub mod model;

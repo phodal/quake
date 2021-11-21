@@ -1,6 +1,6 @@
 # Quake
 
-> a poc of knowledge management search tools.
+> Simple knowledge management tool for geek.
 
 
 spikes:

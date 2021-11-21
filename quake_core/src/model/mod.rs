@@ -5,6 +5,7 @@ pub mod meta_object;
 pub mod meta_action;
 pub mod meta_config;
 
+#[allow(dead_code)]
 pub struct EntryDate {
     created: SystemTime,
     updated: SystemTime,
@@ -12,8 +13,9 @@ pub struct EntryDate {
     resolution_date: SystemTime,
 }
 
-pub struct EntryAuthor {
-    created: String,
-    updated: String,
+#[allow(dead_code)]
+pub struct Author {
+    name: String,
+    email: String,
 }
 
