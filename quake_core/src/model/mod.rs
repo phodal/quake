@@ -3,6 +3,7 @@ use std::time::SystemTime;
 pub mod book_review;
 pub mod meta_object;
 pub mod meta_action;
+pub mod meta_config;
 
 pub struct EntryDate {
     created: SystemTime,

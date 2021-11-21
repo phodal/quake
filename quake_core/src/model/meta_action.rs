@@ -6,4 +6,6 @@ pub trait MetaAction {
     fn delete_by_id();
     // file name id?
     fn update_by_id();
+
+    fn config();
 }
