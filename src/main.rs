@@ -68,8 +68,7 @@ mod tests {
     use quake_core::model::meta_object::MetaField;
     use crate::CustomEntry;
 
-    #[test]
-    fn parse_yaml() {
+    fn custom_entry_from_yaml() -> &CustomEntry {
         let yaml = "
 - type: todo
   display: Todo
@@ -83,6 +82,13 @@ mod tests {
 
         let entries: Vec<CustomEntry> = serde_yaml::from_str(yaml).unwrap();
         let todo = &entries[0];
+        todo
+    }
+
+    #[test]
+    fn parse_yaml() {
+        let todo = custom_entry_from_yaml();
+
         assert_eq!(4, todo.fields.len());
 
         let custom_type = todo.create_custom_type();
