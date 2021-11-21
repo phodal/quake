@@ -36,19 +36,15 @@ fn main() {
     let opts: Opts = Opts::parse();
 
     let conf = config(&opts.config);
-    println!("{:?}", conf);
     if opts.input.len() > 0 {
         let expr = ConceptExpr::from(opts.input.as_str());
-        create_todo(expr);
+        create_todo(expr, conf);
     }
 }
 
-fn create_todo(expr: ConceptExpr) {
-    let config_path = PathBuf::from("_fixtures");
-    let last_id = 1;
-    let editor = "vim";
-    // let mut expr = ConceptExpr::from("todo.add: hello, world");
-    // let todo = &custom_entry_from_yaml()[0];
+fn create_todo(expr: ConceptExpr, conf: QuakeConfig) {
+    let config_path = PathBuf::from(conf.path);
+    let editor = conf.editor;
 
     if expr.object.eq("todo") {
         let dir = config_path.join("todo");
@@ -66,7 +62,11 @@ fn create_todo(expr: ConceptExpr) {
     }
 }
 
-fn edit_file(editor: &str, file: String) {
+pub fn slug(text: String) {
+    
+}
+
+fn edit_file(editor: String, file: String) {
     // todo: split os
     Command::new("/bin/sh")
         .arg("-c")
