@@ -3,7 +3,6 @@ use std::time::Duration;
 
 use crate::model::meta_object::MetaField;
 
-pub mod book_review;
 pub mod meta_object;
 pub mod meta_action;
 pub mod meta_config;
