@@ -23,7 +23,7 @@ impl Default for ConceptExpr {
 
 impl ConceptExpr {
     pub fn from(text: &str) -> ConceptExpr {
-        let regex = Regex::new("(?P<object>[a-z]+).(?P<action>[a-z]+):(?P<text>.*)").unwrap();
+        let regex = Regex::new("(?P<object>[a-z]+).(?P<action>[a-z]+):\\s?(?P<text>.*)").unwrap();
 
         let mut expr = ConceptExpr::default();
         if let Some(captures) = regex.captures(text) {
@@ -43,7 +43,7 @@ mod tests {
 
     #[test]
     fn should_parse_expression() {
-        let expr = ConceptExpr::from("todo.add:添加 todo 的支持");
+        let expr = ConceptExpr::from("todo.add: 添加 todo 的支持");
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "add");
         assert_eq!(expr.text, "添加 todo 的支持");

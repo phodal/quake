@@ -386,6 +386,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "dtoa"
+version = "0.4.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "56899898ce76aaf4a0f24d914c97ea6ed976d42fec6ad33fcbb0a1103e07b2b0"
+
+[[package]]
 name = "either"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1237,6 +1243,9 @@ dependencies = [
  "clap",
  "config",
  "quake_core",
+ "serde 1.0.130",
+ "serde_derive",
+ "serde_yaml",
 ]
 
 [[package]]
@@ -1434,6 +1443,18 @@ dependencies = [
  "itoa",
  "ryu",
  "serde 1.0.130",
+]
+
+[[package]]
+name = "serde_yaml"
+version = "0.8.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d8c608a35705a5d3cdc9fbe403147647ff34b921f8e833e49306df898f9b20af"
+dependencies = [
+ "dtoa",
+ "indexmap",
+ "serde 1.0.130",
+ "yaml-rust",
 ]
 
 [[package]]

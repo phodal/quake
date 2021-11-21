@@ -63,6 +63,10 @@ impl CustomType {
         }
     }
 
+    pub fn field(&self, text: &str) -> Option<&MetaField> {
+        self.fields.get(text)
+    }
+
     fn parse_field_type(value: String) -> MetaField {
         let field = match value.as_str() {
             "Text" => {

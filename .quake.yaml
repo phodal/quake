@@ -10,10 +10,10 @@ entry:
       - date: EntryDate
       - content: Text
       - author: Author
-    actions:
-      default:
-        - add
-        - remove
-        - delete
-      custom:
-        - update
+#    actions:
+#      default:
+#        - add
+#        - remove
+#        - delete
+#      custom:
+#        - update
