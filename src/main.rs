@@ -1,9 +1,13 @@
 extern crate config;
 
 use std::collections::HashMap;
-use serde_derive::{Deserialize, Serialize};
+use std::fs;
+use std::fs::File;
+use std::path::PathBuf;
+use std::process::Command;
 
 use clap::Parser;
+use serde_derive::{Deserialize, Serialize};
 
 use quake_core::concept_parser::ConceptExpr;
 use quake_core::model::CustomType;
@@ -35,8 +39,43 @@ fn main() {
     println!("{:?}", conf);
     if opts.input.len() > 0 {
         let expr = ConceptExpr::from(opts.input.as_str());
-        println!("{:?}", expr);
+        create_todo(expr);
     }
+}
+
+fn create_todo(expr: ConceptExpr) {
+    let config_path = PathBuf::from("_fixtures");
+    let last_id = 1;
+    let editor = "vim";
+    // let mut expr = ConceptExpr::from("todo.add: hello, world");
+    // let todo = &custom_entry_from_yaml()[0];
+
+    if expr.object.eq("todo") {
+        let dir = config_path.join("todo");
+
+        let _ = fs::create_dir(&dir);
+        let path = dir
+            .join(format!("{:}.md", last_id));
+
+        if !&path.exists() {
+            File::create(&path).expect("Unable to create file");
+        }
+
+        let file = format!("{:}", path.display());
+        edit_file(editor, file);
+    }
+}
+
+fn edit_file(editor: &str, file: String) {
+    // todo: split os
+    Command::new("/bin/sh")
+        .arg("-c")
+        .arg(format!("{:} {:?}", editor, file))
+        // .arg(file)
+        .spawn()
+        .expect("Error: Failed to run editor")
+        .wait()
+        .expect("failed to execute process");
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
@@ -62,14 +101,8 @@ impl CustomEntry {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use quake_core::concept_parser::ConceptExpr;
-    use quake_core::model::meta_object::MetaField;
-    use crate::CustomEntry;
-
-    fn custom_entry_from_yaml() -> &CustomEntry {
-        let yaml = "
+fn custom_entry_from_yaml() -> Vec<CustomEntry> {
+    let yaml = "
 - type: todo
   display: Todo
   custom_template: quake/todo.yaml
@@ -80,24 +113,31 @@ mod tests {
     - author: Author
 ";
 
-        let entries: Vec<CustomEntry> = serde_yaml::from_str(yaml).unwrap();
-        let todo = &entries[0];
-        todo
-    }
+    let entries: Vec<CustomEntry> = serde_yaml::from_str(yaml).unwrap();
+    entries
+}
+
+
+#[cfg(test)]
+mod tests {
+    use std::fs;
+    use std::fs::File;
+    use std::path::{Path, PathBuf};
+    use std::process::Command;
+
+    use quake_core::concept_parser::ConceptExpr;
+    use quake_core::model::meta_object::MetaField;
+
+    use crate::{custom_entry_from_yaml, CustomEntry};
 
     #[test]
     fn parse_yaml() {
-        let todo = custom_entry_from_yaml();
+        let todo = &custom_entry_from_yaml()[0];
 
         assert_eq!(4, todo.fields.len());
 
         let custom_type = todo.create_custom_type();
         let option = custom_type.field("name").unwrap();
         assert_eq!(&MetaField::Title(String::from("Title")), option)
-    }
-
-    #[test]
-    fn create_todo() {
-        let _expr = ConceptExpr::from("todo.add: hello, world");
     }
 }
