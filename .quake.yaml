@@ -1,4 +1,5 @@
 path: _fixtures
+# todo: can be editor commands
 editor: vim
 
 entry:

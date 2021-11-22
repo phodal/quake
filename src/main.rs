@@ -38,7 +38,12 @@ fn main() {
     let conf = config(&opts.config);
     if opts.input.len() > 0 {
         let expr = ConceptExpr::from(opts.input.as_str());
-        create_todo(expr, conf);
+        match expr.object.to_lowercase().as_str() {
+            "todo" => {
+                create_todo(expr, conf);
+            }
+            _ => {}
+        }
     }
 }
 
@@ -51,7 +56,7 @@ fn create_todo(expr: ConceptExpr, conf: QuakeConfig) {
 
         let _ = fs::create_dir(&dir);
         let path = dir
-            .join(format!("{:}.md", last_id));
+            .join(format!("{:}.md", 1));
 
         if !&path.exists() {
             File::create(&path).expect("Unable to create file");
@@ -62,7 +67,7 @@ fn create_todo(expr: ConceptExpr, conf: QuakeConfig) {
     }
 }
 
-pub fn slug(text: String) {
+pub fn slug(_text: String) {
 
 }
 
