@@ -1,0 +1,16 @@
+alpha = { 'a'..'z' | 'A'..'Z' }
+digit = { '0'..'9' }
+
+earth = {  action_decl }
+
+action_decl = {
+    object ~ "." ~ ident ~ ":" ~ text
+}
+
+object = { ident }
+
+action = { ident }
+
+text = { ANY* }
+
+ident = { (alpha | digit)+ }
