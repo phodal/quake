@@ -22,6 +22,10 @@ struct Opts {
     /// Some input. Because this isn't an Option<T> it's required to be used
     #[clap(short, long)]
     input: String,
+
+    /// custom editor
+    #[clap(short, long)]
+    editor: String,
 }
 
 fn config(file: &String) -> QuakeConfig {
@@ -35,7 +39,11 @@ fn config(file: &String) -> QuakeConfig {
 fn main() {
     let opts: Opts = Opts::parse();
 
-    let conf = config(&opts.config);
+    let mut conf: QuakeConfig = config(&opts.config);
+    if !opts.editor.is_empty() {
+        conf.editor = opts.editor;
+    }
+
     if opts.input.len() > 0 {
         let expr = ConceptExpr::from(opts.input.as_str());
         match expr.object.to_lowercase().as_str() {
