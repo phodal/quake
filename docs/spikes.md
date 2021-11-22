@@ -24,3 +24,9 @@
     - [ ] [https://github.com/Boscop/web-view](https://github.com/Boscop/web-view)
 - [ ] Global auto fill
     - [ ] [espanso](https://github.com/federico-terzi/espanso) is a  Cross-platform Text Expander written in Rust.
+- [ ] Script Languages. [https://github.com/alilleybrinker/langs-in-rust](https://github.com/alilleybrinker/langs-in-rust)
+    - [ ] [rhai](https://github.com/rhaiscript/rhai) an embedded scripting language for Rust.
+    - [ ] [Boa](https://github.com/boa-dev/boa) an experimental Javascript lexer, parser and interpreter written in Rust. Currently, it has support for some of the language.
+    - [ ] [gluon](https://github.com/gluon-lang/gluon) is a small, statically-typed, functional programming language designed for application embedding.
+    - [ ] [rune](https://github.com/rune-rs/rune)
+    - [ ] [Goscript](https://github.com/oxfeeefeee/goscript)

@@ -1,9 +1,18 @@
 [package]
 name = "quake_core"
 version = "0.1.0"
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+edition = "2018"
+authors = ["Phodal HUANG <h@phodal.com>"]
+description = """
+Simple knowledge management tool for geek.
+"""
+documentation = "https://github.com/phodal/quake"
+repository = "https://github.com/phodal/quake"
+readme = "README.md"
+license = "MIT"
+exclude = ["_fixtures/*"]
+autoexamples = true
+keywords = ["knowledge", "dashboard"]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
