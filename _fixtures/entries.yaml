@@ -1,4 +1,4 @@
-entry:
+entries:
   - type: todo
     display: Todo
     custom_template: quake/todo.yaml

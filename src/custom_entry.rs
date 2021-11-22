@@ -5,6 +5,11 @@ use serde_derive::{Deserialize, Serialize};
 use quake_core::model::CustomType;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
+pub struct CustomEntries {
+    pub entries: Vec<CustomEntry>
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct CustomEntry {
     #[serde(rename = "type")]
     pub entry_type: String,
