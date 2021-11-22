@@ -10,6 +10,7 @@ use custom_entry::CustomEntry;
 use quake_core::concept_parser::ConceptExpr;
 use quake_core::quake_config::QuakeConfig;
 use crate::custom_entry::CustomEntries;
+use crate::slug_helper::slugify;
 
 pub mod cmd;
 pub mod custom_entry;
@@ -64,21 +65,19 @@ fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
     let _ = fs::create_dir(&dir);
 
     if expr.object.eq("todo") {
-        let path = dir.join(format!("{:}.md", 1));
+        let entry_file_path = dir.join(format!("{:0>4}-{:}.md", 1, slugify(&expr.text)));
 
         let string = fs::read_to_string(entries_path).expect("cannot read entries.yaml");
         let entry = &entries_from_yaml(string).entries[0];
-        if !&path.exists() {
-            File::create(&path).expect("Unable to create file");
-            fs::write(&path, entry.front_matter(expr.text)).expect("cannot write to file");
+        if !&entry_file_path.exists() {
+            File::create(&entry_file_path).expect("Unable to create file");
+            fs::write(&entry_file_path, entry.front_matter(expr.text)).expect("cannot write to file");
         }
 
-        let file_path = format!("{:}", path.display());
+        let file_path = format!("{:}", entry_file_path.display());
         cmd::edit_file(editor, file_path);
     }
 }
-
-pub fn slug(_text: String) {}
 
 fn entries_from_yaml(text: String) -> CustomEntries {
     let entries: CustomEntries = serde_yaml::from_str(&*text).unwrap();
@@ -104,6 +103,12 @@ mod tests {
 
         let entries: Vec<CustomEntry> = serde_yaml::from_str(yaml).unwrap();
         entries
+    }
+
+    #[test]
+    fn format_test() {
+        assert_eq!(format!("{:0>4}", 1), "0001");
+        assert_eq!(format!("{:0>4}", 100), "0100");
     }
 
     #[test]
