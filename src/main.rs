@@ -84,8 +84,13 @@ fn entries_from_yaml(text: String) -> CustomEntries {
     entries
 }
 
-fn custom_entry_from_yaml() -> Vec<CustomEntry> {
-    let yaml = "
+#[cfg(test)]
+mod tests {
+    use quake_core::model::meta_object::MetaField;
+    use crate::CustomEntry;
+
+    fn custom_entry_from_yaml() -> Vec<CustomEntry> {
+        let yaml = "
 - type: todo
   display: Todo
   custom_template: quake/todo.yaml
@@ -96,16 +101,9 @@ fn custom_entry_from_yaml() -> Vec<CustomEntry> {
     - author: Author
 ";
 
-    let entries: Vec<CustomEntry> = serde_yaml::from_str(yaml).unwrap();
-    entries
-}
-
-
-#[cfg(test)]
-mod tests {
-    use quake_core::model::meta_object::MetaField;
-
-    use crate::custom_entry_from_yaml;
+        let entries: Vec<CustomEntry> = serde_yaml::from_str(yaml).unwrap();
+        entries
+    }
 
     #[test]
     fn parse_yaml() {
