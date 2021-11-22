@@ -63,7 +63,7 @@ fn create_todo(expr: ConceptExpr, conf: QuakeConfig) {
 }
 
 pub fn slug(text: String) {
-    
+
 }
 
 fn edit_file(editor: String, file: String) {

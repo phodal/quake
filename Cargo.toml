@@ -21,5 +21,6 @@ serde_derive = "1.0"
 members = [
     'quake_core',
     'quake_gui',
-    'quake_tui'
+    'quake_tui',
+    'quake_database'
 ]
