@@ -10,10 +10,12 @@ use custom_entry::CustomEntry;
 use quake_core::concept_parser::ConceptExpr;
 use quake_core::quake_config::QuakeConfig;
 use crate::custom_entry::CustomEntries;
+use crate::entry_info::EntryInfo;
 use crate::slug_helper::slugify;
 
 pub mod cmd;
 pub mod custom_entry;
+pub mod entry_info;
 pub mod slug_helper;
 
 #[derive(Parser)]
@@ -58,25 +60,50 @@ fn main() {
 
 fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
     let config_path = PathBuf::from(conf.path);
-    let entries_path = config_path.join("entries.yaml");
-    let editor = conf.editor;
+    let entries_conf_path = config_path.join("entries.yaml");
+    let entries_str = fs::read_to_string(entries_conf_path).expect("cannot read entries.yaml");
 
-    let dir = config_path.join(&expr.object);
-    let _ = fs::create_dir(&dir);
+    let obj_dir = config_path.join(&expr.object);
+
+    let entry_info_path = obj_dir.join("entry-info.yaml");
+    let mut entry_info = process_entry_info(&entry_info_path);
+
+    let _ = fs::create_dir(&obj_dir);
 
     if expr.object.eq("todo") {
-        let entry_file_path = dir.join(format!("{:0>4}-{:}.md", 1, slugify(&expr.text)));
+        let entry_file_path = obj_dir.join(format!("{:0>4}-{:}.md", entry_info.index + 1, slugify(&expr.text)));
 
-        let string = fs::read_to_string(entries_path).expect("cannot read entries.yaml");
-        let entry = &entries_from_yaml(string).entries[0];
-        if !&entry_file_path.exists() {
+        let entry = &entries_from_yaml(entries_str).entries[0];
+        if expr.action == "add" {
             File::create(&entry_file_path).expect("Unable to create file");
             fs::write(&entry_file_path, entry.front_matter(expr.text)).expect("cannot write to file");
+
+            entry_info.inc();
+            let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
+            fs::write(&entry_info_path, result).expect("cannot write to file");
         }
 
         let file_path = format!("{:}", entry_file_path.display());
-        cmd::edit_file(editor, file_path);
+        cmd::edit_file(conf.editor, file_path);
     }
+}
+
+fn process_entry_info(entry_info_path: &PathBuf) -> EntryInfo {
+    if !entry_info_path.exists() {
+        let info = EntryInfo::default();
+        fs::write(entry_info_path, serde_yaml::to_string(&info).expect("cannot serial")).expect("cannot write to file");
+
+        return info;
+    }
+
+    let entry_info_str = fs::read_to_string(&entry_info_path).expect("cannot read entry-info.yaml");
+    let entry_info = entry_info_from_yaml(entry_info_str);
+    entry_info
+}
+
+fn entry_info_from_yaml(text: String) -> EntryInfo {
+    let info: EntryInfo = serde_yaml::from_str(&*text).unwrap();
+    info
 }
 
 fn entries_from_yaml(text: String) -> CustomEntries {
