@@ -1352,6 +1352,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "quake_importer"
+version = "0.1.0"
+
+[[package]]
 name = "quake_tui"
 version = "0.1.0"
 dependencies = [
