@@ -1,20 +1,3 @@
 path: _fixtures
 # todo: can be editor commands
 editor: vim
-
-entry:
-  - type: todo
-    display: Todo
-    custom_template: quake/todo.yaml
-    fields:
-      - name: Title
-      - date: EntryDate
-      - content: Text
-      - author: Author
-#    actions:
-#      default:
-#        - add
-#        - remove
-#        - delete
-#      custom:
-#        - update
