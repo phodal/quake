@@ -12,7 +12,8 @@ use quake_core::quake_config::QuakeConfig;
 use crate::custom_entry::CustomEntries;
 
 pub mod cmd;
-mod custom_entry;
+pub mod custom_entry;
+pub mod slug_helper;
 
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
