@@ -24,7 +24,7 @@ struct Opts {
     input: String,
 
     /// custom editor
-    #[clap(short, long)]
+    #[clap(short, long, default_value = "")]
     editor: String,
 }
 
@@ -61,23 +61,22 @@ fn create_todo(expr: ConceptExpr, conf: QuakeConfig) {
 
     if expr.object.eq("todo") {
         let dir = config_path.join("todo");
-
         let _ = fs::create_dir(&dir);
-        let path = dir
-            .join(format!("{:}.md", 1));
 
+        let path = dir.join(format!("{:}.md", 1));
+
+        let entry_from_yaml = &custom_entry_from_yaml()[0];
         if !&path.exists() {
             File::create(&path).expect("Unable to create file");
+            fs::write(&path, entry_from_yaml.front_matter(expr.text)).expect("cannot write to file");
         }
 
-        let file = format!("{:}", path.display());
-        edit_file(editor, file);
+        let file_path = format!("{:}", path.display());
+        edit_file(editor, file_path);
     }
 }
 
-pub fn slug(_text: String) {
-
-}
+pub fn slug(_text: String) {}
 
 fn edit_file(editor: String, file: String) {
     // todo: split os
@@ -112,6 +111,13 @@ impl CustomEntry {
         let custom_type = CustomType::from(fields);
         custom_type
     }
+
+    pub fn front_matter(&self, title: String) -> String {
+        format!("---
+title: {:}
+---
+", title)
+    }
 }
 
 fn custom_entry_from_yaml() -> Vec<CustomEntry> {
@@ -133,15 +139,9 @@ fn custom_entry_from_yaml() -> Vec<CustomEntry> {
 
 #[cfg(test)]
 mod tests {
-    use std::fs;
-    use std::fs::File;
-    use std::path::{Path, PathBuf};
-    use std::process::Command;
-
-    use quake_core::concept_parser::ConceptExpr;
     use quake_core::model::meta_object::MetaField;
 
-    use crate::{custom_entry_from_yaml, CustomEntry};
+    use crate::{custom_entry_from_yaml};
 
     #[test]
     fn parse_yaml() {
@@ -152,5 +152,15 @@ mod tests {
         let custom_type = todo.create_custom_type();
         let option = custom_type.field("name").unwrap();
         assert_eq!(&MetaField::Title(String::from("Title")), option)
+    }
+
+    #[test]
+    fn front_matter() {
+        let todo = &custom_entry_from_yaml()[0];
+
+        assert_eq!("---
+title: Hello
+---
+", todo.front_matter(String::from("Hello")));
     }
 }
