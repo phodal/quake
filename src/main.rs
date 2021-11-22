@@ -1,25 +1,24 @@
 extern crate config;
 
-use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
-use std::process::Command;
 
 use clap::Parser;
-use serde_derive::{Deserialize, Serialize};
+use custom_entry::CustomEntry;
 
 use quake_core::concept_parser::ConceptExpr;
-use quake_core::model::CustomType;
 use quake_core::quake_config::QuakeConfig;
+
+pub mod cmd;
+mod custom_entry;
 
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
 struct Opts {
-    /// Sets a custom config file. Could have been an Option<T> with no default too
     #[clap(short, long, default_value = ".quake.yaml")]
     config: String,
-    /// Some input. Because this isn't an Option<T> it's required to be used
+
     #[clap(short, long)]
     input: String,
 
@@ -30,8 +29,7 @@ struct Opts {
 
 fn config(file: &String) -> QuakeConfig {
     let mut settings = config::Config::default();
-    settings
-        .merge(config::File::with_name(file)).unwrap();
+    settings.merge(config::File::with_name(file)).unwrap();
 
     settings.try_into().unwrap()
 }
@@ -48,21 +46,21 @@ fn main() {
         let expr = ConceptExpr::from(opts.input.as_str());
         match expr.object.to_lowercase().as_str() {
             "todo" => {
-                create_todo(expr, conf);
+                create_action(expr, conf);
             }
             _ => {}
         }
     }
 }
 
-fn create_todo(expr: ConceptExpr, conf: QuakeConfig) {
+fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
     let config_path = PathBuf::from(conf.path);
     let editor = conf.editor;
 
-    if expr.object.eq("todo") {
-        let dir = config_path.join("todo");
-        let _ = fs::create_dir(&dir);
+    let dir = config_path.join(&expr.object);
+    let _ = fs::create_dir(&dir);
 
+    if expr.object.eq("todo") {
         let path = dir.join(format!("{:}.md", 1));
 
         let entry_from_yaml = &custom_entry_from_yaml()[0];
@@ -72,53 +70,11 @@ fn create_todo(expr: ConceptExpr, conf: QuakeConfig) {
         }
 
         let file_path = format!("{:}", path.display());
-        edit_file(editor, file_path);
+        cmd::edit_file(editor, file_path);
     }
 }
 
 pub fn slug(_text: String) {}
-
-fn edit_file(editor: String, file: String) {
-    // todo: split os
-    Command::new("/bin/sh")
-        .arg("-c")
-        .arg(format!("{:} {:?}", editor, file))
-        // .arg(file)
-        .spawn()
-        .expect("Error: Failed to run editor")
-        .wait()
-        .expect("failed to execute process");
-}
-
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
-pub struct CustomEntry {
-    #[serde(rename = "type")]
-    pub entry_type: String,
-    pub display: String,
-    pub custom_template: String,
-    pub fields: Vec<HashMap<String, String>>,
-    pub actions: Option<Vec<String>>,
-}
-
-impl CustomEntry {
-    pub fn create_custom_type(&self) -> CustomType {
-        let mut fields: HashMap<String, String> = HashMap::new();
-        for map in &self.fields {
-            for (key, value) in map {
-                fields.insert(key.to_string(), value.to_string());
-            }
-        }
-        let custom_type = CustomType::from(fields);
-        custom_type
-    }
-
-    pub fn front_matter(&self, title: String) -> String {
-        format!("---
-title: {:}
----
-", title)
-    }
-}
 
 fn custom_entry_from_yaml() -> Vec<CustomEntry> {
     let yaml = "
@@ -141,7 +97,7 @@ fn custom_entry_from_yaml() -> Vec<CustomEntry> {
 mod tests {
     use quake_core::model::meta_object::MetaField;
 
-    use crate::{custom_entry_from_yaml};
+    use crate::custom_entry_from_yaml;
 
     #[test]
     fn parse_yaml() {
