@@ -65,7 +65,7 @@ fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
     let _ = fs::create_dir(&obj_dir);
 
     let entry_info_path = obj_dir.join("entry-info.yaml");
-    let mut entry_info = process_entry_info(&entry_info_path);
+    let mut entry_info = load_entry_info(&entry_info_path);
 
     let mut entry_file = PathBuf::new();
 
@@ -76,12 +76,10 @@ fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
             File::create(&entry_file).expect("Unable to create file");
             fs::write(&entry_file, entry.front_matter(expr.text)).expect("cannot write to file");
 
-            entry_info.inc();
-            let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
-            fs::write(&entry_info_path, result).expect("cannot write to file");
+            save_entry_info(&entry_info_path, &mut entry_info);
         }
         "update" => {
-            //
+
         }
         _ => {
             // do_something()
@@ -96,6 +94,12 @@ fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
     }
 }
 
+fn save_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryInfo) {
+    entry_info.inc();
+    let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
+    fs::write(&entry_info_path, result).expect("cannot write to file");
+}
+
 fn entries_from_file(config_path: &PathBuf) -> Vec<CustomEntry> {
     let entries_conf_path = config_path.join("entries.yaml");
     let entries_str = fs::read_to_string(entries_conf_path).expect("cannot read entries.yaml");
@@ -105,7 +109,7 @@ fn entries_from_file(config_path: &PathBuf) -> Vec<CustomEntry> {
     vec
 }
 
-fn process_entry_info(entry_info_path: &PathBuf) -> EntryInfo {
+fn load_entry_info(entry_info_path: &PathBuf) -> EntryInfo {
     if !entry_info_path.exists() {
         let info = EntryInfo::default();
         fs::write(entry_info_path, serde_yaml::to_string(&info).expect("cannot serial")).expect("cannot write to file");

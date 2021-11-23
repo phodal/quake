@@ -10,7 +10,7 @@ pub enum SourceUnitPart {
 pub struct ActionDecl {
     pub(crate) action: String,
     pub(crate) object: String,
-    pub(crate) parameters: Vec<String>,
+    pub(crate) parameters: Vec<Parameter>,
     pub(crate) text: String,
 }
 
@@ -21,6 +21,19 @@ impl ActionDecl {
             object: "".to_string(),
             parameters: vec![],
             text: "".to_string()
+        }
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Parameter {
+    pub value: String
+}
+
+impl Default for Parameter {
+    fn default() -> Self {
+        Parameter {
+            value: "".to_string()
         }
     }
 }

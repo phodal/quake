@@ -1,6 +1,6 @@
 use pest::iterators::Pair;
 use pest::Parser;
-use crate::parser::ast::{ActionDecl, SourceUnit, SourceUnitPart};
+use crate::parser::ast::{ActionDecl, Parameter, SourceUnit, SourceUnitPart};
 
 #[derive(Parser)]
 #[grammar = "parser/quake.pest"]
@@ -14,8 +14,7 @@ pub fn parse(text: &str) -> SourceUnit {
         for inner_pair in pair.into_inner() {
             match inner_pair.as_rule() {
                 Rule::action_decl => {
-                    let decl = action_decl(inner_pair);
-                    parts.push(SourceUnitPart::Action(decl));
+                    parts.push(SourceUnitPart::Action(action_decl(inner_pair)));
                 }
                 _ => println!("rule: {}", inner_pair)
             };
@@ -29,6 +28,9 @@ fn action_decl(decl: Pair<Rule>) -> ActionDecl {
     let mut action = ActionDecl::new();
     for pair in decl.into_inner() {
         match pair.as_rule() {
+            Rule::parameters => {
+                action.parameters.push(parameters(pair));
+            }
             Rule::action => {
                 action.action = String::from(pair.as_str());
             }
@@ -39,7 +41,7 @@ fn action_decl(decl: Pair<Rule>) -> ActionDecl {
                 action.text = String::from(pair.as_str());
             }
             _ => {
-                println!("rule: {}", pair);
+                println!("{}", pair);
             }
         }
     }
@@ -47,24 +49,54 @@ fn action_decl(decl: Pair<Rule>) -> ActionDecl {
     action
 }
 
+fn parameters(decl: Pair<Rule>) -> Parameter {
+    let mut parameter = Parameter::default();
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::parameter => {
+                parameter.value = String::from(pair.as_str());
+            }
+            _ => {
+                println!("{}", pair);
+            }
+        }
+    }
 
-#[cfg(test)]
-mod tests {
-    use crate::parser::ast::SourceUnitPart;
-    use crate::parser::quake_parser::parse;
+    parameter
+}
 
-    #[test]
-    fn should_parse_expression() {
-        let unit = parse("todo.add: 添加 todo 的支持");
-        assert_eq!(1, unit.0.len());
 
-        match &unit.0[0] {
-            SourceUnitPart::Action(action) => {
-                assert_eq!("add", action.action);
-                assert_eq!("todo", action.object);
-                assert_eq!("添加 todo 的支持", action.text);
+    #[cfg(test)]
+    mod tests {
+        use crate::parser::ast::SourceUnitPart;
+        use crate::parser::quake_parser::parse;
+
+        #[test]
+        fn should_parse_add_todo() {
+            let unit = parse("todo.add: 添加 todo 的支持");
+            assert_eq!(1, unit.0.len());
+
+            match &unit.0[0] {
+                SourceUnitPart::Action(action) => {
+                    assert_eq!("add", action.action);
+                    assert_eq!("todo", action.object);
+                    assert_eq!("添加 todo 的支持", action.text);
+                }
             }
         }
 
+        #[test]
+        fn should_parse_update_todo() {
+            let unit = parse("todo.update(1)");
+            assert_eq!(1, unit.0.len());
+
+            match &unit.0[0] {
+                SourceUnitPart::Action(action) => {
+                    assert_eq!("todo", action.object);
+                    assert_eq!("update", action.action);
+                    assert_eq!(1, action.parameters.len());
+                    assert_eq!("1", action.parameters[0].value);
+                }
+            }
+        }
     }
-}
