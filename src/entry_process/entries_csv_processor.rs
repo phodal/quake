@@ -1,4 +1,4 @@
-use quake_core::concept_parser::ConceptExpr;
+use quake_core::concept_expr::ConceptExpr;
 
 pub struct EntriesCsvProcessor {}
 

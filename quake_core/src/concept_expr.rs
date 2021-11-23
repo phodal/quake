@@ -1,14 +1,11 @@
-use regex::Regex;
+use crate::parser::ast::SourceUnitPart;
+use crate::parser::quake_parser::parse;
 
 #[derive(Debug)]
 pub struct ConceptExpr {
     pub object: String,
     pub action: String,
     pub text: String,
-
-    // todo: thinking in tag & at
-    // pub tag: String,
-    // pub at: String,
 }
 
 impl Default for ConceptExpr {
@@ -23,13 +20,16 @@ impl Default for ConceptExpr {
 
 impl ConceptExpr {
     pub fn from(text: &str) -> ConceptExpr {
-        let regex = Regex::new("(?P<object>[a-z]+).(?P<action>[a-z]+):\\s?(?P<text>.*)").unwrap();
-
+        let unit = parse(text);
         let mut expr = ConceptExpr::default();
-        if let Some(captures) = regex.captures(text) {
-            expr.action = String::from(&captures["action"]);
-            expr.object = String::from(&captures["object"]);
-            expr.text = String::from(&captures["text"]);
+        for part in unit.0 {
+            match part {
+                SourceUnitPart::Action(action) => {
+                    expr.action = action.action;
+                    expr.object = action.object;
+                    expr.text = action.text;
+                }
+            }
         }
 
         expr
@@ -39,7 +39,7 @@ impl ConceptExpr {
 
 #[cfg(test)]
 mod tests {
-    use crate::concept_parser::ConceptExpr;
+    use crate::concept_expr::ConceptExpr;
 
     #[test]
     fn should_parse_expression() {

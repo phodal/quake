@@ -9,7 +9,7 @@ use clap::Parser;
 use entry_process::custom_entry::CustomEntries;
 use entry_process::custom_entry::CustomEntry;
 use entry_process::entry_info::EntryInfo;
-use quake_core::concept_parser::ConceptExpr;
+use quake_core::concept_expr::ConceptExpr;
 use quake_core::quake_config::QuakeConfig;
 
 use crate::slug_helper::slugify;

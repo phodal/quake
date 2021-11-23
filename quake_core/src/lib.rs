@@ -7,7 +7,7 @@ extern crate pest_derive;
 #[macro_use]
 extern crate serde_derive;
 
-pub mod concept_parser;
+pub mod concept_expr;
 pub mod model;
 pub mod quake_config;
 pub mod parser;
