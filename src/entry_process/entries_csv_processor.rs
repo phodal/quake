@@ -2,7 +2,9 @@ use std::error::Error;
 use std::fs::File;
 use std::io;
 use std::path::PathBuf;
+
 use quake_core::model::CustomType;
+
 use crate::CustomEntry;
 
 pub struct EntriesCsvProcessor {
@@ -60,7 +62,9 @@ impl EntriesCsvProcessor {
 mod tests {
     use std::collections::HashMap;
     use std::path::PathBuf;
+
     use quake_core::model::CustomType;
+
     use crate::entry_process::entries_csv_processor::EntriesCsvProcessor;
 
     #[test]
