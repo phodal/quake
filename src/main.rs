@@ -59,35 +59,50 @@ fn main() {
 
 fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
     let config_path = PathBuf::from(conf.path);
-    let entries_conf_path = config_path.join("entries.yaml");
-    let entries_str = fs::read_to_string(entries_conf_path).expect("cannot read entries.yaml");
+    let entry = &entries_from_file(&config_path)[0];
 
     let obj_dir = config_path.join(&expr.object);
+    let _ = fs::create_dir(&obj_dir);
 
     let entry_info_path = obj_dir.join("entry-info.yaml");
-    let _ = fs::create_dir(&obj_dir);
     let mut entry_info = process_entry_info(&entry_info_path);
 
-    let entry_file_path = obj_dir.join(format!("{:0>4}-{:}.md", entry_info.index + 1, slugify(&expr.text)));
-
-    let entry = &entries_from_yaml(entries_str).entries[0];
+    let mut entry_file = PathBuf::new();
 
     match expr.action.as_str() {
         "add" => {
-            File::create(&entry_file_path).expect("Unable to create file");
-            fs::write(&entry_file_path, entry.front_matter(expr.text)).expect("cannot write to file");
+            entry_file = obj_dir.join(format!("{:0>4}-{:}.md", entry_info.index + 1, slugify(&expr.text)));
+
+            File::create(&entry_file).expect("Unable to create file");
+            fs::write(&entry_file, entry.front_matter(expr.text)).expect("cannot write to file");
 
             entry_info.inc();
             let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
             fs::write(&entry_info_path, result).expect("cannot write to file");
+        }
+        "update" => {
+            //
         }
         _ => {
             // do_something()
         }
     }
 
-    let file_path = format!("{:}", entry_file_path.display());
-    cmd::edit_file(conf.editor, file_path);
+    if entry_file.is_file() {
+        let file_path = format!("{:}", entry_file.display());
+        cmd::edit_file(conf.editor, file_path);
+    } else {
+        println!("entry file is noa file");
+    }
+}
+
+fn entries_from_file(config_path: &PathBuf) -> Vec<CustomEntry> {
+    let entries_conf_path = config_path.join("entries.yaml");
+    let entries_str = fs::read_to_string(entries_conf_path).expect("cannot read entries.yaml");
+    let entries: CustomEntries = serde_yaml::from_str(&*entries_str).unwrap();
+    let vec = entries.entries;
+
+    vec
 }
 
 fn process_entry_info(entry_info_path: &PathBuf) -> EntryInfo {
@@ -106,11 +121,6 @@ fn process_entry_info(entry_info_path: &PathBuf) -> EntryInfo {
 fn entry_info_from_yaml(text: String) -> EntryInfo {
     let info: EntryInfo = serde_yaml::from_str(&*text).unwrap();
     info
-}
-
-fn entries_from_yaml(text: String) -> CustomEntries {
-    let entries: CustomEntries = serde_yaml::from_str(&*text).unwrap();
-    entries
 }
 
 #[cfg(test)]
