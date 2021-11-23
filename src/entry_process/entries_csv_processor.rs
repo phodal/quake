@@ -1,8 +1,8 @@
 use std::{fs, io};
-use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
 use std::path::PathBuf;
+use indexmap::IndexMap;
 
 use serde::Deserialize;
 use serde_yaml::Value;
@@ -101,7 +101,7 @@ impl CsvProcessor {
     }
 
     /// from markdown file, to parse front matter
-    pub fn entry_from_markdown(text: String) -> Option<HashMap<String, String>> {
+    pub fn entry_from_markdown(text: String) -> Option<IndexMap<String, String>> {
         if !text.starts_with("---") {
             return None;
         }
@@ -109,7 +109,7 @@ impl CsvProcessor {
         let split_data = text.split("---").map(Into::into).collect::<Vec<String>>();
         let front_matter = split_data.get(1).expect("parse issue");
 
-        let mut map: HashMap<String, String> = HashMap::new();
+        let mut map: IndexMap<String, String> = IndexMap::new();
         for document in serde_yaml::Deserializer::from_str(front_matter) {
             let value = Value::deserialize(document).expect("cannot deserialize");
             if let Value::Mapping(mapping) = value {
