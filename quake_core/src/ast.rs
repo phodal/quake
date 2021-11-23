@@ -12,3 +12,13 @@ pub struct ActionDecl {
     pub(crate) object: String,
     pub(crate) text: String,
 }
+
+impl ActionDecl {
+    pub fn new() -> ActionDecl {
+        ActionDecl {
+            action: "".to_string(),
+            object: "".to_string(),
+            text: "".to_string()
+        }
+    }
+}

@@ -1,5 +1,6 @@
 use pest::iterators::Pair;
 use pest::Parser;
+use crate::ast::ActionDecl;
 
 #[derive(Parser)]
 #[grammar = "quake.pest"]
@@ -12,7 +13,8 @@ pub fn parse(text: &str) {
         for inner_pair in pair.into_inner() {
             match inner_pair.as_rule() {
                 Rule::action_decl => {
-                    action_decl(inner_pair);
+                    let decl = action_decl(inner_pair);
+                    println!("{:?}", decl);
                 }
                 _ => println!("rule: {}", inner_pair)
             };
@@ -20,17 +22,26 @@ pub fn parse(text: &str) {
     }
 }
 
-fn action_decl(decl: Pair<Rule>) {
+fn action_decl(decl: Pair<Rule>) -> ActionDecl {
+    let mut action = ActionDecl::new();
     for pair in decl.into_inner() {
         match pair.as_rule() {
+            Rule::action => {
+                action.action = String::from(pair.as_str());
+            }
             Rule::object => {
-
+                action.object = String::from(pair.as_str());
+            }
+            Rule::text => {
+                action.text = String::from(pair.as_str());
             }
             _ => {
                 println!("rule: {}", pair);
             }
         }
     }
+
+    action
 }
 
 
