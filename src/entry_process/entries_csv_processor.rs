@@ -1,18 +1,22 @@
+use std::{fs, io};
+use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
-use std::io;
 use std::path::PathBuf;
+
+use serde::Deserialize;
+use serde_yaml::Value;
 use walkdir::{DirEntry, WalkDir};
 
 use quake_core::model::CustomType;
 
 use crate::CustomEntry;
 
-pub struct EntriesCsvProcessor {
+pub struct CsvProcessor {
     pub entry: CustomEntry,
 }
 
-impl EntriesCsvProcessor {
+impl CsvProcessor {
     pub fn read(path: PathBuf) -> Result<(), Box<dyn Error>> {
         let file = File::open(path)?;
         let mut rdr = csv::ReaderBuilder::new()
@@ -67,6 +71,53 @@ impl EntriesCsvProcessor {
                 files.push(entry.into_path());
             }
         }
+
+        for file in files {
+            let _string = fs::read_to_string(file).expect("cannot read file");
+        }
+    }
+
+    /// from markdown file, to parse front matter
+    pub fn entry_from_markdown(text: String) -> Option<HashMap<String, String>> {
+        if !text.starts_with("---") {
+            return None;
+        }
+
+        let split_data = text.split("---").map(Into::into).collect::<Vec<String>>();
+        let front_matter = split_data.get(1).expect("parse issue");
+
+        let mut map: HashMap<String, String> = HashMap::new();
+        for document in serde_yaml::Deserializer::from_str(front_matter) {
+            let value = Value::deserialize(document).expect("cannot deserialize");
+            if let Value::Mapping(mapping) = value {
+                for (v_key, v_value) in mapping {
+                    let key = CsvProcessor::from_value(v_key);
+                    let value = CsvProcessor::from_value(v_value);
+                    map.insert(key, value);
+                }
+            }
+        }
+
+        Some(map)
+    }
+
+    pub fn from_value(value: Value) -> String {
+        match value {
+            Value::Null => { "".to_string() }
+            Value::Bool(bool) => { bool.to_string() }
+            Value::Number(num) => { num.to_string() }
+            Value::String(string) => { string }
+            Value::Sequence(seq) => {
+                let seq = seq.into_iter()
+                    .map(|value| { CsvProcessor::from_value(value) })
+                    .collect::<Vec<String>>();
+
+                seq.join(",")
+            }
+            Value::Mapping(_) => {
+                "todo: mapping".to_string()
+            }
+        }
     }
 
     /// update in column
@@ -81,12 +132,12 @@ mod tests {
 
     use quake_core::model::CustomType;
 
-    use crate::entry_process::entries_csv_processor::EntriesCsvProcessor;
+    use crate::entry_process::entries_csv_processor::CsvProcessor;
 
     #[test]
     fn read_csv() {
         let buf = PathBuf::from("_fixtures").join("todo").join("entrysets.csv");
-        match EntriesCsvProcessor::read(buf) {
+        match CsvProcessor::read(buf) {
             Ok(_) => {}
             Err(err) => {
                 println!("{:?}", err);
@@ -106,12 +157,34 @@ mod tests {
         let mut values = vec![];
         values.push(custom_type);
 
-        let _ = EntriesCsvProcessor::write(buf, values);
+        let _ = CsvProcessor::write(buf, values);
     }
 
     #[test]
     fn rebuild() {
         let buf = PathBuf::from("_fixtures").join("todo");
-        EntriesCsvProcessor::rebuild(buf);
+        CsvProcessor::rebuild(buf);
+    }
+
+    #[test]
+    fn entry_parse() {
+        let text = "---
+title: hello, world
+authors: Phodal HUANG<h@phodal.com>
+description: a hello, world
+created_date: 2021.11.23
+updated_date: 2021.11.21
+---
+
+sample
+
+";
+
+        let map = CsvProcessor::entry_from_markdown(String::from(text)).expect("parse error");
+        assert_eq!("hello, world", map.get("title").unwrap());
+        assert_eq!("Phodal HUANG<h@phodal.com>", map.get("authors").unwrap());
+        assert_eq!("a hello, world", map.get("description").unwrap());
+        assert_eq!("2021.11.23", map.get("created_date").unwrap());
+        assert_eq!("2021.11.21", map.get("updated_date").unwrap());
     }
 }
