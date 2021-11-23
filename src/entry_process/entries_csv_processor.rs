@@ -56,7 +56,7 @@ impl CsvProcessor {
     }
 
     /// scan all entries files, and rebuild indexes
-    pub fn rebuild(path: PathBuf) {
+    pub fn rebuild(path: PathBuf) -> (Vec<String>, Vec<Vec<String>>) {
         fn is_markdown(entry: &DirEntry) -> bool {
             entry.file_name()
                 .to_str()
@@ -72,9 +72,32 @@ impl CsvProcessor {
             }
         }
 
+        let mut header: Vec<String> = vec![];
+        let mut body: Vec<Vec<String>> = vec![];
+        let has_first = false;
+
         for file in files {
-            let _string = fs::read_to_string(file).expect("cannot read file");
+            let string = fs::read_to_string(file).expect("cannot read file");
+            match CsvProcessor::entry_from_markdown(string) {
+                None => {}
+                Some(map) => {
+                    let mut first_header: Vec<String> = vec![];
+                    let mut column: Vec<String> = vec![];
+                    for (key, value) in map {
+                        first_header.push(key);
+                        column.push(value);
+                    }
+
+                    if !has_first {
+                        header = first_header;
+                    }
+
+                    body.push(column)
+                }
+            }
         }
+
+        (header, body)
     }
 
     /// from markdown file, to parse front matter
@@ -163,7 +186,8 @@ mod tests {
     #[test]
     fn rebuild() {
         let buf = PathBuf::from("_fixtures").join("todo");
-        CsvProcessor::rebuild(buf);
+        let map = CsvProcessor::rebuild(buf);
+        println!("{:?}", map);
     }
 
     #[test]
