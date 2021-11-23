@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fs::File;
 use std::io;
 use std::path::PathBuf;
+use quake_core::model::CustomType;
 use crate::CustomEntry;
 
 pub struct EntriesCsvProcessor {
@@ -21,20 +22,22 @@ impl EntriesCsvProcessor {
         Ok(())
     }
 
-    pub fn write() -> Result<(), Box<dyn Error>> {
+    pub fn write(_path: PathBuf, values: Vec<CustomType>) -> Result<(), Box<dyn Error>> {
         let mut wtr = csv::WriterBuilder::new()
             .delimiter(b',')
             .quote_style(csv::QuoteStyle::NonNumeric)
             .from_writer(io::stdout());
 
-        wtr.write_record(&[
-            "City",
-            "State",
-        ])?;
-        wtr.write_record(&[
-            "Davidsons Landing",
-            "AK",
-        ])?;
+        wtr.write_record(&values[0].keys)?;
+
+        for field in values {
+            let mut records = vec![];
+            for (_key, field) in field.fields {
+                records.push(format!("{}", field));
+            }
+
+            wtr.write_record(&records)?;
+        }
 
         wtr.flush()?;
 
@@ -51,7 +54,9 @@ impl EntriesCsvProcessor {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
     use std::path::PathBuf;
+    use quake_core::model::CustomType;
     use crate::entry_process::entries_csv_processor::EntriesCsvProcessor;
 
     #[test]
@@ -67,6 +72,16 @@ mod tests {
 
     #[test]
     fn write_csv() {
-        let _= EntriesCsvProcessor::write();
+        let buf = PathBuf::from("samples");
+
+        let mut map = HashMap::new();
+        map.insert("title".to_string(), "Title".to_string());
+        map.insert("keywords".to_string(), "#tag".to_string());
+
+        let custom_type = CustomType::from(map);
+        let mut values = vec![];
+        values.push(custom_type);
+
+        let _ = EntriesCsvProcessor::write(buf, values);
     }
 }
