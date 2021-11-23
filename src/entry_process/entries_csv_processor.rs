@@ -2,13 +2,11 @@ use std::{fs, io};
 use std::error::Error;
 use std::fs::File;
 use std::path::PathBuf;
-use indexmap::IndexMap;
 
+use indexmap::IndexMap;
 use serde::Deserialize;
 use serde_yaml::Value;
 use walkdir::{DirEntry, WalkDir};
-
-use quake_core::model::CustomType;
 
 use crate::CustomEntry;
 
@@ -29,25 +27,16 @@ impl CsvProcessor {
         Ok(())
     }
 
-    pub fn write(_path: PathBuf, values: Vec<CustomType>) -> Result<(), Box<dyn Error>> {
+    pub fn write(_path: PathBuf, header: Vec<String>, body: Vec<Vec<String>>) -> Result<(), Box<dyn Error>> {
         let mut wtr = csv::WriterBuilder::new()
             .delimiter(b',')
             .quote_style(csv::QuoteStyle::NonNumeric)
             .from_writer(io::stdout());
 
-        let mut headers = vec![];
-        for (key, _) in &values[0].fields {
-            headers.push(key);
-        }
-        wtr.write_record(&headers)?;
+        wtr.write_record(&header)?;
 
-        for field in values {
-            let mut records = vec![];
-            for (_key, field) in field.fields {
-                records.push(format!("{}", field));
-            }
-
-            wtr.write_record(&records)?;
+        for column in body {
+            wtr.write_record(&column)?;
         }
 
         wtr.flush()?;
@@ -151,9 +140,6 @@ impl CsvProcessor {
 #[cfg(test)]
 mod tests {
     use std::path::PathBuf;
-    use indexmap::IndexMap;
-
-    use quake_core::model::CustomType;
 
     use crate::entry_process::entries_csv_processor::CsvProcessor;
 
@@ -169,25 +155,11 @@ mod tests {
     }
 
     #[test]
-    fn write_csv() {
-        let buf = PathBuf::from("samples");
-
-        let mut map = IndexMap::new();
-        map.insert("title".to_string(), "Title".to_string());
-        map.insert("keywords".to_string(), "#tag".to_string());
-
-        let custom_type = CustomType::from(map);
-        let mut values = vec![];
-        values.push(custom_type);
-
-        let _ = CsvProcessor::write(buf, values);
-    }
-
-    #[test]
     fn rebuild() {
+        let source = PathBuf::from("_fixtures");
         let buf = PathBuf::from("_fixtures").join("todo");
         let map = CsvProcessor::rebuild(buf);
-        println!("{:?}", map);
+        let _ = CsvProcessor::write(source, map.0, map.1);
     }
 
     #[test]
