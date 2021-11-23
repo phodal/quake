@@ -30,3 +30,7 @@
     - [ ] [gluon](https://github.com/gluon-lang/gluon) is a small, statically-typed, functional programming language designed for application embedding.
     - [ ] [rune](https://github.com/rune-rs/rune)
     - [ ] [Goscript](https://github.com/oxfeeefeee/goscript)
+- [ ] Code Highlight
+    - [ ] [syntect](https://github.com/trishume/syntect) is a  Rust library for syntax highlighting using Sublime Text syntax definitions. 
+- [ ] Markdown
+    - [ ] [pulldown-cmark](https://github.com/raphlinus/pulldown-cmark) is a pull parser for CommonMark, written in Rust. 
