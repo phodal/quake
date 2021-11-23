@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fs::File;
 use std::io;
 use std::path::PathBuf;
+use walkdir::{DirEntry, WalkDir};
 
 use quake_core::model::CustomType;
 
@@ -51,7 +52,22 @@ impl EntriesCsvProcessor {
     }
 
     /// scan all entries files, and rebuild indexes
-    pub fn rebuild() {}
+    pub fn rebuild(path: PathBuf) {
+        fn is_markdown(entry: &DirEntry) -> bool {
+            entry.file_name()
+                .to_str()
+                .map(|s| s.ends_with(".md"))
+                .unwrap_or(false)
+        }
+
+        let mut files = vec![];
+        for entry in WalkDir::new(path).into_iter()
+            .filter_map(|e| e.ok()) {
+            if is_markdown(&entry) {
+                files.push(entry.into_path());
+            }
+        }
+    }
 
     /// update in column
     pub fn update_by_column() {}
@@ -91,5 +107,11 @@ mod tests {
         values.push(custom_type);
 
         let _ = EntriesCsvProcessor::write(buf, values);
+    }
+
+    #[test]
+    fn rebuild() {
+        let buf = PathBuf::from("_fixtures").join("todo");
+        EntriesCsvProcessor::rebuild(buf);
     }
 }
