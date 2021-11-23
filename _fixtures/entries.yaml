@@ -4,9 +4,9 @@ entries:
     custom_template: quake/todo.yaml
     fields:
       - name: Title
+      - author: Author
       - date: EntryDate
       - content: Text
-      - author: Author
 #    actions:
 #      default:
 #        - add

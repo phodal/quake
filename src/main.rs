@@ -6,18 +6,17 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
-use custom_entry::CustomEntry;
+use entry_process::custom_entry::CustomEntries;
+use entry_process::custom_entry::CustomEntry;
+use entry_process::entry_info::EntryInfo;
 use quake_core::concept_parser::ConceptExpr;
 use quake_core::quake_config::QuakeConfig;
 
-use crate::custom_entry::CustomEntries;
-use crate::entry_info::EntryInfo;
 use crate::slug_helper::slugify;
 
 pub mod cmd;
-pub mod custom_entry;
-pub mod entry_info;
 pub mod slug_helper;
+pub mod entry_process;
 
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
@@ -51,7 +50,9 @@ fn main() {
             "todo" => {
                 create_action(expr, conf);
             }
-            _ => {}
+            _ => {
+                create_action(expr, conf);
+            }
         }
     }
 }
@@ -64,32 +65,29 @@ fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
     let obj_dir = config_path.join(&expr.object);
 
     let entry_info_path = obj_dir.join("entry-info.yaml");
+    let _ = fs::create_dir(&obj_dir);
     let mut entry_info = process_entry_info(&entry_info_path);
 
-    let _ = fs::create_dir(&obj_dir);
     let entry_file_path = obj_dir.join(format!("{:0>4}-{:}.md", entry_info.index + 1, slugify(&expr.text)));
 
-    if expr.object.eq("todo") {
-        // todo: filter todo
-        let entry = &entries_from_yaml(entries_str).entries[0];
+    let entry = &entries_from_yaml(entries_str).entries[0];
 
-        match expr.action.as_str() {
-            "add" => {
-                File::create(&entry_file_path).expect("Unable to create file");
-                fs::write(&entry_file_path, entry.front_matter(expr.text)).expect("cannot write to file");
+    match expr.action.as_str() {
+        "add" => {
+            File::create(&entry_file_path).expect("Unable to create file");
+            fs::write(&entry_file_path, entry.front_matter(expr.text)).expect("cannot write to file");
 
-                entry_info.inc();
-                let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
-                fs::write(&entry_info_path, result).expect("cannot write to file");
-            }
-            _ => {
-                // do_something()
-            }
+            entry_info.inc();
+            let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
+            fs::write(&entry_info_path, result).expect("cannot write to file");
         }
-
-        let file_path = format!("{:}", entry_file_path.display());
-        cmd::edit_file(conf.editor, file_path);
+        _ => {
+            // do_something()
+        }
     }
+
+    let file_path = format!("{:}", entry_file_path.display());
+    cmd::edit_file(conf.editor, file_path);
 }
 
 fn process_entry_info(entry_info_path: &PathBuf) -> EntryInfo {

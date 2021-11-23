@@ -1,25 +1,28 @@
 use pest::iterators::Pair;
 use pest::Parser;
-use crate::ast::ActionDecl;
+use crate::parser::ast::{ActionDecl, SourceUnit, SourceUnitPart};
 
 #[derive(Parser)]
-#[grammar = "quake.pest"]
+#[grammar = "parser/quake.pest"]
 struct QuakeParser;
 
-pub fn parse(text: &str) {
+pub fn parse(text: &str) -> SourceUnit {
     let pairs = QuakeParser::parse(Rule::earth, text).unwrap_or_else(|e| panic!("{}", e));
 
+    let mut parts = vec![];
     for pair in pairs {
         for inner_pair in pair.into_inner() {
             match inner_pair.as_rule() {
                 Rule::action_decl => {
                     let decl = action_decl(inner_pair);
-                    println!("{:?}", decl);
+                    parts.push(SourceUnitPart::Action(decl));
                 }
                 _ => println!("rule: {}", inner_pair)
             };
         }
     }
+
+    SourceUnit(parts)
 }
 
 fn action_decl(decl: Pair<Rule>) -> ActionDecl {
@@ -47,10 +50,22 @@ fn action_decl(decl: Pair<Rule>) -> ActionDecl {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::parse;
+    use crate::parser::ast::SourceUnitPart;
+    use crate::parser::quake_parser::parse;
 
     #[test]
     fn should_parse_expression() {
-        parse("todo.add: 添加 todo 的支持");
+        let unit = parse("todo.add: 添加 todo 的支持");
+        assert_eq!(1, unit.0.len());
+        println!("{:?}", unit);
+
+        match &unit.0[0] {
+            SourceUnitPart::Action(action) => {
+                assert_eq!("add", action.action);
+                assert_eq!("todo", action.object);
+                assert_eq!("添加 todo 的支持", action.text);
+            }
+        }
+
     }
 }
