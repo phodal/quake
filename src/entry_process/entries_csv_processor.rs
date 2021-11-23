@@ -28,7 +28,11 @@ impl EntriesCsvProcessor {
             .quote_style(csv::QuoteStyle::NonNumeric)
             .from_writer(io::stdout());
 
-        wtr.write_record(&values[0].keys)?;
+        let mut headers = vec![];
+        for (key, _) in &values[0].fields {
+            headers.push(key);
+        }
+        wtr.write_record(&headers)?;
 
         for field in values {
             let mut records = vec![];

@@ -112,4 +112,16 @@ mod tests {
         let option = custom_type.fields.get("title").unwrap();
         assert_eq!(&MetaField::Title(String::from("Title")), option)
     }
+
+    #[test]
+    fn keys_in_order() {
+        let mut map = HashMap::new();
+        map.insert("title".to_string(), "Title".to_string());
+        map.insert("content".to_string(), "content".to_string());
+
+        let custom_type = CustomType::from(map);
+
+        assert_eq!("title", custom_type.keys[0]);
+        assert_eq!("content", custom_type.keys[1]);
+    }
 }
