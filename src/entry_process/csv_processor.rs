@@ -141,7 +141,7 @@ impl CsvProcessor {
 mod tests {
     use std::path::PathBuf;
 
-    use crate::entry_process::entries_csv_processor::CsvProcessor;
+    use crate::entry_process::csv_processor::CsvProcessor;
 
     #[test]
     fn read_csv() {
