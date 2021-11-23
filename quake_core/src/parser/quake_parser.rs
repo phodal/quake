@@ -57,7 +57,6 @@ mod tests {
     fn should_parse_expression() {
         let unit = parse("todo.add: 添加 todo 的支持");
         assert_eq!(1, unit.0.len());
-        println!("{:?}", unit);
 
         match &unit.0[0] {
             SourceUnitPart::Action(action) => {

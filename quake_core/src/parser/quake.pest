@@ -1,8 +1,14 @@
 earth = {  action_decl }
 
 action_decl = {
-    object ~ "." ~ action ~ ":" ~ " "* ~ text
+    object ~ "." ~ action ~ parameters? ~ ":"? ~ " "* ~ text?
 }
+
+parameters = {
+    "(" ~ parameter ~ ("," ~ parameter)* ~ ")"
+}
+
+parameter = { ident }
 
 object = { ident }
 

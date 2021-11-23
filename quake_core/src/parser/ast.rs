@@ -10,6 +10,7 @@ pub enum SourceUnitPart {
 pub struct ActionDecl {
     pub(crate) action: String,
     pub(crate) object: String,
+    pub(crate) parameters: Vec<String>,
     pub(crate) text: String,
 }
 
@@ -18,6 +19,7 @@ impl ActionDecl {
         ActionDecl {
             action: "".to_string(),
             object: "".to_string(),
+            parameters: vec![],
             text: "".to_string()
         }
     }
