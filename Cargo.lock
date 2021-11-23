@@ -875,6 +875,7 @@ checksum = "bc633605454125dec4b66843673f01c7df2b89479b32e0ed634e43a91cff62a5"
 dependencies = [
  "autocfg",
  "hashbrown",
+ "serde 1.0.130",
 ]
 
 [[package]]
@@ -1443,6 +1444,7 @@ dependencies = [
  "clap",
  "config",
  "csv",
+ "indexmap",
  "lazy_static",
  "quake_core",
  "regex",
@@ -1456,6 +1458,7 @@ dependencies = [
 name = "quake_core"
 version = "0.1.0"
 dependencies = [
+ "indexmap",
  "pest",
  "pest_derive",
  "serde 1.0.130",

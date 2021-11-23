@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use std::time::Duration;
+use indexmap::IndexMap;
 
 use crate::model::meta_object::MetaField;
 
@@ -44,21 +44,17 @@ impl Default for Author {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CustomType {
-    pub keys: Vec<String>,
-    pub fields: HashMap<String, MetaField>,
+    pub fields: IndexMap<String, MetaField>,
 }
 
 impl CustomType {
-    pub fn from(map: HashMap<String, String>) -> CustomType {
-        let mut keys = vec![];
-        let mut fields = HashMap::new();
+    pub fn from(map: IndexMap<String, String>) -> CustomType {
+        let mut fields = IndexMap::new();
         for (key, value) in map {
-            keys.push(key.clone());
             fields.insert(key, Self::parse_field_type(value));
         }
 
         CustomType {
-            keys,
             fields,
         }
     }

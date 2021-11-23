@@ -28,6 +28,8 @@ csv = "1.1"
 
 walkdir = "2"
 
+indexmap = { version = "1.7.0", features = ["serde"] }
+
 serde_yaml = "0.8"
 serde = "1.0"
 serde_derive = "1.0"

@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use indexmap::IndexMap;
 
 use serde_derive::{Deserialize, Serialize};
 
@@ -15,18 +15,19 @@ pub struct CustomEntry {
     pub entry_type: String,
     pub display: String,
     pub custom_template: String,
-    pub fields: Vec<HashMap<String, String>>,
+    pub fields: Vec<IndexMap<String, String>>,
     pub actions: Option<Vec<String>>,
 }
 
 impl CustomEntry {
     pub fn create_custom_type(&self) -> CustomType {
-        let mut fields: HashMap<String, String> = HashMap::new();
+        let mut fields: IndexMap<String, String> = IndexMap::new();
         for map in &self.fields {
             for (key, value) in map {
                 fields.insert(key.to_string(), value.to_string());
             }
         }
+
         let custom_type = CustomType::from(fields);
         custom_type
     }

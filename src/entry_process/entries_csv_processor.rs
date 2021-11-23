@@ -150,8 +150,8 @@ impl CsvProcessor {
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
     use std::path::PathBuf;
+    use indexmap::IndexMap;
 
     use quake_core::model::CustomType;
 
@@ -172,7 +172,7 @@ mod tests {
     fn write_csv() {
         let buf = PathBuf::from("samples");
 
-        let mut map = HashMap::new();
+        let mut map = IndexMap::new();
         map.insert("title".to_string(), "Title".to_string());
         map.insert("keywords".to_string(), "#tag".to_string());
 
