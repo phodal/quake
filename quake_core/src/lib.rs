@@ -11,6 +11,7 @@ pub mod concept_parser;
 pub mod model;
 pub mod quake_config;
 pub mod parser;
+pub mod ast;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SummaryBlog {

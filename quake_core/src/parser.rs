@@ -1,17 +1,34 @@
+use pest::iterators::Pair;
 use pest::Parser;
 
 #[derive(Parser)]
 #[grammar = "quake.pest"]
 struct QuakeParser;
 
-fn parse(text: &str) {
+pub fn parse(text: &str) {
     let pairs = QuakeParser::parse(Rule::earth, text).unwrap_or_else(|e| panic!("{}", e));
 
     for pair in pairs {
         for inner_pair in pair.into_inner() {
             match inner_pair.as_rule() {
-                _ => println!("{}", inner_pair)
+                Rule::action_decl => {
+                    action_decl(inner_pair);
+                }
+                _ => println!("rule: {}", inner_pair)
             };
+        }
+    }
+}
+
+fn action_decl(decl: Pair<Rule>) {
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::object => {
+
+            }
+            _ => {
+                println!("rule: {}", pair);
+            }
         }
     }
 }
