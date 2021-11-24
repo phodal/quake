@@ -5,6 +5,7 @@ use std::path::PathBuf;
 
 use indexmap::IndexMap;
 use serde::Deserialize;
+use serde_derive::{Serialize};
 use serde_yaml::Value;
 use walkdir::{DirEntry, WalkDir};
 
@@ -14,17 +15,44 @@ pub struct CsvProcessor {
     pub entry: CustomEntry,
 }
 
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
+pub struct CsvTable {
+    pub header: Vec<String>,
+    pub rows: Vec<Vec<String>>
+}
+
+impl Default for CsvTable {
+    fn default() -> Self {
+        CsvTable {
+            header: vec![],
+            rows: vec![]
+        }
+    }
+}
+
 impl CsvProcessor {
-    pub fn read(path: PathBuf) -> Result<(), Box<dyn Error>> {
+    pub fn read(path: PathBuf) -> Result<CsvTable, Box<dyn Error>> {
         let file = File::open(path)?;
         let mut rdr = csv::ReaderBuilder::new()
             .from_reader(file);
-        for result in rdr.records() {
-            let record = result?;
-            println!("{:?}", record);
+
+        let mut table = CsvTable::default();
+        for record in rdr.headers() {
+            for str in record {
+                table.header.push(String::from(str))
+            }
         }
 
-        Ok(())
+        for result in rdr.records() {
+            let record = result?;
+            let mut row = vec![];
+            for str in &record {
+                row.push(String::from(str));
+            }
+            table.rows.push(row);
+        }
+
+        Ok(table)
     }
 
     pub fn write(_path: PathBuf, header: Vec<String>, body: Vec<Vec<String>>) -> Result<(), Box<dyn Error>> {
@@ -147,7 +175,9 @@ mod tests {
     fn read_csv() {
         let buf = PathBuf::from("_fixtures").join("todo").join("entrysets.csv");
         match CsvProcessor::read(buf) {
-            Ok(_) => {}
+            Ok(table) => {
+                println!("{:?}", table);
+            }
             Err(err) => {
                 println!("{:?}", err);
             }
