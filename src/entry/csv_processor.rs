@@ -10,10 +10,6 @@ use walkdir::{DirEntry, WalkDir};
 use crate::CustomEntry;
 use crate::entry::entry_file::EntryFile;
 
-pub struct CsvProcessor {
-    pub entry: CustomEntry,
-}
-
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct CsvTable {
     pub header: Vec<String>,
@@ -27,6 +23,10 @@ impl Default for CsvTable {
             rows: vec![],
         }
     }
+}
+
+pub struct CsvProcessor {
+    pub entry: CustomEntry,
 }
 
 impl CsvProcessor {
