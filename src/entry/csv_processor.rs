@@ -73,20 +73,7 @@ impl CsvProcessor {
 
     /// scan all entries files, and rebuild indexes
     pub fn rebuild(path: PathBuf) -> (Vec<String>, Vec<Vec<String>>) {
-        fn is_markdown(entry: &DirEntry) -> bool {
-            entry.file_name()
-                .to_str()
-                .map(|s| s.ends_with(".md"))
-                .unwrap_or(false)
-        }
-
-        let mut files = vec![];
-        for entry in WalkDir::new(path).into_iter()
-            .filter_map(|e| e.ok()) {
-            if is_markdown(&entry) {
-                files.push(entry.into_path());
-            }
-        }
+        let files = Self::scan_files(path);
 
         let mut header: Vec<String> = vec![];
         header.push("id".to_string());
@@ -111,6 +98,24 @@ impl CsvProcessor {
         }
 
         (header, body)
+    }
+
+    fn scan_files(path: PathBuf) -> Vec<PathBuf> {
+        fn is_markdown(entry: &DirEntry) -> bool {
+            entry.file_name()
+                .to_str()
+                .map(|s| s.ends_with(".md"))
+                .unwrap_or(false)
+        }
+
+        let mut files = vec![];
+        for entry in WalkDir::new(path).into_iter()
+            .filter_map(|e| e.ok()) {
+            if is_markdown(&entry) {
+                files.push(entry.into_path());
+            }
+        }
+        files
     }
 
     /// update in column
