@@ -40,7 +40,7 @@ impl CustomEntry {
                 } else {
                     "".to_string()
                 };
-                output.push(format!("{}:{}", key, value));
+                output.push(format!("{}: {}", key, value));
             }
         }
 
@@ -92,12 +92,15 @@ mod tests {
         let todo = &custom_entry_from_yaml()[0];
         let mut map = IndexMap::new();
         map.insert("title".to_string(), "Hello".to_string());
+        map.insert("author".to_string(), "Phodal HUANG".to_string());
+        map.insert("date".to_string(), "2021-11-24 19:14:10".to_string());
+        map.insert("content".to_string(), "sample".to_string());
 
         assert_eq!("---
-title:Hello
-date:
-content:
-author:
+title: Hello
+date: 2021-11-24 19:14:10
+content: sample
+author: Phodal HUANG
 ---
 ", todo.front_matter(map));
     }
