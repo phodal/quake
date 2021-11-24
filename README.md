@@ -38,7 +38,8 @@ Quake 是一个面向极客开发的知识管理工具，它可以提供：
 - [ ] Editor (TBD)
   - markdown editor
 
-LICENSE
+
+License
 ---
 
-MIT
+@ 2021 This code is distributed under the MIT license. See `LICENSE` in this directory.
