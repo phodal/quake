@@ -6,8 +6,8 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
-use entry::custom_entry::CustomEntries;
-use entry::custom_entry::CustomEntry;
+use entry::entry_define::CustomEntries;
+use entry::entry_define::EntryDefine;
 use entry::entry_info::EntryInfo;
 use quake_core::input_parser::InputParser;
 use quake_core::quake_config::QuakeConfig;
@@ -60,7 +60,7 @@ fn main() {
 
 fn create_action(expr: InputParser, conf: QuakeConfig) {
     let config_path = PathBuf::from(conf.path);
-    let entry = &entries_from_path(&config_path)[0];
+    let entry_define = &entries_from_path(&config_path)[0];
 
     let obj_dir = config_path.join(&expr.object);
     let _ = fs::create_dir(&obj_dir);
@@ -78,8 +78,8 @@ fn create_action(expr: InputParser, conf: QuakeConfig) {
             File::create(&entry_path).expect("Unable to create file");
 
             let mut entry_file = EntryFile::default();
-            let init_map = entry.create_title_and_date(expr.text.to_string());
-            entry_file.front_matter = entry.merge_map(init_map);
+            let init_map = entry_define.create_title_and_date(expr.text.to_string());
+            entry_file.front_matter = entry_define.merge_map(init_map);
 
             fs::write(&entry_path, entry_file.to_string()).expect("cannot write to file");
             save_entry_info(&entry_info_path, &mut entry_info);
@@ -112,7 +112,7 @@ fn save_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryInfo) {
     fs::write(&entry_info_path, result).expect("cannot write to file");
 }
 
-fn entries_from_path(config_path: &PathBuf) -> Vec<CustomEntry> {
+fn entries_from_path(config_path: &PathBuf) -> Vec<EntryDefine> {
     let entries_conf_path = config_path.join("entries.yaml");
     let entries_str = fs::read_to_string(entries_conf_path).expect("cannot read entries.yaml");
     let entries: CustomEntries = serde_yaml::from_str(&*entries_str).unwrap();

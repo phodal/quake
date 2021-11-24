@@ -7,7 +7,7 @@ use serde::Deserialize;
 use serde_derive::Serialize;
 use walkdir::{DirEntry, WalkDir};
 
-use crate::CustomEntry;
+use crate::EntryDefine;
 use crate::entry::entry_file::EntryFile;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
@@ -26,7 +26,7 @@ impl Default for CsvTable {
 }
 
 pub struct CsvProcessor {
-    pub entry: CustomEntry,
+    pub entry: EntryDefine,
 }
 
 impl CsvProcessor {

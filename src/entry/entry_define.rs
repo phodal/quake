@@ -6,11 +6,11 @@ use quake_core::model::CustomType;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct CustomEntries {
-    pub entries: Vec<CustomEntry>,
+    pub entries: Vec<EntryDefine>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-pub struct CustomEntry {
+pub struct EntryDefine {
     #[serde(rename = "type")]
     pub entry_type: String,
     pub display: String,
@@ -19,7 +19,7 @@ pub struct CustomEntry {
     pub actions: Option<Vec<String>>,
 }
 
-impl CustomEntry {
+impl EntryDefine {
     pub fn create_custom_type(&self) -> CustomType {
         let mut fields: IndexMap<String, String> = IndexMap::new();
         for map in &self.fields {
@@ -71,9 +71,9 @@ mod tests {
 
     use quake_core::model::meta_object::MetaField;
 
-    use crate::CustomEntry;
+    use crate::EntryDefine;
 
-    fn custom_entry_from_yaml() -> Vec<CustomEntry> {
+    fn custom_entry_from_yaml() -> Vec<EntryDefine> {
         let yaml = "
 - type: todo
   display: Todo
@@ -85,7 +85,7 @@ mod tests {
     - author: Author
 ";
 
-        let entries: Vec<CustomEntry> = serde_yaml::from_str(yaml).unwrap();
+        let entries: Vec<EntryDefine> = serde_yaml::from_str(yaml).unwrap();
         entries
     }
 
