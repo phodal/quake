@@ -7,6 +7,31 @@ pub struct EntryFile {
     pub content: String,
 }
 
+impl Default for EntryFile {
+    fn default() -> Self {
+        EntryFile {
+            front_matter: IndexMap::new(),
+            content: "".to_string()
+        }
+    }
+}
+
+impl ToString for EntryFile {
+    fn to_string(&self) -> String {
+        let mut output = vec![];
+        output.push("---".to_string());
+        for (key, value) in &self.front_matter {
+            output.push(format!("{}: {}", key, value));
+        }
+        output.push("---".to_string());
+
+        let mut str = output.join("\n");
+        str.push_str(&*self.content);
+
+        str
+    }
+}
+
 impl EntryFile {
     pub fn from(text: &str) -> EntryFile {
         if !text.starts_with("---") {
@@ -90,7 +115,11 @@ sample
 
 ";
 
-        let map = EntryFile::from(text).front_matter;
+        let entry_file = EntryFile::from(text);
+
+        assert_eq!(text, entry_file.to_string());
+
+        let map = entry_file.front_matter;
         assert_eq!("hello, world", map.get("title").unwrap());
         assert_eq!("Phodal HUANG<h@phodal.com>", map.get("authors").unwrap());
         assert_eq!("a hello, world", map.get("description").unwrap());

@@ -31,27 +31,24 @@ impl CustomEntry {
         custom_type
     }
 
-    pub fn front_matter(&self, values: IndexMap<String, String>) -> String {
-        let mut output = vec![];
+    pub fn update_fields(&self, values: IndexMap<String, String>) -> IndexMap<String, String> {
+        let mut result: IndexMap<String, String> = IndexMap::new();
+
         for field_def in &self.fields {
-            for (key, field_type) in field_def {
+            for (key, _field_type) in field_def {
                 let value = if let Some(va) = values.get(key) {
                     va.to_string()
                 } else {
                     "".to_string()
                 };
 
-                if field_type != "Body" {
-                    output.push(format!("{}: {}", key, value));
-                }
+                result.insert(key.to_string(), value);
             }
         }
 
-        let out = output.join("\n");
-        format!("---
-{:}
----
-", out)
+        result.extend(values);
+
+        result
     }
 }
 
@@ -91,19 +88,16 @@ mod tests {
     }
 
     #[test]
-    fn front_matter() {
+    fn update_fields() {
         let todo = &custom_entry_from_yaml()[0];
         let mut map = IndexMap::new();
         map.insert("title".to_string(), "Hello".to_string());
         map.insert("author".to_string(), "Phodal HUANG".to_string());
         map.insert("date".to_string(), "2021-11-24 19:14:10".to_string());
         map.insert("content".to_string(), "sample".to_string());
+        map.insert("new_field".to_string(), "sample".to_string());
 
-        assert_eq!("---
-title: Hello
-date: 2021-11-24 19:14:10
-author: Phodal HUANG
----
-", todo.front_matter(map));
+        let new_map = todo.update_fields(map);
+        assert_eq!("sample", new_map.get("new_field").unwrap())
     }
 }

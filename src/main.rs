@@ -13,6 +13,7 @@ use entry::custom_entry::CustomEntry;
 use entry::entry_info::EntryInfo;
 use quake_core::input_parser::InputParser;
 use quake_core::quake_config::QuakeConfig;
+use crate::entry::entry_file::EntryFile;
 
 use crate::slug_helper::slugify;
 
@@ -69,14 +70,14 @@ fn create_action(expr: InputParser, conf: QuakeConfig) {
     let entry_info_path = obj_dir.join("entry-info.yaml");
     let mut entry_info = load_entry_info(&entry_info_path);
 
-    let mut entry_file = PathBuf::new();
+    let mut entry_path = PathBuf::new();
 
     match expr.action.as_str() {
         "add" => {
             let string = file_name(entry_info.index + 1, slugify(&expr.text));
-            entry_file = obj_dir.join(string);
+            entry_path = obj_dir.join(string);
 
-            File::create(&entry_file).expect("Unable to create file");
+            File::create(&entry_path).expect("Unable to create file");
 
             let local: DateTime<Local> = Local::now();
             let date = local.format("%Y-%m-%d %H:%M:%S").to_string();
@@ -86,7 +87,10 @@ fn create_action(expr: InputParser, conf: QuakeConfig) {
             map.insert("created_date".to_string(), date.clone());
             map.insert("updated_date".to_string(), date);
 
-            fs::write(&entry_file, entry.front_matter(map)).expect("cannot write to file");
+            let mut entry_file = EntryFile::default();
+            entry_file.front_matter = entry.update_fields(map);
+
+            fs::write(&entry_path, entry_file.to_string()).expect("cannot write to file");
 
             save_entry_info(&entry_info_path, &mut entry_info);
         }
@@ -100,8 +104,8 @@ fn create_action(expr: InputParser, conf: QuakeConfig) {
         }
     }
 
-    if entry_file.is_file() {
-        let file_path = format!("{:}", entry_file.display());
+    if entry_path.is_file() {
+        let file_path = format!("{:}", entry_path.display());
         cmd::edit_file(conf.editor, file_path);
     } else {
         println!("entry file is noa file");
