@@ -1,3 +1,4 @@
+use chrono::{DateTime, Local};
 use indexmap::IndexMap;
 use serde_derive::{Deserialize, Serialize};
 
@@ -31,7 +32,19 @@ impl CustomEntry {
         custom_type
     }
 
-    pub fn update_fields(&self, values: IndexMap<String, String>) -> IndexMap<String, String> {
+    pub fn create_title_and_date(&self, text: String) -> IndexMap<String, String> {
+        let local: DateTime<Local> = Local::now();
+        let date = local.format("%Y-%m-%d %H:%M:%S").to_string();
+
+        let mut map = IndexMap::new();
+        map.insert("title".to_string(), text);
+        map.insert("created_date".to_string(), date.clone());
+        map.insert("updated_date".to_string(), date);
+
+        map
+    }
+
+    pub fn merge_map(&self, values: IndexMap<String, String>) -> IndexMap<String, String> {
         let mut result: IndexMap<String, String> = IndexMap::new();
 
         for field_def in &self.fields {
@@ -97,7 +110,7 @@ mod tests {
         map.insert("content".to_string(), "sample".to_string());
         map.insert("new_field".to_string(), "sample".to_string());
 
-        let new_map = todo.update_fields(map);
+        let new_map = todo.merge_map(map);
         assert_eq!("sample", new_map.get("new_field").unwrap())
     }
 }

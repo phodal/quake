@@ -4,9 +4,7 @@ use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 
-use chrono::{DateTime, Local};
 use clap::Parser;
-use indexmap::IndexMap;
 
 use entry::custom_entry::CustomEntries;
 use entry::custom_entry::CustomEntry;
@@ -62,7 +60,7 @@ fn main() {
 
 fn create_action(expr: InputParser, conf: QuakeConfig) {
     let config_path = PathBuf::from(conf.path);
-    let entry = &entries_from_file(&config_path)[0];
+    let entry = &entries_from_path(&config_path)[0];
 
     let obj_dir = config_path.join(&expr.object);
     let _ = fs::create_dir(&obj_dir);
@@ -79,19 +77,11 @@ fn create_action(expr: InputParser, conf: QuakeConfig) {
 
             File::create(&entry_path).expect("Unable to create file");
 
-            let local: DateTime<Local> = Local::now();
-            let date = local.format("%Y-%m-%d %H:%M:%S").to_string();
-
-            let mut map = IndexMap::new();
-            map.insert("title".to_string(), expr.text.to_string());
-            map.insert("created_date".to_string(), date.clone());
-            map.insert("updated_date".to_string(), date);
-
             let mut entry_file = EntryFile::default();
-            entry_file.front_matter = entry.update_fields(map);
+            let init_map = entry.create_title_and_date(expr.text.to_string());
+            entry_file.front_matter = entry.merge_map(init_map);
 
             fs::write(&entry_path, entry_file.to_string()).expect("cannot write to file");
-
             save_entry_info(&entry_info_path, &mut entry_info);
         }
         "update" => {
@@ -122,7 +112,7 @@ fn save_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryInfo) {
     fs::write(&entry_info_path, result).expect("cannot write to file");
 }
 
-fn entries_from_file(config_path: &PathBuf) -> Vec<CustomEntry> {
+fn entries_from_path(config_path: &PathBuf) -> Vec<CustomEntry> {
     let entries_conf_path = config_path.join("entries.yaml");
     let entries_str = fs::read_to_string(entries_conf_path).expect("cannot read entries.yaml");
     let entries: CustomEntries = serde_yaml::from_str(&*entries_str).unwrap();
@@ -139,13 +129,9 @@ fn load_entry_info(entry_info_path: &PathBuf) -> EntryInfo {
         return info;
     }
 
-    let entry_info_str = fs::read_to_string(&entry_info_path).expect("cannot read entry-info.yaml");
-    let entry_info = entry_info_from_yaml(entry_info_str);
+    let text = fs::read_to_string(&entry_info_path).expect("cannot read entry-info.yaml");
+    let entry_info = serde_yaml::from_str(&*text).unwrap();
     entry_info
-}
-
-fn entry_info_from_yaml(text: String) -> EntryInfo {
-    serde_yaml::from_str(&*text).unwrap()
 }
 
 #[cfg(test)]
