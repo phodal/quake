@@ -1,24 +1,26 @@
-use quake_core::input_parser::InputParser;
-use quake_core::quake_config::QuakeConfig;
-use std::path::PathBuf;
 use std::fs;
 use std::fs::File;
-use crate::helper::cmd;
-use crate::entry::entry_define::{CustomEntries, EntryDefine};
+use std::path::PathBuf;
+
+use quake_core::input_parser::InputParser;
+use quake_core::quake_config::QuakeConfig;
+
+use crate::entry::entry_define::{EntryDefines, EntryDefine};
 use crate::entry::entry_file::EntryFile;
 use crate::entry::entry_info::EntryInfo;
 use crate::entry::front_matter::FrontMatter;
+use crate::helper::cmd;
 use crate::helper::slug::slugify;
 
 pub fn create_action(expr: InputParser, conf: QuakeConfig) {
     let config_path = PathBuf::from(conf.path);
-    let entry_define = &entries_from_path(&config_path)[0];
+    let entry_define = &entry_define_from_path(&config_path)[0];
 
     let obj_dir = config_path.join(&expr.object);
     let _ = fs::create_dir(&obj_dir);
 
     let entry_info_path = obj_dir.join("entry-info.yaml");
-    let mut entry_info = load_entry_info(&entry_info_path);
+    let mut entry_info = entry_info_from_path(&entry_info_path);
 
     let mut entry_path = PathBuf::new();
 
@@ -42,7 +44,7 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
             // FrontMatter::update_fields(text, map);
         }
         "list" => {
-            
+
         }
         _ => {
             // do_something()
@@ -61,22 +63,22 @@ pub fn file_name(index: usize, text: String) -> String {
     format!("{:0>4}-{:}.md", index, text)
 }
 
+fn entry_define_from_path(config_path: &PathBuf) -> Vec<EntryDefine> {
+    let entries_conf_path = config_path.join("entries.yaml");
+    let entries_str = fs::read_to_string(entries_conf_path).expect("cannot read entries.yaml");
+    let entries: EntryDefines = serde_yaml::from_str(&*entries_str).unwrap();
+    let vec = entries.entries;
+
+    vec
+}
+
 fn save_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryInfo) {
     entry_info.inc();
     let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
     fs::write(&entry_info_path, result).expect("cannot write to file");
 }
 
-fn entries_from_path(config_path: &PathBuf) -> Vec<EntryDefine> {
-    let entries_conf_path = config_path.join("entries.yaml");
-    let entries_str = fs::read_to_string(entries_conf_path).expect("cannot read entries.yaml");
-    let entries: CustomEntries = serde_yaml::from_str(&*entries_str).unwrap();
-    let vec = entries.entries;
-
-    vec
-}
-
-fn load_entry_info(entry_info_path: &PathBuf) -> EntryInfo {
+fn entry_info_from_path(entry_info_path: &PathBuf) -> EntryInfo {
     if !entry_info_path.exists() {
         let info = EntryInfo::default();
         fs::write(entry_info_path, serde_yaml::to_string(&info).expect("cannot serial")).expect("cannot write to file");
