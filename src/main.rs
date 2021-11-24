@@ -3,6 +3,7 @@ extern crate config;
 use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
+use chrono::{DateTime, Local};
 
 use clap::Parser;
 use indexmap::IndexMap;
@@ -75,16 +76,19 @@ fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
             entry_file = obj_dir.join(format!("{:0>4}-{:}.md", entry_info.index + 1, slugify(&expr.text)));
 
             File::create(&entry_file).expect("Unable to create file");
+
+            let local: DateTime<Local> = Local::now();
+            let created_date = local.format("%Y-%m-%d %H:%M:%S").to_string();
+
             let mut map = IndexMap::new();
             map.insert("title".to_string(), expr.text.to_string());
+            map.insert("created_date".to_string(), created_date);
 
             fs::write(&entry_file, entry.front_matter(map)).expect("cannot write to file");
 
             save_entry_info(&entry_info_path, &mut entry_info);
         }
-        "update" => {
-
-        }
+        "update" => {}
         _ => {
             // do_something()
         }
