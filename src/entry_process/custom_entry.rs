@@ -35,15 +35,16 @@ impl CustomEntry {
     pub fn front_matter(&self, map: IndexMap<String, String>) -> String {
         let mut output = vec![];
         for field_def in &self.fields {
-            for (key, value) in field_def {
+            for (key, _field_type) in field_def {
                 let value = if let Some(va) = map.get(key) {
                     va.to_string()
                 } else {
-                    value.to_string()
+                    "".to_string()
                 };
-                output.push(format!("{}: {}", key, value));
+                output.push(format!("{}:{}", key, value));
             }
         }
+
         let out = output.join("\n");
         format!("---
 {:}

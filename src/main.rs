@@ -178,10 +178,10 @@ mod tests {
         map.insert("title".to_string(), "Hello".to_string());
 
         assert_eq!("---
-title: Hello
-date: EntryDate
-content: Text
-author: Author
+title:Hello
+date:
+content:
+author:
 ---
 ", todo.front_matter(map));
     }
