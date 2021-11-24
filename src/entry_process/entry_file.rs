@@ -2,34 +2,44 @@ use indexmap::IndexMap;
 use serde::Deserialize;
 use serde_yaml::Value;
 
-pub struct FrontMatter {}
+pub struct EntryFile {
+    pub front_matter: IndexMap<String, String>,
+    pub content: String,
+}
 
-impl FrontMatter {
-    /// from markdown file, to parse front matter
-    pub fn entry_from_markdown(text: String) -> Option<IndexMap<String, String>> {
+impl EntryFile {
+    pub fn from(text: &str) -> EntryFile {
         if !text.starts_with("---") {
-            return None;
+            return EntryFile { front_matter: IndexMap::new(), content: String::from(text) };
         }
 
         let split_data = text.split("---").map(Into::into).collect::<Vec<String>>();
         let front_matter = split_data.get(1).expect("parse issue");
+        let content = split_data.get(2).expect("parse issue");
 
         let mut map: IndexMap<String, String> = IndexMap::new();
         for document in serde_yaml::Deserializer::from_str(front_matter) {
             let value = Value::deserialize(document).expect("cannot deserialize");
             if let Value::Mapping(mapping) = value {
                 for (v_key, v_value) in mapping {
-                    let key = FrontMatter::from_value(v_key);
-                    let value = FrontMatter::from_value(v_value);
+                    let key = FrontMatter::string(v_key);
+                    let value = FrontMatter::string(v_value);
                     map.insert(key, value);
                 }
             }
         }
 
-        Some(map)
+        EntryFile {
+            front_matter: map,
+            content: String::from(content),
+        }
     }
+}
 
-    pub fn from_value(value: Value) -> String {
+pub struct FrontMatter {}
+
+impl FrontMatter {
+    pub fn string(value: Value) -> String {
         match value {
             Value::Null => { "".to_string() }
             Value::Bool(bool) => { bool.to_string() }
@@ -37,7 +47,7 @@ impl FrontMatter {
             Value::String(string) => { string }
             Value::Sequence(seq) => {
                 let seq = seq.into_iter()
-                    .map(|value| { FrontMatter::from_value(value) })
+                    .map(|value| { FrontMatter::string(value) })
                     .collect::<Vec<String>>();
 
                 seq.join(",")
@@ -51,7 +61,7 @@ impl FrontMatter {
 
 #[cfg(test)]
 mod tests {
-    use crate::entry_process::front_matter::FrontMatter;
+    use crate::entry_process::entry_file::{EntryFile};
 
     #[test]
     fn entry_parse() {
@@ -67,7 +77,7 @@ sample
 
 ";
 
-        let map = FrontMatter::entry_from_markdown(String::from(text)).expect("parse error");
+        let map = EntryFile::from(text).front_matter;
         assert_eq!("hello, world", map.get("title").unwrap());
         assert_eq!("Phodal HUANG<h@phodal.com>", map.get("authors").unwrap());
         assert_eq!("a hello, world", map.get("description").unwrap());

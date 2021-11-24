@@ -8,7 +8,7 @@ use serde_derive::Serialize;
 use walkdir::{DirEntry, WalkDir};
 
 use crate::CustomEntry;
-use crate::entry_process::front_matter::FrontMatter;
+use crate::entry_process::entry_file::{EntryFile, FrontMatter};
 
 pub struct CsvProcessor {
     pub entry: CustomEntry,
@@ -17,14 +17,14 @@ pub struct CsvProcessor {
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct CsvTable {
     pub header: Vec<String>,
-    pub rows: Vec<Vec<String>>
+    pub rows: Vec<Vec<String>>,
 }
 
 impl Default for CsvTable {
     fn default() -> Self {
         CsvTable {
             header: vec![],
-            rows: vec![]
+            rows: vec![],
         }
     }
 }
@@ -97,23 +97,22 @@ impl CsvProcessor {
         let mut index = 1;
         for file in files {
             let string = fs::read_to_string(file).expect("cannot read file");
-            if let Some(map) = FrontMatter::entry_from_markdown(string) {
-                let mut first_header: Vec<String> = vec![];
-                let mut column: Vec<String> = vec![];
-                column.push(index.to_string());
+            let map = EntryFile::from(&*string);
+            let mut first_header: Vec<String> = vec![];
+            let mut column: Vec<String> = vec![];
+            column.push(index.to_string());
 
-                for (key, value) in map {
-                    first_header.push(key);
-                    column.push(value);
-                }
-
-                if !has_first {
-                    header.append(&mut first_header);
-                    has_first = true;
-                }
-
-                body.push(column)
+            for (key, value) in map.front_matter {
+                first_header.push(key);
+                column.push(value);
             }
+
+            if !has_first {
+                header.append(&mut first_header);
+                has_first = true;
+            }
+
+            body.push(column);
 
             index = index + 1;
         }

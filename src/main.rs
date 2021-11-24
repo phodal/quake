@@ -91,7 +91,9 @@ fn create_action(expr: InputParser, conf: QuakeConfig) {
             save_entry_info(&entry_info_path, &mut entry_info);
         }
         "update" => {
-
+            // let mut map = IndexMap::new();
+            // map.insert("updated_date".to_string(), date);
+            // FrontMatter::update_fields(text, map);
         }
         _ => {
             // do_something()
