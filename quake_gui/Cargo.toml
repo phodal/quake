@@ -15,7 +15,7 @@ futures = "0.1"
 # gui
 #druid = "0.7.0"
 
-tray-item = "0.6.0"
+#tray-item = "0.6.0"
 
 #daemonize = "0.4.1"
 

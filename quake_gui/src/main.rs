@@ -1,11 +1,9 @@
 #[macro_use]
 extern crate log;
 
-use std::fs::File;
-
 // use daemonize::Daemonize;
 use tokio_core::reactor::Core;
-use crate::ui::tray::tray;
+// use crate::ui::tray::tray;
 
 pub mod model;
 mod main_loop;
@@ -25,16 +23,14 @@ fn main() -> Result<(), ()> {
     // todo: tray
 
     // run in other application ?
-    let toggle = || {
-        // todo: ui
-        let mut core = Core::new().unwrap();
-        let handle = core.handle();
+    // todo: ui
+    let mut core = Core::new().unwrap();
+    let handle = core.handle();
 
-        let initial_state = setup::initial_state(handle);
-        core.run(initial_state).unwrap();
-    };
+    let initial_state = setup::initial_state(handle);
+    core.run(initial_state).unwrap();
 
-    tray(toggle);
+    // tray(toggle);
 
     Ok(())
 }
