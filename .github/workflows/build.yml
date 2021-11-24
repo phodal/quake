@@ -20,7 +20,7 @@ jobs:
 
 # from: https://github.com/diesel-rs/diesel/blob/master/.github/workflows/ci.yml
       - name: Install sqlite (Windows)
-        if: runner.os == 'Windows' && matrix.backend == 'sqlite'
+        if: runner.os == 'Windows'
         shell: cmd
         run: |
           choco install sqlite
