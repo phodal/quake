@@ -34,6 +34,19 @@ impl EntryFile {
             content: String::from(content),
         }
     }
+
+    pub fn header_column(self, index: i32) -> (Vec<String>, Vec<String>) {
+        let mut header: Vec<String> = vec![];
+        let mut column: Vec<String> = vec![];
+        column.push(index.to_string());
+
+        for (key, value) in self.front_matter {
+            header.push(key);
+            column.push(value);
+        }
+
+        (header, column)
+    }
 }
 
 pub struct FrontMatter {}
@@ -61,7 +74,7 @@ impl FrontMatter {
 
 #[cfg(test)]
 mod tests {
-    use crate::entry_process::entry_file::{EntryFile};
+    use crate::entry::entry_file::{EntryFile};
 
     #[test]
     fn entry_parse() {

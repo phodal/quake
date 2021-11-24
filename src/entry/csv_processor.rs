@@ -8,7 +8,7 @@ use serde_derive::Serialize;
 use walkdir::{DirEntry, WalkDir};
 
 use crate::CustomEntry;
-use crate::entry_process::entry_file::{EntryFile, FrontMatter};
+use crate::entry::entry_file::EntryFile;
 
 pub struct CsvProcessor {
     pub entry: CustomEntry,
@@ -97,15 +97,9 @@ impl CsvProcessor {
         let mut index = 1;
         for file in files {
             let string = fs::read_to_string(file).expect("cannot read file");
-            let map = EntryFile::from(&*string);
-            let mut first_header: Vec<String> = vec![];
-            let mut column: Vec<String> = vec![];
-            column.push(index.to_string());
 
-            for (key, value) in map.front_matter {
-                first_header.push(key);
-                column.push(value);
-            }
+            let entry_file = EntryFile::from(&*string);
+            let (mut first_header, column) = entry_file.header_column(index);
 
             if !has_first {
                 header.append(&mut first_header);
@@ -113,7 +107,6 @@ impl CsvProcessor {
             }
 
             body.push(column);
-
             index = index + 1;
         }
 
@@ -129,7 +122,7 @@ impl CsvProcessor {
 mod tests {
     use std::path::PathBuf;
 
-    use crate::entry_process::csv_processor::CsvProcessor;
+    use crate::entry::csv_processor::CsvProcessor;
 
     #[test]
     fn read_csv() {

@@ -8,9 +8,9 @@ use chrono::{DateTime, Local};
 use clap::Parser;
 use indexmap::IndexMap;
 
-use entry_process::custom_entry::CustomEntries;
-use entry_process::custom_entry::CustomEntry;
-use entry_process::entry_info::EntryInfo;
+use entry::custom_entry::CustomEntries;
+use entry::custom_entry::CustomEntry;
+use entry::entry_info::EntryInfo;
 use quake_core::input_parser::InputParser;
 use quake_core::quake_config::QuakeConfig;
 
@@ -18,7 +18,7 @@ use crate::slug_helper::slugify;
 
 pub mod cmd;
 pub mod slug_helper;
-pub mod entry_process;
+pub mod entry;
 
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
