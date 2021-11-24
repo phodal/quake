@@ -6,7 +6,7 @@ use quake_core::model::CustomType;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct CustomEntries {
-    pub entries: Vec<CustomEntry>
+    pub entries: Vec<CustomEntry>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
@@ -32,10 +32,22 @@ impl CustomEntry {
         custom_type
     }
 
-    pub fn front_matter(&self, title: String) -> String {
+    pub fn front_matter(&self, map: IndexMap<String, String>) -> String {
+        let mut output = vec![];
+        for field_def in &self.fields {
+            for (key, value) in field_def {
+                let value = if let Some(va) = map.get(key) {
+                    va.to_string()
+                } else {
+                    value.to_string()
+                };
+                output.push(format!("{}: {}", key, value));
+            }
+        }
+        let out = output.join("\n");
         format!("---
-title: {:}
+{:}
 ---
-", title)
+", out)
     }
 }

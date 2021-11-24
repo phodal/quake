@@ -5,6 +5,7 @@ use std::fs::File;
 use std::path::PathBuf;
 
 use clap::Parser;
+use indexmap::IndexMap;
 
 use entry_process::custom_entry::CustomEntries;
 use entry_process::custom_entry::CustomEntry;
@@ -74,7 +75,10 @@ fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
             entry_file = obj_dir.join(format!("{:0>4}-{:}.md", entry_info.index + 1, slugify(&expr.text)));
 
             File::create(&entry_file).expect("Unable to create file");
-            fs::write(&entry_file, entry.front_matter(expr.text)).expect("cannot write to file");
+            let mut map = IndexMap::new();
+            map.insert("title".to_string(), expr.text.to_string());
+
+            fs::write(&entry_file, entry.front_matter(map)).expect("cannot write to file");
 
             save_entry_info(&entry_info_path, &mut entry_info);
         }
@@ -129,6 +133,7 @@ fn entry_info_from_yaml(text: String) -> EntryInfo {
 
 #[cfg(test)]
 mod tests {
+    use indexmap::IndexMap;
     use quake_core::model::meta_object::MetaField;
 
     use crate::CustomEntry;
@@ -139,7 +144,7 @@ mod tests {
   display: Todo
   custom_template: quake/todo.yaml
   fields:
-    - name: Title
+    - title: Title
     - date: EntryDate
     - content: Text
     - author: Author
@@ -162,17 +167,22 @@ mod tests {
         assert_eq!(4, todo.fields.len());
 
         let custom_type = todo.create_custom_type();
-        let option = custom_type.field("name").unwrap();
+        let option = custom_type.field("title").unwrap();
         assert_eq!(&MetaField::Title(String::from("Title")), option)
     }
 
     #[test]
     fn front_matter() {
         let todo = &custom_entry_from_yaml()[0];
+        let mut map = IndexMap::new();
+        map.insert("title".to_string(), "Hello".to_string());
 
         assert_eq!("---
 title: Hello
+date: EntryDate
+content: Text
+author: Author
 ---
-", todo.front_matter(String::from("Hello")));
+", todo.front_matter(map));
     }
 }

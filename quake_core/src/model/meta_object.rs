@@ -9,6 +9,8 @@ pub enum MetaField {
     Author(Author),
     Searchable(String),
     EntryDate(EntryDate),
+    // String for map
+    Date(String),
     /// custom filter types
     Filterable(Vec<String>),
     Unknown(String),
@@ -25,6 +27,7 @@ impl Display for MetaField {
             MetaField::EntryDate(date) => write!(f, "{:?}", date),
             MetaField::Filterable(conds) => write!(f, "{:?}", conds),
             MetaField::Unknown(str) => write!(f, "{}", str),
+            MetaField::Date(date) => write!(f, "{}", date)
         }
     }
 }

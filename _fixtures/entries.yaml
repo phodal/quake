@@ -3,10 +3,12 @@ entries:
     display: Todo
     custom_template: quake/todo.yaml
     fields:
-      - name: Title
-      - author: Author
-      - date: EntryDate
+      - title: Title
+      - author: Text
       - content: Text
+      - created_date: Date
+      - updated_date: Date
+
 #    actions:
 #      default:
 #        - add

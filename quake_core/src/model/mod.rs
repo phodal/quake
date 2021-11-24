@@ -72,7 +72,6 @@ impl CustomType {
                 MetaField::Title(value)
             }
             "Tagged" => {
-                // todo
                 let tags = vec![];
                 MetaField::Tagged(tags)
             }
@@ -83,6 +82,9 @@ impl CustomType {
             "EntryDate" => {
                 let date = EntryDate::default();
                 MetaField::EntryDate(date)
+            }
+            "Date" => {
+                MetaField::Date(value)
             }
             _ => {
                 MetaField::Unknown(value)
