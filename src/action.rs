@@ -1,6 +1,7 @@
 use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
+use comfy_table::Table;
 
 use quake_core::input_parser::InputParser;
 use quake_core::quake_config::QuakeConfig;
@@ -55,7 +56,7 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
         let file_path = format!("{:}", entry_path.display());
         cmd::edit_file(conf.editor, file_path);
     } else {
-        println!("entry file is noa file");
+        println!("entry file is no a file");
     }
 }
 
@@ -67,14 +68,32 @@ fn show_entrysets(path: &PathBuf)  {
     let entries = path.join("entrysets.csv");
     let file = File::open(entries).unwrap();
     let mut rdr = csv::Reader::from_reader(file);
-    for header in rdr.headers() {
-        println!("{:?}", header);
+
+    let mut table = Table::new();
+
+    let mut header = vec![];
+    header.push("id".to_string());
+    for record in rdr.headers() {
+        for str in record {
+            header.push(String::from(str))
+        }
     }
 
+    table.set_header(header);
+
+    let mut index = 1;
     for result in rdr.records() {
         let record = result.unwrap();
-        println!("{:?}", record);
+        let mut row = vec![];
+        row.push(index.to_string());
+        for str in &record {
+            row.push(String::from(str));
+        }
+        index = index + 1;
+        table.add_row(row);
     }
+
+    println!("{}", table);
 }
 
 fn entry_define_from_path(config_path: &PathBuf) -> Vec<EntryDefine> {
