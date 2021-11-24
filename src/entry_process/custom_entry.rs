@@ -34,13 +34,16 @@ impl CustomEntry {
     pub fn front_matter(&self, values: IndexMap<String, String>) -> String {
         let mut output = vec![];
         for field_def in &self.fields {
-            for (key, _field_type) in field_def {
+            for (key, field_type) in field_def {
                 let value = if let Some(va) = values.get(key) {
                     va.to_string()
                 } else {
                     "".to_string()
                 };
-                output.push(format!("{}: {}", key, value));
+
+                if field_type != "Body" {
+                    output.push(format!("{}: {}", key, value));
+                }
             }
         }
 
@@ -68,7 +71,7 @@ mod tests {
   fields:
     - title: Title
     - date: EntryDate
-    - content: Text
+    - content: Body
     - author: Author
 ";
 
@@ -99,7 +102,6 @@ mod tests {
         assert_eq!("---
 title: Hello
 date: 2021-11-24 19:14:10
-content: sample
 author: Phodal HUANG
 ---
 ", todo.front_matter(map));

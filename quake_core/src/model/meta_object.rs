@@ -4,10 +4,13 @@ use crate::model::Author;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub enum MetaField {
-    Text(String),
+    /// title of content, will be default
     Title(String),
-    Tagged(Vec<String>),
+    /// body of content, will skill by rules
+    Body(String),
     Author(Author),
+    Text(String),
+    Tagged(Vec<String>),
     Searchable(String),
     // String for map
     Date(String),
@@ -26,7 +29,8 @@ impl Display for MetaField {
             MetaField::Searchable(str) => write!(f, "{}", str),
             MetaField::Filterable(conds) => write!(f, "{:?}", conds),
             MetaField::Unknown(str) => write!(f, "{}", str),
-            MetaField::Date(date) => write!(f, "{}", date)
+            MetaField::Date(date) => write!(f, "{}", date),
+            MetaField::Body(body) => write!(f, "{}", body),
         }
     }
 }

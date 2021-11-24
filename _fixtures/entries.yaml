@@ -5,7 +5,7 @@ entries:
     fields:
       - title: Title
       - author: Text
-      - content: Text
+      - content: Body
       - created_date: Date
       - updated_date: Date
 

@@ -136,7 +136,7 @@ mod tests {
     fn read_csv() {
         let buf = PathBuf::from("_fixtures").join("todo").join("entrysets.csv");
         match CsvProcessor::read(buf) {
-            Ok(table) => {
+            Ok(_table) => {
                 // println!("{:?}", table);
             }
             Err(err) => {
