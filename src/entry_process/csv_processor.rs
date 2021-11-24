@@ -95,22 +95,19 @@ impl CsvProcessor {
 
         for file in files {
             let string = fs::read_to_string(file).expect("cannot read file");
-            match CsvProcessor::entry_from_markdown(string) {
-                None => {}
-                Some(map) => {
-                    let mut first_header: Vec<String> = vec![];
-                    let mut column: Vec<String> = vec![];
-                    for (key, value) in map {
-                        first_header.push(key);
-                        column.push(value);
-                    }
-
-                    if !has_first {
-                        header = first_header;
-                    }
-
-                    body.push(column)
+            if let Some(map) = CsvProcessor::entry_from_markdown(string) {
+                let mut first_header: Vec<String> = vec![];
+                let mut column: Vec<String> = vec![];
+                for (key, value) in map {
+                    first_header.push(key);
+                    column.push(value);
                 }
+
+                if !has_first {
+                    header = first_header;
+                }
+
+                body.push(column)
             }
         }
 
