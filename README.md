@@ -9,6 +9,41 @@ Quake 是一个面向极客开发的知识管理工具，它可以：
 - 抓住稍纵即逝的灵感。支持快速启动（CLI、TUI）与全局搜索
 - 自由的呈现画布。DSL 与自由画板
 
+## Usage
+
+1. add entry by type
+
+```
+quake "todo.add: time support"
+```
+
+2. update entry by index
+
+```
+quake "todo.update(1)"
+```
+
+3. list entry by type
+
+```
+quake "todo.list"
+```
+
+### Syntax:
+
+more in: [quake.pest](quake_core/src/parser/quake.pest)
+
+```pest
+action_decl = {
+    object ~ "." ~ action ~ parameters? ~ ":"? ~ " "* ~ text?
+}
+
+parameters = {
+    "(" ~ parameter ~ ("," ~ parameter)* ~ ")"
+}
+```
+
+
 ## Design principle
 
 我使用了不同的工具来管理知识，Microsoft To Do 管理 idea、Phodit + [Phodal.com](https://www.phodal.com/) 发布文章、Apple Notes 记录笔记等等，知识被分散在各个工具中。不利于我进行洞见，寻找灵感，与此同时，还缺乏书写和记录的方式。
