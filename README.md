@@ -9,6 +9,18 @@ Quake 是一个面向极客开发的知识管理工具，它可以提供：
 - 抓住稍纵即逝的灵感。支持快速启动（CLI、TUI）与全局搜索
 - 自由的呈现画布。DSL 与自由画板
 
+## Design principle
+
+我使用了不同的工具来管理知识，Microsoft To Do 管理 idea、Phodit + [Phodal.com](https://www.phodal.com/) 发布文章、Apple Notes 记录笔记等等，知识被分散在各个工具中。不利于我进行洞见，寻找灵感，与此同时，还缺乏书写和记录的方式。
+
+我需要一个新的工具来融合到我的知识体系里，它应该是：
+
+- 开源的。可以自由扩展。
+- 分布式 + 本地化的。可以离线使用，方便于出差旅途中使用。
+- 版本化的。可以自由查看变更历史。
+- 开放的。可以自由与其它工具组合。如 Vim、VSCode 等。
+- 易于扩展。可以结合习惯用的工具。诸如于，基于 DSL 的编辑-发布分离的类 Web 模式，用于展示。如 MxGraph、Mermaid、Ledge Framework 等
+
 ## Roadmap
 
 ### MVP: TUI

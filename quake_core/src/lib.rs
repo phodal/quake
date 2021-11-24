@@ -9,3 +9,4 @@ pub mod input_parser;
 pub mod model;
 pub mod quake_config;
 pub mod parser;
+pub mod repository;
