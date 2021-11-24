@@ -44,7 +44,7 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
             // FrontMatter::update_fields(text, map);
         }
         "list" => {
-
+            show_entrysets(&obj_dir);
         }
         _ => {
             // do_something()
@@ -61,6 +61,20 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
 
 pub fn file_name(index: usize, text: String) -> String {
     format!("{:0>4}-{:}.md", index, text)
+}
+
+fn show_entrysets(path: &PathBuf)  {
+    let entries = path.join("entrysets.csv");
+    let file = File::open(entries).unwrap();
+    let mut rdr = csv::Reader::from_reader(file);
+    for header in rdr.headers() {
+        println!("{:?}", header);
+    }
+
+    for result in rdr.records() {
+        let record = result.unwrap();
+        println!("{:?}", record);
+    }
 }
 
 fn entry_define_from_path(config_path: &PathBuf) -> Vec<EntryDefine> {
