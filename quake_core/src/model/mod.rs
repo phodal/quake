@@ -1,4 +1,3 @@
-use std::time::Duration;
 use indexmap::IndexMap;
 
 use crate::model::meta_object::MetaField;
@@ -6,25 +5,6 @@ use crate::model::meta_object::MetaField;
 pub mod meta_object;
 pub mod meta_action;
 pub mod meta_config;
-
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
-pub struct EntryDate {
-    created: Duration,
-    updated: Duration,
-    due_date: Duration,
-    resolution_date: Duration,
-}
-
-impl Default for EntryDate {
-    fn default() -> Self {
-        EntryDate {
-            created: Default::default(),
-            updated: Default::default(),
-            due_date: Default::default(),
-            resolution_date: Default::default(),
-        }
-    }
-}
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Author {
@@ -79,10 +59,6 @@ impl CustomType {
                 let author = Author::default();
                 MetaField::Author(author)
             }
-            "EntryDate" => {
-                let date = EntryDate::default();
-                MetaField::EntryDate(date)
-            }
             "Date" => {
                 MetaField::Date(value)
             }
@@ -97,6 +73,7 @@ impl CustomType {
 #[cfg(test)]
 mod tests {
     use indexmap::IndexMap;
+
     use crate::model::CustomType;
     use crate::model::meta_object::MetaField;
 

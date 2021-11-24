@@ -1,5 +1,4 @@
 use indexmap::IndexMap;
-
 use serde_derive::{Deserialize, Serialize};
 
 use quake_core::model::CustomType;
@@ -32,11 +31,11 @@ impl CustomEntry {
         custom_type
     }
 
-    pub fn front_matter(&self, map: IndexMap<String, String>) -> String {
+    pub fn front_matter(&self, values: IndexMap<String, String>) -> String {
         let mut output = vec![];
         for field_def in &self.fields {
             for (key, _field_type) in field_def {
-                let value = if let Some(va) = map.get(key) {
+                let value = if let Some(va) = values.get(key) {
                     va.to_string()
                 } else {
                     "".to_string()
@@ -50,5 +49,56 @@ impl CustomEntry {
 {:}
 ---
 ", out)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use indexmap::IndexMap;
+
+    use quake_core::model::meta_object::MetaField;
+
+    use crate::CustomEntry;
+
+    fn custom_entry_from_yaml() -> Vec<CustomEntry> {
+        let yaml = "
+- type: todo
+  display: Todo
+  custom_template: quake/todo.yaml
+  fields:
+    - title: Title
+    - date: EntryDate
+    - content: Text
+    - author: Author
+";
+
+        let entries: Vec<CustomEntry> = serde_yaml::from_str(yaml).unwrap();
+        entries
+    }
+
+    #[test]
+    fn parse_yaml() {
+        let todo = &custom_entry_from_yaml()[0];
+
+        assert_eq!(4, todo.fields.len());
+
+        let custom_type = todo.create_custom_type();
+        let option = custom_type.field("title").unwrap();
+        assert_eq!(&MetaField::Title(String::from("Title")), option)
+    }
+
+    #[test]
+    fn front_matter() {
+        let todo = &custom_entry_from_yaml()[0];
+        let mut map = IndexMap::new();
+        map.insert("title".to_string(), "Hello".to_string());
+
+        assert_eq!("---
+title:Hello
+date:
+content:
+author:
+---
+", todo.front_matter(map));
     }
 }

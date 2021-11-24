@@ -1,5 +1,6 @@
 use std::fmt::{Display, Formatter};
-use crate::model::{Author, EntryDate};
+
+use crate::model::Author;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub enum MetaField {
@@ -8,7 +9,6 @@ pub enum MetaField {
     Tagged(Vec<String>),
     Author(Author),
     Searchable(String),
-    EntryDate(EntryDate),
     // String for map
     Date(String),
     /// custom filter types
@@ -24,7 +24,6 @@ impl Display for MetaField {
             MetaField::Tagged(tag) => write!(f, "{}", tag.join("#")),
             MetaField::Author(author) => write!(f, "{:?}", author),
             MetaField::Searchable(str) => write!(f, "{}", str),
-            MetaField::EntryDate(date) => write!(f, "{:?}", date),
             MetaField::Filterable(conds) => write!(f, "{:?}", conds),
             MetaField::Unknown(str) => write!(f, "{}", str),
             MetaField::Date(date) => write!(f, "{}", date)

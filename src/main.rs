@@ -3,15 +3,15 @@ extern crate config;
 use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
-use chrono::{DateTime, Local};
 
+use chrono::{DateTime, Local};
 use clap::Parser;
 use indexmap::IndexMap;
 
 use entry_process::custom_entry::CustomEntries;
 use entry_process::custom_entry::CustomEntry;
 use entry_process::entry_info::EntryInfo;
-use quake_core::concept_expr::ConceptExpr;
+use quake_core::input_parser::InputParser;
 use quake_core::quake_config::QuakeConfig;
 
 use crate::slug_helper::slugify;
@@ -47,7 +47,7 @@ fn main() {
     }
 
     if opts.input.len() > 0 {
-        let expr = ConceptExpr::from(opts.input.as_str());
+        let expr = InputParser::from(opts.input.as_str());
         match expr.object.to_lowercase().as_str() {
             "todo" => {
                 create_action(expr, conf);
@@ -59,7 +59,7 @@ fn main() {
     }
 }
 
-fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
+fn create_action(expr: InputParser, conf: QuakeConfig) {
     let config_path = PathBuf::from(conf.path);
     let entry = &entries_from_file(&config_path)[0];
 
@@ -73,22 +73,26 @@ fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
 
     match expr.action.as_str() {
         "add" => {
-            entry_file = obj_dir.join(format!("{:0>4}-{:}.md", entry_info.index + 1, slugify(&expr.text)));
+            let string = file_name(entry_info.index + 1, slugify(&expr.text));
+            entry_file = obj_dir.join(string);
 
             File::create(&entry_file).expect("Unable to create file");
 
             let local: DateTime<Local> = Local::now();
-            let created_date = local.format("%Y-%m-%d %H:%M:%S").to_string();
+            let date = local.format("%Y-%m-%d %H:%M:%S").to_string();
 
             let mut map = IndexMap::new();
             map.insert("title".to_string(), expr.text.to_string());
-            map.insert("created_date".to_string(), created_date);
+            map.insert("created_date".to_string(), date.clone());
+            map.insert("updated_date".to_string(), date);
 
             fs::write(&entry_file, entry.front_matter(map)).expect("cannot write to file");
 
             save_entry_info(&entry_info_path, &mut entry_info);
         }
-        "update" => {}
+        "update" => {
+
+        }
         _ => {
             // do_something()
         }
@@ -100,6 +104,10 @@ fn create_action(expr: ConceptExpr, conf: QuakeConfig) {
     } else {
         println!("entry file is noa file");
     }
+}
+
+fn file_name(index: usize, text: String) -> String {
+    format!("{:0>4}-{:}.md", index, text)
 }
 
 fn save_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryInfo) {
@@ -131,62 +139,16 @@ fn load_entry_info(entry_info_path: &PathBuf) -> EntryInfo {
 }
 
 fn entry_info_from_yaml(text: String) -> EntryInfo {
-    let info: EntryInfo = serde_yaml::from_str(&*text).unwrap();
-    info
+    serde_yaml::from_str(&*text).unwrap()
 }
 
 #[cfg(test)]
 mod tests {
-    use indexmap::IndexMap;
-    use quake_core::model::meta_object::MetaField;
-
-    use crate::CustomEntry;
-
-    fn custom_entry_from_yaml() -> Vec<CustomEntry> {
-        let yaml = "
-- type: todo
-  display: Todo
-  custom_template: quake/todo.yaml
-  fields:
-    - title: Title
-    - date: EntryDate
-    - content: Text
-    - author: Author
-";
-
-        let entries: Vec<CustomEntry> = serde_yaml::from_str(yaml).unwrap();
-        entries
-    }
+    use crate::file_name;
 
     #[test]
     fn format_test() {
-        assert_eq!(format!("{:0>4}", 1), "0001");
-        assert_eq!(format!("{:0>4}", 100), "0100");
-    }
-
-    #[test]
-    fn parse_yaml() {
-        let todo = &custom_entry_from_yaml()[0];
-
-        assert_eq!(4, todo.fields.len());
-
-        let custom_type = todo.create_custom_type();
-        let option = custom_type.field("title").unwrap();
-        assert_eq!(&MetaField::Title(String::from("Title")), option)
-    }
-
-    #[test]
-    fn front_matter() {
-        let todo = &custom_entry_from_yaml()[0];
-        let mut map = IndexMap::new();
-        map.insert("title".to_string(), "Hello".to_string());
-
-        assert_eq!("---
-title:Hello
-date:
-content:
-author:
----
-", todo.front_matter(map));
+        assert_eq!("0001-hello.md", file_name(1, "hello".to_string()));
+        assert_eq!("1111-world.md", file_name(1111, "world".to_string()));
     }
 }
