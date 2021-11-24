@@ -2,7 +2,7 @@
 
 > Another simple opensource knowledge management tool for geek.
 
-Quake 是一个面向极客开发的知识管理工具，它可以提供：
+Quake 是一个面向极客开发的知识管理工具，它可以：
 
 - 自由的文本内容管理。Todo 清单、文章管理、书评、笔记等。
 - 构建知识网络体系。定制化 markdown 链接
