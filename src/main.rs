@@ -12,6 +12,7 @@ use entry::entry_info::EntryInfo;
 use quake_core::input_parser::InputParser;
 use quake_core::quake_config::QuakeConfig;
 use crate::entry::entry_file::EntryFile;
+use crate::entry::front_matter::FrontMatter;
 
 use crate::slug_helper::slugify;
 
@@ -79,7 +80,7 @@ fn create_action(expr: InputParser, conf: QuakeConfig) {
 
             let mut entry_file = EntryFile::default();
             let init_map = entry_define.create_title_and_date(expr.text.to_string());
-            entry_file.front_matter = entry_define.merge_map(init_map);
+            entry_file.front_matter = FrontMatter { fields: entry_define.merge_map(init_map) };
 
             fs::write(&entry_path, entry_file.to_string()).expect("cannot write to file");
             save_entry_info(&entry_info_path, &mut entry_info);

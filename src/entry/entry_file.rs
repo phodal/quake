@@ -1,17 +1,18 @@
 use indexmap::IndexMap;
 use serde::Deserialize;
 use serde_yaml::Value;
+use crate::entry::front_matter::FrontMatter;
 
 pub struct EntryFile {
-    pub front_matter: IndexMap<String, String>,
+    pub front_matter: FrontMatter,
     pub content: String,
 }
 
 impl Default for EntryFile {
     fn default() -> Self {
         EntryFile {
-            front_matter: IndexMap::new(),
-            content: "".to_string()
+            front_matter: FrontMatter::default(),
+            content: "".to_string(),
         }
     }
 }
@@ -20,7 +21,7 @@ impl ToString for EntryFile {
     fn to_string(&self) -> String {
         let mut output = vec![];
         output.push("---".to_string());
-        for (key, value) in &self.front_matter {
+        for (key, value) in &self.front_matter.fields {
             output.push(format!("{}: {}", key, value));
         }
         output.push("---".to_string());
@@ -35,27 +36,27 @@ impl ToString for EntryFile {
 impl EntryFile {
     pub fn from(text: &str) -> EntryFile {
         if !text.starts_with("---") {
-            return EntryFile { front_matter: IndexMap::new(), content: String::from(text) };
+            return EntryFile { front_matter: FrontMatter::default(), content: String::from(text) };
         }
 
         let split_data = text.split("---").map(Into::into).collect::<Vec<String>>();
         let front_matter = split_data.get(1).expect("parse issue");
         let content = split_data.get(2).expect("parse issue");
 
-        let mut map: IndexMap<String, String> = IndexMap::new();
+        let mut fields: IndexMap<String, String> = IndexMap::new();
         for document in serde_yaml::Deserializer::from_str(front_matter) {
             let value = Value::deserialize(document).expect("cannot deserialize");
             if let Value::Mapping(mapping) = value {
                 for (v_key, v_value) in mapping {
-                    let key = FrontMatter::string(v_key);
-                    let value = FrontMatter::string(v_value);
-                    map.insert(key, value);
+                    let key = ValueConverter::string(v_key);
+                    let value = ValueConverter::string(v_value);
+                    fields.insert(key, value);
                 }
             }
         }
 
         EntryFile {
-            front_matter: map,
+            front_matter: FrontMatter { fields },
             content: String::from(content),
         }
     }
@@ -65,7 +66,7 @@ impl EntryFile {
         let mut column: Vec<String> = vec![];
         column.push(index.to_string());
 
-        for (key, value) in self.front_matter {
+        for (key, value) in self.front_matter.fields {
             header.push(key);
             column.push(value);
         }
@@ -74,9 +75,9 @@ impl EntryFile {
     }
 }
 
-pub struct FrontMatter {}
+pub struct ValueConverter {}
 
-impl FrontMatter {
+impl ValueConverter {
     pub fn string(value: Value) -> String {
         match value {
             Value::Null => { "".to_string() }
@@ -85,7 +86,7 @@ impl FrontMatter {
             Value::String(string) => { string }
             Value::Sequence(seq) => {
                 let seq = seq.into_iter()
-                    .map(|value| { FrontMatter::string(value) })
+                    .map(|value| { ValueConverter::string(value) })
                     .collect::<Vec<String>>();
 
                 seq.join(",")
@@ -119,7 +120,7 @@ sample
 
         assert_eq!(text, entry_file.to_string());
 
-        let map = entry_file.front_matter;
+        let map = entry_file.front_matter.fields;
         assert_eq!("hello, world", map.get("title").unwrap());
         assert_eq!("Phodal HUANG<h@phodal.com>", map.get("authors").unwrap());
         assert_eq!("a hello, world", map.get("description").unwrap());
