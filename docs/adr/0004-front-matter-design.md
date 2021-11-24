@@ -6,6 +6,8 @@ Date: 2021-11-20
 
 2021-11-20 proposed
 
+2021-11-24 accepted
+
 ## Context
 
 use markdown to simplify notes for items.

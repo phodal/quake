@@ -8,3 +8,4 @@
 * [6. custom-editor](0006-custom-editor.md)
 * [7. quake-server-for-gui-&-tui](0007-quake-server-for-gui-&-tui.md)
 * [8. entrysets-for-entry-log-info](0008-entrysets-for-entry-log-info.md)
+* [9. indexmap-replace-hashmap-for-order](0009-indexmap-replace-hashmap-for-order.md)

@@ -6,6 +6,8 @@ Date: 2021-11-21
 
 2021-11-21 proposed
 
+2021-11-24 accepted
+
 ## Context
 
 for mvp, we don't have time to develop a editor, so in this version, we can use a third party editor like in `git`.
