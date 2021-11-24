@@ -41,6 +41,9 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
             // map.insert("updated_date".to_string(), date);
             // FrontMatter::update_fields(text, map);
         }
+        "list" => {
+            
+        }
         _ => {
             // do_something()
         }

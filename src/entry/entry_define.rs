@@ -70,8 +70,7 @@ mod tests {
     use indexmap::IndexMap;
 
     use quake_core::model::meta_object::MetaField;
-
-    use crate::EntryDefine;
+    use crate::entry::entry_define::EntryDefine;
 
     fn custom_entry_from_yaml() -> Vec<EntryDefine> {
         let yaml = "
