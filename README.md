@@ -17,7 +17,7 @@ Quake 是一个面向极客开发的知识管理工具，它可以：
 quake "todo.add: time support"
 ```
 
-2. update entry by index
+2. update entry by index [todo]
 
 ```
 quake "todo.update(1)"

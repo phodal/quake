@@ -23,7 +23,7 @@ pub fn slugify(text: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::slug_helper::slugify;
+    use crate::helper::slug::slugify;
 
     #[test]
     fn chinese_slug() {
