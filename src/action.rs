@@ -23,22 +23,24 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
     let entry_info_path = obj_dir.join("entry-info.yaml");
     let mut entry_info = entry_info_from_path(&entry_info_path);
 
-    let mut target = PathBuf::new();
+    let mut target_file = PathBuf::new();
 
     match expr.action.as_str() {
         "add" => {
-            let string = file_name(entry_info.index + 1, slugify(&expr.text));
-            target = obj_dir.join(string);
-            File::create(&target).expect("Unable to create file");
+            target_file = obj_dir.join(file_name(entry_info.index + 1, slugify(&expr.text)));
+            File::create(&target_file).expect("Unable to create file");
 
             let mut entry_file = EntryFile::default();
             let init_map = entry_define.create_title_and_date(expr.text.to_string());
             entry_file.front_matter = FrontMatter { fields: entry_define.merge(init_map) };
 
-            fs::write(&target, entry_file.to_string()).expect("cannot write to file");
+            fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
             save_entry_info(&entry_info_path, &mut entry_info);
         }
         "update" => {
+            let index = expr.index_from_parameter();
+            // target_file = obj_dir.join(file_name(index))
+            // filter_by_path
             // let mut map = IndexMap::new();
             // map.insert("updated_date".to_string(), date);
             // FrontMatter::update_fields(text, map);
@@ -51,12 +53,16 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
         }
     }
 
-    if target.is_file() {
-        let file_path = format!("{:}", target.display());
+    if target_file.is_file() {
+        let file_path = format!("{:}", target_file.display());
         cmd::edit_file(conf.editor, file_path);
     } else {
         println!("entry file is no a file");
     }
+}
+
+pub fn file_prefix(index: usize) -> String {
+    format!("{:0>4}.md", index)
 }
 
 pub fn file_name(index: usize, text: String) -> String {
