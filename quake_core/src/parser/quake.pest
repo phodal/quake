@@ -8,7 +8,17 @@ parameters = {
     "(" ~ parameter ~ ("," ~ parameter)* ~ ")"
 }
 
-parameter = { ident }
+parameter = {
+    digit | string
+}
+
+string = @{
+    double_quoted_string |
+    single_quoted_string
+}
+
+double_quoted_string  = @{ "\"" ~ (!("\"") ~ ANY)* ~ "\""}
+single_quoted_string  = @{ "\'" ~ (!("\'") ~ ANY)* ~ "\'"}
 
 object = { ident }
 
