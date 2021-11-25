@@ -138,6 +138,7 @@ mod tests {
     use crate::action::entry_action::create_action;
 
     #[test]
+    #[ignore]
     fn update_todo() {
         let expr = InputParser::from("todo.update(1)");
         let mut config = QuakeConfig::default();
