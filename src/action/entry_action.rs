@@ -38,7 +38,7 @@ impl EntryPaths {
     }
 }
 
-pub fn create_action(expr: InputParser, conf: QuakeConfig) {
+pub fn create_action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.path, &expr.object);
     let entries_define = &entries_define_from_path(&paths.entries_define)[0];
     let mut entry_info = entry_info_from_path(&paths.entries_info);
@@ -47,18 +47,16 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
         "add" => {
             let new_md_file = file_process::file_name(entry_info.index + 1, slugify(&expr.text));
             let mut target_file = paths.base.join(new_md_file);
-            File::create(&target_file).expect("Unable to create file");
+            File::create(&target_file)?;
 
             create_entry_file(&expr, entries_define, &mut target_file);
 
             entry_info.inc();
             update_entry_info(&paths.entries_info, &mut entry_info);
 
-            cmd::edit_file(conf.editor, format!("{:}", target_file.display()));
+            cmd::edit_file(conf.editor, format!("{:}", target_file.display()))?;
 
-            if let Err(err) = write_entries(&paths) {
-                println!("{:?}", err);
-            };
+            write_entries(&paths)?
         }
         "update" => {
             let mut target_file = PathBuf::new();
@@ -68,12 +66,10 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
                 target_file = vec[0].clone();
             }
 
-            cmd::edit_file(conf.editor, format!("{:}", target_file.display()));
+            cmd::edit_file(conf.editor, format!("{:}", target_file.display()))?;
         }
         "sync" => {
-            if let Err(err) = write_entries(&paths) {
-                println!("{:?}", err);
-            }
+            write_entries(&paths)?
         }
         "list" => {
             let entries = paths.base.join("entries.csv");
@@ -81,6 +77,8 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
         }
         _ => {}
     }
+
+    Ok(())
 }
 
 fn write_entries(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
@@ -145,6 +143,6 @@ mod tests {
         config.path = "_fixtures".to_string();
         config.editor = "".to_string();
 
-        create_action(expr, config);
+        create_action(expr, config).expect("cannot process");
     }
 }

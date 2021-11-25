@@ -83,9 +83,11 @@ impl EntrysetsCsv {
 
         let mut index = 1;
         for file in files {
-            let string = fs::read_to_string(file).expect("cannot read file");
+            let string = fs::read_to_string(&file).expect("cannot read file");
 
-            let entry_file = EntryFile::from(&*string);
+            let mut entry_file = EntryFile::from(&*string);
+            entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
+
             let (mut first_header, column) = entry_file.header_column(index);
 
             if !has_first {

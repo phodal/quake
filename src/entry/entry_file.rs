@@ -5,6 +5,7 @@ use serde_yaml::Value;
 use crate::entry::front_matter::FrontMatter;
 
 pub struct EntryFile {
+    pub name: String,
     pub front_matter: FrontMatter,
     pub content: String,
 }
@@ -12,6 +13,7 @@ pub struct EntryFile {
 impl Default for EntryFile {
     fn default() -> Self {
         EntryFile {
+            name: "".to_string(),
             front_matter: FrontMatter::default(),
             content: "".to_string(),
         }
@@ -37,7 +39,7 @@ impl ToString for EntryFile {
 impl EntryFile {
     pub fn from(text: &str) -> EntryFile {
         if !text.starts_with("---") {
-            return EntryFile { front_matter: FrontMatter::default(), content: String::from(text) };
+            return EntryFile { name: "".to_string(), front_matter: FrontMatter::default(), content: String::from(text) };
         }
 
         let split_data = text.split("---").map(Into::into).collect::<Vec<String>>();
@@ -57,6 +59,7 @@ impl EntryFile {
         }
 
         EntryFile {
+            name: "".to_string(),
             front_matter: FrontMatter { fields },
             content: String::from(content),
         }
@@ -117,11 +120,13 @@ sample
 
 ";
 
-        let entry_file = EntryFile::from(text);
+        let mut entry_file = EntryFile::from(text);
 
         assert_eq!(text, entry_file.to_string());
 
         let map = entry_file.front_matter.fields;
+        entry_file.name = "0001-hello-world.md".to_string();
+
         assert_eq!("hello, world", map.get("title").unwrap());
         assert_eq!("Phodal HUANG<h@phodal.com>", map.get("authors").unwrap());
         assert_eq!("a hello, world", map.get("description").unwrap());

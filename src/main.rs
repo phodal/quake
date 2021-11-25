@@ -65,22 +65,22 @@ fn main() {
         let expr = InputParser::from(opts.input.as_str());
         match expr.object.to_lowercase().as_str() {
             "todo" => {
-                entry_action::create_action(expr, conf);
+                if let Err(err) = entry_action::create_action(expr, conf) {
+                    println!("{:?}", err)
+                }
             }
             _ => {
-                entry_action::create_action(expr, conf);
+                if let Err(err) = entry_action::create_action(expr, conf) {
+                    println!("{:?}", err)
+                }
             }
         }
     }
 }
 
 
-
 #[cfg(test)]
 mod tests {
-
     #[test]
-    fn placeholder() {
-
-    }
+    fn placeholder() {}
 }
