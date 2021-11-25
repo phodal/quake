@@ -75,7 +75,7 @@ mod tests {
     use crate::helper::git_cmd::{last_modify, parse_changes};
 
     #[test]
-    #[skip]
+    #[ignore]
     fn last_message() {
         let last = last_modify(None, PathBuf::from("README.md"));
         let changes = parse_changes(last);
