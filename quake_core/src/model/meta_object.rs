@@ -12,6 +12,8 @@ pub enum MetaField {
     Text(String),
     Tagged(Vec<String>),
     Searchable(String),
+    Theme(String),
+    Epic(String),
     // String for map
     Date(String),
     /// custom filter types
@@ -31,6 +33,8 @@ impl Display for MetaField {
             MetaField::Unknown(str) => write!(f, "{}", str),
             MetaField::Date(date) => write!(f, "{}", date),
             MetaField::Body(body) => write!(f, "{}", body),
+            MetaField::Theme(theme) => write!(f, "{}", theme),
+            MetaField::Epic(epic) => write!(f, "{}", epic),
         }
     }
 }

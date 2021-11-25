@@ -1797,6 +1797,9 @@ dependencies = [
 [[package]]
 name = "quake_importer"
 version = "0.1.0"
+dependencies = [
+ "clap",
+]
 
 [[package]]
 name = "quake_tui"
