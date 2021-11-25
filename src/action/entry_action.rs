@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
@@ -55,7 +56,9 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
 
             cmd::edit_file(conf.editor, format!("{:}", target_file.display()));
 
-            write_entries(&paths);
+            if let Err(err) = write_entries(&paths) {
+                println!("{:?}", err);
+            };
         }
         "update" => {
             let mut target_file = PathBuf::new();
@@ -68,7 +71,9 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
             cmd::edit_file(conf.editor, format!("{:}", target_file.display()));
         }
         "sync" => {
-            write_entries(&paths);
+            if let Err(err) = write_entries(&paths) {
+                println!("{:?}", err);
+            }
         }
         "list" => {
             let entries = paths.base.join("entries.csv");
@@ -78,20 +83,11 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) {
     }
 }
 
-fn write_entries(paths: &EntryPaths) {
-    match EntrysetsCsv::generate(&paths.base) {
-        Ok(content) => {
-            match fs::write(&paths.entries, content) {
-                Ok(_) => {}
-                Err(error) => {
-                    println!("{:?}", error);
-                }
-            }
-        }
-        Err(error) => {
-            println!("{:?}", error);
-        }
-    }
+fn write_entries(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
+    let content = EntrysetsCsv::generate(&paths.base)?;
+    fs::write(&paths.entries, content)?;
+
+    Ok(())
 }
 
 fn create_entry_file(expr: &InputParser, entry_define: &EntryDefine, target_file: &mut PathBuf) {
