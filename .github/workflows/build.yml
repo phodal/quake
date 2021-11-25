@@ -18,6 +18,13 @@ jobs:
           git submodule sync --recursive
           git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
 
+      # url: https://github.com/linebender/druid/blob/master/.github/workflows/ci.yml
+      - name: install libx11-dev
+        run: |
+          sudo apt update
+          sudo apt install libx11-dev libpango1.0-dev libxkbcommon-dev libxkbcommon-x11-dev
+        if: contains(matrix.os, 'ubuntu')
+
       # from: https://github.com/diesel-rs/diesel/blob/master/.github/workflows/ci.yml
       - name: Install sqlite (Windows)
         if: runner.os == 'Windows'
