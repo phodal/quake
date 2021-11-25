@@ -5,7 +5,7 @@ use serde_derive::{Deserialize, Serialize};
 use quake_core::model::CustomType;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-pub struct EntryDefines {
+pub struct EntryDefineFile {
     pub entries: Vec<EntryDefine>,
 }
 

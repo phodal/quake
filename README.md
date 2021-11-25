@@ -17,7 +17,7 @@ Quake 是一个面向极客开发的知识管理工具，它可以：
 quake "todo.add: time support"
 ```
 
-2. update entry by index [todo]
+2. update entry by index
 
 ```
 quake "todo.update(1)"
@@ -29,7 +29,19 @@ quake "todo.update(1)"
 quake "todo.list"
 ```
 
-### Syntax:
+4. sync list
+
+```
+quake "todo.sync"
+```
+
+5. search [tbd]
+
+6. concept [tbd]
+
+7. network [tbd]
+
+### Query Syntax
 
 more in: [quake.pest](quake_core/src/parser/quake.pest)
 
@@ -43,6 +55,10 @@ parameters = {
 }
 ```
 
+### Markdown Extends syntax [TBD]
+
+1. tag: `#{tag}`
+2. custom function: `#{$block}, #{$toc}, #{$link}, #{$file = Hello.pptx}`
 
 ## Design principle
 

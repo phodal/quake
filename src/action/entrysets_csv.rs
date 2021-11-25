@@ -1,4 +1,4 @@
-use std::{fs, io};
+use std::fs;
 use std::error::Error;
 use std::fs::File;
 use std::path::PathBuf;
@@ -6,8 +6,8 @@ use std::path::PathBuf;
 use serde::Deserialize;
 use serde_derive::Serialize;
 use walkdir::{DirEntry, WalkDir};
-use crate::entry::entry_define::EntryDefine;
 
+use crate::entry::entry_define::EntryDefine;
 use crate::entry::entry_file::EntryFile;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
@@ -25,11 +25,11 @@ impl Default for CsvTable {
     }
 }
 
-pub struct CsvProcessor {
+pub struct EntrysetsCsv {
     pub entry: EntryDefine,
 }
 
-impl CsvProcessor {
+impl EntrysetsCsv {
     pub fn read(path: PathBuf) -> Result<CsvTable, Box<dyn Error>> {
         let file = File::open(path)?;
         let mut rdr = csv::ReaderBuilder::new()
@@ -54,11 +54,11 @@ impl CsvProcessor {
         Ok(table)
     }
 
-    pub fn write(_path: PathBuf, header: Vec<String>, body: Vec<Vec<String>>) -> Result<(), Box<dyn Error>> {
+    pub fn content_by_table(header: Vec<String>, body: Vec<Vec<String>>) -> Result<String, Box<dyn Error>> {
         let mut wtr = csv::WriterBuilder::new()
             .delimiter(b',')
             .quote_style(csv::QuoteStyle::NonNumeric)
-            .from_writer(io::stdout());
+            .from_writer(vec![]);
 
         wtr.write_record(&header)?;
 
@@ -68,11 +68,11 @@ impl CsvProcessor {
 
         wtr.flush()?;
 
-        Ok(())
+        Ok(String::from_utf8(wtr.into_inner()?)?)
     }
 
     /// scan all entries files, and rebuild indexes
-    pub fn rebuild(path: PathBuf) -> (Vec<String>, Vec<Vec<String>>) {
+    pub fn rebuild(path: &PathBuf) -> (Vec<String>, Vec<Vec<String>>) {
         let files = Self::scan_files(path);
 
         let mut header: Vec<String> = vec![];
@@ -100,7 +100,7 @@ impl CsvProcessor {
         (header, body)
     }
 
-    fn scan_files(path: PathBuf) -> Vec<PathBuf> {
+    fn scan_files(path: &PathBuf) -> Vec<PathBuf> {
         fn is_markdown(entry: &DirEntry) -> bool {
             entry.file_name()
                 .to_str()
@@ -118,8 +118,11 @@ impl CsvProcessor {
         files
     }
 
-    /// update in column
-    pub fn update_by_column() {}
+    pub fn generate(path: &PathBuf) -> Result<String, Box<dyn Error>> {
+        let map = EntrysetsCsv::rebuild(&path);
+        let content = EntrysetsCsv::content_by_table(map.0, map.1);
+        content
+    }
 }
 
 
@@ -127,12 +130,12 @@ impl CsvProcessor {
 mod tests {
     use std::path::PathBuf;
 
-    use crate::entry::csv_processor::CsvProcessor;
+    use crate::action::entrysets_csv::EntrysetsCsv;
 
     #[test]
     fn read_csv() {
-        let buf = PathBuf::from("_fixtures").join("todo").join("entrysets.csv");
-        match CsvProcessor::read(buf) {
+        let buf = PathBuf::from("_fixtures").join("todo").join("entries.csv");
+        match EntrysetsCsv::read(buf) {
             Ok(_table) => {
                 // println!("{:?}", table);
             }
@@ -144,9 +147,15 @@ mod tests {
 
     #[test]
     fn rebuild() {
-        let source = PathBuf::from("_fixtures");
         let buf = PathBuf::from("_fixtures").join("todo");
-        let map = CsvProcessor::rebuild(buf);
-        let _ = CsvProcessor::write(source, map.0, map.1);
+        let map = EntrysetsCsv::rebuild(&buf);
+        match EntrysetsCsv::content_by_table(map.0, map.1) {
+            Ok(some) => {
+                println!("{}", some);
+            }
+            Err(err) => {
+                println!("{:?}", err);
+            }
+        }
     }
 }

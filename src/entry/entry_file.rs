@@ -1,6 +1,7 @@
 use indexmap::IndexMap;
 use serde::Deserialize;
 use serde_yaml::Value;
+
 use crate::entry::front_matter::FrontMatter;
 
 pub struct EntryFile {
@@ -100,7 +101,7 @@ impl ValueConverter {
 
 #[cfg(test)]
 mod tests {
-    use crate::entry::entry_file::{EntryFile};
+    use crate::entry::entry_file::EntryFile;
 
     #[test]
     fn entry_parse() {

@@ -1,6 +1,7 @@
 extern crate config;
 
-use clap::{Parser};
+use clap::Parser;
+use action::entry_action;
 
 use quake_core::input_parser::InputParser;
 use quake_core::quake_config::QuakeConfig;
@@ -22,8 +23,8 @@ struct Opts {
     #[clap(short, long, default_value = "")]
     editor: String,
 
-    #[clap(subcommand)]
-    sub_cmd: SubCommand,
+    // #[clap(subcommand)]
+    // sub_cmd: SubCommand,
 }
 
 #[derive(Parser)]
@@ -64,11 +65,22 @@ fn main() {
         let expr = InputParser::from(opts.input.as_str());
         match expr.object.to_lowercase().as_str() {
             "todo" => {
-                action::create_action(expr, conf);
+                entry_action::create_action(expr, conf);
             }
             _ => {
-                action::create_action(expr, conf);
+                entry_action::create_action(expr, conf);
             }
         }
+    }
+}
+
+
+
+#[cfg(test)]
+mod tests {
+
+    #[test]
+    fn placeholder() {
+
     }
 }
