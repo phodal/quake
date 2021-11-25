@@ -43,19 +43,22 @@ struct Init {
     path: String,
 }
 
-fn config(file: &String) -> QuakeConfig {
+fn config(opts: &Opts) -> QuakeConfig {
     let mut settings = config::Config::default();
-    settings.merge(config::File::with_name(file)).unwrap();
-    settings.try_into().unwrap()
+    settings.merge(config::File::with_name(&opts.config)).unwrap();
+    let mut conf: QuakeConfig = settings.try_into().unwrap();
+
+    if !opts.editor.is_empty() {
+        conf.editor = opts.editor.clone();
+    }
+
+    conf
 }
 
 fn main() {
     let opts: Opts = Opts::parse();
 
-    let mut conf: QuakeConfig = config(&opts.config);
-    if !opts.editor.is_empty() {
-        conf.editor = opts.editor;
-    }
+    let conf: QuakeConfig = config(&opts);
 
     if opts.input.len() > 0 {
         let expr = InputParser::from(opts.input.as_str());
