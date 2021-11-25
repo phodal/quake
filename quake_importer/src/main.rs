@@ -11,7 +11,7 @@ struct Opts {
 }
 
 fn main() {
-    let opts: Opts = Opts::parse();
+    let _opts: Opts = Opts::parse();
     // if opts.sqlite.len() > 0 {
     let _ = dump_sqlite();
     // }
@@ -21,9 +21,11 @@ fn main() {
 fn dump_sqlite() -> Result<(), Box<dyn Error>> {
     let conn = Connection::open("phodal.dev")?;
 
-    let result = conn.query_row("select id from blog_blogpost", [], |row| {
-        row.get::<_, i64>(0)
-    });
-    println!("{:?}", result);
+    let mut query = conn.prepare("select id, keywords_string, title, slug, description, content from blog_blogpost")?;
+    let mut rows = query.query([])?;
+    while let Some(row) = rows.next()? {
+        println!("{:?}", row.get_ref(0))
+    };
+
     Ok(())
 }
