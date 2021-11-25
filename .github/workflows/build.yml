@@ -18,6 +18,13 @@ jobs:
           git submodule sync --recursive
           git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
 
+
+      - name: install libgtk-dev
+        run: |
+          sudo apt update
+          sudo apt install libgtk-3-dev libxkbcommon-dev libxkbcommon-x11-dev
+        if: contains(matrix.os, 'ubuntu')
+
       # url: https://github.com/linebender/druid/blob/master/.github/workflows/ci.yml
       - name: install libx11-dev
         run: |
