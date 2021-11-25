@@ -43,7 +43,7 @@ jobs:
           lib /machine:x64 /def:sqlite3.def /out:sqlite3.lib
 
       - name: Set variables for sqlite (Windows)
-        if: runner.os == 'Windows' && matrix.backend == 'sqlite'
+        if: runner.os == 'Windows'
         shell: bash
         run: |
           echo "C:\ProgramData\chocolatey\lib\SQLite\tools" >> $GITHUB_PATH
