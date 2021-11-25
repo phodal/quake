@@ -6,6 +6,7 @@ pub struct InputParser {
     pub object: String,
     pub action: String,
     pub text: String,
+    pub parameters: Vec<String>
 }
 
 impl Default for InputParser {
@@ -13,7 +14,8 @@ impl Default for InputParser {
         InputParser {
             object: "".to_string(),
             action: "".to_string(),
-            text: "".to_string()
+            text: "".to_string(),
+            parameters: vec![]
         }
     }
 }
@@ -28,6 +30,10 @@ impl InputParser {
                     expr.action = action.action;
                     expr.object = action.object;
                     expr.text = action.text;
+
+                    for parameter in action.parameters {
+                        expr.parameters.push(parameter.value);
+                    }
                 }
             }
         }
@@ -47,5 +53,13 @@ mod tests {
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "add");
         assert_eq!(expr.text, "添加 todo 的支持");
+    }
+
+    #[test]
+    fn should_parse_update_parameter() {
+        let expr = InputParser::from("todo.update(1)");
+        assert_eq!(expr.object, "todo");
+        assert_eq!(expr.action, "update");
+        assert_eq!(expr.parameters[0], "1");
     }
 }

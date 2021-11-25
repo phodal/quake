@@ -44,7 +44,7 @@ impl EntryDefine {
         map
     }
 
-    pub fn merge_map(&self, values: IndexMap<String, String>) -> IndexMap<String, String> {
+    pub fn merge(&self, values: IndexMap<String, String>) -> IndexMap<String, String> {
         let mut result: IndexMap<String, String> = IndexMap::new();
 
         for field_def in &self.fields {
@@ -109,7 +109,7 @@ mod tests {
         map.insert("content".to_string(), "sample".to_string());
         map.insert("new_field".to_string(), "sample".to_string());
 
-        let new_map = todo.merge_map(map);
+        let new_map = todo.merge(map);
         assert_eq!("sample", new_map.get("new_field").unwrap())
     }
 }
