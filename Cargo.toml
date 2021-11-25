@@ -43,6 +43,6 @@ members = [
     'quake_core',
     'quake_gui',
     'quake_tui',
-#    'quake_database',
+    'quake_database',
     'quake_importer',
 ]

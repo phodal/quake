@@ -12,10 +12,10 @@ diesel_migrations = {version = "1.4.0", features = ["sqlite"]}
 
 dotenv = "0.15"
 
-#r2d2 = "0.8.9"
-#r2d2_sqlite = "0.19.0"
-#
-#libsqlite3-sys = {version = "0.9.1", features = ["bundled"]}
+r2d2 = "0.8.9"
+r2d2_sqlite = "0.19.0"
+
+libsqlite3-sys = {version = "0.9.1", features = ["bundled"]}
 
 #[dependencies.rusqlite]
 #version = "0.26.0"
