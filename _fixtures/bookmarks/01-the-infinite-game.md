@@ -1,7 +1,7 @@
 ---
 title: The Infinite Game
-created_date:
-updated_date:
+created:
+updated:
 tag:
 author:
 ---
