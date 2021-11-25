@@ -1,5 +1,9 @@
 extern crate config;
 
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
+
 use clap::Parser;
 use action::entry_action;
 
