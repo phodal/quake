@@ -18,10 +18,10 @@ FROM blog_blogpost
                     ON blog_blogpost.user_id = auth_user.id
 ";
 
-    let _ = export_sqlite(db_name, sql, path);
+    let _ = export_mezzanine(db_name, sql, path);
 }
 
-fn export_sqlite(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Error>> {
+fn export_mezzanine(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Error>> {
     let _ = fs::create_dir(&path);
 
     let conn = Connection::open(db_name)?;

@@ -5,3 +5,6 @@ phodal.dev
 _fixtures/phodal.com/*
 .DS_Store
 quake_importer/scripts/readnotes/*
+NoteStore.sqlite
+NoteStore.sqlite-shm
+NoteStore.sqlite-wal
