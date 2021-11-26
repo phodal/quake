@@ -81,8 +81,12 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn
 }
 
 pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
-    let content = EntrysetsCsv::generate(&paths.base)?;
+    let (size, content) = EntrysetsCsv::generate(&paths.base)?;
     fs::write(&paths.entries, content)?;
+
+    update_entry_info(&paths.entries_info, &mut EntryInfo {
+        index: size
+    });
 
     Ok(())
 }

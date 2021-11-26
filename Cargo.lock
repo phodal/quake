@@ -1831,6 +1831,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "quake_editor"
+version = "0.1.0"
+
+[[package]]
 name = "quake_gui"
 version = "0.1.0"
 dependencies = [

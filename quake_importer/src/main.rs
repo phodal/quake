@@ -1,9 +1,11 @@
 use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
+
 use clap::Parser;
 use rusqlite::{Connection, Row};
 use rusqlite::types::ValueRef;
+
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::front_matter::FrontMatter;
 
@@ -18,24 +20,29 @@ struct Opts {
 fn main() {
     let _opts: Opts = Opts::parse();
     // if opts.sqlite.len() > 0 {
-    let _ = dump_sqlite("phodal.dev");
+
+    dump();
     // }
-    println!("Hello, world!");
 }
 
-fn dump_sqlite(db_name: &str) -> Result<(), Box<dyn Error>> {
+fn dump() {
     let path = PathBuf::from("_fixtures").join("phodal.com");
-    let _ = fs::create_dir(&path);
-
-    let conn = Connection::open(db_name)?;
-    // let fields = vec!["id", "keywords", "title", "slug", "description", "content", "first_name", "last_name", "email"];
-    let mut query = conn.prepare("
-SELECT blog_blogpost.id, blog_blogpost.keywords_string, blog_blogpost.title, blog_blogpost.slug, blog_blogpost.content,
+    let db_name = "phodal.dev";
+    let sql = "SELECT blog_blogpost.id, blog_blogpost.keywords_string, blog_blogpost.title, blog_blogpost.description, blog_blogpost.slug, blog_blogpost.content,
        auth_user.first_name, auth_user.last_name, auth_user.email
 FROM blog_blogpost
          INNER JOIN auth_user
                     ON blog_blogpost.user_id = auth_user.id
-")?;
+";
+
+    let _ = export_sqlite(db_name, sql, path);
+}
+
+fn export_sqlite(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Error>> {
+    let _ = fs::create_dir(&path);
+
+    let conn = Connection::open(db_name)?;
+    let mut query = conn.prepare(sql)?;
 
     let mut rows = query.query([])?;
 
@@ -75,7 +82,15 @@ fn write_file(path: &PathBuf, row: &Row) {
                 id = value.parse().unwrap();
                 matter.fields.insert(name.to_string(), id.to_string());
             } else {
-                matter.fields.insert(name.to_string(), format!("'{:}'", value));
+                matter.fields.insert(name.to_string(),
+                                     format!("{:?}", value
+                                         .replace(" ", " ")
+                                         .replace("", " ")
+                                         .replace("", " ")
+                                         .replace("", " ")
+                                         .replace("​", " ")
+                                     )
+                );
             }
         }
     }
@@ -89,5 +104,23 @@ fn write_file(path: &PathBuf, row: &Row) {
             println!("{:?}", file.name.clone());
             println!("{:?}", err);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::dump;
+
+    #[test]
+    fn escape_test() {
+        let origin = "Mac OS 安装GNU命令行工具";
+        let esc = origin.replace(" ", " ");
+
+        println!("{}", esc);
+    }
+
+    #[test]
+    fn dump_test() {
+        let _ = dump();
     }
 }

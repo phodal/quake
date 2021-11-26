@@ -3,3 +3,4 @@
 dev.db
 phodal.dev
 _fixtures/phodal.com/*
+.DS_Store

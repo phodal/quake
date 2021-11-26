@@ -55,6 +55,7 @@ impl EntrysetsCsv {
     }
 
     pub fn content_by_table(header: Vec<String>, body: Vec<Vec<String>>) -> Result<String, Box<dyn Error>> {
+        header.len();
         let mut wtr = csv::WriterBuilder::new()
             .delimiter(b',')
             .quote_style(csv::QuoteStyle::NonNumeric)
@@ -72,7 +73,7 @@ impl EntrysetsCsv {
     }
 
     /// scan all entries files, and rebuild indexes
-    pub fn rebuild(path: &PathBuf) -> (Vec<String>, Vec<Vec<String>>) {
+    pub fn rebuild(path: &PathBuf) -> Result<(Vec<String>, Vec<Vec<String>>), Box<dyn Error>> {
         let files = Self::scan_files(path);
 
         let mut header: Vec<String> = vec![];
@@ -83,7 +84,7 @@ impl EntrysetsCsv {
 
         let mut index = 1;
         for file in files {
-            let string = fs::read_to_string(&file).expect("cannot read file");
+            let string = fs::read_to_string(&file)?;
 
             let mut entry_file = EntryFile::from(&*string);
             entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
@@ -99,7 +100,7 @@ impl EntrysetsCsv {
             index = index + 1;
         }
 
-        (header, body)
+        Ok((header, body))
     }
 
     fn scan_files(path: &PathBuf) -> Vec<PathBuf> {
@@ -120,10 +121,12 @@ impl EntrysetsCsv {
         files
     }
 
-    pub fn generate(path: &PathBuf) -> Result<String, Box<dyn Error>> {
-        let map = EntrysetsCsv::rebuild(&path);
-        let content = EntrysetsCsv::content_by_table(map.0, map.1);
-        content
+    pub fn generate(path: &PathBuf) -> Result<(usize, String), Box<dyn Error>> {
+        let map = EntrysetsCsv::rebuild(&path)?;
+        let table_len = map.1.len();
+        let string = EntrysetsCsv::content_by_table(map.0, map.1)?;
+
+        Ok((table_len, string))
     }
 }
 
@@ -150,7 +153,7 @@ mod tests {
     #[test]
     fn rebuild() {
         let buf = PathBuf::from("_fixtures").join("todo");
-        let map = EntrysetsCsv::rebuild(&buf);
+        let map = EntrysetsCsv::rebuild(&buf).unwrap();
         match EntrysetsCsv::content_by_table(map.0, map.1) {
             Ok(some) => {
                 println!("{}", some);

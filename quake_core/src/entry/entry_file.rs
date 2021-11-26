@@ -61,7 +61,7 @@ impl EntryFile {
             let value = match Value::deserialize(document) {
                 Ok(value) => { Ok(value) }
                 Err(err) => {
-                    println!("{:?}", front_matter);
+                    println!("{}", front_matter);
                     println!("{:?}", err);
                     Err(err)
                 }
