@@ -1,6 +1,8 @@
 use std::error::Error;
 use std::fs;
+use std::io::Read;
 use std::path::PathBuf;
+use flate2::read::{ZlibDecoder};
 use rusqlite::Connection;
 use rusqlite::types::ValueRef;
 
@@ -43,17 +45,24 @@ fn export_apple_notes(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box
     while let Some(row) = rows.next()? {
         for (index, name) in row.column_names().iter().enumerate() {
             let value: String = match row.get_ref(index).unwrap() {
-                ValueRef::Null => { "".to_string() }
+                ValueRef::Null => {
+                    "".to_string()
+                }
                 ValueRef::Integer(int) => { int.to_string() }
                 ValueRef::Real(real) => { real.to_string() }
                 ValueRef::Text(text) => { std::str::from_utf8(text).unwrap().to_string() }
-                ValueRef::Blob(bool) => {
-                    std::str::from_utf8(bool).unwrap_or("false").to_string()
+                ValueRef::Blob(blob) => {
+                    let mut d = ZlibDecoder::new(blob);
+                    let mut s = String::new();
+                    d.read_to_string(&mut s).unwrap_or(1);
+                    s
                 }
             };
 
             let name = name.to_string();
-            println!("{:?}: {:?}", name, value);
+            if name == "data" {
+                println!("{:?}: {:?}", name, value);
+            }
         }
     };
 
