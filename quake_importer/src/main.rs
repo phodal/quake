@@ -13,18 +13,26 @@ struct Opts {
 fn main() {
     let _opts: Opts = Opts::parse();
     // if opts.sqlite.len() > 0 {
-    let _ = dump_sqlite();
+    let _ = dump_sqlite("phodal.dev");
     // }
     println!("Hello, world!");
 }
 
-fn dump_sqlite() -> Result<(), Box<dyn Error>> {
-    let conn = Connection::open("phodal.dev")?;
+fn dump_sqlite(db_name: &str) -> Result<(), Box<dyn Error>> {
+    let conn = Connection::open(db_name)?;
 
-    let mut query = conn.prepare("select id, keywords_string, title, slug, description, content from blog_blogpost")?;
+    let mut query = conn.prepare("
+SELECT blog_blogpost.id, blog_blogpost.keywords_string, blog_blogpost.title, blog_blogpost.slug, blog_blogpost.description, blog_blogpost.content,
+       auth_user.first_name, auth_user.last_name, auth_user.email
+FROM blog_blogpost
+         INNER JOIN auth_user
+                    ON blog_blogpost.user_id = auth_user.id
+")?;
     let mut rows = query.query([])?;
     while let Some(row) = rows.next()? {
-        println!("{:?}", row.get_ref(0))
+        // for column in row.column_names() {
+        //
+        // }
     };
 
     Ok(())
