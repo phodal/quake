@@ -8,10 +8,10 @@ use quake_core::quake_config::QuakeConfig;
 
 use crate::action::{file_process, table_process};
 use crate::action::entrysets_csv::EntrysetsCsv;
-use crate::entry::entry_define::{EntryDefine, EntryDefineFile};
-use crate::entry::entry_file::EntryFile;
-use crate::entry::entry_info::EntryInfo;
-use crate::entry::front_matter::FrontMatter;
+use quake_core::entry::entry_define::{EntryDefine, EntryDefineFile};
+use quake_core::entry::entry_file::EntryFile;
+use quake_core::entry::entry_info::EntryInfo;
+use quake_core::entry::front_matter::FrontMatter;
 use crate::helper::cmd;
 use crate::helper::slug::slugify;
 

@@ -29,7 +29,7 @@ FROM blog_blogpost
                     ON blog_blogpost.user_id = auth_user.id
 ")?;
     let mut rows = query.query([])?;
-    while let Some(row) = rows.next()? {
+    while let Some(_row) = rows.next()? {
         // for column in row.column_names() {
         //
         // }

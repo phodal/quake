@@ -7,8 +7,8 @@ use serde::Deserialize;
 use serde_derive::Serialize;
 use walkdir::{DirEntry, WalkDir};
 
-use crate::entry::entry_define::EntryDefine;
-use crate::entry::entry_file::EntryFile;
+use quake_core::entry::entry_define::EntryDefine;
+use quake_core::entry::entry_file::EntryFile;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct CsvTable {

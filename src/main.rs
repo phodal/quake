@@ -10,7 +10,6 @@ use action::entry_action;
 use quake_core::input_parser::InputParser;
 use quake_core::quake_config::QuakeConfig;
 
-pub mod entry;
 pub mod action;
 pub mod helper;
 

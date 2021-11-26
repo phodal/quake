@@ -2,7 +2,7 @@ use chrono::{DateTime, Local};
 use indexmap::IndexMap;
 use serde_derive::{Deserialize, Serialize};
 
-use quake_core::model::CustomType;
+use crate::model::CustomType;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct EntryDefineFile {
@@ -69,7 +69,7 @@ impl EntryDefine {
 mod tests {
     use indexmap::IndexMap;
 
-    use quake_core::model::meta_object::MetaField;
+    use crate::model::meta_object::MetaField;
     use crate::entry::entry_define::EntryDefine;
 
     fn custom_entry_from_yaml() -> Vec<EntryDefine> {

@@ -1814,6 +1814,7 @@ dependencies = [
  "pest_derive",
  "serde 1.0.130",
  "serde_derive",
+ "serde_yaml",
 ]
 
 [[package]]
