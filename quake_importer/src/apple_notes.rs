@@ -6,7 +6,7 @@ use rusqlite::types::ValueRef;
 
 pub fn dump_apple_notes() {
     let path = PathBuf::from("_fixtures").join("phodal.com");
-    let db_name = "NoteStore.sqlite";
+    let db_name = "../NoteStore.sqlite";
     let sql = "
 SELECT n.Z_PK, n.ZNOTE as note_id, n.ZDATA as data,
        c3.ZFILESIZE,
@@ -47,7 +47,9 @@ fn export_apple_notes(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box
                 ValueRef::Integer(int) => { int.to_string() }
                 ValueRef::Real(real) => { real.to_string() }
                 ValueRef::Text(text) => { std::str::from_utf8(text).unwrap().to_string() }
-                ValueRef::Blob(bool) => { std::str::from_utf8(bool).unwrap().to_string() }
+                ValueRef::Blob(bool) => {
+                    std::str::from_utf8(bool).unwrap_or("false").to_string()
+                }
             };
 
             let name = name.to_string();
