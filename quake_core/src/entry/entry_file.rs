@@ -3,7 +3,9 @@ use serde::Deserialize;
 use serde_yaml::Value;
 
 use crate::entry::front_matter::FrontMatter;
+use crate::slug::slugify;
 
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct EntryFile {
     pub name: String,
     pub front_matter: FrontMatter,
@@ -37,6 +39,14 @@ impl ToString for EntryFile {
 }
 
 impl EntryFile {
+    pub fn file_prefix(index: usize) -> String {
+        format!("{:0>4}", index)
+    }
+
+    pub fn file_name(index: usize, text: &str) -> String {
+        format!("{:0>4}-{:}.md", index, slugify(text))
+    }
+
     pub fn from(text: &str) -> EntryFile {
         if !text.starts_with("---") {
             return EntryFile { name: "".to_string(), front_matter: FrontMatter::default(), content: String::from(text) };
@@ -48,7 +58,14 @@ impl EntryFile {
 
         let mut fields: IndexMap<String, String> = IndexMap::new();
         for document in serde_yaml::Deserializer::from_str(front_matter) {
-            let value = Value::deserialize(document).expect("cannot deserialize");
+            let value = match Value::deserialize(document) {
+                Ok(value) => { Ok(value) }
+                Err(err) => {
+                    println!("{:?}", front_matter);
+                    println!("{:?}", err);
+                    Err(err)
+                }
+            }.expect("cannot not deserialize");
             if let Value::Mapping(mapping) = value {
                 for (v_key, v_value) in mapping {
                     let key = ValueConverter::string(v_key);

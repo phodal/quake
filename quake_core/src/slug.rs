@@ -18,12 +18,15 @@ pub fn slugify(text: &str) -> String {
         .replace("?", "-")
         .replace("#", "-")
         .replace(":", "-")
+        .replace("-/-", "")
+        .replace("/", "")
+        .replace("——", "-")
 }
 
 
 #[cfg(test)]
 mod tests {
-    use crate::helper::slug::slugify;
+    use crate::slug::slugify;
 
     #[test]
     fn chinese_slug() {

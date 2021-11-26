@@ -13,7 +13,6 @@ use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_info::EntryInfo;
 use quake_core::entry::front_matter::FrontMatter;
 use crate::helper::cmd;
-use crate::helper::slug::slugify;
 
 pub struct EntryPaths {
     pub base: PathBuf,
@@ -45,7 +44,7 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn
 
     match expr.action.as_str() {
         "add" => {
-            let new_md_file = file_process::file_name(entry_info.index + 1, slugify(&expr.text));
+            let new_md_file = file_process::file_name(entry_info.index + 1, expr.text.as_str());
             let mut target_file = paths.base.join(new_md_file);
             File::create(&target_file)?;
 
@@ -56,7 +55,7 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn
 
             cmd::edit_file(conf.editor, format!("{:}", target_file.display()))?;
 
-            write_entries(&paths)?
+            sync_in_path(&paths)?
         }
         "update" => {
             let mut target_file = PathBuf::new();
@@ -69,7 +68,7 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn
             cmd::edit_file(conf.editor, format!("{:}", target_file.display()))?;
         }
         "sync" => {
-            write_entries(&paths)?
+            sync_in_path(&paths)?
         }
         "list" => {
             let entries = paths.base.join("entries.csv");
@@ -81,7 +80,7 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn
     Ok(())
 }
 
-fn write_entries(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
+pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     let content = EntrysetsCsv::generate(&paths.base)?;
     fs::write(&paths.entries, content)?;
 

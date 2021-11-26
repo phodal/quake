@@ -1810,8 +1810,10 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "indexmap",
+ "lazy_static",
  "pest",
  "pest_derive",
+ "regex",
  "serde 1.0.130",
  "serde_derive",
  "serde_yaml",
@@ -1846,6 +1848,7 @@ name = "quake_importer"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "quake_core",
  "rusqlite",
 ]
 

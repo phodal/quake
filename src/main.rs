@@ -84,6 +84,12 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
+    use crate::entry_action::{EntryPaths, sync_in_path};
+
+    #[ignore]
     #[test]
-    fn placeholder() {}
+    fn placeholder() {
+        let paths = EntryPaths::init(&"_fixtures".to_string(), &"phodal.com".to_string());
+        sync_in_path(&paths).unwrap();
+    }
 }

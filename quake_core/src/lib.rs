@@ -11,3 +11,4 @@ pub mod quake_config;
 pub mod parser;
 pub mod repository;
 pub mod entry;
+pub mod slug;

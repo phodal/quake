@@ -1,12 +1,13 @@
 use walkdir::{DirEntry, WalkDir};
 use std::path::PathBuf;
+use quake_core::entry::entry_file::EntryFile;
 
 pub fn file_prefix(index: usize) -> String {
-    format!("{:0>4}", index)
+    EntryFile::file_prefix(index)
 }
 
-pub fn file_name(index: usize, text: String) -> String {
-    format!("{:0>4}-{:}.md", index, text)
+pub fn file_name(index: usize, text: &str) -> String {
+    EntryFile::file_name(index, text)
 }
 
 fn is_with_prefix(entry: &DirEntry, prefix: &String) -> bool {
@@ -33,7 +34,7 @@ mod tests {
 
     #[test]
     fn format_test() {
-        assert_eq!("0001-hello.md", file_name(1, "hello".to_string()));
-        assert_eq!("1111-world.md", file_name(1111, "world".to_string()));
+        assert_eq!("0001-hello.md", file_name(1, "hello"));
+        assert_eq!("1111-world.md", file_name(1111, "world"));
     }
 }

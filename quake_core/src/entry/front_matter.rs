@@ -1,5 +1,6 @@
 use indexmap::IndexMap;
 
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct FrontMatter {
     pub fields: IndexMap<String, String>
 }
