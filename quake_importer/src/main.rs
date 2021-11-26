@@ -53,7 +53,7 @@ fn write_file(path: &PathBuf, row: &Row) {
     let mut id: usize = 0;
 
     for (index, name) in row.column_names().iter().enumerate() {
-        let str: String = match row.get_ref(index).unwrap() {
+        let value: String = match row.get_ref(index).unwrap() {
             ValueRef::Null => { "".to_string() }
             ValueRef::Integer(int) => { int.to_string() }
             ValueRef::Real(real) => { real.to_string() }
@@ -63,15 +63,20 @@ fn write_file(path: &PathBuf, row: &Row) {
 
         let name = name.to_string();
         if name.eq("content") {
-            file.content = str;
+            file.content.push_str("\n");
+            file.content.push_str("\n");
+            file.content.push_str(&*value);
         } else {
             if name.eq("title") {
-                title = str.clone();
-            } else if name.eq("id") {
-                id = str.parse().unwrap();
+                title = value.clone();
             }
 
-            matter.fields.insert(name.to_string(), str);
+            if name.eq("id") {
+                id = value.parse().unwrap();
+                matter.fields.insert(name.to_string(), id.to_string());
+            } else {
+                matter.fields.insert(name.to_string(), format!("'{:}'", value));
+            }
         }
     }
 
