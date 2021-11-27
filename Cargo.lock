@@ -1896,6 +1896,8 @@ name = "quake_analysis"
 version = "0.1.0"
 dependencies = [
  "jieba-rs",
+ "quake_core",
+ "walkdir",
 ]
 
 [[package]]
