@@ -2,7 +2,8 @@ use std::error::Error;
 use std::fs;
 use std::io::Read;
 use std::path::PathBuf;
-use flate2::read::{ZlibDecoder};
+
+use flate2::read::ZlibDecoder;
 use rusqlite::Connection;
 use rusqlite::types::ValueRef;
 
