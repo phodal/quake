@@ -65,14 +65,9 @@ fn write_file(path: &PathBuf, row: &Row) {
                 id = value.parse().unwrap();
                 matter.fields.insert(name.to_string(), id.to_string());
             } else {
+                let string = simple_escape(value);
                 matter.fields.insert(name.to_string(),
-                                     format!("{:?}", value
-                                         .replace(" ", " ")
-                                         .replace("", " ")
-                                         .replace("", " ")
-                                         .replace("", " ")
-                                         .replace("​", " ")
-                                     )
+                                     string
                 );
             }
         }
@@ -88,6 +83,16 @@ fn write_file(path: &PathBuf, row: &Row) {
             println!("{:?}", err);
         }
     }
+}
+
+fn simple_escape(value: String) -> String {
+    format!("{:?}", value
+        .replace(" ", " ")
+        .replace("", " ")
+        .replace("", " ")
+        .replace("", " ")
+        .replace("​", " ")
+    )
 }
 
 
