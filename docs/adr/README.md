@@ -10,3 +10,4 @@
 * [8. entrysets-for-entry-log-info](0008-entrysets-for-entry-log-info.md)
 * [9. indexmap-replace-hashmap-for-order](0009-indexmap-replace-hashmap-for-order.md)
 * [10. level-for-directory](0010-level-for-directory.md)
+* [11. search-engine](0011-search-engine.md)
