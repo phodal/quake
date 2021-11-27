@@ -4,6 +4,9 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
+use std::error::Error;
+use std::fs;
+use std::path::PathBuf;
 use clap::Parser;
 use action::entry_action;
 
@@ -29,13 +32,11 @@ enum SubCommand {
     /// web server for run
     Server(WebServer),
     /// Terminal UI
-    Tui(Terminal)
+    Tui(Terminal),
 }
 
 #[derive(Parser)]
-struct Terminal {
-
-}
+struct Terminal {}
 
 #[derive(Parser)]
 struct Init {
@@ -81,22 +82,36 @@ fn config(cmd: &Command) -> QuakeConfig {
 
 fn main() {
     let opts: Opts = Opts::parse();
+    match opts.cmd {
+        SubCommand::Init(init) => {
+            if let Err(err) = init_projects(init) {
+                println!("{:?}", err)
+            }
+        }
+        SubCommand::Command(cmd) => {
+            let conf: QuakeConfig = config(&cmd);
 
-   match opts.cmd {
-       SubCommand::Init(_) => {}
-       SubCommand::Command(cmd) => {
-           let conf: QuakeConfig = config(&cmd);
+            if cmd.input.len() > 0 {
+                let expr = InputParser::from(cmd.input.as_str());
+                if let Err(err) = entry_action::create_action(expr, conf) {
+                    println!("{:?}", err)
+                }
+            }
+        }
+        SubCommand::Server(_) => {}
+        SubCommand::Tui(_) => {}
+    }
+}
 
-           if cmd.input.len() > 0 {
-               let expr = InputParser::from(cmd.input.as_str());
-               if let Err(err) = entry_action::create_action(expr, conf) {
-                   println!("{:?}", err)
-               }
-           }
-       }
-       SubCommand::Server(_) => {}
-       SubCommand::Tui(_) => {}
-   }
+fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
+    let path = PathBuf::from(&config.path).join(".quake.yaml");
+    let config = QuakeConfig {
+        path: config.path,
+        editor: "vim".to_string(),
+    };
+
+    fs::write(path, serde_yaml::to_string(&config)?)?
+    Ok(())
 }
 
 

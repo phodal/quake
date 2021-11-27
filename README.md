@@ -72,6 +72,11 @@ parameters = {
 1. tag: `#{tag}`
 2. custom function: `#{$block}, #{$toc}, #{$link}, #{$file = Hello.pptx}`
 
+## Setup
+
+1. install `quake` from rust
+2. install [meilisearch](https://github.com/meilisearch/MeiliSearch)
+
 ## Design principle
 
 我使用了不同的工具来管理知识，Microsoft To Do 管理 idea、Phodit + [Phodal.com](https://www.phodal.com/) 发布文章、Apple Notes 记录笔记等等，知识被分散在各个工具中。不利于我进行洞见，寻找灵感，与此同时，还缺乏书写和记录的方式。
