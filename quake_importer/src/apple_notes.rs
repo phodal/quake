@@ -57,6 +57,7 @@ fn export_apple_notes(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box
                     if blob.len() <= 0 {
                         "".to_string()
                     } else {
+                        let demo = format!("{:?}", blob);
                         let mut d = GzDecoder::new(blob);
                         let mut s = String::new();
                         match d.read_to_string(&mut s) {
