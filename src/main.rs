@@ -119,7 +119,6 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
   display: Todo
   fields:
     - title: Title
-    - content:
     - author: String
 ";
 
