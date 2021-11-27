@@ -4,6 +4,7 @@ dev.db
 phodal.dev
 _fixtures/phodal_com/*
 _fixtures/notes/*
+_fixtures/microsoft_todos/*
 .DS_Store
 quake_importer/scripts/readnotes/*
 dbs/NoteStore.sqlite

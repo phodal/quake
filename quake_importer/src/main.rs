@@ -1,9 +1,13 @@
+#[macro_use]
+extern crate serde;
+
 use std::fs;
 use std::path::PathBuf;
 
 use clap::{Parser};
 
 pub mod sqlite_to_file;
+pub mod todo_to_file;
 
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
@@ -14,8 +18,17 @@ struct Opts {
 
 #[derive(Parser)]
 enum ImportCmd {
-    #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
     SQLITE(SQLite),
+    MicrosoftTodo(MicrosoftTodo)
+}
+
+#[derive(Parser)]
+pub struct MicrosoftTodo {
+    #[clap(short, long)]
+    path: String,
+
+    #[clap(short, long, default_value = "")]
+    output: String
 }
 
 #[derive(Parser)]
@@ -88,15 +101,18 @@ fn main() {
                 };
             }
         }
+        ImportCmd::MicrosoftTodo(_) => {}
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
     use std::path::PathBuf;
 
     use crate::dump_apple_notes;
     use crate::dump_phodal_com;
+    use crate::todo_to_file::{dump_microsoft_todo, OutputList};
 
     #[ignore]
     #[test]
@@ -110,5 +126,13 @@ mod tests {
     fn dump_notes() {
         let path = PathBuf::from("..").join("_fixtures").join("notes");
         let _ = dump_apple_notes("../dbs/mac_apt.db", path);
+    }
+    #[ignore]
+    #[test]
+    fn dump_todo() {
+        let path = PathBuf::from("..").join("_fixtures").join("microsoft_todos");
+        let todo = fs::read_to_string("../dbs/todo-output.json").unwrap();
+        let vec: Vec<OutputList> = serde_json::from_str(&*todo).unwrap();
+        let _ = dump_microsoft_todo(vec, &path);
     }
 }

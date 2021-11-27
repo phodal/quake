@@ -1,3 +1,4 @@
+use std::error::Error;
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize, Serializer};
 use serde::ser::SerializeMap;
@@ -48,9 +49,9 @@ impl EntryFile {
         format!("{:0>4}-{:}.md", index, slugify(text))
     }
 
-    pub fn from(text: &str) -> EntryFile {
+    pub fn from(text: &str) -> Result<EntryFile, Box<dyn Error>> {
         if !text.starts_with("---") {
-            return EntryFile { name: "".to_string(), front_matter: FrontMatter::default(), content: String::from(text) };
+            return Ok(EntryFile::default())
         }
 
         let split_data = text.split("---").map(Into::into).collect::<Vec<String>>();
@@ -66,7 +67,7 @@ impl EntryFile {
                     println!("{:?}", err);
                     Err(err)
                 }
-            }.expect("cannot not deserialize");
+            }?;
             if let Value::Mapping(mapping) = value {
                 for (v_key, v_value) in mapping {
                     let key = ValueConverter::string(v_key);
@@ -76,11 +77,11 @@ impl EntryFile {
             }
         }
 
-        EntryFile {
+        Ok(EntryFile {
             name: "".to_string(),
             front_matter: FrontMatter { fields },
             content: String::from(content),
-        }
+        })
     }
 
     pub fn header_column(self, index: i32) -> (Vec<String>, Vec<String>) {
@@ -153,7 +154,7 @@ sample
 
 ";
 
-        let mut entry_file = EntryFile::from(text);
+        let mut entry_file = EntryFile::from(text).unwrap();
 
         assert_eq!(text, entry_file.to_string());
 
@@ -182,7 +183,7 @@ sample
 
 ";
 
-        let entry_file = EntryFile::from(text);
+        let entry_file = EntryFile::from(text).unwrap();
 
         assert_eq!(r#"{"title":"hello, world","authors":"Phodal HUANG<h@phodal.com>","description":"a hello, world","created_date":"2021.11.23","updated_date":"2021.11.21","content":"\n\nsample\n\n"}"#, serde_json::to_string(&entry_file).unwrap());
     }

@@ -83,7 +83,7 @@ impl Entrysets {
         for file in files {
             let string = fs::read_to_string(&file)?;
 
-            let mut entry_file = EntryFile::from(&*string);
+            let mut entry_file = EntryFile::from(&*string)?;
             entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
             entry_file.front_matter.fields.insert("id".to_string(), index.to_string());
 
@@ -108,7 +108,13 @@ impl Entrysets {
         for file in files {
             let string = fs::read_to_string(&file)?;
 
-            let mut entry_file = EntryFile::from(&*string);
+            let mut entry_file = match EntryFile::from(&*string) {
+                Ok(file) => { file }
+                Err(err) => {
+                    println!("create entry file error: {:?}", file.display());
+                    return Err(err)
+                }
+            };
             entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
 
             let (mut first_header, column) = entry_file.header_column(index);
@@ -144,7 +150,15 @@ impl Entrysets {
     }
 
     pub fn generate(path: &PathBuf) -> Result<(usize, String), Box<dyn Error>> {
-        let map = Entrysets::rebuild(&path)?;
+        let map = match Entrysets::rebuild(&path) {
+            Ok((header, body)) => {
+                (header, body)
+            }
+            Err(err) => {
+                println!("path: {:?}, {:?}", path.display(), err);
+                return Err(err)
+            }
+        };
         let table_len = map.1.len();
         let string = Entrysets::content_by_table(map.0, map.1)?;
 
