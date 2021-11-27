@@ -49,8 +49,8 @@ SELECT ID as id, Title as title, Snippet as description, Folder as category, Cre
 }
 
 pub fn dump_phodal_com(db_path: &str, path: PathBuf) {
-    let sql = "SELECT blog_blogpost.keywords_string, blog_blogpost.title, blog_blogpost.description, blog_blogpost.slug, blog_blogpost.content,
-       auth_user.first_name, auth_user.last_name, auth_user.email
+    let sql = "SELECT blog_blogpost.keywords_string as keywords, blog_blogpost.title, blog_blogpost.description, blog_blogpost.slug, blog_blogpost.content,
+       auth_user.first_name, auth_user.last_name, auth_user.email, created as created_date, updated as updated_date
 FROM blog_blogpost
          INNER JOIN auth_user
                     ON blog_blogpost.user_id = auth_user.id
@@ -101,7 +101,7 @@ mod tests {
     #[ignore]
     #[test]
     fn dump_test() {
-        let path = PathBuf::from("..").join("_fixtures").join("phodal.com");
+        let path = PathBuf::from("..").join("_fixtures").join("phodal_com");
         let _ = dump_phodal_com("../dbs/phodal.dev", path);
     }
 

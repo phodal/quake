@@ -22,20 +22,20 @@ curl \
       "searchableAttributes": [
           "title",
           "description",
-          "keywords_string",
+          "keywords",
           "content"
       ],
       "displayedAttributes": [
           "title",
           "description",
-          "keywords_string",
+          "keywords",
           "content",
           "created_date"
       ],
       "stopWords": null,
       "sortableAttributes": [
         "title",
-        "keywords_string",
+        "keywords",
         "content"
       ],
       "synonyms": null
