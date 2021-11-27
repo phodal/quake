@@ -16,23 +16,17 @@ pub mod helper;
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
 struct Opts {
-    /// config path
-    #[clap(short, long, default_value = ".quake.yaml")]
-    config: String,
-    /// like `todo.add: hello world`
-    #[clap(short, long)]
-    input: String,
-    /// config the editor
-    #[clap(short, long, default_value = "")]
-    editor: String,
+    #[clap(subcommand)]
+    cmd: SubCommand,
 }
 
 #[derive(Parser)]
 enum SubCommand {
+    /// init project
     Init(Init),
-
+    /// command for CRUD entries
     Command(Command),
-
+    /// web server for run
     Server(WebServer)
 }
 
@@ -66,13 +60,13 @@ struct WebServer {
     path: String,
 }
 
-fn config(opts: &Opts) -> QuakeConfig {
+fn config(cmd: &Command) -> QuakeConfig {
     let mut settings = config::Config::default();
-    settings.merge(config::File::with_name(&opts.config)).unwrap();
+    settings.merge(config::File::with_name(&cmd.config)).unwrap();
     let mut conf: QuakeConfig = settings.try_into().unwrap();
 
-    if !opts.editor.is_empty() {
-        conf.editor = opts.editor.clone();
+    if !cmd.editor.is_empty() {
+        conf.editor = cmd.editor.clone();
     }
 
     conf
@@ -81,14 +75,20 @@ fn config(opts: &Opts) -> QuakeConfig {
 fn main() {
     let opts: Opts = Opts::parse();
 
-    let conf: QuakeConfig = config(&opts);
+   match opts.cmd {
+       SubCommand::Init(_) => {}
+       SubCommand::Command(cmd) => {
+           let conf: QuakeConfig = config(&cmd);
 
-    if opts.input.len() > 0 {
-        let expr = InputParser::from(opts.input.as_str());
-        if let Err(err) = entry_action::create_action(expr, conf) {
-            println!("{:?}", err)
-        }
-    }
+           if cmd.input.len() > 0 {
+               let expr = InputParser::from(cmd.input.as_str());
+               if let Err(err) = entry_action::create_action(expr, conf) {
+                   println!("{:?}", err)
+               }
+           }
+       }
+       SubCommand::Server(_) => {}
+   }
 }
 
 
