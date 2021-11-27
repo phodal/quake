@@ -99,6 +99,8 @@ parameters = {
   - [x] Microsoft Todo
   - [ ] Microsoft Onenote
 - [x] 自定义条目类型
+  - [x] CRUD
+  - [ ] dynamic update entries-define
 - [ ] 自定义项目
 - [x] CLI 交互与列表呈现
 - [ ] MVP API 设计
