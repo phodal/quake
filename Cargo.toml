@@ -46,4 +46,5 @@ members = [
     'quake_database',
     'quake_importer',
     'quake_editor',
+    'quake_analysis'
 ]

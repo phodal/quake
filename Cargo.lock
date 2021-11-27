@@ -1805,6 +1805,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "quake_analysis"
+version = "0.1.0"
+
+[[package]]
 name = "quake_core"
 version = "0.1.0"
 dependencies = [
