@@ -71,7 +71,7 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn
             sync_in_path(&paths)?
         }
         "dump" => {
-            dump_by_path(&paths);
+            dump_by_path(&paths)?
         }
         "list" => {
             let entries = paths.base.join("entries.csv");
@@ -95,8 +95,9 @@ pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
-    let map = Entrysets::rebuild(&paths.base)?;
+    let map = Entrysets::jsonify(&paths.base)?;
 
+    fs::write("dump.json", map)?;
 
     Ok(())
 }

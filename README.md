@@ -37,9 +37,21 @@ quake "todo.sync"
 
 5. search [tbd]
 
-6. concept [tbd]
+```
+quake command -i "phodal_com.dump"
+```
 
-7. network [tbd]
+then
+
+```
+curl -i -X POST 'http://127.0.0.1:7700/indexes/phodal_com/documents' \
+  --header 'content-type: application/json' \
+  --data-binary @dump.json
+```
+
+7. concept [tbd]
+
+8. network [tbd]
 
 ### Query Syntax
 

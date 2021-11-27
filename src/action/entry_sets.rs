@@ -88,6 +88,7 @@ impl Entrysets {
             entry_file.front_matter.fields.insert("id".to_string(), index.to_string());
 
             entry_sets.push(entry_file);
+            index = index + 1;
         }
 
         Ok(serde_json::to_string(&entry_sets)?)

@@ -44,7 +44,7 @@ members = [
     'quake_core',
     'quake_gui',
     'quake_tui',
-    'quake_database',
+    'quake_search',
     'quake_importer',
     'quake_editor',
     'quake_analysis'
