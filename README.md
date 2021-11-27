@@ -91,12 +91,19 @@ parameters = {
 
 ## Roadmap
 
-### MVP: TUI
+### MVP
 
+- [x] 导入
+  - [x] Django/Mezzanine
+  - [x] Apple Notes
+  - [x] Microsoft Todo
+  - [ ] Microsoft Onenote
 - [x] 自定义条目类型
 - [ ] 自定义项目
 - [x] CLI 交互与列表呈现
 - [ ] MVP API 设计
+  - [ ] Web Server
+  - [ ] GraphQL
 - [ ] 基于 Git 的数据存储
 
 ### 1.0: Knowledge map 
