@@ -65,10 +65,7 @@ fn write_file(path: &PathBuf, row: &Row) {
                 id = value.parse().unwrap();
                 matter.fields.insert(name.to_string(), id.to_string());
             } else {
-                let string = simple_escape(value);
-                matter.fields.insert(name.to_string(),
-                                     string
-                );
+                matter.fields.insert(name.to_string(), simple_escape(value));
             }
         }
     }
