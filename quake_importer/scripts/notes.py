@@ -14,7 +14,7 @@ def GetUncompressedData(compressed):
     return data
 
 
-db = sqlite3.connect("../../NoteStore.sqlite")
+db = sqlite3.connect("../../dbs/NoteStore.sqlite")
 db.row_factory = sqlite3.Row
 
 query = " SELECT n.Z_PK, n.ZNOTE as note_id, n.ZDATA as data, " \
