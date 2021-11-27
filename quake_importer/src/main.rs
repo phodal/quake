@@ -1,17 +1,39 @@
 use std::fs;
 use std::path::PathBuf;
 
-use clap::Parser;
+use clap::{Parser};
 
 pub mod sqlite_to_file;
 
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
 struct Opts {
-    /// custom SQLite 3 to fields
-    #[clap(short, long, default_value = "")]
-    sqlite: String,
+    verbose: i32,
+    #[clap(subcommand)]
+    cmd: ImportCmd,
 }
+
+#[derive(Parser)]
+enum ImportCmd {
+    #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
+    SQLite(SQLite),
+}
+
+#[derive(Parser)]
+pub struct SQLite {
+    #[clap(short, long)]
+    path: String,
+
+    #[clap(short, long, default_value = "")]
+    output: String,
+
+    #[clap(short, long, default_value = "")]
+    sql_type: String,
+
+    #[clap(short, long, default_value = "")]
+    sql: String,
+}
+
 
 /// refs: https://www.swiftforensics.com/2018/02/reading-notes-database-on-macos.html
 pub fn dump_apple_notes(db_path: &str, path: PathBuf) {
@@ -42,7 +64,32 @@ FROM blog_blogpost
 }
 
 fn main() {
-    let _opts: Opts = Opts::parse();
+    let opts: Opts = Opts::parse();
+    match opts.cmd {
+        ImportCmd::SQLite(sqlite) => {
+            let output = PathBuf::from(sqlite.output);
+            let path = sqlite.path.as_str();
+
+            match sqlite.sql_type.as_str() {
+                "mezzanine" => {
+                    dump_phodal_com(path, output);
+                    return;
+                }
+                "apple-notes" => {
+                    dump_apple_notes(path, output);
+                    return;
+                }
+                &_ => {}
+            }
+
+            if sqlite.sql.len() > 0 {
+                let _ = fs::create_dir(&output);
+                if let Err(err) = sqlite_to_file::export(path, sql, output) {
+                    println!("{:?}", err);
+                };
+            }
+        }
+    }
 }
 
 #[cfg(test)]
