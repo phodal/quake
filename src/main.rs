@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate rocket;
+
 extern crate config;
 extern crate serde;
 #[macro_use]
@@ -13,9 +16,11 @@ use action::entry_action;
 use quake_core::entry::EntryDefineFile;
 use quake_core::input_parser::InputParser;
 use quake_core::QuakeConfig;
+use crate::server::start_server;
 
 pub mod action;
 pub mod helper;
+pub mod server;
 
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
@@ -99,7 +104,9 @@ fn main() {
                 }
             }
         }
-        SubCommand::Server(_) => {}
+        SubCommand::Server(_) => {
+            let _ = start_server();
+        }
         SubCommand::Tui(_) => {}
     }
 }
@@ -150,7 +157,7 @@ mod tests {
     #[ignore]
     #[test]
     fn sync_todo() {
-        let paths = EntryPaths::init(&"_fixtures".to_string(), &"microsoft_todos".to_string());
+        let paths = EntryPaths::init(&"_fixtures".to_string(), &"microsoft_todo".to_string());
         sync_in_path(&paths).unwrap();
     }
 }

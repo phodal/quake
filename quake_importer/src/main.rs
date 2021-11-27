@@ -130,7 +130,7 @@ mod tests {
     #[ignore]
     #[test]
     fn dump_todo() {
-        let path = PathBuf::from("..").join("_fixtures").join("microsoft_todos");
+        let path = PathBuf::from("..").join("_fixtures").join("microsoft_todo");
         let todo = fs::read_to_string("../dbs/todo-output.json").unwrap();
         let vec: Vec<OutputList> = serde_json::from_str(&*todo).unwrap();
         let _ = dump_microsoft_todo(vec, &path);

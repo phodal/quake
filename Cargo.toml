@@ -21,6 +21,9 @@ clap = "3.0.0-beta.5"
 
 config = { version = "0.11", features = ["yaml"] }
 
+# WebServer
+rocket = "0.5.0-rc.1"
+
 regex = "1.0"
 lazy_static = "1.4.0"
 
@@ -32,6 +35,7 @@ indexmap = { version = "1.7.0", features = ["serde"] }
 
 chrono = "0.4"
 
+# Termnial ui
 comfy-table = "5.0.0"
 
 serde_yaml = "0.8"
