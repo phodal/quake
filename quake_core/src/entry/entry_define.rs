@@ -14,7 +14,6 @@ pub struct EntryDefine {
     #[serde(rename = "type")]
     pub entry_type: String,
     pub display: String,
-    pub custom_template: String,
     pub fields: Vec<IndexMap<String, String>>,
     pub actions: Option<Vec<String>>,
 }
@@ -76,10 +75,8 @@ mod tests {
         let yaml = "
 - type: todo
   display: Todo
-  custom_template: quake/todo.yaml
   fields:
     - title: Title
-    - date: EntryDate
     - content: Body
     - author: Author
 ";
@@ -92,7 +89,7 @@ mod tests {
     fn parse_yaml() {
         let todo = &custom_entry_from_yaml()[0];
 
-        assert_eq!(4, todo.fields.len());
+        assert_eq!(3, todo.fields.len());
 
         let custom_type = todo.create_custom_type();
         let option = custom_type.field("title").unwrap();

@@ -1,5 +1,4 @@
 extern crate config;
-
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
@@ -7,11 +6,13 @@ extern crate serde_derive;
 use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
-use clap::Parser;
-use action::entry_action;
 
+use clap::Parser;
+
+use action::entry_action;
+use quake_core::entry::EntryDefineFile;
 use quake_core::input_parser::InputParser;
-use quake_core::quake_config::QuakeConfig;
+use quake_core::QuakeConfig;
 
 pub mod action;
 pub mod helper;
@@ -105,12 +106,30 @@ fn main() {
 
 fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&config.path).join(".quake.yaml");
+    let define = PathBuf::from(&config.path).join("entries-define.yaml");
     let config = QuakeConfig {
         path: config.path,
         editor: "vim".to_string(),
     };
 
     fs::write(path, serde_yaml::to_string(&config)?)?;
+
+    let todo_define = "
+- type: todo
+  display: Todo
+  fields:
+    - title: Title
+    - content:
+    - author: String
+";
+
+
+    let file = EntryDefineFile {
+        entries: serde_yaml::from_str(todo_define).unwrap()
+    };
+
+    fs::write(define, serde_yaml::to_string(&file)?)?;
+
     Ok(())
 }
 
