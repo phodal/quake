@@ -11,7 +11,7 @@ use quake_core::input_parser::InputParser;
 use quake_core::quake_config::QuakeConfig;
 
 use crate::action::{file_process, table_process};
-use crate::action::entrysets_csv::EntrysetsCsv;
+use crate::action::entry_sets::Entrysets;
 use crate::helper::cmd;
 
 pub struct EntryPaths {
@@ -84,7 +84,7 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn
 }
 
 pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
-    let (size, content) = EntrysetsCsv::generate(&paths.base)?;
+    let (size, content) = Entrysets::generate(&paths.base)?;
     fs::write(&paths.entries, content)?;
 
     update_entry_info(&paths.entries_info, &mut EntryInfo {
@@ -95,7 +95,7 @@ pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
-    let map = EntrysetsCsv::rebuild(&paths.base)?;
+    let map = Entrysets::rebuild(&paths.base)?;
 
 
     Ok(())

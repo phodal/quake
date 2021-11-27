@@ -25,11 +25,11 @@ impl Default for CsvTable {
     }
 }
 
-pub struct EntrysetsCsv {
+pub struct Entrysets {
     pub entry: EntryDefine,
 }
 
-impl EntrysetsCsv {
+impl Entrysets {
     pub fn read(path: PathBuf) -> Result<CsvTable, Box<dyn Error>> {
         let file = File::open(path)?;
         let mut rdr = csv::ReaderBuilder::new()
@@ -72,6 +72,25 @@ impl EntrysetsCsv {
         wtr.flush()?;
 
         Ok(String::from_utf8(wtr.into_inner()?)?)
+    }
+
+    /// scan all entries files, and rebuild indexes
+    pub fn jsonify(path: &PathBuf) -> Result<String, Box<dyn Error>> {
+        let files = Self::scan_files(path);
+        let mut index = 1;
+
+        let mut entry_sets: Vec<EntryFile> = vec![];
+        for file in files {
+            let string = fs::read_to_string(&file)?;
+
+            let mut entry_file = EntryFile::from(&*string);
+            entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
+            entry_file.front_matter.fields.insert("id".to_string(), index.to_string());
+
+            entry_sets.push(entry_file);
+        }
+
+        Ok(serde_json::to_string(&entry_sets)?)
     }
 
     /// scan all entries files, and rebuild indexes
@@ -124,9 +143,9 @@ impl EntrysetsCsv {
     }
 
     pub fn generate(path: &PathBuf) -> Result<(usize, String), Box<dyn Error>> {
-        let map = EntrysetsCsv::rebuild(&path)?;
+        let map = Entrysets::rebuild(&path)?;
         let table_len = map.1.len();
-        let string = EntrysetsCsv::content_by_table(map.0, map.1)?;
+        let string = Entrysets::content_by_table(map.0, map.1)?;
 
         Ok((table_len, string))
     }
@@ -137,12 +156,12 @@ impl EntrysetsCsv {
 mod tests {
     use std::path::PathBuf;
 
-    use crate::action::entrysets_csv::EntrysetsCsv;
+    use crate::action::entry_sets::Entrysets;
 
     #[test]
     fn read_csv() {
         let buf = PathBuf::from("_fixtures").join("todo").join("entries.csv");
-        match EntrysetsCsv::read(buf) {
+        match Entrysets::read(buf) {
             Ok(_table) => {
                 // println!("{:?}", table);
             }
@@ -155,8 +174,8 @@ mod tests {
     #[test]
     fn rebuild() {
         let buf = PathBuf::from("_fixtures").join("todo");
-        let map = EntrysetsCsv::rebuild(&buf).unwrap();
-        match EntrysetsCsv::content_by_table(map.0, map.1) {
+        let map = Entrysets::rebuild(&buf).unwrap();
+        match Entrysets::content_by_table(map.0, map.1) {
             Ok(some) => {
                 println!("{}", some);
             }
@@ -164,5 +183,13 @@ mod tests {
                 println!("{:?}", err);
             }
         }
+    }
+
+    #[test]
+    fn jsonify_todo() {
+        let buf = PathBuf::from("_fixtures").join("todo");
+        let json = Entrysets::jsonify(&buf).unwrap();
+
+        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":\"1\",\"content\":\"\\n\\nahaha\\n\"}]")
     }
 }

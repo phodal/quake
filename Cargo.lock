@@ -1887,6 +1887,7 @@ dependencies = [
  "regex",
  "serde 1.0.130",
  "serde_derive",
+ "serde_json",
  "serde_yaml",
  "walkdir",
 ]
