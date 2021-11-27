@@ -102,7 +102,7 @@ mod tests {
 
     #[test]
     fn should_parse_com() {
-        let _unit = parse("phodal_com.sync");
+        let unit = parse("phodal_com.sync");
         assert_eq!(1, unit.0.len());
     }
 }
