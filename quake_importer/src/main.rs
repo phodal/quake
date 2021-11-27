@@ -8,7 +8,6 @@ pub mod sqlite_to_file;
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
 struct Opts {
-    verbose: i32,
     #[clap(subcommand)]
     cmd: ImportCmd,
 }
@@ -16,7 +15,7 @@ struct Opts {
 #[derive(Parser)]
 enum ImportCmd {
     #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
-    SQLite(SQLite),
+    SQLITE(SQLite),
 }
 
 #[derive(Parser)]
@@ -28,7 +27,7 @@ pub struct SQLite {
     output: String,
 
     #[clap(short, long, default_value = "")]
-    sql_type: String,
+    inside_type: String,
 
     #[clap(short, long, default_value = "")]
     sql: String,
@@ -66,11 +65,11 @@ FROM blog_blogpost
 fn main() {
     let opts: Opts = Opts::parse();
     match opts.cmd {
-        ImportCmd::SQLite(sqlite) => {
+        ImportCmd::SQLITE(sqlite) => {
             let output = PathBuf::from(sqlite.output);
             let path = sqlite.path.as_str();
 
-            match sqlite.sql_type.as_str() {
+            match sqlite.inside_type.as_str() {
                 "mezzanine" => {
                     dump_phodal_com(path, output);
                     return;
@@ -84,7 +83,7 @@ fn main() {
 
             if sqlite.sql.len() > 0 {
                 let _ = fs::create_dir(&output);
-                if let Err(err) = sqlite_to_file::export(path, sql, output) {
+                if let Err(err) = sqlite_to_file::export(path, &*sqlite.sql, output) {
                     println!("{:?}", err);
                 };
             }
