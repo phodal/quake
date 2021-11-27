@@ -24,7 +24,7 @@ SELECT ID as id, Title as title, Snippet as description, Folder as category, Cre
     }
 }
 
-fn export_apple_notes(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Error>> {
+pub fn export_apple_notes(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Error>> {
     let _ = fs::create_dir(&path);
 
     let conn = Connection::open(db_name)?;
@@ -32,50 +32,8 @@ fn export_apple_notes(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box
 
     let mut rows = query.query([])?;
 
-    let mut id: usize = 0;
-
     while let Some(row) = rows.next()? {
-        let mut file = EntryFile::default();
-        let mut matter = FrontMatter::default();
-        let mut title = "".to_string();
-
-        for (index, name) in row.column_names().iter().enumerate() {
-            let value: String = match row.get_ref(index).unwrap() {
-                ValueRef::Null => {
-                    "".to_string()
-                }
-                ValueRef::Integer(int) => { int.to_string() }
-                ValueRef::Real(real) => { real.to_string() }
-                ValueRef::Text(text) => { std::str::from_utf8(text).unwrap().to_string() }
-                ValueRef::Blob(blob) => {
-                    std::str::from_utf8(blob).unwrap().to_string()
-                }
-            };
-
-            let name = name.to_string();
-            if name.eq("content") {
-                file.content.push_str("\n");
-                file.content.push_str("\n");
-                file.content.push_str(&*value);
-            } else {
-                if name.eq("title") {
-                    title = value.clone();
-                }
-
-                matter.fields.insert(name.to_string(), format!("{:?}", value));
-            }
-        }
-
-        file.name = EntryFile::file_name(id, title.as_str());
-        file.front_matter = matter;
-
-        match fs::write(path.join(file.name.clone()), file.to_string()) {
-            Ok(_) => {}
-            Err(err) => {
-                println!("{:?}", file.name.clone());
-                println!("{:?}", err);
-            }
-        }
+        crate::sql_to_file::write_file(&path, row);
     };
 
     Ok(())

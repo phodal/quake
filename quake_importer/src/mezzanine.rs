@@ -21,7 +21,7 @@ FROM blog_blogpost
     let _ = export_mezzanine(db_name, sql, path);
 }
 
-fn export_mezzanine(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Error>> {
+pub fn export_mezzanine(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Error>> {
     let _ = fs::create_dir(&path);
 
     let conn = Connection::open(db_name)?;
@@ -30,63 +30,11 @@ fn export_mezzanine(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<d
     let mut rows = query.query([])?;
 
     while let Some(row) = rows.next()? {
-        write_file(&path, row);
+        crate::sql_to_file::write_file(&path, row);
     };
 
     Ok(())
 }
-
-fn write_file(path: &PathBuf, row: &Row) {
-    let mut file = EntryFile::default();
-    let mut matter = FrontMatter::default();
-    let mut title = "".to_string();
-    let mut id: usize = 0;
-
-    for (index, name) in row.column_names().iter().enumerate() {
-        let value: String = match row.get_ref(index).unwrap() {
-            ValueRef::Null => { "".to_string() }
-            ValueRef::Integer(int) => { int.to_string() }
-            ValueRef::Real(real) => { real.to_string() }
-            ValueRef::Text(text) => { std::str::from_utf8(text).unwrap().to_string() }
-            ValueRef::Blob(bool) => { std::str::from_utf8(bool).unwrap().to_string() }
-        };
-
-        let name = name.to_string();
-        if name.eq("content") {
-            file.content.push_str("\n");
-            file.content.push_str("\n");
-            file.content.push_str(&*value);
-        } else {
-            if name.eq("title") {
-                title = value.clone();
-            }
-
-            matter.fields.insert(name.to_string(), simple_escape(value));
-        }
-    }
-
-    file.name = EntryFile::file_name(id, title.as_str());
-    file.front_matter = matter;
-
-    match fs::write(path.join(file.name.clone()), file.to_string()) {
-        Ok(_) => {}
-        Err(err) => {
-            println!("{:?}", file.name.clone());
-            println!("{:?}", err);
-        }
-    }
-}
-
-fn simple_escape(value: String) -> String {
-    format!("{:?}", value
-        .replace(" ", " ")
-        .replace("", " ")
-        .replace("", " ")
-        .replace("", " ")
-        .replace("​", " ")
-    )
-}
-
 
 #[cfg(test)]
 mod tests {
