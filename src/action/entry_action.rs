@@ -70,6 +70,9 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn
         "sync" => {
             sync_in_path(&paths)?
         }
+        "dump" => {
+            dump_by_path(&paths);
+        }
         "list" => {
             let entries = paths.base.join("entries.csv");
             show_entrysets(&entries);
@@ -87,6 +90,13 @@ pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     update_entry_info(&paths.entries_info, &mut EntryInfo {
         index: size
     });
+
+    Ok(())
+}
+
+pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
+    let map = EntrysetsCsv::rebuild(&paths.base)?;
+
 
     Ok(())
 }
