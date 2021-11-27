@@ -1,11 +1,12 @@
 extern crate config;
+
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
 use clap::Parser;
-
 use action::entry_action;
+
 use quake_core::input_parser::InputParser;
 use quake_core::quake_config::QuakeConfig;
 
@@ -24,6 +25,45 @@ struct Opts {
     /// config the editor
     #[clap(short, long, default_value = "")]
     editor: String,
+}
+
+#[derive(Parser)]
+enum SubCommand {
+    Init(Init),
+
+    Command(Command),
+
+    Server(WebServer)
+}
+
+#[derive(Parser)]
+struct Init {
+    /// init by path
+    #[clap(short, long, default_value = ".")]
+    path: String,
+}
+
+#[derive(Parser)]
+struct Command {
+    /// config path
+    #[clap(short, long, default_value = ".quake.yaml")]
+    config: String,
+    /// like `todo.add: hello world`
+    #[clap(short, long)]
+    input: String,
+    /// config the editor
+    #[clap(short, long, default_value = "")]
+    editor: String,
+}
+
+#[derive(Parser)]
+struct WebServer {
+    /// Print debug info
+    #[clap(short)]
+    debug: bool,
+    /// init by path
+    #[clap(short, long, default_value = ".")]
+    path: String,
 }
 
 fn config(opts: &Opts) -> QuakeConfig {
