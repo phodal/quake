@@ -89,7 +89,7 @@ mod tests {
     #[ignore]
     #[test]
     fn placeholder() {
-        let paths = EntryPaths::init(&"_fixtures".to_string(), &"phodal.com".to_string());
+        let paths = EntryPaths::init(&"_fixtures".to_string(), &"notes".to_string());
         sync_in_path(&paths).unwrap();
     }
 }

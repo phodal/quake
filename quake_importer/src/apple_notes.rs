@@ -12,7 +12,8 @@ pub fn dump_apple_notes(db_path: &str) {
     let path = PathBuf::from("..").join("_fixtures").join("notes");
     let sql = "
 SELECT ID as id, Title as title, Snippet as description, Folder as category, Created as created_date,
- LastModified as updated_date, Data as content, User from Notes
+ LastModified as updated_date, Data as content, User as author
+  from Notes
 ";
 
     match export_apple_notes(db_path, sql, path) {
