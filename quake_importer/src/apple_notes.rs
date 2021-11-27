@@ -3,10 +3,11 @@ use std::fs;
 use std::io::Read;
 use std::path::PathBuf;
 
-use flate2::read::ZlibDecoder;
+use flate2::read::GzDecoder;
 use rusqlite::Connection;
 use rusqlite::types::ValueRef;
 
+/// refs: https://www.swiftforensics.com/2018/02/reading-notes-database-on-macos.html
 pub fn dump_apple_notes() {
     let path = PathBuf::from("_fixtures").join("phodal.com");
     let db_name = "../NoteStore.sqlite";
@@ -53,9 +54,14 @@ fn export_apple_notes(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box
                 ValueRef::Real(real) => { real.to_string() }
                 ValueRef::Text(text) => { std::str::from_utf8(text).unwrap().to_string() }
                 ValueRef::Blob(blob) => {
-                    let mut d = ZlibDecoder::new(blob);
+                    let mut d = GzDecoder::new(blob);
                     let mut s = String::new();
-                    d.read_to_string(&mut s).unwrap_or(1);
+                    match d.read_to_string(&mut s) {
+                        Ok(so) => {}
+                        Err(err) => {
+                            println!("{:?}", err);
+                        }
+                    }
                     s
                 }
             };
