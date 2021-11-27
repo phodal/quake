@@ -27,7 +27,14 @@ enum SubCommand {
     /// command for CRUD entries
     Command(Command),
     /// web server for run
-    Server(WebServer)
+    Server(WebServer),
+    /// Terminal UI
+    Tui(Terminal)
+}
+
+#[derive(Parser)]
+struct Terminal {
+
 }
 
 #[derive(Parser)]
@@ -88,6 +95,7 @@ fn main() {
            }
        }
        SubCommand::Server(_) => {}
+       SubCommand::Tui(_) => {}
    }
 }
 
