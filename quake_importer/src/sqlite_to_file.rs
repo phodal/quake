@@ -1,15 +1,32 @@
+use std::error::Error;
+use std::fs;
 use std::path::PathBuf;
-use rusqlite::Row;
+
+use rusqlite::{Connection, Row};
+use rusqlite::types::ValueRef;
+
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::front_matter::FrontMatter;
-use rusqlite::types::ValueRef;
-use std::fs;
 
-pub fn write_file(path: &PathBuf, row: &Row) {
+pub fn export(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Error>> {
+    let conn = Connection::open(db_name)?;
+    let mut query = conn.prepare(sql)?;
+
+    let mut rows = query.query([])?;
+
+    let mut id: usize = 1;
+    while let Some(row) = rows.next()? {
+        write_file(&path, row,  id);
+        id = id +1;
+    };
+
+    Ok(())
+}
+
+pub fn write_file(path: &PathBuf, row: &Row, id: usize) {
     let mut file = EntryFile::default();
     let mut matter = FrontMatter::default();
     let mut title = "".to_string();
-    let mut id: usize = 0;
 
     for (index, name) in row.column_names().iter().enumerate() {
         let value: String = match row.get_ref(index).unwrap() {
@@ -30,7 +47,7 @@ pub fn write_file(path: &PathBuf, row: &Row) {
                 title = value.clone();
             }
 
-            matter.fields.insert(name.to_string(), mezzanine::simple_escape(value));
+            matter.fields.insert(name.to_string(), simple_escape(value));
         }
     }
 
