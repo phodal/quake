@@ -110,7 +110,7 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
         editor: "vim".to_string(),
     };
 
-    fs::write(path, serde_yaml::to_string(&config)?)?
+    fs::write(path, serde_yaml::to_string(&config)?)?;
     Ok(())
 }
 

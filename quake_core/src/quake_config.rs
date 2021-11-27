@@ -1,5 +1,5 @@
 /// load from `.quake`
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct QuakeConfig {
     // storage path
     pub path: String,
