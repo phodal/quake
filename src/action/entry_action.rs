@@ -148,17 +148,4 @@ mod tests {
 
         create_action(expr, config).expect("cannot process");
     }
-
-    #[test]
-    #[ignore]
-    fn update_phodal_com() {
-        let expr = InputParser::from("phodal_com.sync");
-        let mut config = QuakeConfig::default();
-        config.path = "_fixtures".to_string();
-        config.editor = "".to_string();
-
-        if let Err(err) = create_action(expr, config) {
-            println!("{:?}", err);
-        };
-    }
 }
