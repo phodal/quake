@@ -66,37 +66,43 @@ fn parameters(decl: Pair<Rule>) -> Parameter {
 }
 
 
-    #[cfg(test)]
-    mod tests {
-        use crate::parser::ast::SourceUnitPart;
-        use crate::parser::quake_parser::parse;
+#[cfg(test)]
+mod tests {
+    use crate::parser::ast::SourceUnitPart;
+    use crate::parser::quake_parser::parse;
 
-        #[test]
-        fn should_parse_add_todo() {
-            let unit = parse("todo.add: 添加 todo 的支持");
-            assert_eq!(1, unit.0.len());
+    #[test]
+    fn should_parse_add_todo() {
+        let unit = parse("todo.add: 添加 todo 的支持");
+        assert_eq!(1, unit.0.len());
 
-            match &unit.0[0] {
-                SourceUnitPart::Action(action) => {
-                    assert_eq!("add", action.action);
-                    assert_eq!("todo", action.object);
-                    assert_eq!("添加 todo 的支持", action.text);
-                }
-            }
-        }
-
-        #[test]
-        fn should_parse_update_todo() {
-            let unit = parse("todo.update(1)");
-            assert_eq!(1, unit.0.len());
-
-            match &unit.0[0] {
-                SourceUnitPart::Action(action) => {
-                    assert_eq!("todo", action.object);
-                    assert_eq!("update", action.action);
-                    assert_eq!(1, action.parameters.len());
-                    assert_eq!("1", action.parameters[0].value);
-                }
+        match &unit.0[0] {
+            SourceUnitPart::Action(action) => {
+                assert_eq!("add", action.action);
+                assert_eq!("todo", action.object);
+                assert_eq!("添加 todo 的支持", action.text);
             }
         }
     }
+
+    #[test]
+    fn should_parse_update_todo() {
+        let unit = parse("todo.update(1)");
+        assert_eq!(1, unit.0.len());
+
+        match &unit.0[0] {
+            SourceUnitPart::Action(action) => {
+                assert_eq!("todo", action.object);
+                assert_eq!("update", action.action);
+                assert_eq!(1, action.parameters.len());
+                assert_eq!("1", action.parameters[0].value);
+            }
+        }
+    }
+
+    #[test]
+    fn should_parse_com() {
+        let _unit = parse("phodal_com.sync");
+        assert_eq!(1, unit.0.len());
+    }
+}

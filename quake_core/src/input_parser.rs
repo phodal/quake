@@ -69,4 +69,12 @@ mod tests {
 
         assert_eq!(1, expr.index_from_parameter());
     }
+
+
+    #[test]
+    fn should_parse_com() {
+        let expr = InputParser::from("phodal_com.sync");
+        assert_eq!(expr.object, "phodal_com");
+        assert_eq!(expr.action, "sync");
+    }
 }

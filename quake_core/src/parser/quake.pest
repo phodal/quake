@@ -28,6 +28,6 @@ text = { ANY* }
 
 ident = { (alpha | digit)+ }
 
-alpha = { 'a'..'z' | 'A'..'Z' }
+alpha = { 'a'..'z' | 'A'..'Z' | "-" | "_" }
 digit = { '0'..'9' }
 

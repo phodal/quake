@@ -2,7 +2,7 @@
 .idea
 dev.db
 phodal.dev
-_fixtures/phodal.com/*
+_fixtures/phodal_com/*
 _fixtures/notes/*
 .DS_Store
 quake_importer/scripts/readnotes/*

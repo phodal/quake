@@ -61,10 +61,12 @@ impl EntrysetsCsv {
             .quote_style(csv::QuoteStyle::NonNumeric)
             .from_writer(vec![]);
 
-        wtr.write_record(&header)?;
+        wtr.write_record(&header).unwrap();
 
         for column in body {
-            wtr.write_record(&column)?;
+            if let Err(err) = wtr.write_record(&column) {
+                println!("parse csv column issue {:?}", &err);
+            };
         }
 
         wtr.flush()?;
