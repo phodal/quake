@@ -8,6 +8,7 @@
 <div class="wrapper">
     <div id="searchbox" focus></div>
     <div id="hits"></div>
+    <div id="pagination"></div>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@meilisearch/instant-meilisearch@0.3.2/dist/instant-meilisearch.umd.min.js"></script>
@@ -24,7 +25,13 @@
         instantsearch.widgets.searchBox({
             container: "#searchbox"
         }),
-        instantsearch.widgets.configure({ hitsPerPage: 8 }),
+        instantsearch.widgets.configure({
+            hitsPerPage: 8,
+            attributesToSnippet: ['description:150'],
+        }),
+        instantsearch.widgets.pagination({
+            container: '#pagination',
+        }),
         instantsearch.widgets.hits({
             container: "#hits",
             templates: {
