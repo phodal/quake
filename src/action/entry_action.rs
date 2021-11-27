@@ -57,7 +57,7 @@ pub fn create_action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn
 
             sync_in_path(&paths)?
         }
-        "update" => {
+        "edit" => {
             let mut target_file = PathBuf::new();
             let prefix = file_process::file_prefix(expr.index_from_parameter());
             let vec = file_process::filter_by_prefix(paths.base, prefix);

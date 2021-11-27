@@ -14,25 +14,25 @@ Quake 是一个面向极客开发的知识管理工具，它可以：
 1. add entry by type
 
 ```
-quake "todo.add: time support"
+quake command -i "todo.add: time support"
 ```
 
-2. update entry by index
+2. edit entry by index
 
 ```
-quake "todo.update(1)"
+quake command -i "todo.update(1)"
 ```
 
 3. list entry by type
 
 ```
-quake "todo.list"
+quake command -i "todo.list"
 ```
 
 4. sync list
 
 ```
-quake "todo.sync"
+quake command -i "todo.sync"
 ```
 
 5. search [tbd]
@@ -93,8 +93,9 @@ parameters = {
 
 ### MVP: TUI
 
-- [ ] 自定义条目类型
-- [ ] CLI 交互与列表呈现
+- [x] 自定义条目类型
+- [ ] 自定义项目
+- [x] CLI 交互与列表呈现
 - [ ] MVP API 设计
 - [ ] 基于 Git 的数据存储
 
