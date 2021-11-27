@@ -25,26 +25,6 @@ struct Opts {
     /// config the editor
     #[clap(short, long, default_value = "")]
     editor: String,
-
-    // #[clap(subcommand)]
-    // sub_cmd: SubCommand,
-}
-
-#[derive(Parser)]
-enum SubCommand {
-    /// create `.quake.yml`
-    #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
-    Init(Init),
-}
-
-#[derive(Parser)]
-struct Init {
-    /// Print debug info
-    #[clap(short)]
-    debug: bool,
-    /// init by path
-    #[clap(short, long, default_value = ".")]
-    path: String,
 }
 
 fn config(opts: &Opts) -> QuakeConfig {
@@ -66,17 +46,8 @@ fn main() {
 
     if opts.input.len() > 0 {
         let expr = InputParser::from(opts.input.as_str());
-        match expr.object.to_lowercase().as_str() {
-            "todo" => {
-                if let Err(err) = entry_action::create_action(expr, conf) {
-                    println!("{:?}", err)
-                }
-            }
-            _ => {
-                if let Err(err) = entry_action::create_action(expr, conf) {
-                    println!("{:?}", err)
-                }
-            }
+        if let Err(err) = entry_action::create_action(expr, conf) {
+            println!("{:?}", err)
         }
     }
 }
