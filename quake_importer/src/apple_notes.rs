@@ -89,6 +89,7 @@ fn export_apple_notes(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box
 mod tests {
     use crate::apple_notes::dump_apple_notes;
 
+    #[ignore]
     #[test]
     fn dump_notes() {
         let db_path = "../dbs/mac_apt.db";
