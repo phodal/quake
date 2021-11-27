@@ -146,4 +146,11 @@ mod tests {
         let paths = EntryPaths::init(&"_fixtures".to_string(), &"phodal.com".to_string());
         sync_in_path(&paths).unwrap();
     }
+
+    #[ignore]
+    #[test]
+    fn sync_todo() {
+        let paths = EntryPaths::init(&"_fixtures".to_string(), &"microsoft_todos".to_string());
+        sync_in_path(&paths).unwrap();
+    }
 }

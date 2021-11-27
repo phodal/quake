@@ -63,8 +63,9 @@ impl Entrysets {
 
         wtr.write_record(&header).unwrap();
 
-        for column in body {
-            if let Err(err) = wtr.write_record(&column) {
+        for column in &body {
+            if let Err(err) = wtr.write_record(&*column) {
+                println!("{:?}", column);
                 println!("parse csv column issue {:?}", &err);
             };
         }
