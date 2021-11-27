@@ -1,11 +1,12 @@
 use indexmap::IndexMap;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, Serializer};
+use serde::ser::SerializeMap;
 use serde_yaml::Value;
 
 use crate::entry::front_matter::FrontMatter;
 use crate::slug::slugify;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug)]
 pub struct EntryFile {
     pub name: String,
     pub front_matter: FrontMatter,
@@ -96,6 +97,21 @@ impl EntryFile {
     }
 }
 
+impl Serialize for EntryFile {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(self.front_matter.fields.len()))?;
+        for (k, v) in &self.front_matter.fields {
+            map.serialize_entry(&k.to_string(), &v)?;
+        }
+
+        map.serialize_entry("content", &self.content)?;
+        map.end()
+    }
+}
+
 pub struct ValueConverter {}
 
 impl ValueConverter {
@@ -149,5 +165,25 @@ sample
         assert_eq!("a hello, world", map.get("description").unwrap());
         assert_eq!("2021.11.23", map.get("created_date").unwrap());
         assert_eq!("2021.11.21", map.get("updated_date").unwrap());
+    }
+
+
+    #[test]
+    fn to_json() {
+        let text = "---
+title: hello, world
+authors: Phodal HUANG<h@phodal.com>
+description: a hello, world
+created_date: 2021.11.23
+updated_date: 2021.11.21
+---
+
+sample
+
+";
+
+        let entry_file = EntryFile::from(text);
+
+        assert_eq!(r#"{"title":"hello, world","authors":"Phodal HUANG<h@phodal.com>","description":"a hello, world","created_date":"2021.11.23","updated_date":"2021.11.21","content":"\n\nsample\n\n"}"#, serde_json::to_string(&entry_file).unwrap());
     }
 }
