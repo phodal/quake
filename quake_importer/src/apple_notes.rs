@@ -62,12 +62,7 @@ fn export_apple_notes(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box
                     title = value.clone();
                 }
 
-                if name.eq("id") {
-                    id = id + 1;
-                    matter.fields.insert(name.to_string(), id.to_string());
-                } else {
-                    matter.fields.insert(name.to_string(), format!("{:?}", value));
-                }
+                matter.fields.insert(name.to_string(), format!("{:?}", value));
             }
         }
 

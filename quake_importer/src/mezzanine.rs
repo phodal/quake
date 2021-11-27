@@ -61,12 +61,7 @@ fn write_file(path: &PathBuf, row: &Row) {
                 title = value.clone();
             }
 
-            if name.eq("id") {
-                id = value.parse().unwrap();
-                matter.fields.insert(name.to_string(), id.to_string());
-            } else {
-                matter.fields.insert(name.to_string(), simple_escape(value));
-            }
+            matter.fields.insert(name.to_string(), simple_escape(value));
         }
     }
 
@@ -96,14 +91,6 @@ fn simple_escape(value: String) -> String {
 #[cfg(test)]
 mod tests {
     use crate::mezzanine::dump_phodal_com;
-
-    #[test]
-    fn escape_test() {
-        let origin = "Mac OS 安装GNU命令行工具";
-        let esc = origin.replace(" ", " ");
-
-        println!("{}", esc);
-    }
 
     #[test]
     fn dump_test() {
