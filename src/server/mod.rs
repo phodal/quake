@@ -20,9 +20,9 @@ pub struct ApiError {
     pub msg: String
 }
 
-#[get("/<input>")]
-fn parse_query(input: &str) -> String {
-    let result = InputParser::from(input);
+#[get("/query?<input>")]
+fn parse_query(input: String) -> String {
+    let result = InputParser::from(input.as_str());
     let output = match result {
         Ok(value) => {
             serde_json::to_string(&value).unwrap()
