@@ -89,6 +89,21 @@ parameters = {
 - 开放的。可以自由与其它工具组合。如 Vim、VSCode 等。
 - 易于扩展。可以结合习惯用的工具。诸如于，基于 DSL 的编辑-发布分离的类 Web 模式，用于展示。如 MxGraph、Mermaid、Ledge Framework 等
 
+## Developoment
+
+Languages: Rust, TypeScript
+
+Tech stacks:
+
+- Search Engine: [MeiliSearch](https://github.com/meilisearch/MeiliSearch)
+- Frontend:
+  - MV* Frameworks: Stencil.js, TBD
+  - Charts: D3.js, MxGraph, Echarts
+  - Editor: Quill?
+- Database: Git + CSV + Yaml
+- TUI: tbd
+- GUI: tbd
+
 ## Roadmap
 
 ### MVP
@@ -101,23 +116,24 @@ parameters = {
 - [x] 自定义条目类型
   - [x] CRUD
   - [x] dynamic update entries-define
+- [x] CLI 交互与列表呈现
+- [ ] MVP API 设计
+  - [x] Web Server
+  - [ ] GraphQL
+- [x] 基于 Git 的数据存储
+- [ ] Search anywhere
+  - [x] search frameworks
+  - [ ] auto suggest
+
+### 1.0: Knowledge map 
+
+- [ ] 嵌入式脚本语言
 - [ ] 知识空间
   - [ ] 自定义项目视图
   - [ ] 年份视图
 - [ ] 知识可视化
   - [ ] Mindmap from Ledge Framework?
   - [ ] Mindmap connect to Entry (`${connect.todo("0001", "${title}"}`)
-- [x] CLI 交互与列表呈现
-- [ ] MVP API 设计
-  - [ ] Web Server
-  - [ ] GraphQL
-- [ ] 基于 Git 的数据存储
-- [ ] 嵌入式脚本语言
-
-### 1.0: Knowledge map 
-
-- [ ] Search anywhere
-  - auto suggest
 - [ ] Dashboard
 - [ ] Editor (TBD)
   - markdown editor
