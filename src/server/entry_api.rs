@@ -1,16 +1,21 @@
-use std::collections::HashMap;
-use std::error::Error;
 use rocket::response::content;
 use rocket::response::content::Json;
+use rocket::tokio::task::spawn_blocking;
+
+use crate::server::ApiError;
 
 #[get("/<entry_type>", rank = 3)]
 pub(crate) async fn entry(entry_type: &str) -> Json<String> {
     let request_url = format!("http://127.0.0.1:7700/indexes/{:}/documents", entry_type);
 
-    content::Json(
+    let vec = spawn_blocking (|| content::Json(
         reqwest::blocking::get(request_url)
             .unwrap()
             .text()
             .unwrap(),
-    )
+    )).await.map_err(|e| ApiError {
+        msg: format!("{:?}", e)
+    }).unwrap();
+
+    vec
 }
