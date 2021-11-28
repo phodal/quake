@@ -37,7 +37,7 @@ impl EntryPaths {
     }
 }
 
-pub fn create_action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
+pub fn action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.path, &expr.object);
     let entries_define = &entries_define_from_path(&paths.entries_define)[0];
     let mut entry_info = entry_info_from_path(&paths.entries_info);
@@ -147,7 +147,7 @@ mod tests {
     use quake_core::input_parser::InputParser;
     use quake_core::quake_config::QuakeConfig;
 
-    use crate::action::entry_action::create_action;
+    use crate::action::entry_action::action;
 
     #[test]
     #[ignore]
@@ -157,6 +157,6 @@ mod tests {
         config.path = "_fixtures".to_string();
         config.editor = "".to_string();
 
-        create_action(expr, config).expect("cannot process");
+        action(expr, config).expect("cannot process");
     }
 }

@@ -14,6 +14,13 @@ fn entry(entry_type: &str) -> String {
     result.unwrap()
 }
 
+#[post("/entry/<entry_type>")]
+fn entry_create(entry_type: &str) -> String {
+    let path = PathBuf::from("_fixtures").join(entry_type);
+    let result = Entrysets::jsonify(&path);
+    result.unwrap()
+}
+
 #[rocket::main]
 pub async fn start_server() -> Result<(), Error> {
     rocket::build()

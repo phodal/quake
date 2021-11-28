@@ -99,7 +99,7 @@ fn main() {
 
             if cmd.input.len() > 0 {
                 let expr = InputParser::from(cmd.input.as_str());
-                if let Err(err) = entry_action::create_action(expr, conf) {
+                if let Err(err) = entry_action::action(expr, conf) {
                     println!("{:?}", err)
                 }
             }
