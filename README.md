@@ -1,8 +1,8 @@
 # Quake
 
-> Another simple opensource knowledge management tool for geek.
+> A meta knowledge management tool for geek.
 
-Quake 是一个面向极客开发的知识管理工具，它可以：
+Quake 是面向极客的知识管理元框架，它可以：
 
 - 自由的文本内容管理。Todo 清单、文章管理、书评、笔记等。
 - 构建知识网络体系。定制化 markdown 链接
@@ -10,6 +10,12 @@ Quake 是一个面向极客开发的知识管理工具，它可以：
 - 自由的呈现画布。DSL 与自由画板
 
 ## Usage
+
+### GUI (TBD)
+
+
+
+### Terminal
 
 1. add entry by type
 
@@ -101,6 +107,8 @@ Tech stacks:
   - Charts: D3.js, MxGraph, Echarts
   - Editor: Quill?
 - Database: Git + CSV + Yaml
+- Web API: Rocket.rs
+- Analysis API: Jieba.rs
 - TUI: tbd
 - GUI: tbd
 
