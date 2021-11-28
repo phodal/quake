@@ -9,6 +9,14 @@ pub struct EntryDefineFile {
     pub entries: Vec<EntryDefine>,
 }
 
+impl Default for EntryDefineFile {
+    fn default() -> Self {
+        EntryDefineFile {
+            entries: vec![]
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct EntryDefine {
     #[serde(rename = "type")]
@@ -16,6 +24,17 @@ pub struct EntryDefine {
     pub display: String,
     pub fields: Vec<IndexMap<String, String>>,
     pub actions: Option<Vec<String>>,
+}
+
+impl Default for EntryDefine {
+    fn default() -> Self {
+        EntryDefine {
+            entry_type: "".to_string(),
+            display: "".to_string(),
+            fields: vec![],
+            actions: None
+        }
+    }
 }
 
 impl EntryDefine {
@@ -68,8 +87,8 @@ impl EntryDefine {
 mod tests {
     use indexmap::IndexMap;
 
-    use crate::model::meta_object::MetaField;
     use crate::entry::entry_define::EntryDefine;
+    use crate::model::meta_object::MetaField;
 
     fn custom_entry_from_yaml() -> Vec<EntryDefine> {
         let yaml = "
