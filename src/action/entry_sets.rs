@@ -9,8 +9,8 @@ use serde::Deserialize;
 use serde_derive::Serialize;
 use walkdir::{DirEntry, WalkDir};
 
-use quake_core::entry::EntryDefine;
 use quake_core::entry::entry_file::EntryFile;
+use quake_core::entry::EntryDefine;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct CsvTable {
@@ -195,7 +195,6 @@ impl Entrysets {
 
 #[cfg(test)]
 mod tests {
-    use std::fs;
     use std::path::PathBuf;
 
     use crate::action::entry_sets::Entrysets;
@@ -225,14 +224,6 @@ mod tests {
                 println!("{:?}", err);
             }
         }
-    }
-
-    #[test]
-    fn entries_define() {
-        let buf = PathBuf::from("_fixtures");
-        let file = Entrysets::sync_all_info(&buf).unwrap();
-        let content = serde_yaml::to_string(&file).unwrap();
-        fs::write(buf.join("entries-define.yaml"), content).unwrap();
     }
 
     #[test]
