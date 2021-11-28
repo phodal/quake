@@ -10,6 +10,12 @@ entries:
       - tag: String
       - author: String
     actions: ~
+  - type: code
+    display: ""
+    fields:
+      - id: String
+      - title: Title
+    actions: ~
   - type: microsoft_todo
     display: ""
     fields:
@@ -51,7 +57,13 @@ entries:
     actions: ~
   - type: todo
     display: ""
-    fields: []
+    fields:
+      - id: String
+      - title: Title
+      - author: String
+      - content: Body
+      - created_date: Date
+      - updated_date: Date
     actions: ~
   - type: yiki
     display: ""

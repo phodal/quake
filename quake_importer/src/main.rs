@@ -50,7 +50,7 @@ pub struct SQLite {
 /// refs: https://www.swiftforensics.com/2018/02/reading-notes-database-on-macos.html
 pub fn dump_apple_notes(db_path: &str, path: PathBuf) {
     let sql = "
-SELECT ID as id, Title as title, Snippet as description, Folder as category, Created as created_date,
+SELECT Title as title, Snippet as description, Folder as category, Created as created_date,
  LastModified as updated_date, Data as content, User as author
   from Notes
 ";

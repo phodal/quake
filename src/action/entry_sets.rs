@@ -9,9 +9,8 @@ use serde::Deserialize;
 use serde_derive::Serialize;
 use walkdir::{DirEntry, WalkDir};
 
-use quake_core::entry::entry_define::EntryDefine;
+use quake_core::entry::EntryDefine;
 use quake_core::entry::entry_file::EntryFile;
-use quake_core::entry::EntryDefineFile;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct CsvTable {
@@ -116,7 +115,7 @@ impl Entrysets {
                 Ok(file) => { file }
                 Err(err) => {
                     println!("create entry file error: {:?}", file.display());
-                    return Err(err)
+                    return Err(err);
                 }
             };
             entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
@@ -160,7 +159,7 @@ impl Entrysets {
             }
             Err(err) => {
                 println!("path: {:?}, {:?}", path.display(), err);
-                return Err(err)
+                return Err(err);
             }
         };
         let table_len = map.1.len();
@@ -169,38 +168,27 @@ impl Entrysets {
         Ok((table_len, string))
     }
 
-    pub fn defines_from_path(path: &PathBuf) -> Result<EntryDefineFile, Box<dyn Error>> {
-        let mut define_file = EntryDefineFile::default();
-        for entry in WalkDir::new(path).into_iter().filter_map(|e| e.ok()) {
-            let name = entry.path().file_name().ok_or("")?;
-            if entry.path().is_dir() {
-                let csv = entry.path().join("entries.csv");
-                if csv.exists() {
-                    let mut define = EntryDefine::default();
-                    let table = Entrysets::read(csv)?;
-                    define.entry_type = format!("{:}", name.to_str().ok_or("")?);
-                    for name in table.header {
-                        let mut map = IndexMap::new();
+    pub fn define_from_csv(path_name: String, csv: PathBuf) -> Result<EntryDefine, Box<dyn Error>> {
+        let mut define = EntryDefine::default();
+        let table = Entrysets::read(csv)?;
+        define.entry_type = path_name;
+        for name in table.header {
+            let mut map = IndexMap::new();
 
-                        if name.contains("date") {
-                            map.insert(name, "Date".to_string());
-                        } else if name.eq("title") {
-                            map.insert(name, "Title".to_string());
-                        } else if name.eq("content") {
-                            map.insert(name, "Body".to_string());
-                        } else {
-                            map.insert(name, "String".to_string());
-                        }
-
-                        define.fields.push(map);
-                    }
-
-                    define_file.entries.push(define);
-                }
+            if name.contains("date") {
+                map.insert(name, "Date".to_string());
+            } else if name.eq("title") {
+                map.insert(name, "Title".to_string());
+            } else if name.eq("content") {
+                map.insert(name, "Body".to_string());
+            } else {
+                map.insert(name, "String".to_string());
             }
+
+            define.fields.push(map);
         }
 
-        Ok(define_file)
+        Ok(define)
     }
 }
 
@@ -242,7 +230,7 @@ mod tests {
     #[test]
     fn entries_define() {
         let buf = PathBuf::from("_fixtures");
-        let file = Entrysets::defines_from_path(&buf).unwrap();
+        let file = Entrysets::sync_all_info(&buf).unwrap();
         let content = serde_yaml::to_string(&file).unwrap();
         fs::write(buf.join("entries-define.yaml"), content).unwrap();
     }
