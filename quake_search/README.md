@@ -6,7 +6,7 @@ Create
 
 ```bash
 curl \
-  -X POST 'http://127.0.0.1:7700/indexes/microsoft_todo/documents' \
+  -X POST 'http://127.0.0.1:7700/indexes/phodal_com/documents' \
   -H 'Content-Type: application/json' \
   --data-binary @dump.json
 ```

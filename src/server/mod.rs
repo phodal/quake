@@ -14,6 +14,7 @@ fn entry(entry_type: &str) -> String {
     result.unwrap()
 }
 
+#[allow(dead_code)]
 #[post("/entry/<entry_type>")]
 fn entry_create(entry_type: &str) -> String {
     let path = PathBuf::from("_fixtures").join(entry_type);
