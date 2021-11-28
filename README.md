@@ -101,7 +101,7 @@ parameters = {
 - [x] 自定义条目类型
   - [x] CRUD
   - [x] dynamic update entries-define
-- [ ] 自定义文件系统视图
+- [ ] 空间
   - [ ] 自定义项目视图
   - [ ] 年份视图
 - [x] CLI 交互与列表呈现
