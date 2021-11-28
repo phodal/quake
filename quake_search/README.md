@@ -2,6 +2,16 @@
 
 ## Setup diesel
 
+Create
+
+```bash
+curl \
+  -X POST 'http://127.0.0.1:7700/indexes/microsoft_todo/documents' \
+  -H 'Content-Type: application/json' \
+  --data-binary @dump.json
+```
+
+Query
 
 ```bash
 curl \
@@ -19,25 +29,10 @@ curl \
           "rank:desc"
       ],
       "distinctAttribute": null,
-      "searchableAttributes": [
-          "title",
-          "description",
-          "keywords",
-          "content"
-      ],
-      "displayedAttributes": [
-          "title",
-          "description",
-          "keywords",
-          "content",
-          "created_date"
-      ],
+      "searchableAttributes": null,
+      "displayedAttributes": null,
       "stopWords": null,
-      "sortableAttributes": [
-        "title",
-        "keywords",
-        "content"
-      ],
+      "sortableAttributes":null,
       "synonyms": null
   }'
  
