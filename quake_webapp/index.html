@@ -10,9 +10,13 @@
     <div id="hits"></div>
     <div id="pagination"></div>
 </div>
+
+<quake-dashboard sets='[{"title":"time support","author":"","content":"","created_date":"2021-11-24 19:14:10","updated_date":"2021-11-24 19:14:10","id":"1","content":"\n\nahaha\n"}]'></quake-dashboard>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/@meilisearch/instant-meilisearch@0.3.2/dist/instant-meilisearch.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@meilisearch/instant-meilisearch@0.3.2/dist/instant-meilisearch.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
+
+<script type="module" src="./dashboard/dist/dashboard/dashboard.esm.js"></script>
 <script>
     const search = instantsearch({
         indexName: "phodal_com",
@@ -42,6 +46,10 @@
             }
         })
     ]);
-    search.start();
+    search.start()
+    console.log(search);
+    const todoListElement = document.querySelector('quake-dashboard');
+    todoListElement.myObject = {};
+    todoListElement.myArray = [];
 </script>
 </html>
