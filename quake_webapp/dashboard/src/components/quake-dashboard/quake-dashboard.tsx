@@ -1,5 +1,4 @@
-import { Component, Prop, h } from '@stencil/core';
-import { format } from '../../utils/utils';
+import { Component, Prop, h, State, Watch } from '@stencil/core';
 
 @Component({
   tag: 'quake-dashboard',
@@ -7,26 +6,31 @@ import { format } from '../../utils/utils';
   shadow: true,
 })
 export class QuakeDashboard {
-  /**
-   * The first name
-   */
-  @Prop() first: string;
+  @Prop() sets: string;
+  @State() internalEntrySets: Array<object> = [];
 
-  /**
-   * The middle name
-   */
-  @Prop() middle: string;
-
-  /**
-   * The last name
-   */
-  @Prop() last: string;
-
-  private getText(): string {
-    return format(this.first, this.middle, this.last);
+  componentWillLoad() {
+    this.parseEntrySets();
   }
 
+  @Watch('sets')
+  parseEntrySets() {
+    if (this.sets) {
+      this.internalEntrySets = JSON.parse(this.sets);
+    }
+  }
   render() {
-    return <div>Hello, World! I'm {this.getText()}</div>;
+    console.log(this.sets);
+    console.log(this.internalEntrySets);
+    return <div>
+      {this.internalEntrySets.map((todo: any) =>
+        <div>
+          <div>{todo.title}</div>
+          <div>{todo.content}</div>
+          <div>{todo.created_date}</div>
+          <div>{todo.updated_date}</div>
+        </div>,
+      )}
+    </div>;
   }
 }
