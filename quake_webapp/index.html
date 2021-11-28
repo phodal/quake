@@ -11,9 +11,10 @@
     <div id="pagination"></div>
 </div>
 
-<quake-dashboard sets='[{"title":"time support","author":"","content":"","created_date":"2021-11-24 19:14:10","updated_date":"2021-11-24 19:14:10","id":"1","content":"\n\nahaha\n"}]'></quake-dashboard>
+<quake-dashboard></quake-dashboard>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@meilisearch/instant-meilisearch@0.3.2/dist/instant-meilisearch.umd.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
 
 <script type="module" src="./dashboard/dist/dashboard/dashboard.esm.js"></script>
@@ -47,9 +48,15 @@
         })
     ]);
     search.start()
-    console.log(search);
-    const todoListElement = document.querySelector('quake-dashboard');
-    todoListElement.myObject = {};
-    todoListElement.myArray = [];
+
+    const client = new MeiliSearch({
+        host: 'http://127.0.0.1:7700'
+    })
+    const index = client.index('phodal_com')
+    index.search('架构').then((result) => {
+        let data = result.hits;
+        const todoListElement = document.querySelector('quake-dashboard');
+        todoListElement.sets = data;
+    })
 </script>
 </html>
