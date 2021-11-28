@@ -35,5 +35,11 @@ curl \
       "sortableAttributes":null,
       "synonyms": null
   }'
- 
+ ``
+```
+
+Delete
+
+```bash
+curl -X DELETE 'http://localhost:7700/indexes/phodal_com/documents'
 ```
