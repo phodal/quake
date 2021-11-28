@@ -7,6 +7,9 @@ Framework Spikes
 Todo:
 
 - [ ] Editor: https://github.com/KillerCodeMonkey/stencil-quill
+  - [ ] Notion Like: [https://github.com/konstantinmuenster/notion-clone](https://github.com/konstantinmuenster/notion-clone)
+  - [ ] [react-tapable-editor](https://github.com/ryuever/react-tapable-editor) with draft.js
+  - 
 - [ ] SearchBox with Action
   - [ ] Quake Action 
     - [ ] edit to editor view
