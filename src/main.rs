@@ -98,7 +98,7 @@ fn main() {
             let conf: QuakeConfig = config(&cmd);
 
             if cmd.input.len() > 0 {
-                let expr = InputParser::from(cmd.input.as_str());
+                let expr = InputParser::from(cmd.input.as_str()).unwrap();
                 if let Err(err) = entry_action::action(expr, conf) {
                     println!("{:?}", err)
                 }

@@ -14,10 +14,27 @@ fn entry(entry_type: &str) -> String {
     result.unwrap()
 }
 
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ApiError {
+    pub msg: String
+}
+
 #[get("/<input>")]
 fn parse_query(input: &str) -> String {
-    let parser = InputParser::from(input);
-    serde_json::to_string(&parser).unwrap()
+    let result = InputParser::from(input);
+    let output = match result {
+        Ok(value) => {
+            serde_json::to_string(&value).unwrap()
+        }
+        Err(err) => {
+            serde_json::to_string(&ApiError {
+                msg: format!("{:?}", err)
+            }).unwrap()
+        }
+    };
+
+    output
 }
 
 #[rocket::main]

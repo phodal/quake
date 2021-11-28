@@ -1,13 +1,21 @@
+use std::error::Error;
 use pest::iterators::Pair;
 use pest::Parser;
 use crate::parser::ast::{ActionDecl, Parameter, SourceUnit, SourceUnitPart};
+use crate::parser::errors::QuakeParserError;
 
 #[derive(Parser)]
 #[grammar = "parser/quake.pest"]
 struct QuakeParser;
 
-pub fn parse(text: &str) -> SourceUnit {
-    let pairs = QuakeParser::parse(Rule::earth, text).unwrap_or_else(|e| panic!("{}", e));
+pub fn parse(text: &str) -> Result<SourceUnit, Box<dyn Error>> {
+    let pairs = match QuakeParser::parse(Rule::earth, text) {
+        Ok(pairs) => { pairs }
+        Err(e) => {
+            let string = format!("{:?}", e);
+            return Err(Box::new(QuakeParserError::new(&*string)));
+        }
+    };
 
     let mut parts = vec![];
     for pair in pairs {
@@ -21,7 +29,7 @@ pub fn parse(text: &str) -> SourceUnit {
         }
     }
 
-    SourceUnit(parts)
+    Ok(SourceUnit(parts))
 }
 
 fn action_decl(decl: Pair<Rule>) -> ActionDecl {
@@ -73,7 +81,7 @@ mod tests {
 
     #[test]
     fn should_parse_add_todo() {
-        let unit = parse("todo.add: 添加 todo 的支持");
+        let unit = parse("todo.add: 添加 todo 的支持").unwrap();
         assert_eq!(1, unit.0.len());
 
         match &unit.0[0] {
@@ -87,7 +95,7 @@ mod tests {
 
     #[test]
     fn should_parse_update_todo() {
-        let unit = parse("todo.update(1)");
+        let unit = parse("todo.update(1)").unwrap();
         assert_eq!(1, unit.0.len());
 
         match &unit.0[0] {
@@ -102,7 +110,7 @@ mod tests {
 
     #[test]
     fn should_parse_com() {
-        let unit = parse("phodal_com.sync");
+        let unit = parse("phodal_com.sync").unwrap();
         assert_eq!(1, unit.0.len());
     }
 }
