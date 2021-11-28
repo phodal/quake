@@ -175,7 +175,7 @@ mod tests {
     #[test]
     #[ignore]
     fn update_todo() {
-        let expr = InputParser::from("todo.update(1)");
+        let expr = InputParser::from("todo.update(1)").unwrap();
         let mut config = QuakeConfig::default();
         config.path = "_fixtures".to_string();
         config.editor = "".to_string();
