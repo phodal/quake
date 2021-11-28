@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@meilisearch/instant-meilisearch/templates/basic_search.css" />
 </head>
 <body>
 <div class="wrapper">
@@ -13,50 +12,22 @@
 
 <quake-dashboard></quake-dashboard>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/@meilisearch/instant-meilisearch@0.3.2/dist/instant-meilisearch.umd.js"></script>
-<script src='https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js'></script>
-<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
+
+<script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css"/>
 
 <script type="module" src="./dashboard/dist/dashboard/dashboard.esm.js"></script>
+
 <script>
-    const search = instantsearch({
-        indexName: "phodal_com",
-        searchClient: instantMeiliSearch(
-            "http://localhost:7700",
-            {
-                limitPerRequest: 10,
-                placeholderSearch: true
-            }
-        )
-    });
-
-    search.addWidgets([
-        instantsearch.widgets.searchBox({
-            container: "#searchbox"
-        }),
-        instantsearch.widgets.hits({
-            container: "#hits",
-            templates: {
-                item: `
-            <div>
-            <div class="hit-name">
-                  {{#helpers.highlight}}{ "attribute": "title" }{{/helpers.highlight}}
-            </div>
-            </div>
-          `
-            }
-        })
-    ]);
-    search.start()
-
-    const client = new MeiliSearch({
-        host: 'http://127.0.0.1:7700'
-    })
-    const index = client.index('phodal_com')
-    index.search('架构').then((result) => {
-        let data = result.hits;
-        const dashboardEl = document.querySelector('quake-dashboard');
-        dashboardEl.sets = data;
-    })
+    // const client = new MeiliSearch({
+    //     host: 'http://127.0.0.1:7700'
+    // })
+    // const index = client.index('phodal_com')
+    // index.search('架构').then((result) => {
+    //     let data = result.hits;
+    //     const dashboardEl = document.querySelector('quake-dashboard');
+    //     dashboardEl.sets = data;
+    // })
 </script>
 </html>

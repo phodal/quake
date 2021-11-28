@@ -23,7 +23,8 @@
   },
   "dependencies": {
     "@ionic/core": "^5.9.1",
-    "@stencil/core": "^2.7.0"
+    "@stencil/core": "^2.7.0",
+    "meilisearch": "^0.23.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",

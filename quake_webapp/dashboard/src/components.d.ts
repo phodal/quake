@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface QuakeDashboard {
-        "sets": Array<object>;
+        "indexName": String;
     }
 }
 declare global {
@@ -23,7 +23,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface QuakeDashboard {
-        "sets"?: Array<object>;
+        "indexName"?: String;
     }
     interface IntrinsicElements {
         "quake-dashboard": QuakeDashboard;

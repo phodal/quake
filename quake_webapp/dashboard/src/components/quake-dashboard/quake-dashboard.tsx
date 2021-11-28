@@ -1,4 +1,5 @@
-import {Component, Prop, h} from '@stencil/core';
+import {Component, Prop, h, Element, State} from '@stencil/core';
+import {MeiliSearch} from "meilisearch";
 
 @Component({
   tag: 'quake-dashboard',
@@ -6,26 +7,46 @@ import {Component, Prop, h} from '@stencil/core';
   shadow: true,
 })
 export class QuakeDashboard {
-  @Prop() sets: Array<object> = [];
+  ionInputElement;
+
+  @Prop() indexName: String = "";
+  @Element() el: HTMLElement;
+  @State() items: Array<object> = [];
+
+  client = new MeiliSearch({
+    host: 'http://127.0.0.1:7700'
+  })
+
+  handleInput(event) {
+    const that = this;
+    const query = event.target.value;
+    const index = this.client.index('phodal_com')
+    requestAnimationFrame(() => {
+      index.search(query).then((result) => {
+        that.items = result.hits;
+      })
+    });
+  }
 
   render() {
-    console.log(this.sets, this.sets.length)
-    return <div>
-      {this.sets.length > 0 ? this.sets.map((todo: any) =>
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>{todo.title}</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              {todo.content}
-
-              <span>{todo.created_date}</span>
-              <span>{todo.updated_date}</span>
-            </ion-card-content>
-          </ion-card>,
-        )
-        : <div></div>
-      }
-    </div>;
+    console.log(this.items);
+    return <ion-app>
+      <ion-header translucent>
+        <ion-toolbar>
+          <ion-title>Quake Action</ion-title>
+        </ion-toolbar>
+        <ion-toolbar>
+          <ion-searchbar ref={(el) => this.ionInputElement = el} onInput={this.handleInput.bind(this)}></ion-searchbar>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content fullscreen>
+        <ion-list>
+          {this.items.length > 0
+            ? this.items.map((item: any) => <ion-item>{item.title}</ion-item>)
+            : <div></div>
+          }
+        </ion-list>
+      </ion-content>
+    </ion-app>;
   }
 }
