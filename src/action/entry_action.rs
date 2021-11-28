@@ -2,7 +2,6 @@ use std::error::Error;
 use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
-use walkdir::WalkDir;
 
 use quake_core::entry::entry_define::{EntryDefine, EntryDefineFile};
 use quake_core::entry::entry_file::EntryFile;
@@ -11,7 +10,7 @@ use quake_core::entry::front_matter::FrontMatter;
 use quake_core::input_parser::InputParser;
 use quake_core::quake_config::QuakeConfig;
 
-use crate::action::{file_process, table_process};
+use crate::action::{file_process, quake_action, table_process};
 use crate::action::entry_sets::Entrysets;
 use crate::helper::cmd;
 
@@ -40,34 +39,13 @@ impl EntryPaths {
 
 pub fn action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     if expr.object == "quake" {
-        match expr.action.as_str() {
-            "sync" => {
-                let path = PathBuf::from(&conf.path);
-
-                let mut define_file = EntryDefineFile::default();
-                for entry in WalkDir::new(path).min_depth(1).into_iter().filter_map(|e| e.ok()) {
-                    if !entry.path().is_dir() {
-                        continue
-                    }
-                    let path_name = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
-
-                    let paths = EntryPaths::init(&conf.path, &path_name);
-                    sync_in_path(&paths).unwrap();
-                    let csv = entry.path().join("entries.csv");
-                    if csv.exists() {
-                        define_file.entries.push(Entrysets::define_from_csv(path_name, csv)?);
-                    }
-                }
-
-                let content = serde_yaml::to_string(&define_file).unwrap();
-                fs::write(PathBuf::from(&conf.path).join("entries-define.yaml"), content).unwrap();
-            }
-            _ => {}
-        }
-
-        return Ok(());
+        return quake_action::quake_action(&expr, &conf);
     }
 
+    entry_action(&expr, conf)
+}
+
+fn entry_action(expr: &InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.path, &expr.object);
     let entries_define = &entries_define_from_path(&paths.entries_define)[0];
     let mut entry_info = entry_info_from_path(&paths.entries_info);
