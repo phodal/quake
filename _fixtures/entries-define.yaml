@@ -1,9 +1,21 @@
 ---
 entries:
+  - type: blog
+    display: ""
+    fields:
+      - keywords: String
+      - title: Title
+      - description: String
+      - slug: String
+      - first_name: String
+      - last_name: String
+      - email: String
+      - created_date: Date
+      - updated_date: Date
+    actions: ~
   - type: bookmarks
     display: ""
     fields:
-      - id: String
       - title: Title
       - created: String
       - updated: Date
@@ -13,13 +25,11 @@ entries:
   - type: code
     display: ""
     fields:
-      - id: String
       - title: Title
     actions: ~
   - type: microsoft_todo
     display: ""
     fields:
-      - id: String
       - category: String
       - title: Title
       - created_date: Date
@@ -33,7 +43,6 @@ entries:
   - type: notes
     display: ""
     fields:
-      - id: String
       - title: Title
       - description: String
       - category: String
@@ -41,24 +50,9 @@ entries:
       - updated_date: Date
       - author: String
     actions: ~
-  - type: phodal_com
-    display: ""
-    fields:
-      - id: String
-      - keywords: String
-      - title: Title
-      - description: String
-      - slug: String
-      - first_name: String
-      - last_name: String
-      - email: String
-      - created_date: Date
-      - updated_date: Date
-    actions: ~
   - type: todo
     display: ""
     fields:
-      - id: String
       - title: Title
       - author: String
       - content: Body
@@ -68,7 +62,6 @@ entries:
   - type: yiki
     display: ""
     fields:
-      - id: String
       - title: Title
       - author: String
       - content: Body

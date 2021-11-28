@@ -173,6 +173,10 @@ impl Entrysets {
         let table = Entrysets::read(csv)?;
         define.entry_type = path_name;
         for name in table.header {
+            if name.eq("id") {
+                continue;
+            }
+
             let mut map = IndexMap::new();
 
             if name.contains("date") {

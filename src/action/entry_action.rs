@@ -47,7 +47,7 @@ pub fn action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Error>
 
 fn entry_action(expr: &InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.path, &expr.object);
-    let entries_define = &entries_define_from_path(&paths.entries_define)[0];
+    let entries_define = find_entry_define(&expr, &paths);
     let mut entry_info = entry_info_from_path(&paths.entries_info);
 
     match expr.action.as_str() {
@@ -56,7 +56,7 @@ fn entry_action(expr: &InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Err
             let mut target_file = paths.base.join(new_md_file);
             File::create(&target_file)?;
 
-            create_entry_file(&expr, entries_define, &mut target_file);
+            create_entry_file(&expr, &entries_define, &mut target_file);
 
             entry_info.inc();
             update_entry_info(&paths.entries_info, &mut entry_info);
@@ -89,6 +89,21 @@ fn entry_action(expr: &InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Err
     }
 
     Ok(())
+}
+
+fn find_entry_define(expr: &&InputParser, paths: &EntryPaths) -> EntryDefine {
+    let entries: Vec<EntryDefine> = entries_define_from_path(&paths.entries_define).into_iter()
+        .filter(|define| {
+            define.entry_type.eq(&expr.object)
+        })
+        .collect();
+
+    let entries_define = if entries.len() == 0 {
+        EntryDefine::default()
+    } else {
+        entries[0].clone()
+    };
+    entries_define
 }
 
 pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {

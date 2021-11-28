@@ -2,7 +2,7 @@
 .idea
 dev.db
 phodal.dev
-_fixtures/phodal_com/*
+_fixtures/blog/*
 _fixtures/notes/*
 _fixtures/microsoft_todo/*
 .DS_Store

@@ -17,7 +17,7 @@ impl Default for EntryDefineFile {
     }
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct EntryDefine {
     #[serde(rename = "type")]
     pub entry_type: String,
