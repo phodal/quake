@@ -101,9 +101,12 @@ parameters = {
 - [x] 自定义条目类型
   - [x] CRUD
   - [x] dynamic update entries-define
-- [ ] 空间
+- [ ] 知识空间
   - [ ] 自定义项目视图
   - [ ] 年份视图
+- [ ] 知识可视化
+  - [ ] Mindmap from Ledge Framework?
+  - [ ] Mindmap connect to Entry (`${connect.todo("0001", "${title}"}`)
 - [x] CLI 交互与列表呈现
 - [ ] MVP API 设计
   - [ ] Web Server
