@@ -18,7 +18,7 @@ pub struct ApiError {
 #[rocket::main]
 pub async fn start_server() -> Result<(), Error> {
     rocket::build()
-        .mount("/home", FileServer::from(relative!("quake_webapp")))
+        .mount("/", FileServer::from(relative!("quake_webapp")))
         .mount("/entry", routes![entry_api::entry])
         .mount("/action", routes![action_api::parse_query])
         .launch()
