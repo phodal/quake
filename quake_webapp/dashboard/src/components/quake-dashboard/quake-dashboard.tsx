@@ -12,12 +12,17 @@ export class QuakeDashboard {
     console.log(this.sets, this.sets.length)
     return <div>
       {this.sets.length > 0 ? this.sets.map((todo: any) =>
-          <div>
-            <div>{todo.title}</div>
-            <div>{todo.content}</div>
-            <div>{todo.created_date}</div>
-            <div>{todo.updated_date}</div>
-          </div>,
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>{todo.title}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              {todo.content}
+
+              <span>{todo.created_date}</span>
+              <span>{todo.updated_date}</span>
+            </ion-card-content>
+          </ion-card>,
         )
         : <div></div>
       }
