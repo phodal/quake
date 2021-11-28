@@ -100,13 +100,16 @@ parameters = {
   - [ ] Microsoft Onenote
 - [x] 自定义条目类型
   - [x] CRUD
-  - [ ] dynamic update entries-define
-- [ ] 自定义项目
+  - [x] dynamic update entries-define
+- [ ] 自定义文件系统视图
+  - [ ] 自定义项目视图
+  - [ ] 年份视图
 - [x] CLI 交互与列表呈现
 - [ ] MVP API 设计
   - [ ] Web Server
   - [ ] GraphQL
 - [ ] 基于 Git 的数据存储
+- [ ] 嵌入式脚本语言
 
 ### 1.0: Knowledge map 
 
