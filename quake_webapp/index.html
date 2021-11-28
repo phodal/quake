@@ -17,20 +17,17 @@
     const search = instantsearch({
         indexName: "phodal_com",
         searchClient: instantMeiliSearch(
-            "http://localhost:7700"
+            "http://localhost:7700",
+            {
+                limitPerRequest: 10,
+                placeholderSearch: true
+            }
         )
     });
 
     search.addWidgets([
         instantsearch.widgets.searchBox({
             container: "#searchbox"
-        }),
-        instantsearch.widgets.configure({
-            hitsPerPage: 8,
-            attributesToSnippet: ['description:150'],
-        }),
-        instantsearch.widgets.pagination({
-            container: '#pagination',
         }),
         instantsearch.widgets.hits({
             container: "#hits",

@@ -29,13 +29,24 @@ curl \
           "rank:desc"
       ],
       "distinctAttribute": null,
-      "searchableAttributes": null,
-      "displayedAttributes": null,
+      "searchableAttributes": [
+          "title",
+          "content"
+      ],
+      "displayedAttributes": [
+          "title",
+          "description",
+          "created_date"
+      ],
       "stopWords": null,
-      "sortableAttributes":null,
+      "sortableAttributes": [
+        "title",
+        "created_date",
+        "keywords_string",
+        "content"
+      ],
       "synonyms": null
   }'
- ``
 ```
 
 Delete
