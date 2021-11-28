@@ -1,7 +1,7 @@
 use crate::parser::ast::SourceUnitPart;
 use crate::parser::quake_parser::parse;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct InputParser {
     pub object: String,
     pub action: String,

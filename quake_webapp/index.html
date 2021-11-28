@@ -55,8 +55,8 @@
     const index = client.index('phodal_com')
     index.search('架构').then((result) => {
         let data = result.hits;
-        const todoListElement = document.querySelector('quake-dashboard');
-        todoListElement.sets = data;
+        const dashboardEl = document.querySelector('quake-dashboard');
+        dashboardEl.sets = data;
     })
 </script>
 </html>
