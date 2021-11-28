@@ -12,3 +12,4 @@ dbs/NoteStore.sqlite-shm
 dbs/NoteStore.sqlite-wal
 dbs
 dump.json
+quake_webapp/temp

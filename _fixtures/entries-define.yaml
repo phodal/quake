@@ -1,7 +1,6 @@
 entries:
   - type: todo
     display: Todo
-    custom_template: quake/todo.yaml
     fields:
       - title: Title
       - author: Text
@@ -9,10 +8,3 @@ entries:
       - created_date: Date
       - updated_date: Date
 
-#    actions:
-#      default:
-#        - add
-#        - remove
-#        - delete
-#      custom:
-#        - update
