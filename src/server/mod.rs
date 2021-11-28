@@ -2,9 +2,9 @@ use rocket::Error;
 use rocket::fs::{FileServer, relative};
 
 #[allow(unused_imports)]
-use entry_api::entry;
-#[allow(unused_imports)]
 use action_api::parse_query;
+#[allow(unused_imports)]
+use entry_api::entry;
 
 mod entry_api;
 mod action_api;

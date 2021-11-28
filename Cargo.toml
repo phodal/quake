@@ -42,8 +42,7 @@ serde_derive = "1.0"
 
 # WebServer
 rocket = "0.5.0-rc.1"
-
-meilisearch-sdk = "0.12.0"
+reqwest = { version = "0.11", features = ["blocking", "json"] }
 
 [workspace]
 members = [

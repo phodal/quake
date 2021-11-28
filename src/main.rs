@@ -1,7 +1,7 @@
+extern crate config;
+extern crate reqwest;
 #[macro_use]
 extern crate rocket;
-
-extern crate config;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
@@ -16,6 +16,7 @@ use action::entry_action;
 use quake_core::entry::EntryDefineFile;
 use quake_core::input_parser::InputParser;
 use quake_core::QuakeConfig;
+
 use crate::server::start_server;
 
 pub mod action;
