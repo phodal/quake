@@ -36,8 +36,10 @@ pub async fn start_server() -> Result<(), Error> {
         .merge(Env::prefixed("APP_").global())
         .select(Profile::from_env_or("workspace", "."));
 
+    // todo: loading from figment config
+    let path = relative!("quake_webapp");
     rocket::custom(figment)
-        .mount("/", FileServer::from(relative!("quake_webapp")))
+        .mount("/", FileServer::from(path))
         .mount("/entry", routes![entry_api::get_entries])
         .mount("/action", routes![action_api::parse_query, action_api::suggest])
         .attach(AdHoc::config::<QuakeServerConfig>())
