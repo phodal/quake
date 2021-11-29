@@ -1,8 +1,7 @@
-use std::io;
 use pulldown_cmark::{Event, Options, Parser, Tag};
 
 pub fn jsonify(text: String) {
-    let parser = Parser::new_ext(markdown_input, Options::empty())
+    let parser = Parser::new_ext(text.as_str(), Options::empty());
     for event in parser {
         match event {
             Event::Start(tag) => {
@@ -23,7 +22,7 @@ pub fn jsonify(text: String) {
     }
 }
 
-fn start_tag(tag: Tag){
+fn start_tag(tag: Tag) {
     match tag {
         Tag::Paragraph => {}
         Tag::Heading(_) => {}
