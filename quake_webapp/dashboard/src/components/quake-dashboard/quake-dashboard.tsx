@@ -14,6 +14,7 @@ export class QuakeDashboard {
   @Prop() indexName: String = "";
   @Element() el: HTMLElement;
   @State() items: Array<object> = [];
+  @State() isAction = false;
 
   client = new MeiliSearch({
     host: 'http://127.0.0.1:7700'
@@ -23,6 +24,15 @@ export class QuakeDashboard {
     const that = this;
     const query = event.target.value;
     if(query.length == 0) {
+      return;
+    }
+
+    if (query.startsWith(":")) {
+      this.isAction = true;
+
+      // suggest entry type for action
+
+      // suggest entry action for actions
       return;
     }
 
