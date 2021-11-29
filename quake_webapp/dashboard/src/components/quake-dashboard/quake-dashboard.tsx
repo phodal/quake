@@ -103,7 +103,7 @@ export class QuakeDashboard {
       <ion-header translucent>
         <ion-toolbar>
           <ion-item>
-            { this.inputType.length > 0
+            {this.inputType.length > 0
               ? <ion-chip>
                 <ion-label>{this.inputType}</ion-label>
               </ion-chip>
