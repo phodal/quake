@@ -5,7 +5,7 @@ use serde::ser::SerializeMap;
 use serde_yaml::Value;
 
 use crate::entry::front_matter::FrontMatter;
-use crate::slug::slugify;
+use crate::entry::slug::slugify;
 
 #[derive(Deserialize, PartialEq, Debug)]
 pub struct EntryFile {
