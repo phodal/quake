@@ -50,6 +50,7 @@ fn entry_action(expr: &InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Err
     let entries_define = find_entry_define(&expr, &paths);
     let mut entry_info = entry_info_from_path(&paths.entries_info);
 
+    // todo: export api for search
     match expr.action.as_str() {
         "add" => {
             let new_md_file = file_process::file_name(entry_info.index + 1, expr.text.as_str());
