@@ -15,41 +15,51 @@
 <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css"/>
 
-<script src="https://unpkg.com/@vaadin/router/dist/vaadin-router.umd.min.js"></script>
+<!--<script src="https://unpkg.com/@vaadin/router/dist/vaadin-router.umd.min.js"></script>-->
+<script src="temp/vaadin-router.umd.js"></script>
 
 <script type="module" src="./dashboard/dist/dashboard/dashboard.esm.js"></script>
 <script src="./quake-editor/dist/quake-editor.min.js"></script>
-
-
-<!--<script src="./quake-editor/build/static/js/runtime-main.baa57652.js"></script>-->
-<!--<script src="./quake-editor/build/static/js/main.d459f03a.chunk.js"></script>-->
-<!--<script src="./quake-editor/build/static/js/2.f41d6103.chunk.js"></script>-->
-<!--<script src="./quake-editor/build/static/js/3.a0636a88.chunk.js"></script>-->
 
 <script>
   var Router = Vaadin.Router;
   const outlet = document.getElementById('outlet');
   const router = new Router(outlet);
 
-  const home = (context) => {
+  const home = (context, commands) => {
     const dashboard = document.createElement('quake-dashboard');
     dashboard.addEventListener("dispatchAction", function (e) {
       let define = e.detail;
-      router.render("/editor", define);
+      console.log(define);
+
+      if(define.action === 'add') {
+        Router.go("/editor")
+      } else {
+        // define to query?
+        Router.go("/entry/10");
+      }
     });
 
     return dashboard
   };
 
-  const editor = (context) => {
+  const editor = (context, commands, define) => {
     const editor = document.createElement('quake-editor');
+    editor.setAttribute('content', "text");
 
     return editor
+  }
+
+  const entry = (context, commands) => {
+    let el = document.createElement('h1');
+    el.innerText = 'Entry'
+    return el
   }
 
   router.setRoutes([
     {path: '/', action: home},
     {path: '/editor', action: editor },
+    {name: 'entry', path: '/entry/:id', action: entry },
   ]);
 </script>
 </html>
