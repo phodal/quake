@@ -5,7 +5,7 @@ use rocket::tokio::task::spawn_blocking;
 use crate::server::ApiError;
 
 #[get("/<entry_type>", rank = 3)]
-pub(crate) async fn entry(entry_type: &str) -> Json<String> {
+pub(crate) async fn get_entries(entry_type: &str) -> Json<String> {
     let request_url = format!("http://127.0.0.1:7700/indexes/{:}/documents", entry_type);
 
     let vec = spawn_blocking (|| content::Json(

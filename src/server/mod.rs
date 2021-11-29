@@ -7,7 +7,7 @@ use rocket::fs::{FileServer, relative};
 #[allow(unused_imports)]
 use action_api::parse_query;
 #[allow(unused_imports)]
-use entry_api::entry;
+use entry_api::get_entries;
 
 mod entry_api;
 mod action_api;
@@ -38,7 +38,7 @@ pub async fn start_server() -> Result<(), Error> {
 
     rocket::custom(figment)
         .mount("/", FileServer::from(relative!("quake_webapp")))
-        .mount("/entry", routes![entry_api::entry])
+        .mount("/entry", routes![entry_api::get_entries])
         .mount("/action", routes![action_api::parse_query, action_api::suggest])
         .attach(AdHoc::config::<QuakeServerConfig>())
         .launch()
