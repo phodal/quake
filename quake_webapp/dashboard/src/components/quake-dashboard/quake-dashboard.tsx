@@ -51,7 +51,7 @@ export class QuakeDashboard {
       return;
     }
 
-    if (this.query.startsWith(".")) {
+    if (this.query.startsWith("/")) {
       this.inputType = 'Action'
       return;
     }
@@ -124,7 +124,7 @@ export class QuakeDashboard {
             }
             <form id="search-form" onSubmit={this.handleSubmit.bind(this)}>
               <ion-input
-                placeholder="`.todo:add` for create `todo`"
+                placeholder="`/todo:add` for create `todo`"
                 autofocus={true}
                 ref={(el) => this.ionInputElement = el}
                 onIonInput={this.handleInput.bind(this)}
