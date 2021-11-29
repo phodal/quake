@@ -1,2 +1,2 @@
 [default]
-work_path = "_fixtures"
+workspace = "_fixtures"

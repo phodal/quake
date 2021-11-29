@@ -19,12 +19,12 @@ pub struct ApiError {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct QuakeServerConfig {
-    pub work_path: String
+    pub workspace: String
 }
 
 impl Default for QuakeServerConfig {
     fn default() -> Self {
-        QuakeServerConfig { work_path: "".to_string() }
+        QuakeServerConfig { workspace: "".to_string() }
     }
 }
 
