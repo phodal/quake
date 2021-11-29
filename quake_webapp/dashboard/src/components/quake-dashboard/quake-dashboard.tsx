@@ -1,11 +1,11 @@
 import {Component, Element, h, Prop, State} from '@stencil/core';
 import {MeiliSearch} from "meilisearch";
 import dayjs from "dayjs";
+import axios from "axios";
 
 // only for: IDEA jump
 // @ts-ignore
 import {IonSearchbar} from "@ionic/core";
-import axios from "axios";
 
 interface ActionDefine {
   object: String,
@@ -95,7 +95,6 @@ export class QuakeDashboard {
     toast.duration = 2000;
 
     document.body.appendChild(toast);
-    console.log(toast);
     return toast.present();
   }
 
@@ -103,13 +102,13 @@ export class QuakeDashboard {
     return <ion-app>
       <ion-header translucent>
         <ion-toolbar>
-          <ion-title>Quake</ion-title>
-        </ion-toolbar>
-        <ion-toolbar>
           <ion-item>
-            {this.inputType.length > 0 ? <ion-chip>
-              <ion-label>{this.inputType}</ion-label>
-            </ion-chip> : null}
+            { this.inputType.length > 0
+              ? <ion-chip>
+                <ion-label>{this.inputType}</ion-label>
+              </ion-chip>
+              : null
+            }
             <form id="search-form" onSubmit={this.handleSubmit.bind(this)}>
               <ion-input
                 placeholder="`.todo:add` for create `todo`"
