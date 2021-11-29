@@ -19,17 +19,22 @@ pub struct ApiError {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct QuakeServerConfig {
+    pub work_path: String
+}
 
+impl Default for QuakeServerConfig {
+    fn default() -> Self {
+        QuakeServerConfig { work_path: "".to_string() }
+    }
 }
 
 #[rocket::main]
 pub async fn start_server() -> Result<(), Error> {
     let figment = Figment::from(rocket::Config::default())
         .merge(Serialized::defaults(Config::default()))
-        .merge(Toml::file("App.toml").nested())
+        .merge(Toml::file("QuakeServer.toml").nested())
         .merge(Env::prefixed("APP_").global())
-        .select(Profile::from_env_or("APP_PROFILE", "default"));
-
+        .select(Profile::from_env_or("workspace", "."));
 
     rocket::custom(figment)
         .mount("/", FileServer::from(relative!("quake_webapp")))

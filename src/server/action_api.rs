@@ -3,12 +3,13 @@ use std::path::PathBuf;
 
 use rocket::response::content;
 use rocket::response::content::Json;
+use rocket::State;
 use rocket::tokio::task::spawn_blocking;
 
 use quake_core::entry::{EntryDefine, EntryDefineFile};
 use quake_core::input_parser::InputParser;
 
-use crate::server::ApiError;
+use crate::server::{ApiError, QuakeServerConfig};
 
 #[get("/query?<input>")]
 pub fn parse_query(input: String) -> String {
@@ -41,11 +42,12 @@ impl Default for ActionSuggest {
 }
 
 #[get("/suggest")]
-pub async fn suggest() -> Json<String> {
+pub async fn suggest(config: &State<QuakeServerConfig>) -> Json<String> {
     let mut suggest = ActionSuggest::default();
+    let buf = PathBuf::from(&config.work_path).join("entries-define.yaml");
+
     let defines = spawn_blocking(|| {
         // todo: change to config for path
-        let buf = PathBuf::from("_fixtures").join("entries-define.yaml");
         let entries_str = fs::read_to_string(buf).expect("cannot read entries-define.yaml");
         let entries: EntryDefineFile = serde_yaml::from_str(&*entries_str).unwrap();
 
