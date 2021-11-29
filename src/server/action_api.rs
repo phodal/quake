@@ -7,7 +7,7 @@ use rocket::State;
 use rocket::tokio::task::spawn_blocking;
 
 use quake_core::entry::{EntryDefine, EntryDefineFile};
-use quake_core::input_parser::InputParser;
+use quake_core::action_parser::ActionDefine;
 
 use crate::server::{ApiError, QuakeServerConfig};
 
@@ -25,7 +25,7 @@ impl Default for ActionSuggest {
 
 #[get("/query?<input>")]
 pub fn parse_query(input: String) -> String {
-    let result = InputParser::from(input.as_str());
+    let result = ActionDefine::from(input.as_str());
     let output = match result {
         Ok(value) => {
             serde_json::to_string(&value).unwrap()

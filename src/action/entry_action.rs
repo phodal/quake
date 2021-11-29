@@ -7,7 +7,7 @@ use quake_core::entry::entry_define::{EntryDefine, EntryDefineFile};
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_info::EntryInfo;
 use quake_core::entry::front_matter::FrontMatter;
-use quake_core::input_parser::InputParser;
+use quake_core::action_parser::ActionDefine;
 use quake_core::quake_config::QuakeConfig;
 
 use crate::action::{file_process, quake_action, table_process};
@@ -37,7 +37,7 @@ impl EntryPaths {
     }
 }
 
-pub fn action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
+pub fn action(expr: ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     if expr.object == "quake" {
         return quake_action::quake_action(&expr, &conf);
     }
@@ -45,7 +45,7 @@ pub fn action(expr: InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Error>
     entry_action(&expr, conf)
 }
 
-fn entry_action(expr: &InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
+fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.path, &expr.object);
     let entries_define = find_entry_define(&expr, &paths);
     let mut entry_info = entry_info_from_path(&paths.entries_info);
@@ -92,7 +92,7 @@ fn entry_action(expr: &InputParser, conf: QuakeConfig) -> Result<(), Box<dyn Err
     Ok(())
 }
 
-fn find_entry_define(expr: &&InputParser, paths: &EntryPaths) -> EntryDefine {
+fn find_entry_define(expr: &&ActionDefine, paths: &EntryPaths) -> EntryDefine {
     let entries: Vec<EntryDefine> = entries_define_from_path(&paths.entries_define).into_iter()
         .filter(|define| {
             define.entry_type.eq(&expr.object)
@@ -126,7 +126,7 @@ pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn create_entry_file(expr: &InputParser, entry_define: &EntryDefine, target_file: &mut PathBuf) {
+fn create_entry_file(expr: &ActionDefine, entry_define: &EntryDefine, target_file: &mut PathBuf) {
     let mut entry_file = EntryFile::default();
     let init_map = entry_define.create_title_and_date(expr.text.to_string());
     entry_file.front_matter = FrontMatter { fields: entry_define.merge(init_map) };
@@ -168,7 +168,7 @@ fn entry_info_from_path(entry_info_path: &PathBuf) -> EntryInfo {
 
 #[cfg(test)]
 mod tests {
-    use quake_core::input_parser::InputParser;
+    use quake_core::action_parser::ActionDefine;
     use quake_core::quake_config::QuakeConfig;
 
     use crate::action::entry_action::action;
@@ -176,7 +176,7 @@ mod tests {
     #[test]
     #[ignore]
     fn update_todo() {
-        let expr = InputParser::from("todo.update(1)").unwrap();
+        let expr = ActionDefine::from("todo.update(1)").unwrap();
         let mut config = QuakeConfig::default();
         config.path = "_fixtures".to_string();
         config.editor = "".to_string();

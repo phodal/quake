@@ -14,7 +14,7 @@ use clap::Parser;
 
 use action::entry_action;
 use quake_core::entry::EntryDefineFile;
-use quake_core::input_parser::InputParser;
+use quake_core::action_parser::ActionDefine;
 use quake_core::QuakeConfig;
 
 use crate::server::start_server;
@@ -99,7 +99,7 @@ fn main() {
             let conf: QuakeConfig = config(&cmd);
 
             if cmd.input.len() > 0 {
-                let expr = InputParser::from(cmd.input.as_str()).unwrap();
+                let expr = ActionDefine::from(cmd.input.as_str()).unwrap();
                 if let Err(err) = entry_action::action(expr, conf) {
                     println!("{:?}", err)
                 }

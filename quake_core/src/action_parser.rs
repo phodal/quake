@@ -3,16 +3,16 @@ use crate::parser::ast::SourceUnitPart;
 use crate::parser::quake_parser::parse;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct InputParser {
+pub struct ActionDefine {
     pub object: String,
     pub action: String,
     pub text: String,
     pub parameters: Vec<String>
 }
 
-impl Default for InputParser {
+impl Default for ActionDefine {
     fn default() -> Self {
-        InputParser {
+        ActionDefine {
             object: "".to_string(),
             action: "".to_string(),
             text: "".to_string(),
@@ -21,10 +21,10 @@ impl Default for InputParser {
     }
 }
 
-impl InputParser {
-    pub fn from(text: &str) -> Result<InputParser, Box<dyn Error>> {
+impl ActionDefine {
+    pub fn from(text: &str) -> Result<ActionDefine, Box<dyn Error>> {
         let unit = parse(text)?;
-        let mut expr = InputParser::default();
+        let mut expr = ActionDefine::default();
         for part in unit.0 {
             match part {
                 SourceUnitPart::Action(action) => {
@@ -51,11 +51,11 @@ impl InputParser {
 
 #[cfg(test)]
 mod tests {
-    use crate::input_parser::InputParser;
+    use crate::action_parser::ActionDefine;
 
     #[test]
     fn should_parse_expression() {
-        let expr = InputParser::from("todo.add: 添加 todo 的支持").unwrap();
+        let expr = ActionDefine::from("todo.add: 添加 todo 的支持").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "add");
         assert_eq!(expr.text, "添加 todo 的支持");
@@ -63,7 +63,7 @@ mod tests {
 
     #[test]
     fn should_parse_update_parameter() {
-        let expr = InputParser::from("todo.update(1)").unwrap();
+        let expr = ActionDefine::from("todo.update(1)").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "1");
@@ -74,7 +74,7 @@ mod tests {
 
     #[test]
     fn should_parse_com() {
-        let expr = InputParser::from("phodal_com.sync").unwrap();
+        let expr = ActionDefine::from("phodal_com.sync").unwrap();
         assert_eq!(expr.object, "phodal_com");
         assert_eq!(expr.action, "sync");
     }

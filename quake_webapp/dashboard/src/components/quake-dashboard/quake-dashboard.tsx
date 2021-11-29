@@ -7,6 +7,12 @@ import dayjs from "dayjs";
 import {IonSearchbar} from "@ionic/core";
 import axios from "axios";
 
+interface ActionDefine {
+  object: String,
+  action: String,
+  text: String,
+  parameters: String[]
+}
 
 @Component({
   tag: 'quake-dashboard',
@@ -22,7 +28,8 @@ export class QuakeDashboard {
   @State() isAction = false;
 
   @State() query: String = "";
-  @State() actionType: String = "";
+  @State() inputType: String = "";
+  @State() actionDefine: ActionDefine = null;
 
   client = new MeiliSearch({
     host: 'http://127.0.0.1:7700'
@@ -34,16 +41,17 @@ export class QuakeDashboard {
     this.query = event.target.value;
     if (this.query.length == 0) {
       that.items = [];
-      this.actionType = '';
+      this.inputType = '';
       return;
     }
 
     if (this.query.startsWith(".")) {
-      this.actionType = 'Action'
+      this.inputType = 'Action'
       return;
     }
 
-    this.actionType = 'Search';
+    this.actionDefine = null;
+    this.inputType = 'Search';
     this.createSearch(that);
   }
 
@@ -61,22 +69,30 @@ export class QuakeDashboard {
     return dayjs(str).format('YYYY-MM-DD HH:mm:ss');
   }
 
-  clearInput(_event) {
-    this.items = [];
-  }
-
-  private async handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault()
-
+    const that = this;
     axios.get('http://127.0.0.1:8000/action/query/', {
       params: {
         input: this.query.substring(1,)
       }
     }).then(function (response) {
-      console.log(response.data);
+      that.actionDefine = response.data
+      console.log(that.actionDefine);
     }).catch(function (error) {
+      that.actionDefine = null;
+      that.presentToast();
       console.log(error);
     });
+  }
+
+  async presentToast() {
+    const toast = document.createElement('ion-toast');
+    toast.message = 'Your settings have been saved.';
+    toast.duration = 2000;
+
+    document.body.appendChild(toast);
+    return toast.present();
   }
 
   render() {
@@ -87,10 +103,10 @@ export class QuakeDashboard {
         </ion-toolbar>
         <ion-toolbar>
           <ion-item>
-            {this.actionType.length > 0 ? <ion-chip>
-              <ion-label>{this.actionType}</ion-label>
+            {this.inputType.length > 0 ? <ion-chip>
+              <ion-label>{this.inputType}</ion-label>
             </ion-chip> : null}
-            <form id="search-form" onSubmit={(e) => this.handleSubmit(e)}>
+            <form id="search-form" onSubmit={this.handleSubmit.bind(this)}>
               <ion-input
                 placeholder="`.todo:add` for create `todo`"
                 autofocus={true}
@@ -105,13 +121,17 @@ export class QuakeDashboard {
       </ion-header>
       <ion-content fullscreen>
         <ion-list>
+          { this.actionDefine ?
+              <ion-item>{this.actionDefine.object}, {this.actionDefine.action}, {this.actionDefine.text}, {this.actionDefine.parameters} </ion-item>
+            : null
+          }
           {this.items.length > 0
             ? this.items.map((item: any) =>
               <ion-item>
                 <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
                 {item.title}
               </ion-item>)
-            : <div></div>
+            : null
           }
         </ion-list>
       </ion-content>
