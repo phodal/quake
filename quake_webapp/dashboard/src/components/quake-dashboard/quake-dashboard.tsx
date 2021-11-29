@@ -1,5 +1,7 @@
 import {Component, Prop, h, Element, State} from '@stencil/core';
 import {MeiliSearch} from "meilisearch";
+// @ts-ignore
+import { IonSearchbar } from "@ionic/core";
 
 @Component({
   tag: 'quake-dashboard',
@@ -20,6 +22,10 @@ export class QuakeDashboard {
   handleInput(event) {
     const that = this;
     const query = event.target.value;
+    if(query.length == 0) {
+      return;
+    }
+
     const index = this.client.index('phodal_com')
     requestAnimationFrame(() => {
       index.search(query).then((result) => {
@@ -40,9 +46,9 @@ export class QuakeDashboard {
         </ion-toolbar>
         <ion-toolbar>
           <ion-searchbar ref={(el) => this.ionInputElement = el}
-                         onCancel={this.clearInput.bind(this)}
-                         onClear={this.clearInput.bind(this)}
-                         onInput={this.handleInput.bind(this)}></ion-searchbar>
+                         onIonCancel={this.clearInput.bind(this)}
+                         onIonClear={this.clearInput.bind(this)}
+                         onIonChange={this.handleInput.bind(this)}></ion-searchbar>
         </ion-toolbar>
       </ion-header>
       <ion-content fullscreen>
