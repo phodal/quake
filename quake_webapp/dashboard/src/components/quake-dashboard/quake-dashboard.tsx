@@ -36,7 +36,6 @@ export class QuakeDashboard {
   })
 
   handleInput(event) {
-    console.log(event);
     const that = this;
     this.query = event.target.value;
     if (this.query.length == 0) {
@@ -72,26 +71,31 @@ export class QuakeDashboard {
   async handleSubmit(e) {
     e.preventDefault()
     const that = this;
-    axios.get('http://127.0.0.1:8000/action/query/', {
-      params: {
-        input: this.query.substring(1,)
-      }
-    }).then(function (response) {
-      that.actionDefine = response.data
-      console.log(that.actionDefine);
-    }).catch(function (error) {
-      that.actionDefine = null;
-      that.presentToast();
-      console.log(error);
+    requestAnimationFrame(() => {
+      axios.get('http://127.0.0.1:8000/action/query/', {
+        params: {
+          input: this.query.substring(1,)
+        }
+      }).then(response => {
+        if (response.data.object) {
+          that.actionDefine = response.data
+        } else {
+          that.actionDefine = null;
+          that.presentToast(response.data.msg);
+        }
+      }).catch(function (error) {
+        console.log(error);
+      });
     });
   }
 
-  async presentToast() {
+  async presentToast(msg: string) {
     const toast = document.createElement('ion-toast');
-    toast.message = 'Your settings have been saved.';
+    toast.message = msg;
     toast.duration = 2000;
 
     document.body.appendChild(toast);
+    console.log(toast);
     return toast.present();
   }
 
@@ -121,8 +125,8 @@ export class QuakeDashboard {
       </ion-header>
       <ion-content fullscreen>
         <ion-list>
-          { this.actionDefine ?
-              <ion-item>{this.actionDefine.object}, {this.actionDefine.action}, {this.actionDefine.text}, {this.actionDefine.parameters} </ion-item>
+          {this.actionDefine ?
+            <ion-item>{this.actionDefine.object}, {this.actionDefine.action}, {this.actionDefine.text}, {this.actionDefine.parameters} </ion-item>
             : null
           }
           {this.items.length > 0
