@@ -2,3 +2,7 @@
   display: block;
   height: 100%;
 }
+
+#submit-button {
+  display: none;
+}
