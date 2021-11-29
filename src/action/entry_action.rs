@@ -7,7 +7,7 @@ use quake_core::entry::entry_define::{EntryDefine, EntryDefineFile};
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_info::EntryInfo;
 use quake_core::entry::front_matter::FrontMatter;
-use quake_core::action_parser::ActionDefine;
+use quake_core::parser::action_parser::ActionDefine;
 use quake_core::quake_config::QuakeConfig;
 
 use crate::action::{file_process, quake_action, table_process};
@@ -168,7 +168,7 @@ fn entry_info_from_path(entry_info_path: &PathBuf) -> EntryInfo {
 
 #[cfg(test)]
 mod tests {
-    use quake_core::action_parser::ActionDefine;
+    use quake_core::parser::action_parser::ActionDefine;
     use quake_core::quake_config::QuakeConfig;
 
     use crate::action::entry_action::action;

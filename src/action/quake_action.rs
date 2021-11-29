@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use walkdir::{DirEntry, WalkDir};
 
 use quake_core::entry::EntryDefineFile;
-use quake_core::action_parser::ActionDefine;
+use quake_core::parser::action_parser::ActionDefine;
 use quake_core::QuakeConfig;
 
 use crate::action::entry_action;

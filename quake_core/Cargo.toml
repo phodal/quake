@@ -32,3 +32,6 @@ chrono = "0.4"
 
 # hashmap in order
 indexmap = { version = "1.7.0", features = ["serde"] }
+
+# markdown parser
+pulldown-cmark = "0.8.0"

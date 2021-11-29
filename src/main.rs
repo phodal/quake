@@ -14,7 +14,7 @@ use clap::Parser;
 
 use action::entry_action;
 use quake_core::entry::EntryDefineFile;
-use quake_core::action_parser::ActionDefine;
+use quake_core::parser::action_parser::ActionDefine;
 use quake_core::QuakeConfig;
 
 use crate::server::start_server;
