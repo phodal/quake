@@ -19,22 +19,29 @@
 <script type="module" src="./dashboard/dist/dashboard/dashboard.esm.js"></script>
 
 <script>
-  const render = (context) => {
+  var Router = Vaadin.Router;
+  const outlet = document.getElementById('outlet');
+  const router = new Router(outlet);
+
+  const home = (context) => {
     const dashboard = document.createElement('quake-dashboard');
-    console.log(dashboard);
-    dashboard.addEventListener("dispatch-action", function (e) {
-      console.log(e);
+    dashboard.addEventListener("dispatchAction", function (e) {
+      let define = e.detail;
+      router.render("/editor", define);
     });
 
     return dashboard
   };
 
-  var Router = Vaadin.Router;
-  const outlet = document.getElementById('outlet');
-  const router = new Router(outlet);
+  const editor = (context) => {
+    const editor = document.createElement('quake-editor');
+
+    return editor
+  }
+
   router.setRoutes([
-    {path: '/', action: render},
-    {path: '/editor', component: 'quake-editor'},
+    {path: '/', action: home},
+    {path: '/editor', action: editor },
   ]);
 </script>
 </html>

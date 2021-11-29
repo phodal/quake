@@ -31,7 +31,12 @@ export class QuakeDashboard {
   @State() inputType: String = "";
   @State() actionDefine: ActionDefine = null;
 
-  @Event() dispatchAction: EventEmitter<ActionDefine>;
+  @Event({
+    eventName: 'dispatchAction',
+    composed: true,
+    cancelable: true,
+    bubbles: true,
+  })  dispatchAction: EventEmitter<ActionDefine>;
 
   client = new MeiliSearch({
     host: 'http://127.0.0.1:7700'
