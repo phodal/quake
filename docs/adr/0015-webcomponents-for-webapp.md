@@ -23,8 +23,22 @@ Date: 2021-11-29
 - [ ] ChartView
 - [ ] Ledge Render
 
+Markdown Editor:
 
-Render: React Notion: https://github.com/splitbee/react-notion
+- [https://github.com/Vanessa219/vditor](https://github.com/Vanessa219/vditor)
+- [https://github.com/uiwjs/react-md-editor](https://github.com/uiwjs/react-md-editor), is simple
+- [https://github.com/outline/rich-markdown-editor](https://github.com/outline/rich-markdown-editor)
+
+rich samples: [https://github.com/outline/outline/blob/main/app/components/Editor.js](https://github.com/outline/outline/blob/main/app/components/Editor.js)
+
+React Notion Render:
+
+- [https://github.com/splitbee/react-notion](https://github.com/splitbee/react-notion)
+- [https://github.com/NotionX/react-notion-x](https://github.com/NotionX/react-notion-x)
+
+Knowledge App:
+
+- [https://github.com/logseq/logseq](https://github.com/logseq/logseq)
 
 ## Decision
 

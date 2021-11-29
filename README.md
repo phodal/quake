@@ -101,7 +101,7 @@ parameters = {
 
 ## Developoment
 
-Languages: Rust, TypeScript
+Languages: Rust, TypeScript (Node.js 16)
 
 Tech stacks:
 
