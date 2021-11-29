@@ -28,15 +28,21 @@ export class QuakeDashboard {
     });
   }
 
+  clearInput(_event) {
+    this.items = [];
+  }
+
   render() {
-    console.log(this.items);
     return <ion-app>
       <ion-header translucent>
         <ion-toolbar>
           <ion-title>Quake Action</ion-title>
         </ion-toolbar>
         <ion-toolbar>
-          <ion-searchbar ref={(el) => this.ionInputElement = el} onInput={this.handleInput.bind(this)}></ion-searchbar>
+          <ion-searchbar ref={(el) => this.ionInputElement = el}
+                         onCancel={this.clearInput.bind(this)}
+                         onClear={this.clearInput.bind(this)}
+                         onInput={this.handleInput.bind(this)}></ion-searchbar>
         </ion-toolbar>
       </ion-header>
       <ion-content fullscreen>
