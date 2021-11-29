@@ -6,6 +6,7 @@ extern crate serde;
 extern crate serde_derive;
 
 pub mod model;
+pub mod markdown;
 pub mod quake_config;
 pub mod parser;
 pub mod repository;
