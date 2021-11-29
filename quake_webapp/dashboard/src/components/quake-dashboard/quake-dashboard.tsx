@@ -1,4 +1,4 @@
-import {Component, Element, h, Prop, State} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Prop, State} from '@stencil/core';
 import {MeiliSearch} from "meilisearch";
 import dayjs from "dayjs";
 import axios from "axios";
@@ -7,7 +7,7 @@ import axios from "axios";
 // @ts-ignore
 import {IonSearchbar} from "@ionic/core";
 
-interface ActionDefine {
+export interface ActionDefine {
   object: String,
   action: String,
   text: String,
@@ -30,6 +30,8 @@ export class QuakeDashboard {
   @State() query: String = "";
   @State() inputType: String = "";
   @State() actionDefine: ActionDefine = null;
+
+  @Event() dispatchAction: EventEmitter<ActionDefine>;
 
   client = new MeiliSearch({
     host: 'http://127.0.0.1:7700'
@@ -72,13 +74,14 @@ export class QuakeDashboard {
     e.preventDefault()
     const that = this;
     requestAnimationFrame(() => {
-      axios.get('http://127.0.0.1:8000/action/query/', {
+      axios.get('/action/query/', {
         params: {
           input: this.query.substring(1,)
         }
       }).then(response => {
         if (response.data.object) {
           that.actionDefine = response.data
+          that.dispatchAction.emit(response.data);
         } else {
           that.actionDefine = null;
           that.presentToast(response.data.msg);
@@ -88,6 +91,11 @@ export class QuakeDashboard {
       });
     });
   }
+  //
+  // @Listen('dispatchAction')
+  // dispatchActionEvent(define: ActionDefine) {
+  //   this.dispatchAction.emit(define);
+  // }
 
   async presentToast(msg: string) {
     const toast = document.createElement('ion-toast');

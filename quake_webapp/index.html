@@ -1,18 +1,40 @@
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dashboard</title>
 </head>
 <body>
-    <quake-dashboard></quake-dashboard>
+<div id="outlet"></div>
 </body>
 
 <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
 <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css"/>
 
+<script src="https://unpkg.com/@vaadin/router/dist/vaadin-router.umd.min.js"></script>
+
 <script type="module" src="./dashboard/dist/dashboard/dashboard.esm.js"></script>
+
+<script>
+  const render = (context) => {
+    const dashboard = document.createElement('quake-dashboard');
+    console.log(dashboard);
+    dashboard.addEventListener("dispatch-action", function (e) {
+      console.log(e);
+    });
+
+    return dashboard
+  };
+
+  var Router = Vaadin.Router;
+  const outlet = document.getElementById('outlet');
+  const router = new Router(outlet);
+  router.setRoutes([
+    {path: '/', action: render},
+    {path: '/editor', component: 'quake-editor'},
+  ]);
+</script>
 </html>

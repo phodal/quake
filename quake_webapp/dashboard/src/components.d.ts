@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ActionDefine } from "./components/quake-dashboard/quake-dashboard";
 export namespace Components {
     interface QuakeDashboard {
         "indexName": String;
@@ -24,6 +25,7 @@ declare global {
 declare namespace LocalJSX {
     interface QuakeDashboard {
         "indexName"?: String;
+        "onDispatchAction"?: (event: CustomEvent<ActionDefine>) => void;
     }
     interface IntrinsicElements {
         "quake-dashboard": QuakeDashboard;
