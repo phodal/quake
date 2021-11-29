@@ -9,7 +9,6 @@ use entry_api::entry;
 mod entry_api;
 mod action_api;
 
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ApiError {
     pub msg: String,
@@ -20,7 +19,7 @@ pub async fn start_server() -> Result<(), Error> {
     rocket::build()
         .mount("/", FileServer::from(relative!("quake_webapp")))
         .mount("/entry", routes![entry_api::entry])
-        .mount("/action", routes![action_api::parse_query])
+        .mount("/action", routes![action_api::parse_query, action_api::suggest])
         .launch()
         .await
 }
