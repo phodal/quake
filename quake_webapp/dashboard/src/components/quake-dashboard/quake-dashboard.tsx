@@ -90,7 +90,7 @@ export class QuakeDashboard {
             {this.actionType.length > 0 ? <ion-chip>
               <ion-label>{this.actionType}</ion-label>
             </ion-chip> : null}
-            <form onSubmit={(e) => this.handleSubmit(e)}>
+            <form id="search-form" onSubmit={(e) => this.handleSubmit(e)}>
               <ion-input
                 placeholder="`.todo:add` for create `todo`"
                 autofocus={true}

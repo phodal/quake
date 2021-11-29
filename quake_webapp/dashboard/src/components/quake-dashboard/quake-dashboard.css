@@ -6,3 +6,8 @@
 #submit-button {
   display: none;
 }
+
+#search-form {
+  width: 80%;
+  margin-bottom: 0;
+}
