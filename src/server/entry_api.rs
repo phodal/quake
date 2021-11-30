@@ -2,11 +2,9 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
-use rocket::response::content;
-use rocket::response::content::Json;
 use rocket::response::status::NotFound;
 use rocket::serde::{Deserialize, Serialize};
-use rocket::serde::json::Json as serdeJson;
+use rocket::serde::json::Json;
 use rocket::State;
 use rocket::tokio::task::spawn_blocking;
 
@@ -20,16 +18,14 @@ use crate::server::{ApiError, QuakeServerConfig};
 pub(crate) async fn get_entries(entry_type: &str) -> Json<String> {
     let request_url = format!("http://127.0.0.1:7700/indexes/{:}/documents", entry_type);
 
-    let vec = spawn_blocking(|| content::Json(
-        reqwest::blocking::get(request_url)
-            .unwrap()
-            .text()
-            .unwrap(),
-    )).await.map_err(|e| ApiError {
+    let vec = spawn_blocking(||         reqwest::blocking::get(request_url)
+        .unwrap()
+        .text()
+        .unwrap()).await.map_err(|e| ApiError {
         msg: format!("{:?}", e)
     }).unwrap();
 
-    vec
+    Json(vec)
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -39,36 +35,36 @@ struct EntryResponse {
 }
 
 #[post("/<entry_type>/new?<text>")]
-pub(crate) async fn create_entry(entry_type: String, text: String, config: &State<QuakeServerConfig>) -> Result<Json<String>, NotFound<Json<String>>> {
+pub(crate) async fn create_entry(entry_type: String, text: String, config: &State<QuakeServerConfig>) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
     let workspace = config.workspace.to_string();
     match entry_usecases::create_entry(&workspace, &entry_type, &text) {
         Ok((_path, file)) => {
-            return Ok(content::Json(serde_json::to_string(&file).unwrap()));
+            return Ok(Json(file));
         }
         Err(err) => {
-            return Err(NotFound(content::Json(serde_json::to_string(&ApiError {
+            return Err(NotFound(Json(ApiError {
                 msg: err.to_string()
-            }).unwrap())));
+            })));
         }
     }
 }
 
 #[get("/<entry_type>/<id>", rank = 3)]
-pub(crate) async fn get_entry(entry_type: &str, id: usize, config: &State<QuakeServerConfig>) -> Result<Json<String>, NotFound<Json<String>>> {
+pub(crate) async fn get_entry(entry_type: &str, id: usize, config: &State<QuakeServerConfig>) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
     let base_path = PathBuf::from(&config.workspace).join(entry_type);
     let prefix = file_process::file_prefix(id);
     let vec = file_process::filter_by_prefix(base_path, prefix);
     if vec.len() == 0 {
-        return Err(NotFound(content::Json(serde_json::to_string(&ApiError {
+        return Err(NotFound(Json(ApiError {
             msg: "file not found".to_string()
-        }).unwrap())));
+        })));
     }
     let file_path = vec[0].clone();
 
     let str = fs::read_to_string(file_path).expect("cannot read entry type");
     let file = EntryFile::from(str.as_str()).unwrap();
 
-    return Ok(content::Json(serde_json::to_string(&file).unwrap()));
+    return Ok(Json(file));
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -78,7 +74,7 @@ pub struct EntryUpdate {
 }
 
 #[post("/<entry_type>/<id>", data="<entry>")]
-pub(crate) async fn update_entry(_entry_type: &str, _id: usize, entry: serdeJson<EntryUpdate>,config: &State<QuakeServerConfig>) {
+pub(crate) async fn update_entry(entry_type: &str, id: usize, entry: Json<EntryUpdate>,config: &State<QuakeServerConfig>) {
     println!("{:?}", entry);
     println!("{:?}", config);
 }

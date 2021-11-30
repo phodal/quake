@@ -1,8 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use rocket::response::content;
-use rocket::response::content::Json;
+use rocket::serde::json::Json;
 use rocket::State;
 use rocket::tokio::task::spawn_blocking;
 
@@ -41,7 +40,7 @@ pub fn parse_query(input: String) -> String {
 }
 
 #[get("/suggest")]
-pub async fn suggest(config: &State<QuakeServerConfig>) -> Json<String> {
+pub async fn suggest(config: &State<QuakeServerConfig>) -> Json<ActionSuggest> {
     let mut suggest = ActionSuggest::default();
     let path = PathBuf::from(&config.workspace).join("entries-define.yaml");
 
@@ -58,6 +57,5 @@ pub async fn suggest(config: &State<QuakeServerConfig>) -> Json<String> {
         suggest.actions.push(action.to_string());
     }
 
-    let string = serde_json::to_string(&suggest).unwrap();
-    content::Json(string)
+    Json(suggest)
 }
