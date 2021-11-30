@@ -37,16 +37,6 @@ pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn create_entry_file(entry_define: &EntryDefine, target_file: &mut PathBuf, entry_text: String) -> EntryFile {
-    let mut entry_file = EntryFile::default();
-    let init_map = entry_define.create_title_and_date(entry_text);
-    entry_file.front_matter = FrontMatter { fields: entry_define.merge(init_map) };
-
-    fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
-
-    entry_file
-}
-
 pub fn update_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryInfo) {
     let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
     fs::write(&entry_info_path, result).expect("cannot write to file");
@@ -67,4 +57,24 @@ pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &Strin
     update_entry_info(&paths.entries_info, &mut entry_info);
 
     Ok((target_path, entry_file))
+}
+
+pub fn create_entry_file(entry_define: &EntryDefine, target_file: &mut PathBuf, entry_text: String) -> EntryFile {
+    let mut entry_file = EntryFile::default();
+    let init_map = entry_define.create_title_and_date(entry_text);
+    entry_file.front_matter = FrontMatter { fields: entry_define.merge(init_map) };
+
+    fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
+
+    entry_file
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+
+    #[test]
+    fn update_entry_title() {
+        // let buf = PathBuf::from("_fixtures");
+    }
 }

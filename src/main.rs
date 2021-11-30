@@ -23,6 +23,7 @@ pub mod helper;
 pub mod server;
 pub mod tui;
 pub mod cli;
+mod errors;
 
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]

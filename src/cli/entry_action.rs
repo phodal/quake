@@ -9,6 +9,7 @@ use quake_core::quake_config::QuakeConfig;
 use crate::action::entry_usecases;
 use crate::action::entry_paths::EntryPaths;
 use crate::action::entrysets::Entrysets;
+use crate::errors::QuakeError;
 use crate::helper::{cmd_runner, file_process};
 use crate::tui::table_process;
 
@@ -23,13 +24,17 @@ pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dy
             entry_usecases::sync_in_path(&paths)?
         }
         "edit" => {
+            let entry_path = paths.base;
+
             let index = expr.index_from_parameter();
             let mut target_file = PathBuf::new();
 
             let prefix = file_process::file_prefix(index);
-            let vec = file_process::filter_by_prefix(paths.base, prefix);
+            let vec = file_process::filter_by_prefix(entry_path, prefix);
             if vec.len() > 0 {
                 target_file = vec[0].clone();
+            } else {
+                return Err(Box::new(QuakeError(format!("cannot find {:} file {:}", expr.object, index))));
             }
 
             cmd_runner::edit_file(conf.editor, format!("{:}", target_file.display()))?;
