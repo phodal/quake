@@ -33,9 +33,13 @@ class ReactElement extends HTMLElement {
       onSave: (args: any) => {
         this.dispatchEvent(new CustomEvent("onSave", {
           detail: JSON.stringify(args)
-         }))
+        }))
       }
     };
+
+    if (typeof (props as any).content !== "string") {
+      (props as any).content = "";
+    }
 
     // @ts-ignore
     render(<QuakeEditor {...props}/>, this);
@@ -46,11 +50,11 @@ class ReactElement extends HTMLElement {
   }
 
   getProps(attributes: any) {
-    return [ ...attributes ]
+    return [...attributes]
       .filter(attr => attr.name !== 'style')
       .map(attr => this.convert(attr.name, attr.value))
       .reduce((props, prop) =>
-        ({ ...props, [prop.name]: prop.value }), {});
+        ({...props, [prop.name]: prop.value}), {});
   }
 
   getEvents() {
@@ -59,7 +63,7 @@ class ReactElement extends HTMLElement {
       .reduce((events, ev) => ({
         ...events,
         [ev.name]: (args: any) =>
-          this.dispatchEvent(new CustomEvent(ev.name, { ...args }))
+          this.dispatchEvent(new CustomEvent(ev.name, {...args}))
       }), {});
   }
 

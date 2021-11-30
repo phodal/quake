@@ -56,7 +56,9 @@
     const entry = await response.json();
 
     const editor = document.createElement('quake-editor');
-    editor.setAttribute('value', entry.content);
+
+    editor.setAttribute('title', entry.title);
+    editor.setAttribute('content', entry.content);
     editor.addEventListener("onSave", function (event) {
       console.log(event);
     });
@@ -65,21 +67,33 @@
 
 
   function getParameterByName(name) {
-    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
     return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
   }
 
   const create_entry = async (context, commands) => {
     const editor = document.createElement('quake-editor');
 
-    let params = new URLSearchParams(context.search);
-    let text = params.get('text');
+    let params = context.params;
+    let url_params = new URLSearchParams(context.search);
+    let text = url_params.get('text');
 
-    editor.setAttribute('value', `${text}`);
+    let url = `/entry/${params.type}/new?text=${text}`
+    const response = await fetch(url, {
+      method: 'POST'
+    });
+    const entry = await response.json();
+
+    editor.setAttribute('title', entry.title);
+    editor.setAttribute('content', entry.content);
     editor.addEventListener("onSave", function (event) {
       console.log(event);
     });
     return editor
+  }
+
+  const update_entry = () => {
+
   }
 
   router.setRoutes([

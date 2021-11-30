@@ -21,6 +21,7 @@ function QuakeEditor(props: Props) {
 
   return (
     <div className="App">
+      <h1>{props.title}</h1>
       <StyledEditor
         value={props.content}
         onChange={onChange}

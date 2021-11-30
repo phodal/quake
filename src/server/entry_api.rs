@@ -34,7 +34,7 @@ struct EntryResponse {
     content: String,
 }
 
-#[post("/<entry_type>?<text>")]
+#[post("/<entry_type>/new?<text>")]
 pub(crate) async fn create_entry(entry_type: String, text: String, config: &State<QuakeServerConfig>) -> Result<Json<String>, NotFound<Json<String>>> {
     let workspace = config.workspace.to_string();
     match entry_usecases::create_entry(&workspace, &entry_type, &text) {
