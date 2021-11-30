@@ -1,10 +1,11 @@
+use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
+use std::fs::File;
 use std::path::PathBuf;
 
 use quake_core::entry::{EntryDefine, EntryInfo, FrontMatter};
 use quake_core::entry::entry_file::EntryFile;
-use std::fs::File;
 
 use crate::action::entry_factory;
 use crate::action::entry_paths::EntryPaths;
@@ -85,34 +86,50 @@ pub fn find_entry_path(entry_path: PathBuf, entry_type: &String, index: usize) -
     Ok(target_file)
 }
 
+pub fn update_entry_fields(type_path: PathBuf, entry_type: &str, index_id: usize, map: HashMap<String, String>) -> Result<(), Box<dyn Error>> {
+    let entry_path = find_entry_path(type_path, &entry_type.to_string(), index_id)?;
+    let string = fs::read_to_string(&entry_path)?;
+    let mut entry_file = EntryFile::from(string.as_str())?;
+
+    for (key, value) in map {
+        entry_file.update_field(key, value);
+    }
+    fs::write(&entry_path, entry_file.to_string())?;
+
+    Ok(())
+}
+
+
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
     use std::fs;
     use std::path::PathBuf;
+
     use rocket::form::validate::Contains;
+
     use quake_core::entry::entry_file::EntryFile;
-    use crate::action::entry_usecases::find_entry_path;
+
+    use crate::action::entry_usecases::{find_entry_path, update_entry_fields};
 
     #[test]
-    #[ignore]
     fn update_entry_title() {
         let yiki_path = PathBuf::from("_fixtures").join("yiki");
         let entry_type = "yiwi";
-        let test_string = "this is a test".to_string();
-        let update_type = "title".to_string();
+        let index_id = 1;
 
-        let entry_path = find_entry_path(yiki_path, &entry_type.to_string(), 1).unwrap();
+        let mut map: HashMap<String, String> = HashMap::new();
+        map.insert("title".to_string(), "this is a test".to_string());
+
+        update_entry_fields(yiki_path.clone(), &entry_type, index_id, map).unwrap();
+
+        let entry_path = find_entry_path(yiki_path, &entry_type.to_string(), index_id).unwrap();
+        let string = fs::read_to_string(&entry_path).unwrap();
+        assert!(string.contains("this is a test".to_string().as_str()));
 
         let string = fs::read_to_string(&entry_path).unwrap();
         let mut entry_file = EntryFile::from(string.as_str()).unwrap();
-        entry_file.update_field(update_type.clone(), test_string.clone());
-
-        fs::write(&entry_path, entry_file.to_string()).unwrap();
-
-        let string = fs::read_to_string(&entry_path).unwrap();
-        assert!(string.contains(test_string.as_str()));
-
-        entry_file.update_field(update_type, "概念知识容量表".to_string());
+        entry_file.update_field("title".to_string(), "概念知识容量表".to_string());
         fs::write(&entry_path, entry_file.to_string()).unwrap();
 
         let string = fs::read_to_string(&entry_path).unwrap();
