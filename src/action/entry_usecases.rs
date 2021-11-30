@@ -9,6 +9,7 @@ use std::fs::File;
 use crate::action::entry_factory;
 use crate::action::entry_paths::EntryPaths;
 use crate::action::entrysets::Entrysets;
+use crate::errors::QuakeError;
 use crate::helper::file_process;
 
 pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefine {
@@ -69,10 +70,23 @@ pub fn create_entry_file(entry_define: &EntryDefine, target_file: &mut PathBuf, 
     entry_file
 }
 
+pub fn find_entry_path(entry_path: PathBuf, entry_type: &String, index: usize) -> Result<PathBuf, Box<QuakeError>> {
+    #[allow(unused_assignments)]
+    let mut target_file = PathBuf::new();
+
+    let prefix = file_process::file_prefix(index);
+    let vec = file_process::filter_by_prefix(entry_path, prefix);
+    if vec.len() > 0 {
+        target_file = vec[0].clone();
+    } else {
+        return Err(Box::new(QuakeError(format!("cannot find {:} file {:}", entry_type, index))));
+    }
+
+    Ok(target_file)
+}
+
 #[cfg(test)]
 mod tests {
-    use std::path::PathBuf;
-
     #[test]
     fn update_entry_title() {
         // let buf = PathBuf::from("_fixtures");

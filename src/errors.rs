@@ -2,7 +2,7 @@ use std::fmt;
 use std::error::Error;
 
 #[derive(Debug)]
-pub struct QuakeError(String);
+pub struct QuakeError(pub String);
 
 impl fmt::Display for QuakeError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
