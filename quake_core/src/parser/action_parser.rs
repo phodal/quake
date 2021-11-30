@@ -78,4 +78,14 @@ mod tests {
         assert_eq!(expr.object, "phodal_com");
         assert_eq!(expr.action, "sync");
     }
+
+
+    #[test]
+    fn should_parse_double_digital() {
+        let expr = ActionDefine::from("todo.update(12)").unwrap();
+        assert_eq!(expr.object, "todo");
+        assert_eq!(expr.action, "update");
+        assert_eq!(expr.parameters[0], "12");
+        assert_eq!(1, expr.index_from_parameter());
+    }
 }
