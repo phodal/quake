@@ -77,6 +77,11 @@ export class QuakeDashboard {
 
   async handleSubmit(e) {
     e.preventDefault()
+
+    if (this.query.startsWith("/")) {
+      this.inputType = 'Action'
+    }
+
     const that = this;
     requestAnimationFrame(() => {
       axios.get('/action/query/', {
@@ -96,11 +101,6 @@ export class QuakeDashboard {
       });
     });
   }
-  //
-  // @Listen('dispatchAction')
-  // dispatchActionEvent(define: ActionDefine) {
-  //   this.dispatchAction.emit(define);
-  // }
 
   async presentToast(msg: string) {
     const toast = document.createElement('ion-toast');
