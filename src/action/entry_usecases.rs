@@ -87,8 +87,19 @@ pub fn find_entry_path(entry_path: PathBuf, entry_type: &String, index: usize) -
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+    use std::path::PathBuf;
+    use quake_core::entry::entry_file::EntryFile;
+    use crate::action::entry_usecases::find_entry_path;
+
     #[test]
+    #[ignore]
     fn update_entry_title() {
-        // let buf = PathBuf::from("_fixtures");
+        let yiki_path = PathBuf::from("_fixtures").join("yiki");
+        let yiki_file_path = find_entry_path(yiki_path, &"yiwi".to_string(), 1).unwrap();
+
+        let string = fs::read_to_string(yiki_file_path).unwrap();
+        let mut entry_file = EntryFile::from(string.as_str()).unwrap();
+        // entry_file.front_matter.fields.get(0)
     }
 }

@@ -97,6 +97,15 @@ impl EntryFile {
 
         (header, column)
     }
+
+    pub fn update_field(&mut self, file_name: String, value: String) {
+        match self.front_matter.fields.get_mut(&file_name) {
+            None => {}
+            Some(val) => {
+                *val = value;
+            }
+        };
+    }
 }
 
 impl Serialize for EntryFile {
@@ -169,9 +178,13 @@ sample
         assert_eq!("2021.11.21", map.get("updated_date").unwrap());
     }
 
-
     #[test]
     fn to_json() {
+        let entry_file = EntryFile::from(demo_text().as_str()).unwrap();
+        assert_eq!(r#"{"title":"hello, world","authors":"Phodal HUANG<h@phodal.com>","description":"a hello, world","created_date":"2021.11.23","updated_date":"2021.11.21","content":"\n\nsample\n\n"}"#, serde_json::to_string(&entry_file).unwrap());
+    }
+
+    fn demo_text() -> String {
         let text = "---
 title: hello, world
 authors: Phodal HUANG<h@phodal.com>
@@ -183,9 +196,17 @@ updated_date: 2021.11.21
 sample
 
 ";
+        text.to_string()
+    }
 
-        let entry_file = EntryFile::from(text).unwrap();
+    #[test]
+    fn update_title() {
+        let text = demo_text();
+        let mut entry_file = EntryFile::from(text.as_str()).unwrap();
 
-        assert_eq!(r#"{"title":"hello, world","authors":"Phodal HUANG<h@phodal.com>","description":"a hello, world","created_date":"2021.11.23","updated_date":"2021.11.21","content":"\n\nsample\n\n"}"#, serde_json::to_string(&entry_file).unwrap());
+        entry_file.update_field("title".to_string(), "Hello, World".to_string());
+
+        let value = entry_file.front_matter.fields.get(&"title".to_string()).unwrap();
+        assert_eq!(value, &"Hello, World".to_string());
     }
 }
