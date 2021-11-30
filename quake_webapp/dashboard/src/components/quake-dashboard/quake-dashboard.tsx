@@ -124,7 +124,7 @@ export class QuakeDashboard {
             }
             <form id="search-form" onSubmit={this.handleSubmit.bind(this)}>
               <ion-input
-                placeholder="`/todo:add` for create `todo`"
+                placeholder="`/todo.add: hello, world` for create `todo`"
                 autofocus={true}
                 ref={(el) => this.ionInputElement = el}
                 onIonInput={this.handleInput.bind(this)}

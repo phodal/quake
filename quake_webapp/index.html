@@ -30,36 +30,41 @@
     const dashboard = document.createElement('quake-dashboard');
     dashboard.addEventListener("dispatchAction", function (e) {
       let define = e.detail;
-      console.log(define);
 
-      if(define.action === 'add') {
-        Router.go("/editor")
+      if (define.action === 'add') {
+        Router.go("/#editor")
+      } else if (define.parameters.length > 0) {
+        Router.go(`/entry/${define.object}/${define.parameters[0]}`);
       } else {
-        // define to query?
-        Router.go("/entry/10");
+        console.log("some action");
       }
     });
 
     return dashboard
   };
 
-  const editor = (context, commands, define) => {
+  const editor = async (context, commands) => {
+    console.log(context, commands);
     const editor = document.createElement('quake-editor');
     editor.setAttribute('content', "text");
 
     return editor
   }
 
-  const entry = (context, commands) => {
+  const entry = async (context, commands) => {
+    let params = context.params;
+    let response = await fetch(`/entry/${params.type}/${params.id}`)
+    const entry = await response.json();
+
     let el = document.createElement('h1');
-    el.innerText = 'Entry'
+    el.innerText = entry.content
     return el
   }
 
   router.setRoutes([
     {path: '/', action: home},
-    {path: '/editor', action: editor },
-    {name: 'entry', path: '/entry/:id', action: entry },
+    {path: '/editor', action: editor},
+    {name: 'entry', path: '/entry/:type/:id', action: entry},
   ]);
 </script>
 </html>
