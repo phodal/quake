@@ -89,6 +89,7 @@ pub fn find_entry_path(entry_path: PathBuf, entry_type: &String, index: usize) -
 mod tests {
     use std::fs;
     use std::path::PathBuf;
+    use rocket::form::validate::Contains;
     use quake_core::entry::entry_file::EntryFile;
     use crate::action::entry_usecases::find_entry_path;
 
@@ -96,10 +97,25 @@ mod tests {
     #[ignore]
     fn update_entry_title() {
         let yiki_path = PathBuf::from("_fixtures").join("yiki");
-        let yiki_file_path = find_entry_path(yiki_path, &"yiwi".to_string(), 1).unwrap();
+        let entry_type = "yiwi";
+        let test_string = "this is a test".to_string();
+        let update_type = "title".to_string();
 
-        let string = fs::read_to_string(yiki_file_path).unwrap();
+        let entry_path = find_entry_path(yiki_path, &entry_type.to_string(), 1).unwrap();
+
+        let string = fs::read_to_string(&entry_path).unwrap();
         let mut entry_file = EntryFile::from(string.as_str()).unwrap();
-        // entry_file.front_matter.fields.get(0)
+        entry_file.update_field(update_type.clone(), test_string.clone());
+
+        fs::write(&entry_path, entry_file.to_string()).unwrap();
+
+        let string = fs::read_to_string(&entry_path).unwrap();
+        assert!(string.contains(test_string.as_str()));
+
+        entry_file.update_field(update_type, "概念知识容量表".to_string());
+        fs::write(&entry_path, entry_file.to_string()).unwrap();
+
+        let string = fs::read_to_string(&entry_path).unwrap();
+        assert!(string.contains("概念知识容量表"));
     }
 }
