@@ -4,16 +4,27 @@ import Editor from "rich-markdown-editor";
 import styled from "styled-components";
 import './QuakeEditor.css';
 
-interface EditorProps {
-  title: string;
-  content: string;
+export type Props = {
+  title: string,
+  content: string,
+  onSave: (content: string) => any
 }
 
-function QuakeEditor(props: EditorProps) {
+function QuakeEditor(props: Props) {
+  const onSave = React.useCallback(() => {
+    props.onSave(props.content);
+  }, [props])
+
+  const onChange = React.useCallback((getValue) => {
+    props.content = getValue()
+  }, [props]);
+
   return (
     <div className="App">
       <StyledEditor
         value={props.content}
+        onChange={onChange}
+        onSave={onSave}
       />
     </div>
   );

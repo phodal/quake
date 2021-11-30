@@ -22,8 +22,8 @@
 <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
 <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
 
-<!--<script src="https://unpkg.com/@vaadin/router/dist/vaadin-router.umd.min.js"></script>-->
-<script src="temp/vaadin-router.umd.js"></script>
+<script src="https://unpkg.com/@vaadin/router/dist/vaadin-router.umd.min.js"></script>
+<!--<script src="temp/vaadin-router.umd.js"></script>-->
 
 <script type="module" src="./dashboard/dist/dashboard/dashboard.esm.js"></script>
 <script src="./quake-editor/dist/quake-editor.min.js"></script>
@@ -57,6 +57,9 @@
 
     const editor = document.createElement('quake-editor');
     editor.setAttribute('value', entry.content);
+    editor.addEventListener("onSave", function (event) {
+      console.log(event);
+    });
     return editor
   }
 
@@ -67,13 +70,15 @@
   }
 
   const create_entry = async (context, commands) => {
-    let entry_type = context.params.type;
     const editor = document.createElement('quake-editor');
 
     let params = new URLSearchParams(context.search);
     let text = params.get('text');
 
     editor.setAttribute('value', `${text}`);
+    editor.addEventListener("onSave", function (event) {
+      console.log(event);
+    });
     return editor
   }
 

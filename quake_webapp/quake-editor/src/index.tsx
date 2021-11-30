@@ -2,7 +2,6 @@ import React from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
 import './index.css';
 import QuakeEditor from './QuakeEditor';
-import reportWebVitals from './reportWebVitals';
 
 // from samples: https://github.com/sarvabowmen/rating-webcomponent/blob/master/src/ReactElement.js
 class ReactElement extends HTMLElement {
@@ -30,6 +29,12 @@ class ReactElement extends HTMLElement {
       ...this.getProps(this.attributes),
       ...this.getEvents(),
       children: this.innerHTML,
+      // todo: merge to auto event
+      onSave: (args: any) => {
+        this.dispatchEvent(new CustomEvent("onSave", {
+          detail: JSON.stringify(args)
+         }))
+      }
     };
 
     // @ts-ignore
@@ -75,8 +80,3 @@ class ReactElement extends HTMLElement {
 }
 
 customElements.define('quake-editor', ReactElement);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
