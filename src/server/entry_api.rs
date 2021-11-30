@@ -7,6 +7,7 @@ use rocket::response::status::NotFound;
 use rocket::State;
 use rocket::tokio::task::spawn_blocking;
 use quake_core::entry::entry_file::EntryFile;
+use crate::action::entry_usecases;
 
 use crate::helper::file_process;
 use crate::server::{ApiError, QuakeServerConfig};
@@ -30,14 +31,22 @@ pub(crate) async fn get_entries(entry_type: &str) -> Json<String> {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 struct EntryResponse {
-    content: String
+    content: String,
 }
 
-#[post("/<entry_type>")]
-pub(crate) async fn create_entry(entry_type: &str, _config: &State<QuakeServerConfig>) {
-    // action::
-
-    // todo
+#[post("/<entry_type>?<text>")]
+pub(crate) async fn create_entry(entry_type: String, text: String, config: &State<QuakeServerConfig>) -> Result<Json<String>, NotFound<Json<String>>> {
+    let workspace = config.workspace.to_string();
+    match entry_usecases::create_entry(&workspace, &entry_type, &text) {
+        Ok((_path, file)) => {
+            return Ok(content::Json(serde_json::to_string(&file).unwrap()));
+        }
+        Err(err) => {
+            return Err(NotFound(content::Json(serde_json::to_string(&ApiError {
+                msg: err.to_string()
+            }).unwrap())));
+        }
+    }
 }
 
 #[get("/<entry_type>/<id>", rank = 3)]
@@ -54,7 +63,6 @@ pub(crate) async fn get_entry(entry_type: &str, id: usize, config: &State<QuakeS
 
     let str = fs::read_to_string(file_path).expect("cannot read entry type");
     let file = EntryFile::from(str.as_str()).unwrap();
-    let string = serde_json::to_string(&file).unwrap();
 
-    return Ok(content::Json(string));
+    return Ok(content::Json(serde_json::to_string(&file).unwrap()));
 }

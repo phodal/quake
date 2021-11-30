@@ -9,6 +9,7 @@ use crate::entry::slug::slugify;
 
 #[derive(Deserialize, PartialEq, Debug)]
 pub struct EntryFile {
+    // add path
     pub name: String,
     pub front_matter: FrontMatter,
     pub content: String,

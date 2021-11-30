@@ -4,10 +4,12 @@ use std::path::PathBuf;
 
 use quake_core::entry::{EntryDefine, EntryInfo, FrontMatter};
 use quake_core::entry::entry_file::EntryFile;
+use std::fs::File;
 
 use crate::action::entry_factory;
 use crate::action::entry_paths::EntryPaths;
 use crate::action::entrysets::Entrysets;
+use crate::helper::file_process;
 
 pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefine {
     let entries: Vec<EntryDefine> = entry_factory::entries_define_from_path(&paths.entries_define).into_iter()
@@ -35,15 +37,34 @@ pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn create_entry_file(entry_define: &EntryDefine, target_file: &mut PathBuf, entry_text: String) {
+pub fn create_entry_file(entry_define: &EntryDefine, target_file: &mut PathBuf, entry_text: String) -> EntryFile {
     let mut entry_file = EntryFile::default();
     let init_map = entry_define.create_title_and_date(entry_text);
     entry_file.front_matter = FrontMatter { fields: entry_define.merge(init_map) };
 
     fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
+
+    entry_file
 }
 
 pub fn update_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryInfo) {
     let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
     fs::write(&entry_info_path, result).expect("cannot write to file");
+}
+
+pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &String) -> Result<(PathBuf, EntryFile), Box<dyn Error>> {
+    let paths = EntryPaths::init(quake_path, entry_type);
+    let entries_define = find_entry_define(&paths, entry_type);
+    let mut entry_info = entry_factory::entry_info_from_path(&paths.entries_info);
+
+    let new_md_file = file_process::file_name(entry_info.index + 1, entry_text.as_str());
+    let mut target_path = paths.base.join(new_md_file);
+    File::create(&target_path)?;
+
+    let entry_file = create_entry_file(&entries_define, &mut target_path, entry_text.to_string());
+
+    entry_info.inc();
+    update_entry_info(&paths.entries_info, &mut entry_info);
+
+    Ok((target_path, entry_file))
 }
