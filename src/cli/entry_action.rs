@@ -14,23 +14,12 @@ use crate::tui::table_process;
 
 pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.path, &expr.object);
-    let entries_define = entry_usecases::find_entry_define(expr, &paths);
-    let mut entry_info = entry_factory::entry_info_from_path(&paths.entries_info);
 
     // todo: export api for search
     match expr.action.as_str() {
         "add" => {
-            let new_md_file = file_process::file_name(entry_info.index + 1, expr.text.as_str());
-            let mut target_file = paths.base.join(new_md_file);
-            File::create(&target_file)?;
-
-            entry_usecases::create_entry_file(&expr, &entries_define, &mut target_file);
-
-            entry_info.inc();
-            entry_usecases::update_entry_info(&paths.entries_info, &mut entry_info);
-
+            let target_file = create_entry(&conf.path, &expr.object, &expr.text)?;
             cmd_runner::edit_file(conf.editor, format!("{:}", target_file.display()))?;
-
             entry_usecases::sync_in_path(&paths)?
         }
         "edit" => {
@@ -59,6 +48,23 @@ pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dy
     }
 
     Ok(())
+}
+
+pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &String) -> Result<PathBuf, Box<dyn Error>> {
+    let paths = EntryPaths::init(quake_path, entry_type);
+    let entries_define = entry_usecases::find_entry_define(&paths, entry_type);
+    let mut entry_info = entry_factory::entry_info_from_path(&paths.entries_info);
+
+    let new_md_file = file_process::file_name(entry_info.index + 1, entry_text.as_str());
+    let mut target_file = paths.base.join(new_md_file);
+    File::create(&target_file)?;
+
+    entry_usecases::create_entry_file(&entries_define, &mut target_file, entry_text.to_string());
+
+    entry_info.inc();
+    entry_usecases::update_entry_info(&paths.entries_info, &mut entry_info);
+
+    Ok(target_file)
 }
 
 fn show_entrysets(path: &PathBuf) {

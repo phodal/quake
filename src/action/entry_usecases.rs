@@ -2,7 +2,6 @@ use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
 
-use quake_core::action_parser::ActionDefine;
 use quake_core::entry::{EntryDefine, EntryInfo, FrontMatter};
 use quake_core::entry::entry_file::EntryFile;
 
@@ -10,10 +9,10 @@ use crate::action::entry_factory;
 use crate::action::entry_paths::EntryPaths;
 use crate::action::entrysets::Entrysets;
 
-pub fn find_entry_define(expr: &ActionDefine, paths: &EntryPaths) -> EntryDefine {
+pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefine {
     let entries: Vec<EntryDefine> = entry_factory::entries_define_from_path(&paths.entries_define).into_iter()
         .filter(|define| {
-            define.entry_type.eq(&expr.object)
+            define.entry_type.eq(target_entry)
         })
         .collect();
 
@@ -36,9 +35,9 @@ pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn create_entry_file(expr: &ActionDefine, entry_define: &EntryDefine, target_file: &mut PathBuf) {
+pub fn create_entry_file(entry_define: &EntryDefine, target_file: &mut PathBuf, entry_text: String) {
     let mut entry_file = EntryFile::default();
-    let init_map = entry_define.create_title_and_date(expr.text.to_string());
+    let init_map = entry_define.create_title_and_date(entry_text);
     entry_file.front_matter = FrontMatter { fields: entry_define.merge(init_map) };
 
     fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
