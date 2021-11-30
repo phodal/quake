@@ -10,9 +10,10 @@ use quake_core::entry::front_matter::FrontMatter;
 use quake_core::parser::action_parser::ActionDefine;
 use quake_core::quake_config::QuakeConfig;
 
-use crate::action::{file_process, quake_action, table_process};
+use crate::action::{file_process, quake_action};
 use crate::action::entry_sets::Entrysets;
 use crate::helper::cmd;
+use crate::tui::table_process;
 
 pub struct EntryPaths {
     pub base: PathBuf,
@@ -39,7 +40,7 @@ impl EntryPaths {
 
 pub fn action(expr: ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     if expr.object == "quake" {
-        return quake_action::quake_action(&expr, &conf);
+        return quake_action::quake_action(expr.action, &conf);
     }
 
     entry_action(&expr, conf)
@@ -67,8 +68,10 @@ fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Er
             sync_in_path(&paths)?
         }
         "edit" => {
+            let index = expr.index_from_parameter();
             let mut target_file = PathBuf::new();
-            let prefix = file_process::file_prefix(expr.index_from_parameter());
+
+            let prefix = file_process::file_prefix(index);
             let vec = file_process::filter_by_prefix(paths.base, prefix);
             if vec.len() > 0 {
                 target_file = vec[0].clone();

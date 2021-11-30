@@ -22,6 +22,7 @@ use crate::server::start_server;
 pub mod action;
 pub mod helper;
 pub mod server;
+pub mod tui;
 
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]

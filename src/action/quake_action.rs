@@ -5,7 +5,6 @@ use std::path::PathBuf;
 use walkdir::{DirEntry, WalkDir};
 
 use quake_core::entry::EntryDefineFile;
-use quake_core::parser::action_parser::ActionDefine;
 use quake_core::QuakeConfig;
 
 use crate::action::entry_action;
@@ -19,8 +18,8 @@ fn is_hidden(entry: &DirEntry) -> bool {
         .unwrap_or(false)
 }
 
-pub fn quake_action(expr: &ActionDefine, conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
-    match expr.action.as_str() {
+pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
+    match action.as_str() {
         "sync" => {
             let path = PathBuf::from(&conf.path);
 
