@@ -5,6 +5,14 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css"/>
+  <style>
+    body {
+      overflow: scroll !important;
+      position: relative;
+    }
+  </style>
+
 </head>
 <body>
 <a href="/">Go Home</a>
@@ -13,7 +21,6 @@
 
 <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
 <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css"/>
 
 <!--<script src="https://unpkg.com/@vaadin/router/dist/vaadin-router.umd.min.js"></script>-->
 <script src="temp/vaadin-router.umd.js"></script>
@@ -32,9 +39,9 @@
       let define = e.detail;
 
       if (define.action === 'add') {
-        Router.go("/#editor")
+        Router.go(`/entry/${define.object}/new?text=${define.text}`)
       } else if (define.parameters.length > 0) {
-        Router.go(`/entry/${define.object}/${define.parameters[0]}`);
+        Router.go(`/edit/${define.object}/${define.parameters[0]}`);
       } else {
         console.log("some action");
       }
@@ -43,28 +50,37 @@
     return dashboard
   };
 
-  const editor = async (context, commands) => {
-    console.log(context, commands);
-    const editor = document.createElement('quake-editor');
-    editor.setAttribute('content', "text");
-
-    return editor
-  }
-
   const entry = async (context, commands) => {
     let params = context.params;
     let response = await fetch(`/entry/${params.type}/${params.id}`)
     const entry = await response.json();
 
-    let el = document.createElement('h1');
-    el.innerText = entry.content
-    return el
+    const editor = document.createElement('quake-editor');
+    editor.setAttribute('value', entry.content);
+    return editor
+  }
+
+
+  function getParameterByName(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+  }
+
+  const create_entry = async (context, commands) => {
+    let entry_type = context.params.type;
+    const editor = document.createElement('quake-editor');
+
+    let params = new URLSearchParams(context.search);
+    let text = params.get('text');
+
+    editor.setAttribute('value', `${text}`);
+    return editor
   }
 
   router.setRoutes([
     {path: '/', action: home},
-    {path: '/editor', action: editor},
-    {name: 'entry', path: '/entry/:type/:id', action: entry},
+    {path: '/entry/:type/new', action: create_entry},
+    {path: '/edit/:type/:id', action: entry},
   ]);
 </script>
 </html>

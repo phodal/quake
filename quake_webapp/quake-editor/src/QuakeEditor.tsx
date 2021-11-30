@@ -12,7 +12,7 @@ function QuakeEditor(props: EditorProps) {
   return (
     <div className="App">
       <StyledEditor
-        defaultValue={props.value}
+        value={props.value}
       />
     </div>
   );
