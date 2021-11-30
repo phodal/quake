@@ -18,6 +18,8 @@ pub enum MetaField {
     Date(String),
     /// custom filter types
     Filterable(Vec<String>),
+    /// priority
+    Priority(String),
     Unknown(String),
 }
 
@@ -35,6 +37,7 @@ impl Display for MetaField {
             MetaField::Body(body) => write!(f, "{}", body),
             MetaField::Theme(theme) => write!(f, "{}", theme),
             MetaField::Epic(epic) => write!(f, "{}", epic),
+            MetaField::Priority(priority) => write!(f, "{}", priority)
         }
     }
 }
