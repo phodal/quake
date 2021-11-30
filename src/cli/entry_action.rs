@@ -4,11 +4,13 @@ use std::path::PathBuf;
 
 use quake_core::parser::action_parser::ActionDefine;
 use quake_core::quake_config::QuakeConfig;
+use std::fs;
 
-use crate::action::{entry_app, file_process};
+use crate::action::{entry_init, entry_usecases};
 use crate::action::entry_paths::EntryPaths;
+use crate::action::entry_sets::Entrysets;
 use crate::cli::quake_action;
-use crate::helper::cmd;
+use crate::helper::{cmd_runner, file_process};
 use crate::tui::table_process;
 
 pub fn action(expr: ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
@@ -21,8 +23,8 @@ pub fn action(expr: ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error
 
 fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.path, &expr.object);
-    let entries_define = entry_app::find_entry_define(expr, &paths);
-    let mut entry_info = entry_app::entry_info_from_path(&paths.entries_info);
+    let entries_define = entry_usecases::find_entry_define(expr, &paths);
+    let mut entry_info = entry_init::entry_info_from_path(&paths.entries_info);
 
     // todo: export api for search
     match expr.action.as_str() {
@@ -31,14 +33,14 @@ fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Er
             let mut target_file = paths.base.join(new_md_file);
             File::create(&target_file)?;
 
-            entry_app::create_entry_file(&expr, &entries_define, &mut target_file);
+            entry_usecases::create_entry_file(&expr, &entries_define, &mut target_file);
 
             entry_info.inc();
-            entry_app::update_entry_info(&paths.entries_info, &mut entry_info);
+            entry_init::update_entry_info(&paths.entries_info, &mut entry_info);
 
-            cmd::edit_file(conf.editor, format!("{:}", target_file.display()))?;
+            cmd_runner::edit_file(conf.editor, format!("{:}", target_file.display()))?;
 
-            entry_app::sync_in_path(&paths)?
+            entry_usecases::sync_in_path(&paths)?
         }
         "edit" => {
             let index = expr.index_from_parameter();
@@ -50,13 +52,13 @@ fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Er
                 target_file = vec[0].clone();
             }
 
-            cmd::edit_file(conf.editor, format!("{:}", target_file.display()))?;
+            cmd_runner::edit_file(conf.editor, format!("{:}", target_file.display()))?;
         }
         "sync" => {
-            entry_app::sync_in_path(&paths)?
+            entry_usecases::sync_in_path(&paths)?
         }
         "dump" => {
-            entry_app::dump_by_path(&paths)?
+            dump_by_path(&paths)?
         }
         "list" => {
             let entries = paths.base.join("entries.csv");
@@ -92,4 +94,10 @@ mod tests {
 
         action(expr, config).expect("cannot process");
     }
+}
+
+pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
+    let map = Entrysets::jsonify(&paths.base)?;
+    fs::write("dump.json", map)?;
+    Ok(())
 }

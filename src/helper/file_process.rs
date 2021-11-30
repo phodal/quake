@@ -30,7 +30,7 @@ pub fn filter_by_prefix(path: PathBuf, prefix: String) -> Vec<PathBuf> {
 
 #[cfg(test)]
 mod tests {
-    use crate::action::file_process::file_name;
+    use crate::helper::file_process::file_name;
 
     #[test]
     fn format_test() {

@@ -8,7 +8,7 @@ use rocket::State;
 use rocket::tokio::task::spawn_blocking;
 use quake_core::entry::entry_file::EntryFile;
 
-use crate::action::file_process;
+use crate::helper::file_process;
 use crate::server::{ApiError, QuakeServerConfig};
 
 #[get("/<entry_type>", rank = 3)]

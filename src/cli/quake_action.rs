@@ -7,7 +7,7 @@ use walkdir::{DirEntry, WalkDir};
 use quake_core::entry::EntryDefineFile;
 use quake_core::QuakeConfig;
 
-use crate::action::entry_app;
+use crate::action::entry_usecases;
 use crate::action::entry_paths::EntryPaths;
 use crate::action::entry_sets::Entrysets;
 
@@ -33,7 +33,7 @@ pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Er
                 let path_name = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
 
                 let paths = EntryPaths::init(&conf.path, &path_name);
-                entry_app::sync_in_path(&paths).unwrap();
+                entry_usecases::sync_in_path(&paths).unwrap();
                 let csv = entry.path().join("entries.csv");
                 if csv.exists() {
                     define_file.entries.push(Entrysets::define_from_csv(path_name, csv)?);
