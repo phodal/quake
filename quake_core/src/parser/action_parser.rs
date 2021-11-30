@@ -86,6 +86,6 @@ mod tests {
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "12");
-        assert_eq!(1, expr.index_from_parameter());
+        assert_eq!(12, expr.index_from_parameter());
     }
 }
