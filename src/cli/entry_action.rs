@@ -1,27 +1,18 @@
 use std::error::Error;
+use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 
 use quake_core::parser::action_parser::ActionDefine;
 use quake_core::quake_config::QuakeConfig;
-use std::fs;
 
 use crate::action::{entry_factory, entry_usecases};
 use crate::action::entry_paths::EntryPaths;
 use crate::action::entrysets::Entrysets;
-use crate::cli::quake_action;
 use crate::helper::{cmd_runner, file_process};
 use crate::tui::table_process;
 
-pub fn action(expr: ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
-    if expr.object == "quake" {
-        return quake_action::quake_action(expr.action, &conf);
-    }
-
-    entry_action(&expr, conf)
-}
-
-fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
+pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.path, &expr.object);
     let entries_define = entry_usecases::find_entry_define(expr, &paths);
     let mut entry_info = entry_factory::entry_info_from_path(&paths.entries_info);
@@ -82,7 +73,7 @@ mod tests {
     use quake_core::parser::action_parser::ActionDefine;
     use quake_core::quake_config::QuakeConfig;
 
-    use crate::cli::entry_action::action;
+    use crate::cli::action;
 
     #[test]
     #[ignore]

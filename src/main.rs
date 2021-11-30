@@ -12,7 +12,6 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
-use cli::entry_action;
 use quake_core::entry::EntryDefineFile;
 use quake_core::parser::action_parser::ActionDefine;
 use quake_core::QuakeConfig;
@@ -102,7 +101,7 @@ fn main() {
 
             if cmd.input.len() > 0 {
                 let expr = ActionDefine::from(cmd.input.as_str()).unwrap();
-                if let Err(err) = entry_action::action(expr, conf) {
+                if let Err(err) = cli::action(expr, conf) {
                     println!("{:?}", err)
                 }
             }
