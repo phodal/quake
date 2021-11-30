@@ -144,7 +144,8 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
 
 #[cfg(test)]
 mod tests {
-    use crate::entry_action::{EntryPaths, sync_in_path};
+    use crate::action::entry_app::sync_in_path;
+    use crate::entry_action::EntryPaths;
 
     #[ignore]
     #[test]

@@ -33,6 +33,15 @@ struct EntryResponse {
     content: String
 }
 
+#[post("/<entry_type>")]
+pub(crate) async fn create_entry(entry_type: &str, _config: &State<QuakeServerConfig>) {
+    // let paths = EntryPaths::init(&conf.path, &expr.object);
+    // let entries_define = find_entry_define(&expr, &paths);
+    // let mut entry_info = entry_info_from_path(&paths.entries_info);
+
+    // todo
+}
+
 #[get("/<entry_type>/<id>", rank = 3)]
 pub(crate) async fn get_entry(entry_type: &str, id: usize, config: &State<QuakeServerConfig>) -> Result<Json<String>, NotFound<Json<String>>> {
     let base_path = PathBuf::from(&config.workspace).join(entry_type);
@@ -45,7 +54,7 @@ pub(crate) async fn get_entry(entry_type: &str, id: usize, config: &State<QuakeS
     }
     let file_path = vec[0].clone();
 
-    let str = fs::read_to_string(file_path).expect("cannot read entries-define.yaml");
+    let str = fs::read_to_string(file_path).expect("cannot read entry type");
     let file = EntryFile::from(str.as_str()).unwrap();
     let string = serde_json::to_string(&file).unwrap();
 
