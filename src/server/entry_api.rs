@@ -1,14 +1,18 @@
+use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
 use rocket::response::content;
 use rocket::response::content::Json;
 use rocket::response::status::NotFound;
+use rocket::serde::{Deserialize, Serialize};
+use rocket::serde::json::Json as serdeJson;
 use rocket::State;
 use rocket::tokio::task::spawn_blocking;
-use quake_core::entry::entry_file::EntryFile;
-use crate::action::entry_usecases;
 
+use quake_core::entry::entry_file::EntryFile;
+
+use crate::action::entry_usecases;
 use crate::helper::file_process;
 use crate::server::{ApiError, QuakeServerConfig};
 
@@ -65,4 +69,16 @@ pub(crate) async fn get_entry(entry_type: &str, id: usize, config: &State<QuakeS
     let file = EntryFile::from(str.as_str()).unwrap();
 
     return Ok(content::Json(serde_json::to_string(&file).unwrap()));
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct EntryUpdate {
+    fields: HashMap<String, usize>,
+}
+
+#[post("/<entry_type>/<id>", data="<entry>")]
+pub(crate) async fn update_entry(_entry_type: &str, _id: usize, entry: serdeJson<EntryUpdate>,config: &State<QuakeServerConfig>) {
+    println!("{:?}", entry);
+    println!("{:?}", config);
 }
