@@ -29,7 +29,7 @@ Markdown Editor:
 - [https://github.com/uiwjs/react-md-editor](https://github.com/uiwjs/react-md-editor), is simple
 - [https://github.com/outline/rich-markdown-editor](https://github.com/outline/rich-markdown-editor)
 
-rich samples: [https://github.com/outline/outline/blob/main/app/components/Editor.js](https://github.com/outline/outline/blob/main/app/components/Editor.js)
+rich samples: [https://github.com/outline/outline/blob/main/app/components/Editor.tsx](https://github.com/outline/outline/blob/main/app/components/Editor.tsx)
 
 React Notion Render:
 
