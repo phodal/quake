@@ -5,14 +5,15 @@ import styled from "styled-components";
 import './QuakeEditor.css';
 
 interface EditorProps {
-  value: any;
+  title: string;
+  content: string;
 }
 
 function QuakeEditor(props: EditorProps) {
   return (
     <div className="App">
       <StyledEditor
-        value={props.value}
+        value={props.content}
       />
     </div>
   );
