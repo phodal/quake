@@ -4,7 +4,7 @@ use quake_core::action_parser::ActionDefine;
 use quake_core::entry::{EntryDefine, EntryDefineFile, EntryInfo, FrontMatter};
 use std::path::PathBuf;
 use quake_core::entry::entry_file::EntryFile;
-use crate::action::entry_action::EntryPaths;
+use crate::action::entry_paths::EntryPaths;
 use crate::action::entry_sets::Entrysets;
 
 pub fn find_entry_define(expr: &ActionDefine, paths: &EntryPaths) -> EntryDefine {

@@ -8,7 +8,7 @@ use quake_core::entry::EntryDefineFile;
 use quake_core::QuakeConfig;
 
 use crate::action::entry_app;
-use crate::action::entry_action::EntryPaths;
+use crate::action::entry_paths::EntryPaths;
 use crate::action::entry_sets::Entrysets;
 
 fn is_hidden(entry: &DirEntry) -> bool {

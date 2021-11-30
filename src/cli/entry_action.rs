@@ -1,37 +1,15 @@
 use std::error::Error;
-use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 
 use quake_core::parser::action_parser::ActionDefine;
 use quake_core::quake_config::QuakeConfig;
 
-use crate::action::{entry_app, file_process, quake_action};
+use crate::action::{entry_app, file_process};
+use crate::action::entry_paths::EntryPaths;
+use crate::cli::quake_action;
 use crate::helper::cmd;
 use crate::tui::table_process;
-
-pub struct EntryPaths {
-    pub base: PathBuf,
-    pub entries_info: PathBuf,
-    pub entries_define: PathBuf,
-    pub entries: PathBuf,
-}
-
-impl EntryPaths {
-    pub fn init(path: &String, object: &String) -> EntryPaths {
-        let path = PathBuf::from(path);
-
-        let obj_dir = &path.join(object);
-        let _ = fs::create_dir(obj_dir);
-
-        EntryPaths {
-            base: PathBuf::from(&obj_dir),
-            entries: PathBuf::from(&obj_dir.join("entries.csv")),
-            entries_info: PathBuf::from(&obj_dir.join("entries-info.yaml")),
-            entries_define: PathBuf::from(&path.join("entries-define.yaml")),
-        }
-    }
-}
 
 pub fn action(expr: ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     if expr.object == "quake" {
@@ -102,7 +80,7 @@ mod tests {
     use quake_core::parser::action_parser::ActionDefine;
     use quake_core::quake_config::QuakeConfig;
 
-    use crate::action::entry_action::action;
+    use crate::cli::entry_action::action;
 
     #[test]
     #[ignore]

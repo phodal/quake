@@ -12,7 +12,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
-use action::entry_action;
+use cli::entry_action;
 use quake_core::entry::EntryDefineFile;
 use quake_core::parser::action_parser::ActionDefine;
 use quake_core::QuakeConfig;
@@ -23,6 +23,7 @@ pub mod action;
 pub mod helper;
 pub mod server;
 pub mod tui;
+pub mod cli;
 
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
@@ -145,7 +146,7 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
 #[cfg(test)]
 mod tests {
     use crate::action::entry_app::sync_in_path;
-    use crate::entry_action::EntryPaths;
+    use crate::action::entry_paths::EntryPaths;
 
     #[ignore]
     #[test]
@@ -153,7 +154,7 @@ mod tests {
         let paths = EntryPaths::init(&"_fixtures".to_string(), &"notes".to_string());
         sync_in_path(&paths).unwrap();
 
-        let paths = EntryPaths::init(&"_fixtures".to_string(), &"phodal_com".to_string());
+        let paths = EntryPaths::init(&"_fixtures".to_string(), &"blog".to_string());
         sync_in_path(&paths).unwrap();
     }
 
