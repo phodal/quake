@@ -6,9 +6,9 @@ use quake_core::parser::action_parser::ActionDefine;
 use quake_core::quake_config::QuakeConfig;
 use std::fs;
 
-use crate::action::{entry_init, entry_usecases};
+use crate::action::{entry_factory, entry_usecases};
 use crate::action::entry_paths::EntryPaths;
-use crate::action::entry_sets::Entrysets;
+use crate::action::entrysets::Entrysets;
 use crate::cli::quake_action;
 use crate::helper::{cmd_runner, file_process};
 use crate::tui::table_process;
@@ -24,7 +24,7 @@ pub fn action(expr: ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error
 fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.path, &expr.object);
     let entries_define = entry_usecases::find_entry_define(expr, &paths);
-    let mut entry_info = entry_init::entry_info_from_path(&paths.entries_info);
+    let mut entry_info = entry_factory::entry_info_from_path(&paths.entries_info);
 
     // todo: export api for search
     match expr.action.as_str() {
@@ -36,7 +36,7 @@ fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Er
             entry_usecases::create_entry_file(&expr, &entries_define, &mut target_file);
 
             entry_info.inc();
-            entry_init::update_entry_info(&paths.entries_info, &mut entry_info);
+            entry_usecases::update_entry_info(&paths.entries_info, &mut entry_info);
 
             cmd_runner::edit_file(conf.editor, format!("{:}", target_file.display()))?;
 

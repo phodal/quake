@@ -21,8 +21,3 @@ pub fn entry_info_from_path(entry_info_path: &PathBuf) -> EntryInfo {
     let entry_info = serde_yaml::from_str(&*text).unwrap();
     entry_info
 }
-
-pub fn update_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryInfo) {
-    let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
-    fs::write(&entry_info_path, result).expect("cannot write to file");
-}

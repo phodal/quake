@@ -201,7 +201,7 @@ impl Entrysets {
 mod tests {
     use std::path::PathBuf;
 
-    use crate::action::entry_sets::Entrysets;
+    use crate::action::entrysets::Entrysets;
 
     #[test]
     fn read_csv() {

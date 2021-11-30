@@ -6,12 +6,12 @@ use quake_core::action_parser::ActionDefine;
 use quake_core::entry::{EntryDefine, EntryInfo, FrontMatter};
 use quake_core::entry::entry_file::EntryFile;
 
-use crate::action::entry_init;
+use crate::action::entry_factory;
 use crate::action::entry_paths::EntryPaths;
-use crate::action::entry_sets::Entrysets;
+use crate::action::entrysets::Entrysets;
 
 pub fn find_entry_define(expr: &ActionDefine, paths: &EntryPaths) -> EntryDefine {
-    let entries: Vec<EntryDefine> = entry_init::entries_define_from_path(&paths.entries_define).into_iter()
+    let entries: Vec<EntryDefine> = entry_factory::entries_define_from_path(&paths.entries_define).into_iter()
         .filter(|define| {
             define.entry_type.eq(&expr.object)
         })
@@ -29,7 +29,7 @@ pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     let (size, content) = Entrysets::generate(&paths.base)?;
     fs::write(&paths.entries, content)?;
 
-    entry_init::update_entry_info(&paths.entries_info, &mut EntryInfo {
+    update_entry_info(&paths.entries_info, &mut EntryInfo {
         index: size
     });
 
@@ -42,4 +42,9 @@ pub fn create_entry_file(expr: &ActionDefine, entry_define: &EntryDefine, target
     entry_file.front_matter = FrontMatter { fields: entry_define.merge(init_map) };
 
     fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
+}
+
+pub fn update_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryInfo) {
+    let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
+    fs::write(&entry_info_path, result).expect("cannot write to file");
 }

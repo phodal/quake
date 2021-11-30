@@ -9,7 +9,7 @@ use quake_core::QuakeConfig;
 
 use crate::action::entry_usecases;
 use crate::action::entry_paths::EntryPaths;
-use crate::action::entry_sets::Entrysets;
+use crate::action::entrysets::Entrysets;
 
 fn is_hidden(entry: &DirEntry) -> bool {
     entry.file_name()
