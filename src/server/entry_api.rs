@@ -35,9 +35,7 @@ struct EntryResponse {
 
 #[post("/<entry_type>")]
 pub(crate) async fn create_entry(entry_type: &str, _config: &State<QuakeServerConfig>) {
-    // let paths = EntryPaths::init(&conf.path, &expr.object);
-    // let entries_define = find_entry_define(&expr, &paths);
-    // let mut entry_info = entry_info_from_path(&paths.entries_info);
+    // action::
 
     // todo
 }
