@@ -88,7 +88,6 @@ impl Entrysets {
 
             let mut entry_file = EntryFile::from(&*string, index)?;
             entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
-            entry_file.front_matter.fields.insert("id".to_string(), index.to_string());
 
             entry_sets.push(entry_file);
             index = index + 1;
@@ -236,9 +235,9 @@ mod tests {
         let json = Entrysets::jsonify(&buf).unwrap();
 
         #[cfg(unix)]
-        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":\"1\",\"content\":\"\\n\\nahaha\\n\"}]");
+        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1,\"content\":\"\\n\\nahaha\\n\"}]");
 
         #[cfg(windows)]
-        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":\"1\",\"content\":\"\\r\\n\\r\\nahaha\\r\\n\"}]");
+        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1,\"content\":\"\\r\\n\\r\\nahaha\\r\\n\"}]");
     }
 }

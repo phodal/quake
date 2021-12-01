@@ -1,3 +1,1 @@
-/// sync entrysets to Meilisearch Engine
-///
-///
+// sync entrysets to Meilisearch Engine
