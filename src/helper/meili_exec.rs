@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::process::Command;
 
-pub fn feed_command(path_name: String) -> Result<(), Box<dyn Error>> {
+pub fn feed_command(path_name: &String) -> Result<(), Box<dyn Error>> {
     let url = format!("{:?}", path_name);
     Command::new("/bin/sh")
         .arg("-c")

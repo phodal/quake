@@ -58,9 +58,9 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
         let map = Entrysets::jsonify(&paths.base)?;
         fs::write(temp_file, map)?;
 
-        meili_exec::feed_command(path_name)?;
+        meili_exec::feed_command(&path_name)?;
 
-        println!("done feeds");
+        println!("done '{:}' feed", &path_name);
     }
 
     fs::remove_file(temp_file)?;
