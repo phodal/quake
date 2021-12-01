@@ -203,7 +203,7 @@ sample
     #[test]
     fn to_json() {
         let entry_file = EntryFile::from(demo_text().as_str(), 1).unwrap();
-        assert_eq!(r#"{"title":"hello, world","authors":"Phodal HUANG<h@phodal.com>","description":"a hello, world","created_date":"2021.11.23","updated_date":"2021.11.21","content":"\n\nsample\n\n"}"#, serde_json::to_string(&entry_file).unwrap());
+        assert_eq!(r#"{"title":"hello, world","authors":"Phodal HUANG<h@phodal.com>","description":"a hello, world","created_date":"2021.11.23","updated_date":"2021.11.21","id":1,"content":"\n\nsample\n\n"}"#, serde_json::to_string(&entry_file).unwrap());
     }
 
     fn demo_text() -> String {
