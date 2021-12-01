@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
+use std::process::Command;
 
 use walkdir::{DirEntry, WalkDir};
 
@@ -21,30 +22,80 @@ fn is_hidden(entry: &DirEntry) -> bool {
 pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
     match action.as_str() {
         "sync" => {
-            let path = PathBuf::from(&conf.path);
-
-            let mut define_file = EntryDefineFile::default();
-            for entry in WalkDir::new(path).min_depth(1).into_iter()
-                .filter_entry(|e| !is_hidden(e)) {
-                let entry = entry.unwrap();
-                if !entry.path().is_dir() {
-                    continue
-                }
-                let path_name = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
-
-                let paths = EntryPaths::init(&conf.path, &path_name);
-                entry_usecases::sync_in_path(&paths).unwrap();
-                let csv = entry.path().join("entries.csv");
-                if csv.exists() {
-                    define_file.entries.push(Entrysets::define_from_csv(path_name, csv)?);
-                }
-            }
-
-            let content = serde_yaml::to_string(&define_file).unwrap();
-            fs::write(PathBuf::from(&conf.path).join("entries-define.yaml"), content).unwrap();
+            sync_defines(&conf)?;
+        }
+        "migration" => {
+            // todo: add migrations for on entries
+        }
+        "feeds" => {
+            // feed to search engine
+            feeds(&conf)?;
         }
         _ => {}
     }
+
+    Ok(())
+}
+
+fn feeds(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
+    let path = PathBuf::from(&conf.path);
+    for entry in WalkDir::new(path).min_depth(1).into_iter()
+        .filter_entry(|e| !is_hidden(e)) {
+        let entry = entry.unwrap();
+        if !entry.path().is_dir() {
+            continue;
+        }
+
+        let table = entry.path().join("entries.csv");
+        if !table.exists() {
+            continue;
+        }
+
+        let path_name = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
+        let paths = EntryPaths::init(&conf.path, &path_name);
+
+        let url = format!("http://127.0.0.1:8000/indexes/{:}/documents", path_name);
+        println!("feeding {:?} to {:}", path_name, url);
+
+        let map = Entrysets::jsonify(&paths.base)?;
+        fs::write("dump.json", map)?;
+
+        Command::new("/bin/sh")
+            .arg("-c")
+            .arg(format!("curl -i -X POST 'http://127.0.0.1:7700/indexes/{:}/documents' \
+  --header 'content-type: application/json' \
+  --data-binary @dump.json", path_name))
+            .spawn()?
+            .wait()?;
+
+        println!("done feeds");
+    }
+
+    Ok(())
+}
+
+fn sync_defines(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
+    let path = PathBuf::from(&conf.path);
+
+    let mut define_file = EntryDefineFile::default();
+    for entry in WalkDir::new(path).min_depth(1).into_iter()
+        .filter_entry(|e| !is_hidden(e)) {
+        let entry = entry.unwrap();
+        if !entry.path().is_dir() {
+            continue;
+        }
+        let path_name = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
+
+        let paths = EntryPaths::init(&conf.path, &path_name);
+        entry_usecases::sync_in_path(&paths).unwrap();
+        let csv = entry.path().join("entries.csv");
+        if csv.exists() {
+            define_file.entries.push(Entrysets::define_from_csv(path_name, csv)?);
+        }
+    }
+
+    let content = serde_yaml::to_string(&define_file).unwrap();
+    fs::write(PathBuf::from(&conf.path).join("entries-define.yaml"), content)?;
 
     Ok(())
 }
