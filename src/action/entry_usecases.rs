@@ -86,7 +86,7 @@ pub fn find_entry_path(entry_path: PathBuf, entry_type: &String, index: usize) -
     Ok(target_file)
 }
 
-pub fn update_entry_fields(type_path: PathBuf, entry_type: &str, index_id: usize, map: HashMap<String, String>) -> Result<(), Box<dyn Error>> {
+pub fn update_entry_fields(type_path: PathBuf, entry_type: &str, index_id: usize, map: &HashMap<String, String>) -> Result<(), Box<dyn Error>> {
     let entry_path = find_entry_path(type_path, &entry_type.to_string(), index_id)?;
     let string = fs::read_to_string(&entry_path)?;
     let mut entry_file = EntryFile::from(string.as_str())?;
@@ -121,7 +121,7 @@ mod tests {
         let mut map: HashMap<String, String> = HashMap::new();
         map.insert("title".to_string(), "this is a test".to_string());
 
-        update_entry_fields(yiki_path.clone(), &entry_type, index_id, map).unwrap();
+        update_entry_fields(yiki_path.clone(), &entry_type, index_id, &map).unwrap();
 
         let entry_path = find_entry_path(yiki_path, &entry_type.to_string(), index_id).unwrap();
         let string = fs::read_to_string(&entry_path).unwrap();
@@ -129,7 +129,7 @@ mod tests {
 
         let string = fs::read_to_string(&entry_path).unwrap();
         let mut entry_file = EntryFile::from(string.as_str()).unwrap();
-        entry_file.update_field("title".to_string(), "概念知识容量表".to_string());
+        entry_file.update_field(&"title".to_string(), &"概念知识容量表".to_string());
         fs::write(&entry_path, entry_file.to_string()).unwrap();
 
         let string = fs::read_to_string(&entry_path).unwrap();

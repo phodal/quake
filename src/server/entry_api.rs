@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
+use rocket::http::uri::fmt::Kind::Path;
 
 use rocket::response::status::NotFound;
 use rocket::serde::{Deserialize, Serialize};
@@ -75,10 +76,8 @@ pub struct EntryUpdate {
 
 #[post("/<entry_type>/<id>", data="<entry>")]
 pub(crate) async fn update_entry(entry_type: &str, id: usize, entry: Json<EntryUpdate>,config: &State<QuakeServerConfig>) {
-    println!("{:?}", entry);
-    for (key, value) in &entry.fields {
-        println!("{:?}, {:?}", key, value);
-    }
+    let path = PathBuf::from(&config.workspace).join(entry_type);
+    entry_usecases::update_entry_fields(path, entry_type, id, &entry.fields);
 
     println!("{:?}", config);
 }

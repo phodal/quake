@@ -98,11 +98,11 @@ impl EntryFile {
         (header, column)
     }
 
-    pub fn update_field(&mut self, file_name: String, value: String) {
-        match self.front_matter.fields.get_mut(&file_name) {
+    pub fn update_field(&mut self, file_name: &String, value: &String) {
+        match self.front_matter.fields.get_mut(file_name) {
             None => {}
             Some(val) => {
-                *val = value;
+                *val = value.to_string();
             }
         };
     }
@@ -204,7 +204,7 @@ sample
         let text = demo_text();
         let mut entry_file = EntryFile::from(text.as_str()).unwrap();
 
-        entry_file.update_field("title".to_string(), "Hello, World".to_string());
+        entry_file.update_field(&"title".to_string(), &"Hello, World".to_string());
 
         let value = entry_file.front_matter.fields.get(&"title".to_string()).unwrap();
         assert_eq!(value, &"Hello, World".to_string());
