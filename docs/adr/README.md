@@ -20,3 +20,4 @@
 * [18. calendar-view-api](0018-calendar-view-api.md)
 * [19. freeboard-with-mxgraph](0019-freeboard-with-mxgraph.md)
 * [20. flowy-view-for-ideas](0020-flowy-view-for-ideas.md)
+* [21. quake-init-with-install-meilisearch](0021-quake-init-with-install-meilisearch.md)
