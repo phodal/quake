@@ -32,11 +32,7 @@ Quake 是面向极客的知识管理元框架，它可以：
 
 ## Usage
 
-### GUI (TBD)
-
-
-
-### Terminal
+### CLI
 
 1. add entry by type
 
@@ -79,6 +75,17 @@ curl -i -X POST 'http://127.0.0.1:7700/indexes/phodal_com/documents' \
 7. concept [tbd]
 
 8. network [tbd]
+
+### GUI (TBD)
+
+1. config `QuakeServer.toml`
+2. run server
+
+```
+quake server
+```
+
+3. visit: [http://localhost:8000/](http://localhost:8000/)
 
 ### Query Syntax
 
