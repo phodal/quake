@@ -76,9 +76,13 @@ impl EntryFile {
             return Ok(EntryFile::default());
         }
 
+        // todo: add split for others
         let split_data = text.split("---").map(Into::into).collect::<Vec<String>>();
         let front_matter = split_data.get(1).expect("parse issue");
-        let content = split_data.get(2).expect("parse issue");
+        let mut others = split_data.clone();
+        others.remove(0);
+
+        let content = others.join("");
 
         let mut fields: IndexMap<String, String> = IndexMap::new();
         for document in serde_yaml::Deserializer::from_str(front_matter) {
@@ -230,5 +234,20 @@ sample
 
         let value = entry_file.front_matter.fields.get(&"title".to_string()).unwrap();
         assert_eq!(value, &"Hello, World".to_string());
+    }
+
+    #[test]
+    fn split_front_matter() {
+        let result = EntryFile::from("---
+updated_date: 2021.11.21
+---
+
+| sample | fdaf |
+|---------|-----|
+|   fad  |      |
+
+sample", 1).unwrap();
+
+        println!("{:?}", result);
     }
 }
