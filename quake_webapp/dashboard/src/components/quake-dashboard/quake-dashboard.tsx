@@ -21,6 +21,10 @@ export interface EntryInfo {
   action: any[]
 }
 
+export interface SearchResult {
+  [id: string]: Array<any>
+}
+
 @Component({
   tag: 'quake-dashboard',
   styleUrl: 'quake-dashboard.css',
@@ -32,6 +36,8 @@ export class QuakeDashboard {
   @Prop() indexName: string = "";
   @Element() el: HTMLElement;
   @State() items: Array<object> = [];
+  @State() list: SearchResult = {};
+
   @State() isAction = false;
 
   @State() query: string = "";
@@ -55,6 +61,7 @@ export class QuakeDashboard {
     axios.get('/action/suggest')
       .then((response: any) => {
         that.entries_info = response.data.entries;
+        console.log(that.entries_info);
       });
   }
 
@@ -78,9 +85,16 @@ export class QuakeDashboard {
   }
 
   private createSearch(that: this) {
-    const index = this.client.index('blog')
+    for (let info of this.entries_info) {
+      this.search_item(that, info.type);
+    }
+  }
+
+  private search_item(that: this, doc: string) {
+    const index = this.client.index(doc)
     requestAnimationFrame(() => {
       index.search(that.query).then((result) => {
+        that.list[doc] = result.hits;
         that.items = result.hits;
       })
     });
@@ -165,24 +179,19 @@ export class QuakeDashboard {
         </ion-toolbar>
       </ion-header>
       <ion-content fullscreen>
-        {this.entries_info.length > 0
-          ? <ion-list>
-            {this.actionDefine ?
-              <ion-item>{this.actionDefine.object}, {this.actionDefine.action}, {this.actionDefine.text}, {this.actionDefine.parameters} </ion-item>
-              : null
-            }
-            {this.items.length > 0
-              ? this.items.map((item: any) =>
+        {this.entries_info.map((info) =>
+          <ion-list>
+            <div>{this.list[info.type] ? this.list[info.type].map((item: any) =>
                 <ion-item onClick={() => this.clickEntry(item.id, item.type)}>
                   <ion-badge slot="start"># {this.padLeft(item.id, 4, '')}</ion-badge>
                   <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
                   {item.title}
-                </ion-item>)
-              : null
+                </ion-item>
+              ) : null
             }
+            </div>
           </ion-list>
-          : null
-        }
+        )}
       </ion-content>
     </ion-app>;
   }
