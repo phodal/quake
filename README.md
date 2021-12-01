@@ -12,6 +12,10 @@ Quake 是面向极客的知识管理元框架，它可以：
 
 ## Intro
 
+Architecture:
+
+![Architecture](docs/quake-arch.svg)
+
 ### Design principle
 
 我使用了不同的工具来管理知识，Microsoft To Do 管理 idea、Phodit + [Phodal.com](https://www.phodal.com/) 发布文章、Apple Notes 记录笔记等等，知识被分散在各个工具中。不利于我进行洞见，寻找灵感，与此同时，还缺乏书写和记录的方式。
