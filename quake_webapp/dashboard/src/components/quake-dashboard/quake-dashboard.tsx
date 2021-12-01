@@ -137,11 +137,11 @@ export class QuakeDashboard {
     });
   }
 
-  clickEntry(id: string, _object: string) {
+  clickEntry(id: string, object: string) {
     this.dispatchAction.emit({
       parameters: [id],
       action: 'update',
-      object: 'blog',
+      object: object,
     } as any);
   }
 
@@ -178,21 +178,27 @@ export class QuakeDashboard {
           </ion-item>
         </ion-toolbar>
       </ion-header>
-      <ion-content fullscreen>
-        {this.entries_info.map((info) =>
-          <ion-list>
-            <div>{this.list[info.type] ? this.list[info.type].map((item: any) =>
-                <ion-item onClick={() => this.clickEntry(item.id, item.type)}>
-                  <ion-badge slot="start"># {this.padLeft(item.id, 4, '')}</ion-badge>
-                  <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
-                  {item.title}
-                </ion-item>
-              ) : null
-            }
-            </div>
-          </ion-list>
-        )}
-      </ion-content>
+      <ion-grid>
+        <ion-row>
+          {this.entries_info.map((info) =>
+            this.list[info.type] && this.list[info.type].length > 0 ? this.renderCol(info) : null
+          )}
+        </ion-row>
+      </ion-grid>
     </ion-app>;
+  }
+
+  private renderCol(info: EntryInfo) {
+    return <ion-col>
+      <ion-text color="secondary">{info.type}</ion-text>
+      {this.list[info.type] ? this.list[info.type].map((item: any) =>
+        <ion-item onClick={() => this.clickEntry(item.id, info.type)}>
+          <ion-badge slot="start"># {this.padLeft(item.id, 4, '')}</ion-badge>
+          <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
+          {item.title}
+        </ion-item>
+      ) : null
+      }
+    </ion-col>;
   }
 }
