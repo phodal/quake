@@ -1,17 +1,15 @@
 use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
-use std::process::Command;
 
 use walkdir::{DirEntry, WalkDir};
 
 use quake_core::entry::EntryDefineFile;
 use quake_core::QuakeConfig;
 
-use crate::action::entry_usecases;
 use crate::action::entry_paths::EntryPaths;
+use crate::action::entry_usecases;
 use crate::action::entrysets::Entrysets;
-use crate::cmd;
 use crate::helper::meili_exec;
 
 fn is_hidden(entry: &DirEntry) -> bool {
