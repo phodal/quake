@@ -1,7 +1,7 @@
 use std::collections::HashMap;
+use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
-use rocket::http::uri::fmt::Kind::Path;
 
 use rocket::response::status::NotFound;
 use rocket::serde::{Deserialize, Serialize};
@@ -13,7 +13,7 @@ use quake_core::entry::entry_file::EntryFile;
 
 use crate::action::entry_usecases;
 use crate::helper::file_process;
-use crate::server::{ApiError, QuakeServerConfig};
+use crate::server::{ApiError, ApiSuccess, QuakeServerConfig};
 
 #[get("/<entry_type>", rank = 3)]
 pub(crate) async fn get_entries(entry_type: &str) -> Json<String> {
@@ -75,9 +75,18 @@ pub struct EntryUpdate {
 }
 
 #[post("/<entry_type>/<id>", data="<entry>")]
-pub(crate) async fn update_entry(entry_type: &str, id: usize, entry: Json<EntryUpdate>,config: &State<QuakeServerConfig>) {
+pub(crate) async fn update_entry(entry_type: &str, id: usize, entry: Json<EntryUpdate>, config: &State<QuakeServerConfig>) -> Result<Json<ApiSuccess>, NotFound<Json<ApiError>>> {
     let path = PathBuf::from(&config.workspace).join(entry_type);
-    entry_usecases::update_entry_fields(path, entry_type, id, &entry.fields);
-
-    println!("{:?}", config);
+    return match entry_usecases::update_entry_fields(path, entry_type, id, &entry.fields) {
+        Ok(_) => {
+            Ok(Json(ApiSuccess {
+                content: "".to_string()
+            }))
+        }
+        Err(err) => {
+            Err(NotFound(Json(ApiError {
+                msg: err.to_string()
+            })))
+        }
+    }
 }

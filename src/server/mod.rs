@@ -22,6 +22,11 @@ pub struct ApiError {
     pub msg: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ApiSuccess {
+    pub content: String
+}
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct QuakeServerConfig {
     pub workspace: String
