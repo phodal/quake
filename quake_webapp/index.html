@@ -93,8 +93,11 @@
     return editor
   }
 
-  const update_entry = (entry_define, entry_info) => {
-
+  const update_entry = async (entry_type, entry_type, id, entry_info) => {
+    let response = await fetch(`/entry/${entry_type}/${id}`, {
+      method: 'POST',
+      body: JSON.stringify({ fields: entry_info})
+    }); console.log(response.text());
   }
 
   router.setRoutes([

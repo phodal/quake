@@ -70,11 +70,15 @@ pub(crate) async fn get_entry(entry_type: &str, id: usize, config: &State<QuakeS
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct EntryUpdate {
-    fields: HashMap<String, usize>,
+    fields: HashMap<String, String>,
 }
 
 #[post("/<entry_type>/<id>", data="<entry>")]
 pub(crate) async fn update_entry(entry_type: &str, id: usize, entry: Json<EntryUpdate>,config: &State<QuakeServerConfig>) {
     println!("{:?}", entry);
+    for (key, value) in &entry.fields {
+        println!("{:?}, {:?}", key, value);
+    }
+
     println!("{:?}", config);
 }
