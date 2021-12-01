@@ -6,6 +6,7 @@ use std::path::PathBuf;
 
 use quake_core::entry::{EntryDefine, EntryInfo, FrontMatter};
 use quake_core::entry::entry_file::EntryFile;
+use quake_core::quake_time::date_now;
 
 use crate::action::entry_factory;
 use crate::action::entry_paths::EntryPaths;
@@ -49,11 +50,13 @@ pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &Strin
     let entries_define = find_entry_define(&paths, entry_type);
     let mut entry_info = entry_factory::entry_info_from_path(&paths.entries_info);
 
-    let new_md_file = file_process::file_name(entry_info.index + 1, entry_text.as_str());
+    let new_index = entry_info.index + 1;
+    let new_md_file = file_process::file_name(new_index, entry_text.as_str());
     let mut target_path = paths.base.join(new_md_file);
     File::create(&target_path)?;
 
-    let entry_file = create_entry_file(&entries_define, &mut target_path, entry_text.to_string());
+    let mut entry_file = create_entry_file(&entries_define, &mut target_path, entry_text.to_string());
+    entry_file.id = new_index;
 
     entry_info.inc();
     update_entry_info(&paths.entries_info, &mut entry_info);
@@ -86,17 +89,28 @@ pub fn find_entry_path(entry_path: PathBuf, entry_type: &String, index: usize) -
     Ok(target_file)
 }
 
-pub fn update_entry_fields(type_path: PathBuf, entry_type: &str, index_id: usize, map: &HashMap<String, String>) -> Result<(), Box<dyn Error>> {
+pub fn update_entry_fields(type_path: PathBuf, entry_type: &str, index_id: usize, update_map: &HashMap<String, String>) -> Result<EntryFile, Box<dyn Error>> {
     let entry_path = find_entry_path(type_path, &entry_type.to_string(), index_id)?;
     let string = fs::read_to_string(&entry_path)?;
-    let mut entry_file = EntryFile::from(string.as_str())?;
+    let mut entry_file = EntryFile::from(string.as_str(), index_id)?;
 
-    for (key, value) in map {
-        entry_file.update_field(key, value);
+    for (key, value) in update_map {
+        if key != "content" {
+            entry_file.update_field(key, value);
+        }
     }
+
+    if let Some(_val) = entry_file.front_matter.fields.get("updated_date") {
+        entry_file.update_field(&"updated_date".to_string(), &date_now())
+    }
+
+    if let Some(val) = update_map.get("content") {
+        entry_file.update_content(val);
+    }
+
     fs::write(&entry_path, entry_file.to_string())?;
 
-    Ok(())
+    Ok(entry_file)
 }
 
 
@@ -128,11 +142,35 @@ mod tests {
         assert!(string.contains("this is a test".to_string().as_str()));
 
         let string = fs::read_to_string(&entry_path).unwrap();
-        let mut entry_file = EntryFile::from(string.as_str()).unwrap();
+        let mut entry_file = EntryFile::from(string.as_str(), index_id).unwrap();
         entry_file.update_field(&"title".to_string(), &"概念知识容量表".to_string());
         fs::write(&entry_path, entry_file.to_string()).unwrap();
 
         let string = fs::read_to_string(&entry_path).unwrap();
         assert!(string.contains("概念知识容量表"));
+    }
+
+    #[test]
+    fn update_entry_content() {
+        let yiki_path = PathBuf::from("_fixtures").join("yiki");
+        let entry_type = "yiwi";
+        let index_id = 2;
+
+        let mut map: HashMap<String, String> = HashMap::new();
+        map.insert("content".to_string(), "this is a content".to_string());
+
+        update_entry_fields(yiki_path.clone(), &entry_type, index_id, &map).unwrap();
+
+        let entry_path = find_entry_path(yiki_path, &entry_type.to_string(), index_id).unwrap();
+        let string = fs::read_to_string(&entry_path).unwrap();
+        assert!(string.contains("this is a content".to_string().as_str()));
+
+        let string = fs::read_to_string(&entry_path).unwrap();
+        let mut entry_file = EntryFile::from(string.as_str(), index_id).unwrap();
+        entry_file.update_content(&"允许自定义字段\n".to_string());
+        fs::write(&entry_path, entry_file.to_string()).unwrap();
+
+        let string = fs::read_to_string(&entry_path).unwrap();
+        assert!(string.contains("允许自定义字段\n"));
     }
 }

@@ -1,4 +1,5 @@
 use std::error::Error;
+use std::path::PathBuf;
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize, Serializer};
 use serde::ser::SerializeMap;
@@ -9,15 +10,35 @@ use crate::entry::slug::slugify;
 
 #[derive(Deserialize, PartialEq, Debug)]
 pub struct EntryFile {
-    // add path
+    pub id: usize,
+    pub path: PathBuf,
     pub name: String,
     pub front_matter: FrontMatter,
     pub content: String,
 }
 
+
+impl Serialize for EntryFile {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(self.front_matter.fields.len()))?;
+        for (k, v) in &self.front_matter.fields {
+            map.serialize_entry(&k.to_string(), &v)?;
+        }
+
+        map.serialize_entry("id", &self.id)?;
+        map.serialize_entry("content", &self.content)?;
+        map.end()
+    }
+}
+
 impl Default for EntryFile {
     fn default() -> Self {
         EntryFile {
+            id: 1,
+            path: Default::default(),
             name: "".to_string(),
             front_matter: FrontMatter::default(),
             content: "".to_string(),
@@ -50,9 +71,9 @@ impl EntryFile {
         format!("{:0>4}-{:}.md", index, slugify(text))
     }
 
-    pub fn from(text: &str) -> Result<EntryFile, Box<dyn Error>> {
+    pub fn from(text: &str, index_id: usize) -> Result<EntryFile, Box<dyn Error>> {
         if !text.starts_with("---") {
-            return Ok(EntryFile::default())
+            return Ok(EntryFile::default());
         }
 
         let split_data = text.split("---").map(Into::into).collect::<Vec<String>>();
@@ -79,13 +100,15 @@ impl EntryFile {
         }
 
         Ok(EntryFile {
+            id: index_id,
+            path: Default::default(),
             name: "".to_string(),
             front_matter: FrontMatter { fields },
             content: String::from(content),
         })
     }
 
-    pub fn header_column(self, index: i32) -> (Vec<String>, Vec<String>) {
+    pub fn header_column(self, index: usize) -> (Vec<String>, Vec<String>) {
         let mut header: Vec<String> = vec![];
         let mut column: Vec<String> = vec![];
         column.push(index.to_string());
@@ -98,28 +121,27 @@ impl EntryFile {
         (header, column)
     }
 
-    pub fn update_field(&mut self, file_name: &String, value: &String) {
-        match self.front_matter.fields.get_mut(file_name) {
+    pub fn add_id(&mut self, value: usize) {
+        self.front_matter.fields.insert("id".to_string(), value.to_string());
+    }
+
+    pub fn update_field(&mut self, field: &String, value: &String) {
+        match self.front_matter.fields.get_mut(field) {
             None => {}
             Some(val) => {
                 *val = value.to_string();
             }
         };
     }
-}
 
-impl Serialize for EntryFile {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
-    {
-        let mut map = serializer.serialize_map(Some(self.front_matter.fields.len()))?;
-        for (k, v) in &self.front_matter.fields {
-            map.serialize_entry(&k.to_string(), &v)?;
+    pub fn update_content(&mut self, content: &String) {
+        if content.starts_with("\n") || content.starts_with("\r\n") {
+            self.content = content.to_string();
+            return
         }
 
-        map.serialize_entry("content", &self.content)?;
-        map.end()
+        self.content = "\n\n".to_string();
+        self.content.push_str(content);
     }
 }
 
@@ -164,7 +186,7 @@ sample
 
 ";
 
-        let mut entry_file = EntryFile::from(text).unwrap();
+        let mut entry_file = EntryFile::from(text, 1).unwrap();
 
         assert_eq!(text, entry_file.to_string());
 
@@ -180,7 +202,7 @@ sample
 
     #[test]
     fn to_json() {
-        let entry_file = EntryFile::from(demo_text().as_str()).unwrap();
+        let entry_file = EntryFile::from(demo_text().as_str(), 1).unwrap();
         assert_eq!(r#"{"title":"hello, world","authors":"Phodal HUANG<h@phodal.com>","description":"a hello, world","created_date":"2021.11.23","updated_date":"2021.11.21","content":"\n\nsample\n\n"}"#, serde_json::to_string(&entry_file).unwrap());
     }
 
@@ -202,7 +224,7 @@ sample
     #[test]
     fn update_title() {
         let text = demo_text();
-        let mut entry_file = EntryFile::from(text.as_str()).unwrap();
+        let mut entry_file = EntryFile::from(text.as_str(), 1).unwrap();
 
         entry_file.update_field(&"title".to_string(), &"Hello, World".to_string());
 

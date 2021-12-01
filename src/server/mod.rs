@@ -7,10 +7,11 @@ use rocket::fs::{FileServer, relative};
 #[allow(unused_imports)]
 use action_api::parse_query;
 #[allow(unused_imports)]
-use entry_api::{get_entries, get_entry, create_entry, update_entry};
+use entry_api::{create_entry, get_entries, get_entry, update_entry};
 
 mod entry_api;
 mod action_api;
+mod search_api;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ApiString {

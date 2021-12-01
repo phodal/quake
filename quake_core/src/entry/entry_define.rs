@@ -1,8 +1,8 @@
-use chrono::{DateTime, Local};
 use indexmap::IndexMap;
 use serde_derive::{Deserialize, Serialize};
 
 use crate::model::CustomType;
+use crate::quake_time;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct EntryDefineFile {
@@ -24,6 +24,8 @@ pub struct EntryDefine {
     pub display: String,
     pub fields: Vec<IndexMap<String, String>>,
     pub actions: Option<Vec<String>>,
+    // flowly
+    // pri
 }
 
 impl Default for EntryDefine {
@@ -51,8 +53,7 @@ impl EntryDefine {
     }
 
     pub fn create_title_and_date(&self, text: String) -> IndexMap<String, String> {
-        let local: DateTime<Local> = Local::now();
-        let date = local.format("%Y-%m-%d %H:%M:%S").to_string();
+        let date = quake_time::date_now();
 
         let mut map = IndexMap::new();
         map.insert("title".to_string(), text);
@@ -88,7 +89,7 @@ mod tests {
     use indexmap::IndexMap;
 
     use crate::entry::entry_define::EntryDefine;
-    use crate::model::meta_object::MetaField;
+    use crate::model::meta_field::MetaField;
 
     fn custom_entry_from_yaml() -> Vec<EntryDefine> {
         let yaml = "

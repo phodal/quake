@@ -20,7 +20,17 @@ pub enum MetaField {
     Filterable(Vec<String>),
     /// priority
     Priority(String),
+    /// todo: define for Attachment
+    Attachment(String),
+    /// todo: add flowy
     Unknown(String),
+}
+
+pub enum FormField {
+    Checkable,
+    Inputtable,
+    Editable,
+    Selectable
 }
 
 impl Display for MetaField {
@@ -37,7 +47,8 @@ impl Display for MetaField {
             MetaField::Body(body) => write!(f, "{}", body),
             MetaField::Theme(theme) => write!(f, "{}", theme),
             MetaField::Epic(epic) => write!(f, "{}", epic),
-            MetaField::Priority(priority) => write!(f, "{}", priority)
+            MetaField::Priority(priority) => write!(f, "{}", priority),
+            MetaField::Attachment(attachment) => write!(f, "{}", attachment),
         }
     }
 }
@@ -52,7 +63,7 @@ pub enum MetaType {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::meta_object::MetaField;
+    use crate::model::meta_field::MetaField;
 
     #[test]
     fn display_title() {

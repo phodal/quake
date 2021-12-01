@@ -1,8 +1,8 @@
 use indexmap::IndexMap;
 
-use crate::model::meta_object::MetaField;
+use crate::model::meta_field::MetaField;
 
-pub mod meta_object;
+pub mod meta_field;
 pub mod meta_action;
 pub mod meta_config;
 
@@ -75,7 +75,7 @@ mod tests {
     use indexmap::IndexMap;
 
     use crate::model::CustomType;
-    use crate::model::meta_object::MetaField;
+    use crate::model::meta_field::MetaField;
 
     #[test]
     fn custom_type() {

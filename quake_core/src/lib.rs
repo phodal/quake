@@ -11,6 +11,7 @@ pub mod quake_config;
 pub mod parser;
 pub mod repository;
 pub mod entry;
+pub mod quake_time;
 
 pub use quake_config::QuakeConfig;
 
