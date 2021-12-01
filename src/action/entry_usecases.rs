@@ -144,6 +144,8 @@ mod tests {
         let string = fs::read_to_string(&entry_path).unwrap();
         let mut entry_file = EntryFile::from(string.as_str(), index_id).unwrap();
         entry_file.update_field(&"title".to_string(), &"概念知识容量表".to_string());
+        // reset time
+        entry_file.update_field(&"updated_date".to_string(), &"2021-11-25 10:14:26".to_string());
         fs::write(&entry_path, entry_file.to_string()).unwrap();
 
         let string = fs::read_to_string(&entry_path).unwrap();
@@ -168,6 +170,8 @@ mod tests {
         let string = fs::read_to_string(&entry_path).unwrap();
         let mut entry_file = EntryFile::from(string.as_str(), index_id).unwrap();
         entry_file.update_content(&"允许自定义字段\n".to_string());
+        // reset time
+        entry_file.update_field(&"updated_date".to_string(), &"2021-12-01 11:08:40".to_string());
         fs::write(&entry_path, entry_file.to_string()).unwrap();
 
         let string = fs::read_to_string(&entry_path).unwrap();

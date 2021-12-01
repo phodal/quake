@@ -81,6 +81,7 @@ impl EntryFile {
         let front_matter = split_data.get(1).expect("parse issue");
         let mut others = split_data.clone();
         others.remove(0);
+        others.remove(0);
 
         let content = others.join("");
 
