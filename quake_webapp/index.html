@@ -50,30 +50,27 @@
     return dashboard
   };
 
-  const entry = async (context, commands) => {
-    let params = context.params;
-    let response = await fetch(`/entry/${params.type}/${params.id}`)
-    const entry = await response.json();
-
+  function create_editor_element(entry, params) {
     const editor = document.createElement('quake-editor');
 
     editor.setAttribute('title', entry.title);
     editor.setAttribute('content', entry.content);
     editor.addEventListener("onSave", function (event) {
-      console.log(event);
+      // todo: check event.detail
+      update_entry(params.type, params.id, JSON.parse(event.detail))
     });
     return editor
   }
 
+  const edit_entry = async (context, commands) => {
+    let params = context.params;
+    let response = await fetch(`/entry/${params.type}/${params.id}`)
+    const entry = await response.json();
 
-  function getParameterByName(name) {
-    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+    return create_editor_element(entry, params);
   }
 
   const create_entry = async (context, commands) => {
-    const editor = document.createElement('quake-editor');
-
     let params = context.params;
     let url_params = new URLSearchParams(context.search);
     let text = url_params.get('text');
@@ -82,28 +79,31 @@
     const response = await fetch(url, {
       method: 'POST'
     });
+
     const entry = await response.json();
-
-    editor.setAttribute('title', entry.title);
-    editor.setAttribute('content', entry.content);
-    editor.addEventListener("onSave", function (event) {
-      console.log(event);
-    });
-
-    return editor
+    console.log(entry);
+    params.id = entry.id;
+    return create_editor_element(entry, params);
   }
 
-  const update_entry = async (entry_type, entry_type, id, entry_info) => {
+  const update_entry = async (entry_type, id, fields) => {
     let response = await fetch(`/entry/${entry_type}/${id}`, {
       method: 'POST',
-      body: JSON.stringify({ fields: entry_info})
-    }); console.log(response.text());
+      body: JSON.stringify({ fields: fields })
+    });
+
+    console.log(response.json());
   }
 
   router.setRoutes([
     {path: '/', action: home},
     {path: '/entry/:type/new', action: create_entry},
-    {path: '/edit/:type/:id', action: entry},
+    {path: '/edit/:type/:id', action: edit_entry},
   ]);
+
+  function getParameterByName(name) {
+    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+  }
 </script>
 </html>
