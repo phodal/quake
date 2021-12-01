@@ -11,6 +11,8 @@ use quake_core::QuakeConfig;
 use crate::action::entry_usecases;
 use crate::action::entry_paths::EntryPaths;
 use crate::action::entrysets::Entrysets;
+use crate::cmd;
+use crate::helper::meili_exec;
 
 fn is_hidden(entry: &DirEntry) -> bool {
     entry.file_name()
@@ -56,13 +58,7 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
         let map = Entrysets::jsonify(&paths.base)?;
         fs::write("dump.json", map)?;
 
-        Command::new("/bin/sh")
-            .arg("-c")
-            .arg(format!("curl -i -X POST 'http://127.0.0.1:7700/indexes/{:}/documents' \
-  --header 'content-type: application/json' \
-  --data-binary @dump.json", path_name))
-            .spawn()?
-            .wait()?;
+        meili_exec::feed_command(path_name)?;
 
         println!("done feeds");
     }

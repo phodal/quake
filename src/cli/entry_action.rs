@@ -10,7 +10,7 @@ use crate::action::entry_paths::EntryPaths;
 use crate::action::entry_usecases;
 use crate::action::entry_usecases::find_entry_path;
 use crate::action::entrysets::Entrysets;
-use crate::helper::cmd_runner;
+use crate::helper::editor_exec;
 use crate::tui::table_process;
 
 pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
@@ -20,7 +20,7 @@ pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dy
     match expr.action.as_str() {
         "add" => {
             let target_file = entry_usecases::create_entry(&conf.path, &expr.object, &expr.text)?.0;
-            cmd_runner::edit_file(conf.editor, format!("{:}", target_file.display()))?;
+            editor_exec::edit_file(conf.editor, format!("{:}", target_file.display()))?;
             entry_usecases::sync_in_path(&paths)?
         }
         "edit" => {
@@ -29,7 +29,7 @@ pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dy
                 &expr.object,
                 expr.index_from_parameter())?;
 
-            cmd_runner::edit_file(conf.editor, format!("{:}", target_file.display()))?;
+            editor_exec::edit_file(conf.editor, format!("{:}", target_file.display()))?;
         }
         "sync" => {
             entry_usecases::sync_in_path(&paths)?
