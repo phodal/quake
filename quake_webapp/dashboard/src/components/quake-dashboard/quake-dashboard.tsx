@@ -69,8 +69,9 @@ export class QuakeDashboard {
     const that = this;
     this.query = event.target.value;
     if (this.query.length == 0) {
-      that.items = [];
+      this.items = [];
       this.inputType = '';
+      this.list = {};
       return;
     }
 
@@ -156,7 +157,7 @@ export class QuakeDashboard {
 
   render() {
     return <ion-app>
-      <ion-header translucent>
+      <ion-header>
         <ion-toolbar>
           <ion-item>
             {this.inputType.length > 0
