@@ -14,6 +14,13 @@ export interface ActionDefine {
   parameters: String[]
 }
 
+export interface EntryInfo {
+  type: string,
+  display: string,
+  fields: any[],
+  action: any[]
+}
+
 @Component({
   tag: 'quake-dashboard',
   styleUrl: 'quake-dashboard.css',
@@ -30,6 +37,7 @@ export class QuakeDashboard {
   @State() query: string = "";
   @State() inputType: string = "";
   @State() actionDefine: ActionDefine = null;
+  @State() entries_info: EntryInfo[] = [];
 
   @Event({
     eventName: 'dispatchAction',
@@ -41,6 +49,14 @@ export class QuakeDashboard {
   client = new MeiliSearch({
     host: 'http://127.0.0.1:7700'
   })
+
+  componentWillLoad() {
+    const that = this;
+    axios.get('/action/suggest')
+      .then((response: any) => {
+        that.entries_info = response.data.entries;
+      });
+  }
 
   handleInput(event) {
     const that = this;
@@ -149,21 +165,24 @@ export class QuakeDashboard {
         </ion-toolbar>
       </ion-header>
       <ion-content fullscreen>
-        <ion-list>
-          {this.actionDefine ?
-            <ion-item>{this.actionDefine.object}, {this.actionDefine.action}, {this.actionDefine.text}, {this.actionDefine.parameters} </ion-item>
-            : null
-          }
-          {this.items.length > 0
-            ? this.items.map((item: any) =>
-              <ion-item onClick={() => this.clickEntry(item.id, item.type)}>
-                <ion-badge slot="start"># {this.padLeft(item.id, 4, '')}</ion-badge>
-                <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
-                {item.title}
-              </ion-item>)
-            : null
-          }
-        </ion-list>
+        {this.entries_info.length > 0
+          ? <ion-list>
+            {this.actionDefine ?
+              <ion-item>{this.actionDefine.object}, {this.actionDefine.action}, {this.actionDefine.text}, {this.actionDefine.parameters} </ion-item>
+              : null
+            }
+            {this.items.length > 0
+              ? this.items.map((item: any) =>
+                <ion-item onClick={() => this.clickEntry(item.id, item.type)}>
+                  <ion-badge slot="start"># {this.padLeft(item.id, 4, '')}</ion-badge>
+                  <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
+                  {item.title}
+                </ion-item>)
+              : null
+            }
+          </ion-list>
+          : null
+        }
       </ion-content>
     </ion-app>;
   }
