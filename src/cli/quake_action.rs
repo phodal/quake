@@ -27,9 +27,8 @@ pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Er
         "migration" => {
             // todo: add migrations for on entries
         }
-        "feeds" => {
-            // feed to search engine
-            feeds(&conf)?;
+        "feed" => {
+            feed_data(&conf)?;
         }
         _ => {}
     }
@@ -37,7 +36,7 @@ pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Er
     Ok(())
 }
 
-fn feeds(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
+fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&conf.path);
     for entry in WalkDir::new(path).min_depth(1).into_iter()
         .filter_entry(|e| !is_hidden(e)) {
