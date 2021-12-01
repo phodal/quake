@@ -47,7 +47,7 @@ quake command -i "todo.add: time support"
 2. edit entry by index
 
 ```
-quake command -i "todo.update(1)"
+quake command -i "todo.edit(1)"
 ```
 
 3. list entry by type
