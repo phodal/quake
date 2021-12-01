@@ -38,6 +38,8 @@ pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Er
 
 fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&conf.path);
+    let temp_file = "dump.json";
+
     for entry in WalkDir::new(path).min_depth(1).into_iter()
         .filter_entry(|e| !is_hidden(e)) {
         let entry = entry.unwrap();
@@ -54,12 +56,14 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
         let paths = EntryPaths::init(&conf.path, &path_name);
 
         let map = Entrysets::jsonify(&paths.base)?;
-        fs::write("dump.json", map)?;
+        fs::write(temp_file, map)?;
 
         meili_exec::feed_command(path_name)?;
 
         println!("done feeds");
     }
+
+    fs::remove_file(temp_file)?;
 
     Ok(())
 }
