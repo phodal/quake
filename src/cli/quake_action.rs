@@ -53,9 +53,6 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
         let path_name = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
         let paths = EntryPaths::init(&conf.path, &path_name);
 
-        let url = format!("http://127.0.0.1:8000/indexes/{:}/documents", path_name);
-        println!("feeding {:?} to {:}", path_name, url);
-
         let map = Entrysets::jsonify(&paths.base)?;
         fs::write("dump.json", map)?;
 
