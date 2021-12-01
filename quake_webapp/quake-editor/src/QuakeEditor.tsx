@@ -5,8 +5,9 @@ import styled from "styled-components";
 import './QuakeEditor.css';
 
 export type Props = {
+  id: number,
   title: string,
-  content: string,
+  value: string,
   onSave: (content: object) => any
 }
 
@@ -14,22 +15,21 @@ function QuakeEditor(props: Props) {
   const onSave = React.useCallback(() => {
     props.onSave({
       title: props.title,
-      content: props.content,
+      value: props.value,
     });
   }, [props])
 
   const onChange = React.useCallback((getValue) => {
-    props.content = getValue()
+    props.value = getValue()
   }, [props]);
 
   return (
     <div className="App">
-      <StyleLabel>Title</StyleLabel>
+      <StyleLabel># {props.id}</StyleLabel>
       <StyleInput type="text" value={props.title}/>
-      <StyleLabel>Content</StyleLabel>
       <StyledEditor
         autoFocus={true}
-        value={props.content}
+        value={props.value}
         onChange={onChange}
         onSave={onSave}
       />
@@ -46,10 +46,11 @@ const StyleInput = styled.input`
   border-radius: 4px;
   margin: 1em;
   padding: 1em;
+  width: 80%;
 `;
 
 const StyleLabel = styled.label`
-  display: block;
+
 `;
 
 const StyledEditor = styled(Editor)`

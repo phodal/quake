@@ -22,13 +22,13 @@ export interface ActionDefine {
 export class QuakeDashboard {
   ionInputElement;
 
-  @Prop() indexName: String = "";
+  @Prop() indexName: string = "";
   @Element() el: HTMLElement;
   @State() items: Array<object> = [];
   @State() isAction = false;
 
-  @State() query: String = "";
-  @State() inputType: String = "";
+  @State() query: string = "";
+  @State() inputType: string = "";
   @State() actionDefine: ActionDefine = null;
 
   @Event({
@@ -36,7 +36,7 @@ export class QuakeDashboard {
     composed: true,
     cancelable: true,
     bubbles: true,
-  })  dispatchAction: EventEmitter<ActionDefine>;
+  }) dispatchAction: EventEmitter<ActionDefine>;
 
   client = new MeiliSearch({
     host: 'http://127.0.0.1:7700'
@@ -62,17 +62,20 @@ export class QuakeDashboard {
   }
 
   private createSearch(that: this) {
-    let query = that.query.substr(0, 1);
-    const index = this.client.index('phodal_com')
+    const index = this.client.index('blog')
     requestAnimationFrame(() => {
-      index.search(query).then((result) => {
+      index.search(that.query).then((result) => {
         that.items = result.hits;
       })
     });
   }
 
   formatDate(str) {
-    return dayjs(str).format('YYYY-MM-DD HH:mm:ss');
+    return dayjs(str).format('YYYY-MM-DD');
+  }
+
+  padLeft(nr, n, str) {
+    return Array(n - String(nr).length + 1).join(str || '0') + nr;
   }
 
   async handleSubmit(e) {
@@ -80,6 +83,8 @@ export class QuakeDashboard {
 
     if (this.query.startsWith("/")) {
       this.inputType = 'Action'
+    } else {
+      return;
     }
 
     const that = this;
@@ -100,6 +105,14 @@ export class QuakeDashboard {
         console.log(error);
       });
     });
+  }
+
+  clickEntry(id: string, _object: string) {
+    this.dispatchAction.emit({
+      parameters: [id],
+      action: 'update',
+      object: 'blog',
+    } as any);
   }
 
   async presentToast(msg: string) {
@@ -143,7 +156,8 @@ export class QuakeDashboard {
           }
           {this.items.length > 0
             ? this.items.map((item: any) =>
-              <ion-item>
+              <ion-item onClick={() => this.clickEntry(item.id, item.type)}>
+                <ion-badge slot="start"># {this.padLeft(item.id, 4, '')}</ion-badge>
                 <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
                 {item.title}
               </ion-item>)

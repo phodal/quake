@@ -5,7 +5,7 @@ import QuakeEditor from './QuakeEditor';
 
 // from samples: https://github.com/sarvabowmen/rating-webcomponent/blob/master/src/ReactElement.js
 class ReactElement extends HTMLElement {
-  static observedAttributes = ['value'];
+  static observedAttributes = ['title', 'content'];
   private _innerHTML: string | undefined;
   private observer: any;
 
@@ -32,15 +32,13 @@ class ReactElement extends HTMLElement {
       // todo: merge to auto event
       onSave: (args: any) => {
         this.dispatchEvent(new CustomEvent("onSave", {
-          detail: JSON.stringify(args)
+          detail: args
         }))
       }
     };
 
-    if (typeof (props as any).content !== "string") {
-      (props as any).content = "";
-    }
-
+    console.log(props);
+    console.log(this.attributes);
     // @ts-ignore
     render(<QuakeEditor {...props}/>, this);
   }

@@ -53,11 +53,14 @@
   function create_editor_element(entry, params) {
     const editor = document.createElement('quake-editor');
 
+    editor.setAttribute('id', entry.id);
     editor.setAttribute('title', entry.title);
-    editor.setAttribute('content', entry.content);
+    editor.setAttribute('value', entry.content);
     editor.addEventListener("onSave", function (event) {
-      // todo: check event.detail
-      update_entry(params.type, params.id, JSON.parse(event.detail))
+      update_entry(params.type, params.id, {
+        title: event.detail.title,
+        content: event.detail.value.replaceAll("\\\n", "\n")
+      })
     });
     return editor
   }
@@ -67,6 +70,7 @@
     let response = await fetch(`/entry/${params.type}/${params.id}`)
     const entry = await response.json();
 
+    console.log("repsonse", entry);
     return create_editor_element(entry, params);
   }
 
@@ -81,7 +85,6 @@
     });
 
     const entry = await response.json();
-    console.log(entry);
     params.id = entry.id;
     return create_editor_element(entry, params);
   }
@@ -92,7 +95,8 @@
       body: JSON.stringify({ fields: fields })
     });
 
-    console.log(response.json());
+    let data = await response.json();
+    console.log(data);
   }
 
   router.setRoutes([

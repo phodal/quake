@@ -8,7 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ActionDefine } from "./components/quake-dashboard/quake-dashboard";
 export namespace Components {
     interface QuakeDashboard {
-        "indexName": String;
+        "indexName": string;
     }
 }
 declare global {
@@ -24,7 +24,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface QuakeDashboard {
-        "indexName"?: String;
+        "indexName"?: string;
         "onDispatchAction"?: (event: CustomEvent<ActionDefine>) => void;
     }
     interface IntrinsicElements {
