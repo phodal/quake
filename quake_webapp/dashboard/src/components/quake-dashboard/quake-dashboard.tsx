@@ -160,12 +160,7 @@ export class QuakeDashboard {
       <ion-header>
         <ion-toolbar>
           <ion-item>
-            {this.inputType.length > 0
-              ? <ion-chip>
-                <ion-label>{this.inputType}</ion-label>
-              </ion-chip>
-              : null
-            }
+            {this.inputType.length > 0 ? <ion-chip><ion-label>{this.inputType}</ion-label></ion-chip> : null}
             <form id="search-form" onSubmit={this.handleSubmit.bind(this)}>
               <ion-input
                 placeholder="`/todo.add: hello, world` for create `todo`"
@@ -193,11 +188,15 @@ export class QuakeDashboard {
     return <ion-col>
       <ion-text color="secondary">{info.type}</ion-text>
       {this.list[info.type] ? this.list[info.type].map((item: any) =>
-        <ion-item onClick={() => this.clickEntry(item.id, info.type)}>
-          <ion-badge slot="start"># {this.padLeft(item.id, 4, '')}</ion-badge>
-          <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
-          {item.title}
-        </ion-item>
+        <ion-card onClick={() => this.clickEntry(item.id, info.type)}>
+          <ion-card-header>
+            <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
+            <ion-card-title>{item.title}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
+          </ion-card-content>
+        </ion-card>
       ) : null
       }
     </ion-col>;
