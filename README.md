@@ -58,34 +58,37 @@ quake command -i "todo.list"
 quake command -i "todo.sync"
 ```
 
-5. search [tbd]
+5. concept [tbd]
 
-```
-quake command -i "phodal_com.dump"
-```
+6. network [tbd]
+ 
+### Web
 
-then
+1. setup serach engine
 
-```
-curl -i -X POST 'http://127.0.0.1:7700/indexes/phodal_com/documents' \
-  --header 'content-type: application/json' \
-  --data-binary @dump.json
+```bash
+brew install meilisearch
 ```
 
-7. concept [tbd]
+index
 
-8. network [tbd]
+```
+quake command -i "quake.feed"
+```
 
-### GUI (TBD)
+2. config `QuakeServer.toml`
 
-1. config `QuakeServer.toml`
-2. run server
+3. run server
 
 ```
 quake server
 ```
 
-3. visit: [http://localhost:8000/](http://localhost:8000/)
+4. visit: [http://localhost:8000/](http://localhost:8000/)
+
+### GUI (TBD)
+
+TBD
 
 ### Query Syntax
 
