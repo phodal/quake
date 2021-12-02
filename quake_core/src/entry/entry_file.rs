@@ -1,5 +1,6 @@
 use std::error::Error;
 use std::path::PathBuf;
+
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize, Serializer};
 use serde::ser::SerializeMap;
@@ -51,7 +52,9 @@ impl ToString for EntryFile {
         let mut output = vec![];
         output.push("---".to_string());
         for (key, value) in &self.front_matter.fields {
-            output.push(format!("{}: {}", key, value));
+            if !key.eq("content") {
+                output.push(format!("{}: {}", key, value));
+            }
         }
         output.push("---".to_string());
 
@@ -76,17 +79,34 @@ impl EntryFile {
             return Ok(EntryFile::default());
         }
 
-        // todo: add split for others
-        let split_data = text.split("---").map(Into::into).collect::<Vec<String>>();
-        let front_matter = split_data.get(1).expect("parse issue");
-        let mut others = split_data.clone();
-        others.remove(0);
-        others.remove(0);
+        let mut is_in_front_matter = false;
+        let mut split_data: Vec<&str> = vec![];
+        let mut others: Vec<&str> = vec![];
+        for (index, line) in text.lines().enumerate() {
+            if (index == 0) & (line == "---") {
+                is_in_front_matter = true;
+                continue;
+            }
 
-        let content = others.join("");
+            if line == "---" {
+                is_in_front_matter = false;
+                others.push("");
+                continue;
+            }
+
+            if is_in_front_matter {
+                split_data.push(line);
+            } else {
+                others.push(line);
+            }
+        }
+
+        let front_matter = split_data.join("\n");
+        others.push("");
+        let content = others.join("\n");
 
         let mut fields: IndexMap<String, String> = IndexMap::new();
-        for document in serde_yaml::Deserializer::from_str(front_matter) {
+        for document in serde_yaml::Deserializer::from_str(&front_matter) {
             let value = match Value::deserialize(document) {
                 Ok(value) => { Ok(value) }
                 Err(err) => {
@@ -119,8 +139,10 @@ impl EntryFile {
         column.push(index.to_string());
 
         for (key, value) in self.front_matter.fields {
-            header.push(key);
-            column.push(value);
+            if !key.eq("content") {
+                header.push(key);
+                column.push(value);
+            }
         }
 
         (header, column)
@@ -239,7 +261,7 @@ sample
 
     #[test]
     fn split_front_matter() {
-        let result = EntryFile::from("---
+        let text = "---
 updated_date: 2021.11.21
 ---
 
@@ -247,8 +269,9 @@ updated_date: 2021.11.21
 |---------|-----|
 |   fad  |      |
 
-sample", 1).unwrap();
-
-        println!("{:?}", result);
+sample
+";
+        let result = EntryFile::from(text, 1).unwrap();
+        assert_eq!(text, result.to_string());
     }
 }
