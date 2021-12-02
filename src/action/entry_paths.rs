@@ -3,9 +3,9 @@ use std::fs;
 
 pub struct EntryPaths {
     pub base: PathBuf,
-    pub entries_info: PathBuf,
+    pub entry_node_info: PathBuf,
     pub entries_define: PathBuf,
-    pub entries: PathBuf,
+    pub entries_csv: PathBuf,
 }
 
 impl EntryPaths {
@@ -17,8 +17,8 @@ impl EntryPaths {
 
         EntryPaths {
             base: PathBuf::from(&obj_dir),
-            entries: PathBuf::from(&obj_dir.join("entries.csv")),
-            entries_info: PathBuf::from(&obj_dir.join("entry-node-info.yaml")),
+            entries_csv: PathBuf::from(&obj_dir.join("entries.csv")),
+            entry_node_info: PathBuf::from(&obj_dir.join("entry-node-info.yaml")),
             entries_define: PathBuf::from(&path.join("entries-define.yaml")),
         }
     }

@@ -249,7 +249,7 @@ export class QuakeDashboard {
         <ion-grid>
           <ion-row>
             {this.entries_info.map((info) =>
-              this.list[info.type] && this.list[info.type].length > 0 ? this.renderCol(info) : null
+              this.list[info.type] && this.list[info.type].length > 0 ? this.renderSearchCol(info) : null
             )}
             { this.is_flow && Array.from(this.selected_result.keys()).map((key) =>
               this.renderFlowByKey(key)
@@ -279,7 +279,7 @@ export class QuakeDashboard {
     </ion-col>;
   }
 
-  private renderCol(info: EntryInfo) {
+  private renderSearchCol(info: EntryInfo) {
     return <ion-col>
       <ion-text color="secondary">{info.type}</ion-text>
       {this.list[info.type] ? this.list[info.type].map((item: any) =>

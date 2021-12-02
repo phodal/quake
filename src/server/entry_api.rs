@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
+use rocket::fs::NamedFile;
 
 use rocket::response::status::NotFound;
 use rocket::serde::{Deserialize, Serialize};
@@ -9,6 +10,7 @@ use rocket::State;
 use rocket::tokio::task::spawn_blocking;
 
 use quake_core::entry::entry_file::EntryFile;
+use crate::action::entry_paths::EntryPaths;
 
 use crate::action::entry_usecases;
 use crate::helper::file_process;
@@ -26,6 +28,13 @@ pub(crate) async fn get_entries(entry_type: &str) -> Json<String> {
     }).unwrap();
 
     Json(vec)
+}
+
+#[get("/<entry_type>/csv")]
+pub(crate) async fn get_entries_csv(entry_type: &str, config: &State<QuakeServerConfig>) -> Option<NamedFile> {
+    let paths = EntryPaths::init(&config.workspace, &entry_type.to_string());
+    let file = NamedFile::open(paths.entries_csv);
+    file.await.ok()
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]

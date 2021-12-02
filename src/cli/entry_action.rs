@@ -49,8 +49,9 @@ pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dy
 
 fn show_entrysets(path: &PathBuf) {
     let mut rdr = csv::Reader::from_reader(File::open(path).expect("cannot open file"));
+    let table = table_process::csv_to_terminal_table(&mut rdr);
 
-    let table = table_process::csv_to_table(&mut rdr);
+    // todo: change to terminal ui
     println!("{}", table);
 }
 

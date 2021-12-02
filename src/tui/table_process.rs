@@ -3,7 +3,7 @@ use std::fs::File;
 use comfy_table::Table;
 use csv::Reader;
 
-pub fn csv_to_table(rdr: &mut Reader<File>) -> Table {
+pub fn csv_to_terminal_table(rdr: &mut Reader<File>) -> Table {
     let mut table = Table::new();
 
     let mut header = vec![];
@@ -27,5 +27,6 @@ pub fn csv_to_table(rdr: &mut Reader<File>) -> Table {
         index = index + 1;
         table.add_row(row);
     }
+
     table
 }

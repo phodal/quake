@@ -31,9 +31,9 @@ pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefi
 
 pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     let (size, content) = Entrysets::generate(&paths.base)?;
-    fs::write(&paths.entries, content)?;
+    fs::write(&paths.entries_csv, content)?;
 
-    update_entry_info(&paths.entries_info, &mut EntryNodeInfo {
+    update_entry_info(&paths.entry_node_info, &mut EntryNodeInfo {
         index: size
     });
 
@@ -48,7 +48,7 @@ pub fn update_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryNodeIn
 pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &String) -> Result<(PathBuf, EntryFile), Box<dyn Error>> {
     let paths = EntryPaths::init(quake_path, entry_type);
     let entries_define = find_entry_define(&paths, entry_type);
-    let mut entry_info = entry_factory::entry_info_from_path(&paths.entries_info);
+    let mut entry_info = entry_factory::entry_info_from_path(&paths.entry_node_info);
 
     let new_index = entry_info.index + 1;
     let new_md_file = file_process::file_name(new_index, entry_text.as_str());
@@ -59,7 +59,7 @@ pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &Strin
     entry_file.id = new_index;
 
     entry_info.inc();
-    update_entry_info(&paths.entries_info, &mut entry_info);
+    update_entry_info(&paths.entry_node_info, &mut entry_info);
 
     Ok((target_path, entry_file))
 }

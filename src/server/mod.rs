@@ -51,7 +51,13 @@ pub async fn start_server() -> Result<(), Error> {
     let path = relative!("quake_webapp");
     rocket::custom(figment)
         .mount("/", FileServer::from(path))
-        .mount("/entry", routes![entry_api::get_entries, entry_api::get_entry, entry_api::create_entry, entry_api::update_entry])
+        .mount("/entry", routes![
+            entry_api::get_entries,
+            entry_api::get_entries_csv,
+            entry_api::get_entry,
+            entry_api::create_entry,
+            entry_api::update_entry
+        ])
         .mount("/action", routes![action_api::parse_query, action_api::suggest])
         .attach(AdHoc::config::<QuakeServerConfig>())
         .launch()
