@@ -53,7 +53,7 @@ pub async fn suggest(config: &State<QuakeServerConfig>) -> Json<ActionSuggest> {
         msg: format!("{:?}", e)
     }).unwrap();
 
-    let actions = vec!["add", "edit"];
+    let actions = vec!["add", "edit", "show"];
     for action in actions {
         suggest.actions.push(action.to_string());
     }
