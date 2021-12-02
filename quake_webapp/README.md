@@ -1,4 +1,22 @@
-# POC of Web App
+# Quake Web
+
+
+## Setup
+
+install:
+
+```bash
+npm install -g pnpm
+pnpm recursive install
+```
+
+build: 
+
+```bash
+pnpm recursive run build
+```
+
+## Docs
 
 Framework Spikes
 
