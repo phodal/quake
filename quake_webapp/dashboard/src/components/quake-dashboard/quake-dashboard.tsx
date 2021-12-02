@@ -74,6 +74,10 @@ export class QuakeDashboard {
   handleInput(event) {
     const that = this;
     this.query = event.target.value;
+    this.handleQuery(that);
+  }
+
+  private handleQuery(that: this) {
     if (this.query.length == 0) {
       this.items = [];
       this.inputType = InputType.Empty;
@@ -113,6 +117,11 @@ export class QuakeDashboard {
 
   padLeft(nr, n, str) {
     return Array(n - String(nr).length + 1).join(str || '0') + nr;
+  }
+
+  async selectType(_e: Event, info: EntryInfo) {
+    this.query = '/' + info.type + '.';
+    this.handleQuery(this);
   }
 
   async handleSubmit(e) {
@@ -173,11 +182,17 @@ export class QuakeDashboard {
               <ion-input
                 placeholder="`/todo.add: hello, world` for create `todo`"
                 autofocus={true}
+                value={this.query}
                 ref={(el) => this.ionInputElement = el}
                 onIonInput={this.handleInput.bind(this)}
               />
               <input type="submit" value="Submit" id="submit-button"/>
             </form>
+          </ion-item>
+          <ion-item>
+            {this.entries_info.map((info) =>
+              <ion-button onClick={(e) => this.selectType(e, info)}>{info.type}</ion-button>
+            )}
           </ion-item>
         </ion-toolbar>
       </ion-header>
