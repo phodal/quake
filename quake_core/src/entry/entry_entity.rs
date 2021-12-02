@@ -79,31 +79,7 @@ impl EntryEntity {
             return Ok(EntryEntity::default());
         }
 
-        let mut is_in_front_matter = false;
-        let mut split_data: Vec<&str> = vec![];
-        let mut others: Vec<&str> = vec![];
-        for (index, line) in text.lines().enumerate() {
-            if (index == 0) & (line == "---") {
-                is_in_front_matter = true;
-                continue;
-            }
-
-            if line == "---" {
-                is_in_front_matter = false;
-                others.push("");
-                continue;
-            }
-
-            if is_in_front_matter {
-                split_data.push(line);
-            } else {
-                others.push(line);
-            }
-        }
-
-        let front_matter = split_data.join("\n");
-        others.push("");
-        let content = others.join("\n");
+        let (front_matter, content) = Self::split_markdown(text);
 
         let mut fields: IndexMap<String, String> = IndexMap::new();
         for document in serde_yaml::Deserializer::from_str(&front_matter) {
@@ -131,6 +107,35 @@ impl EntryEntity {
             front_matter: FrontMatter { fields },
             content: String::from(content),
         })
+    }
+
+    fn split_markdown(text: &str) -> (String, String) {
+        let mut is_in_front_matter = false;
+        let mut split_data: Vec<&str> = vec![];
+        let mut others: Vec<&str> = vec![];
+        for (index, line) in text.lines().enumerate() {
+            if (index == 0) & (line == "---") {
+                is_in_front_matter = true;
+                continue;
+            }
+
+            if line == "---" {
+                is_in_front_matter = false;
+                others.push("");
+                continue;
+            }
+
+            if is_in_front_matter {
+                split_data.push(line);
+            } else {
+                others.push(line);
+            }
+        }
+
+        let front_matter = split_data.join("\n");
+        others.push("");
+        let content = others.join("\n");
+        (front_matter, content)
     }
 
     pub fn header_column(self, index: usize) -> (Vec<String>, Vec<String>) {
