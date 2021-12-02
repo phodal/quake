@@ -54,6 +54,12 @@ fn show_entrysets(path: &PathBuf) {
     println!("{}", table);
 }
 
+pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
+    let map = Entrysets::jsonify(&paths.base)?;
+    fs::write("dump.json", map)?;
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use quake_core::parser::action_parser::ActionDefine;
@@ -71,10 +77,4 @@ mod tests {
 
         action(expr, config).expect("cannot process");
     }
-}
-
-pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
-    let map = Entrysets::jsonify(&paths.base)?;
-    fs::write("dump.json", map)?;
-    Ok(())
 }
