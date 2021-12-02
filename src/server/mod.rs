@@ -1,8 +1,8 @@
 use rocket::{Config, Error};
 use rocket::fairing::AdHoc;
-use rocket::figment::{Figment, Profile};
+use rocket::figment::Figment;
 use rocket::figment::providers::{Env, Format, Serialized, Toml};
-use rocket::fs::{FileServer, relative};
+use rocket::fs::FileServer;
 
 #[allow(unused_imports)]
 use action_api::parse_query;
@@ -31,12 +31,17 @@ pub struct ApiSuccess {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct QuakeServerConfig {
     pub workspace: String,
-    pub server_url: String,
+    pub search_url: String,
+    pub server_location: String,
 }
 
 impl Default for QuakeServerConfig {
     fn default() -> Self {
-        QuakeServerConfig { workspace: "".to_string(), server_url: "".to_string() }
+        QuakeServerConfig {
+            workspace: "".to_string(),
+            search_url: "".to_string(),
+            server_location: "quake_webapp".to_string()
+        }
     }
 }
 
@@ -45,14 +50,15 @@ pub async fn start_server() -> Result<(), Error> {
     let figment = Figment::from(rocket::Config::default())
         .merge(Serialized::defaults(Config::default()))
         .merge(Toml::file("QuakeServer.toml").nested())
-        .merge(Env::prefixed("APP_").global())
-        .select(Profile::from_env_or("workspace", "."));
+        .merge(Env::prefixed("APP_").global());
 
     // todo: loading from figment config
     // todo: package to app?
-    let path = relative!("quake_webapp");
+
+    let server: String = figment.extract_inner("server_location").unwrap();
+
     rocket::custom(figment)
-        .mount("/", FileServer::from(path))
+        .mount("/", FileServer::from(server))
         .mount("/entry", routes![
             entry_api::get_entries,
             entry_api::get_entries_csv,
