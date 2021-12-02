@@ -18,7 +18,7 @@ impl EntryPaths {
         EntryPaths {
             base: PathBuf::from(&obj_dir),
             entries: PathBuf::from(&obj_dir.join("entries.csv")),
-            entries_info: PathBuf::from(&obj_dir.join("entries-info.yaml")),
+            entries_info: PathBuf::from(&obj_dir.join("entry-node-info.yaml")),
             entries_define: PathBuf::from(&path.join("entries-define.yaml")),
         }
     }

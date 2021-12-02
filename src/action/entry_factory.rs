@@ -1,5 +1,5 @@
 use std::path::PathBuf;
-use quake_core::entry::{EntryDefine, EntrySetsInfo};
+use quake_core::entry::{EntryDefine, EntryNodeInfo};
 use std::fs;
 use quake_core::entry::entry_defines::EntryDefines;
 
@@ -10,9 +10,9 @@ pub fn entries_define_from_path(config_path: &PathBuf) -> Vec<EntryDefine> {
     entries.entries
 }
 
-pub fn entry_info_from_path(entry_info_path: &PathBuf) -> EntrySetsInfo {
+pub fn entry_info_from_path(entry_info_path: &PathBuf) -> EntryNodeInfo {
     if !entry_info_path.exists() {
-        let info = EntrySetsInfo::default();
+        let info = EntryNodeInfo::default();
         fs::write(entry_info_path, serde_yaml::to_string(&info).expect("cannot serial")).expect("cannot write to file");
 
         return info;

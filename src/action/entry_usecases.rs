@@ -4,7 +4,7 @@ use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 
-use quake_core::entry::{EntryDefine, EntrySetsInfo, FrontMatter};
+use quake_core::entry::{EntryDefine, EntryNodeInfo, FrontMatter};
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::quake_time::date_now;
 
@@ -33,14 +33,14 @@ pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     let (size, content) = Entrysets::generate(&paths.base)?;
     fs::write(&paths.entries, content)?;
 
-    update_entry_info(&paths.entries_info, &mut EntrySetsInfo {
+    update_entry_info(&paths.entries_info, &mut EntryNodeInfo {
         index: size
     });
 
     Ok(())
 }
 
-pub fn update_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntrySetsInfo) {
+pub fn update_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryNodeInfo) {
     let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
     fs::write(&entry_info_path, result).expect("cannot write to file");
 }
