@@ -25,17 +25,18 @@ pub struct ApiError {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ApiSuccess {
-    pub content: String
+    pub content: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct QuakeServerConfig {
-    pub workspace: String
+    pub workspace: String,
+    pub server_url: String,
 }
 
 impl Default for QuakeServerConfig {
     fn default() -> Self {
-        QuakeServerConfig { workspace: "".to_string() }
+        QuakeServerConfig { workspace: "".to_string(), server_url: "".to_string() }
     }
 }
 
