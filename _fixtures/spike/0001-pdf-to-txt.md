@@ -1,7 +1,8 @@
 ---
 title: PDF to txt
-author: 
-done_by: 
+author:
+content:
+done_by:
 created_date: 2021-12-02 10:16:34
 updated_date: 2021-12-02 10:16:34
 ---
