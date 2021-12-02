@@ -5,7 +5,7 @@ use std::fs::File;
 use std::path::PathBuf;
 
 use quake_core::entry::{EntryDefine, EntryInfo, FrontMatter};
-use quake_core::entry::entry_file::EntryFile;
+use quake_core::entry::entry_entity::EntryEntity;
 use quake_core::quake_time::date_now;
 
 use crate::action::entry_factory;
@@ -45,7 +45,7 @@ pub fn update_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryInfo) 
     fs::write(&entry_info_path, result).expect("cannot write to file");
 }
 
-pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &String) -> Result<(PathBuf, EntryFile), Box<dyn Error>> {
+pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &String) -> Result<(PathBuf, EntryEntity), Box<dyn Error>> {
     let paths = EntryPaths::init(quake_path, entry_type);
     let entries_define = find_entry_define(&paths, entry_type);
     let mut entry_info = entry_factory::entry_info_from_path(&paths.entries_info);
@@ -64,9 +64,10 @@ pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &Strin
     Ok((target_path, entry_file))
 }
 
-pub fn create_entry_file(entry_define: &EntryDefine, target_file: &mut PathBuf, entry_text: String) -> EntryFile {
-    let mut entry_file = EntryFile::default();
+pub fn create_entry_file(entry_define: &EntryDefine, target_file: &mut PathBuf, entry_text: String) -> EntryEntity {
+    let mut entry_file = EntryEntity::default();
     let init_map = entry_define.create_title_and_date(entry_text);
+    // todo: add flow type
     entry_file.front_matter = FrontMatter { fields: entry_define.merge(init_map) };
 
     fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
@@ -89,10 +90,10 @@ pub fn find_entry_path(entry_path: PathBuf, entry_type: &String, index: usize) -
     Ok(target_file)
 }
 
-pub fn update_entry_fields(type_path: PathBuf, entry_type: &str, index_id: usize, update_map: &HashMap<String, String>) -> Result<EntryFile, Box<dyn Error>> {
+pub fn update_entry_fields(type_path: PathBuf, entry_type: &str, index_id: usize, update_map: &HashMap<String, String>) -> Result<EntryEntity, Box<dyn Error>> {
     let entry_path = find_entry_path(type_path, &entry_type.to_string(), index_id)?;
     let string = fs::read_to_string(&entry_path)?;
-    let mut entry_file = EntryFile::from(string.as_str(), index_id)?;
+    let mut entry_file = EntryEntity::from(string.as_str(), index_id)?;
 
     for (key, value) in update_map {
         if key != "content" {
@@ -122,7 +123,7 @@ mod tests {
 
     use rocket::form::validate::Contains;
 
-    use quake_core::entry::entry_file::EntryFile;
+    use quake_core::entry::entry_entity::EntryEntity;
 
     use crate::action::entry_usecases::{find_entry_path, update_entry_fields};
 
@@ -142,7 +143,7 @@ mod tests {
         assert!(string.contains("this is a test".to_string().as_str()));
 
         let string = fs::read_to_string(&entry_path).unwrap();
-        let mut entry_file = EntryFile::from(string.as_str(), index_id).unwrap();
+        let mut entry_file = EntryEntity::from(string.as_str(), index_id).unwrap();
         entry_file.update_field(&"title".to_string(), &"概念知识容量表".to_string());
         // reset time
         entry_file.update_field(&"updated_date".to_string(), &"2021-11-25 10:14:26".to_string());
@@ -168,7 +169,7 @@ mod tests {
         assert!(string.contains("this is a content".to_string().as_str()));
 
         let string = fs::read_to_string(&entry_path).unwrap();
-        let mut entry_file = EntryFile::from(string.as_str(), index_id).unwrap();
+        let mut entry_file = EntryEntity::from(string.as_str(), index_id).unwrap();
         entry_file.update_content(&"允许自定义字段\n".to_string());
         // reset time
         entry_file.update_field(&"updated_date".to_string(), &"2021-12-01 11:08:40".to_string());

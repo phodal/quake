@@ -8,7 +8,7 @@ use rocket::serde::json::Json;
 use rocket::State;
 use rocket::tokio::task::spawn_blocking;
 
-use quake_core::entry::entry_file::EntryFile;
+use quake_core::entry::entry_entity::EntryEntity;
 
 use crate::action::entry_usecases;
 use crate::helper::file_process;
@@ -35,7 +35,7 @@ struct EntryResponse {
 }
 
 #[post("/<entry_type>/new?<text>")]
-pub(crate) async fn create_entry(entry_type: String, text: String, config: &State<QuakeServerConfig>) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
+pub(crate) async fn create_entry(entry_type: String, text: String, config: &State<QuakeServerConfig>) -> Result<Json<EntryEntity>, NotFound<Json<ApiError>>> {
     let workspace = config.workspace.to_string();
     match entry_usecases::create_entry(&workspace, &entry_type, &text) {
         Ok((_path, file)) => {
@@ -50,7 +50,7 @@ pub(crate) async fn create_entry(entry_type: String, text: String, config: &Stat
 }
 
 #[get("/<entry_type>/<id>")]
-pub(crate) async fn get_entry(entry_type: &str, id: usize, config: &State<QuakeServerConfig>) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
+pub(crate) async fn get_entry(entry_type: &str, id: usize, config: &State<QuakeServerConfig>) -> Result<Json<EntryEntity>, NotFound<Json<ApiError>>> {
     let base_path = PathBuf::from(&config.workspace).join(entry_type);
     let prefix = file_process::file_prefix(id);
     let vec = file_process::filter_by_prefix(base_path, prefix);
@@ -62,7 +62,7 @@ pub(crate) async fn get_entry(entry_type: &str, id: usize, config: &State<QuakeS
     let file_path = vec[0].clone();
 
     let str = fs::read_to_string(file_path).expect("cannot read entry type");
-    let file = EntryFile::from(str.as_str(), id).unwrap();
+    let file = EntryEntity::from(str.as_str(), id).unwrap();
 
     return Ok(Json(file));
 }
@@ -74,7 +74,7 @@ pub struct EntryUpdate {
 }
 
 #[post("/<entry_type>/<id>", data = "<entry>")]
-pub(crate) async fn update_entry(entry_type: &str, id: usize, entry: Json<EntryUpdate>, config: &State<QuakeServerConfig>) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
+pub(crate) async fn update_entry(entry_type: &str, id: usize, entry: Json<EntryUpdate>, config: &State<QuakeServerConfig>) -> Result<Json<EntryEntity>, NotFound<Json<ApiError>>> {
     let path = PathBuf::from(&config.workspace).join(entry_type);
     return match entry_usecases::update_entry_fields(path, entry_type, id, &entry.fields) {
         Ok(file) => {

@@ -1,13 +1,13 @@
 use walkdir::{DirEntry, WalkDir};
 use std::path::PathBuf;
-use quake_core::entry::entry_file::EntryFile;
+use quake_core::entry::entry_entity::EntryEntity;
 
 pub fn file_prefix(index: usize) -> String {
-    EntryFile::file_prefix(index)
+    EntryEntity::file_prefix(index)
 }
 
 pub fn file_name(index: usize, text: &str) -> String {
-    EntryFile::file_name(index, text)
+    EntryEntity::file_name(index, text)
 }
 
 fn is_with_prefix(entry: &DirEntry, prefix: &String) -> bool {

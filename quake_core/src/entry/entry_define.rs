@@ -55,6 +55,7 @@ impl Default for EntryDefine {
 }
 
 impl EntryDefine {
+    // todo: add custom type support
     pub fn create_custom_type(&self) -> CustomType {
         let mut fields: IndexMap<String, String> = IndexMap::new();
         for map in &self.fields {

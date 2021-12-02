@@ -10,7 +10,7 @@ use crate::entry::front_matter::FrontMatter;
 use crate::entry::slug::slugify;
 
 #[derive(Deserialize, PartialEq, Debug)]
-pub struct EntryFile {
+pub struct EntryEntity {
     pub id: usize,
     pub path: PathBuf,
     pub name: String,
@@ -19,7 +19,7 @@ pub struct EntryFile {
 }
 
 
-impl Serialize for EntryFile {
+impl Serialize for EntryEntity {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: Serializer,
@@ -35,9 +35,9 @@ impl Serialize for EntryFile {
     }
 }
 
-impl Default for EntryFile {
+impl Default for EntryEntity {
     fn default() -> Self {
-        EntryFile {
+        EntryEntity {
             id: 1,
             path: Default::default(),
             name: "".to_string(),
@@ -47,7 +47,7 @@ impl Default for EntryFile {
     }
 }
 
-impl ToString for EntryFile {
+impl ToString for EntryEntity {
     fn to_string(&self) -> String {
         let mut output = vec![];
         output.push("---".to_string());
@@ -65,7 +65,7 @@ impl ToString for EntryFile {
     }
 }
 
-impl EntryFile {
+impl EntryEntity {
     pub fn file_prefix(index: usize) -> String {
         format!("{:0>4}", index)
     }
@@ -74,9 +74,9 @@ impl EntryFile {
         format!("{:0>4}-{:}.md", index, slugify(text))
     }
 
-    pub fn from(text: &str, index_id: usize) -> Result<EntryFile, Box<dyn Error>> {
+    pub fn from(text: &str, index_id: usize) -> Result<EntryEntity, Box<dyn Error>> {
         if !text.starts_with("---") {
-            return Ok(EntryFile::default());
+            return Ok(EntryEntity::default());
         }
 
         let mut is_in_front_matter = false;
@@ -124,7 +124,7 @@ impl EntryFile {
             }
         }
 
-        Ok(EntryFile {
+        Ok(EntryEntity {
             id: index_id,
             path: Default::default(),
             name: "".to_string(),
@@ -197,7 +197,7 @@ impl ValueConverter {
 
 #[cfg(test)]
 mod tests {
-    use crate::entry::entry_file::EntryFile;
+    use crate::entry::entry_entity::EntryEntity;
 
     #[test]
     fn entry_parse() {
@@ -213,7 +213,7 @@ sample
 
 ";
 
-        let mut entry_file = EntryFile::from(text, 1).unwrap();
+        let mut entry_file = EntryEntity::from(text, 1).unwrap();
 
         assert_eq!(text, entry_file.to_string());
 
@@ -229,7 +229,7 @@ sample
 
     #[test]
     fn to_json() {
-        let entry_file = EntryFile::from(demo_text().as_str(), 1).unwrap();
+        let entry_file = EntryEntity::from(demo_text().as_str(), 1).unwrap();
         assert_eq!(r#"{"title":"hello, world","authors":"Phodal HUANG<h@phodal.com>","description":"a hello, world","created_date":"2021.11.23","updated_date":"2021.11.21","id":1,"content":"\n\nsample\n\n"}"#, serde_json::to_string(&entry_file).unwrap());
     }
 
@@ -251,7 +251,7 @@ sample
     #[test]
     fn update_title() {
         let text = demo_text();
-        let mut entry_file = EntryFile::from(text.as_str(), 1).unwrap();
+        let mut entry_file = EntryEntity::from(text.as_str(), 1).unwrap();
 
         entry_file.update_field(&"title".to_string(), &"Hello, World".to_string());
 
@@ -271,7 +271,7 @@ updated_date: 2021.11.21
 
 sample
 ";
-        let result = EntryFile::from(text, 1).unwrap();
+        let result = EntryEntity::from(text, 1).unwrap();
         assert_eq!(text, result.to_string());
     }
 }

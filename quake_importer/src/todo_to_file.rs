@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 use quake_microsoft_todo::tasks::{TodoTask, WellknownListName};
 
-use quake_core::entry::entry_file::EntryFile;
+use quake_core::entry::entry_entity::EntryEntity;
 use quake_core::entry::FrontMatter;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -20,7 +20,7 @@ pub fn dump_microsoft_todo(todos_lists: Vec<OutputList>, path: &PathBuf) {
     let mut index = 1;
     for list in todos_lists {
         for todo in list.children {
-            let mut file = EntryFile::default();
+            let mut file = EntryEntity::default();
             let mut matter = FrontMatter::default();
 
 
@@ -48,7 +48,7 @@ pub fn dump_microsoft_todo(todos_lists: Vec<OutputList>, path: &PathBuf) {
             matter.fields.insert("importance".to_string(), format!("{:?}", todo.importance));
             matter.fields.insert("status".to_string(), format!("{:?}", todo.status));
 
-            file.name = EntryFile::file_name(index, &*title);
+            file.name = EntryEntity::file_name(index, &*title);
             file.front_matter = matter;
             file.content = todo.body.content;
 

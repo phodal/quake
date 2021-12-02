@@ -91,8 +91,6 @@ entries:
     actions: ~
     flows:
       - field: status
-        alias: S
         items: ['Todo', 'Doing', 'Done']
       - field: priority
-        alais: P
         items: ['Low', 'Medium', 'High']
