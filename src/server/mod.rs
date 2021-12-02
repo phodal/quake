@@ -1,6 +1,6 @@
 use rocket::{Config, Error};
 use rocket::fairing::AdHoc;
-use rocket::figment::Figment;
+use rocket::figment::{Figment, Profile};
 use rocket::figment::providers::{Env, Format, Serialized, Toml};
 use rocket::fs::FileServer;
 
@@ -50,13 +50,13 @@ pub async fn start_server() -> Result<(), Error> {
     let figment = Figment::from(rocket::Config::default())
         .merge(Serialized::defaults(Config::default()))
         .merge(Toml::file("QuakeServer.toml").nested())
-        .merge(Env::prefixed("APP_").global());
+        .merge(Env::prefixed("APP_").global())
+        .select(Profile::from_env_or("workspace", "."))
+        .select(Profile::from_env_or("search_url", "http://127.0.0.1:7700"));
+        .select(Profile::from_env_or("server_location", "web"));
 
-    // todo: loading from figment config
-    // todo: package to app?
 
     let server: String = figment.extract_inner("server_location").unwrap();
-
     rocket::custom(figment)
         .mount("/", FileServer::from(server))
         .mount("/entry", routes![
