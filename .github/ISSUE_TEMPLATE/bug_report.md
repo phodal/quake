@@ -1,8 +1,11 @@
 ---
-name: 🐞 Bug report
+name: "\U0001F41E Bug report"
 about: Create a report about something that is not working
----
+title: ''
+labels: ''
+assignees: ''
 
+---
 
 ### Describe the bug
 A clear and concise description of what the bug is.
