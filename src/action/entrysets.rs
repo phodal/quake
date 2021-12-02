@@ -9,7 +9,7 @@ use serde::Deserialize;
 use serde_derive::Serialize;
 use walkdir::{DirEntry, WalkDir};
 
-use quake_core::entry::entry_entity::EntryEntity;
+use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::EntryDefine;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
@@ -82,11 +82,11 @@ impl Entrysets {
         let files = Self::scan_files(path);
         let mut index = 1;
 
-        let mut entry_sets: Vec<EntryEntity> = vec![];
+        let mut entry_sets: Vec<EntryFile> = vec![];
         for file in files {
             let string = fs::read_to_string(&file)?;
 
-            let mut entry_file = EntryEntity::from(&*string, index)?;
+            let mut entry_file = EntryFile::from(&*string, index)?;
             entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
 
             entry_sets.push(entry_file);
@@ -110,7 +110,7 @@ impl Entrysets {
         for file in files {
             let string = fs::read_to_string(&file)?;
 
-            let mut entry_file = match EntryEntity::from(&*string, index) {
+            let mut entry_file = match EntryFile::from(&*string, index) {
                 Ok(file) => { file }
                 Err(err) => {
                     println!("create entry file error: {:?}", file.display());

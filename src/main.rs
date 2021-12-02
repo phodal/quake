@@ -12,7 +12,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
-use quake_core::entry::EntryDefineFile;
+use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::parser::action_parser::ActionDefine;
 use quake_core::QuakeConfig;
 
@@ -133,7 +133,7 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
 ";
 
 
-    let file = EntryDefineFile {
+    let file = EntryDefines {
         entries: serde_yaml::from_str(todo_define).unwrap()
     };
 

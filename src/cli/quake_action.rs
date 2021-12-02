@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use walkdir::{DirEntry, WalkDir};
 
-use quake_core::entry::EntryDefineFile;
+use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::QuakeConfig;
 
 use crate::action::entry_paths::EntryPaths;
@@ -71,7 +71,7 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
 fn sync_defines(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&conf.path);
 
-    let mut define_file = EntryDefineFile::default();
+    let mut define_file = EntryDefines::default();
     for entry in WalkDir::new(path).min_depth(1).into_iter()
         .filter_entry(|e| !is_hidden(e)) {
         let entry = entry.unwrap();

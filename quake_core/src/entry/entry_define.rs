@@ -4,28 +4,6 @@ use serde_derive::{Deserialize, Serialize};
 use crate::model::CustomType;
 use crate::quake_time;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
-pub struct EntryDefineFile {
-    pub entries: Vec<EntryDefine>,
-}
-
-impl Default for EntryDefineFile {
-    fn default() -> Self {
-        EntryDefineFile {
-            entries: vec![]
-        }
-    }
-}
-
-impl EntryDefineFile {
-    pub fn from(text: &str) -> EntryDefineFile {
-        let entries: Vec<EntryDefine> = serde_yaml::from_str(text).unwrap();
-        EntryDefineFile {
-            entries
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct EntryDefine {
     #[serde(rename = "type")]

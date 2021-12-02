@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use rusqlite::{Connection, Row};
 use rusqlite::types::ValueRef;
 
-use quake_core::entry::entry_entity::EntryEntity;
+use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::front_matter::FrontMatter;
 
 pub fn export(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Error>> {
@@ -24,7 +24,7 @@ pub fn export(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Err
 }
 
 pub fn write_file(path: &PathBuf, row: &Row, id: usize) {
-    let mut file = EntryEntity::default();
+    let mut file = EntryFile::default();
     let mut matter = FrontMatter::default();
     let mut title = "".to_string();
 
@@ -51,7 +51,7 @@ pub fn write_file(path: &PathBuf, row: &Row, id: usize) {
         }
     }
 
-    file.name = EntryEntity::file_name(id, title.as_str());
+    file.name = EntryFile::file_name(id, title.as_str());
     file.front_matter = matter;
 
     match fs::write(path.join(file.name.clone()), file.to_string()) {

@@ -5,7 +5,8 @@ use rocket::serde::json::Json;
 use rocket::State;
 use rocket::tokio::task::spawn_blocking;
 
-use quake_core::entry::{EntryDefine, EntryDefineFile};
+use quake_core::entry::EntryDefine;
+use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::parser::action_parser::ActionDefine;
 
 use crate::server::{ApiError, QuakeServerConfig};
@@ -46,7 +47,7 @@ pub async fn suggest(config: &State<QuakeServerConfig>) -> Json<ActionSuggest> {
 
     suggest.entries = spawn_blocking(|| {
         let entries_str = fs::read_to_string(path).expect("cannot read entries-define.yaml");
-        let entries: EntryDefineFile = serde_yaml::from_str(&*entries_str).unwrap();
+        let entries: EntryDefines = serde_yaml::from_str(&*entries_str).unwrap();
         entries.entries
     }).await.map_err(|e| ApiError {
         msg: format!("{:?}", e)
