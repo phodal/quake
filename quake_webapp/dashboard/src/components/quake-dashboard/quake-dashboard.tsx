@@ -252,27 +252,31 @@ export class QuakeDashboard {
               this.list[info.type] && this.list[info.type].length > 0 ? this.renderCol(info) : null
             )}
             { this.is_flow && Array.from(this.selected_result.keys()).map((key) =>
-              <ion-col>
-                <ion-text color="secondary">{key}</ion-text>
-                <ion-list>
-                  {this.selected_result.get(key).map((item: any) =>
-                    <ion-card onClick={() => this.clickEntry(item.id, this.selected_entry.type)}>
-                      <ion-card-header>
-                        <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
-                        <ion-card-title>{item.title}</ion-card-title>
-                      </ion-card-header>
-                      <ion-card-content>
-                        <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
-                      </ion-card-content>
-                    </ion-card>
-                  )}
-                </ion-list>
-              </ion-col>
+              this.renderFlowByKey(key)
             )}
           </ion-row>
         </ion-grid>
       </ion-content>
     </ion-app>;
+  }
+
+  private renderFlowByKey(key: string) {
+    return <ion-col>
+      <ion-text color="secondary">{key}</ion-text>
+      <ion-list>
+        {this.selected_result.get(key).map((item: any) =>
+          <ion-card onClick={() => this.clickEntry(item.id, this.selected_entry.type)}>
+            <ion-card-header>
+              <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
+              <ion-card-title>{item.title}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
+            </ion-card-content>
+          </ion-card>
+        )}
+      </ion-list>
+    </ion-col>;
   }
 
   private renderCol(info: EntryInfo) {
