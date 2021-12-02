@@ -17,6 +17,15 @@ impl Default for EntryDefineFile {
     }
 }
 
+impl EntryDefineFile {
+    pub fn from(text: &str) -> EntryDefineFile {
+        let entries: Vec<EntryDefine> = serde_yaml::from_str(text).unwrap();
+        EntryDefineFile {
+            entries
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct EntryDefine {
     #[serde(rename = "type")]
@@ -24,8 +33,13 @@ pub struct EntryDefine {
     pub display: String,
     pub fields: Vec<IndexMap<String, String>>,
     pub actions: Option<Vec<String>>,
-    // flowly
-    // pri
+    pub flows: Option<Vec<EntryFlow>>
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+pub struct EntryFlow {
+    pub field: String,
+    pub items: Vec<String>
 }
 
 impl Default for EntryDefine {
@@ -34,7 +48,8 @@ impl Default for EntryDefine {
             entry_type: "".to_string(),
             display: "".to_string(),
             fields: vec![],
-            actions: None
+            actions: None,
+            flows: None
         }
     }
 }
@@ -48,8 +63,7 @@ impl EntryDefine {
             }
         }
 
-        let custom_type = CustomType::from(fields);
-        custom_type
+        CustomType::from(fields)
     }
 
     pub fn create_title_and_date(&self, text: String) -> IndexMap<String, String> {
@@ -108,7 +122,6 @@ mod tests {
     #[test]
     fn parse_yaml() {
         let todo = &custom_entry_from_yaml()[0];
-
         assert_eq!(3, todo.fields.len());
 
         let custom_type = todo.create_custom_type();
@@ -128,5 +141,29 @@ mod tests {
 
         let new_map = todo.merge(map);
         assert_eq!("sample", new_map.get("new_field").unwrap())
+    }
+
+    #[test]
+    fn parse_flowy() {
+        let yaml = "
+- type: story
+  display: Story
+  fields:
+    - title: Title
+    - author: String
+    - content: Body
+    - status: flows.STATUS
+    - priority: flows.PRIORITY
+    - created_date: Date
+    - updated_date: Date
+  actions: ~
+  flows:
+    - field: STATUS
+      items: ['Todo', 'Doing', 'Done']
+    - field: PRIORITY
+      items: ['Low', 'Medium', 'High']
+";
+        let entries: Vec<EntryDefine> = serde_yaml::from_str(yaml).unwrap();
+        println!("{:?}", entries[0]);
     }
 }

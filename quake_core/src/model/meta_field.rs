@@ -23,6 +23,7 @@ pub enum MetaField {
     /// todo: define for Attachment
     Attachment(String),
     /// todo: add flowy
+    Flow(String),
     Unknown(String),
 }
 
@@ -30,7 +31,7 @@ pub enum FormField {
     Checkable,
     Inputtable,
     Editable,
-    Selectable
+    Selectable,
 }
 
 impl Display for MetaField {
@@ -49,6 +50,7 @@ impl Display for MetaField {
             MetaField::Epic(epic) => write!(f, "{}", epic),
             MetaField::Priority(priority) => write!(f, "{}", priority),
             MetaField::Attachment(attachment) => write!(f, "{}", attachment),
+            MetaField::Flow(flow) => write!(f, "{}", flow),
         }
     }
 }
