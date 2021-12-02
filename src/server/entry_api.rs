@@ -18,7 +18,7 @@ use crate::server::{ApiError, QuakeServerConfig};
 
 #[get("/<entry_type>")]
 pub(crate) async fn get_entries(entry_type: &str, config: &State<QuakeServerConfig>) -> Json<String> {
-    let request_url = format!("{:}/indexes/{:}/documents", &config.server_url,config.entry_type);
+    let request_url = format!("{:}/indexes/{:}/documents", &config.server_url, entry_type);
 
     let vec = spawn_blocking(|| reqwest::blocking::get(request_url)
         .unwrap()

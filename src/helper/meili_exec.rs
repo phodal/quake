@@ -2,6 +2,7 @@ use std::error::Error;
 use std::process::Command;
 
 pub fn feed_command(path_name: &String) -> Result<(), Box<dyn Error>> {
+    // todo: check curl
     let url = format!("http://127.0.0.1:7700/indexes/{:}/documents", path_name);
     Command::new("/bin/sh")
         .arg("-c")

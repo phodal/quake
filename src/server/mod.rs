@@ -49,6 +49,7 @@ pub async fn start_server() -> Result<(), Error> {
         .select(Profile::from_env_or("workspace", "."));
 
     // todo: loading from figment config
+    // todo: package to app?
     let path = relative!("quake_webapp");
     rocket::custom(figment)
         .mount("/", FileServer::from(path))
