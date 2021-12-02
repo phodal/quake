@@ -45,6 +45,18 @@ impl EntryDefine {
         CustomType::from(fields)
     }
 
+    pub fn create_flows(&self) -> IndexMap<String, String> {
+        let mut map: IndexMap<String, String> = IndexMap::new();
+
+        if let Some(list) = &self.flows {
+            for flow in list {
+                map.insert(flow.field.to_string(), flow.items[0].to_string());
+            }
+        }
+
+        map
+    }
+
     pub fn create_title_and_date(&self, text: String) -> IndexMap<String, String> {
         let date = quake_time::date_now();
 
@@ -131,18 +143,22 @@ mod tests {
     - title: Title
     - author: String
     - content: Body
-    - status: flows.STATUS
-    - priority: flows.PRIORITY
+    - status: Flow
+    - priority: Flow
     - created_date: Date
     - updated_date: Date
   actions: ~
   flows:
-    - field: STATUS
+    - field: status
       items: ['Todo', 'Doing', 'Done']
-    - field: PRIORITY
+    - field: priority
       items: ['Low', 'Medium', 'High']
 ";
         let entries: Vec<EntryDefine> = serde_yaml::from_str(yaml).unwrap();
-        println!("{:?}", entries[0]);
+        let define = entries[0].clone();
+        let map = define.create_flows();
+
+        assert_eq!(map.get("status").unwrap().to_string(), "Todo".to_string());
+        assert_eq!(map.get("priority").unwrap().to_string(), "Low".to_string());
     }
 }
