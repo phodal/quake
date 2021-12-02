@@ -11,7 +11,8 @@ pub struct EntryDefine {
     pub display: String,
     pub fields: Vec<IndexMap<String, String>>,
     pub actions: Option<Vec<String>>,
-    pub flows: Option<Vec<EntryFlow>>
+    pub flows: Option<Vec<EntryFlow>>,
+    pub states: Option<Vec<EntryFlow>>
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
@@ -27,7 +28,8 @@ impl Default for EntryDefine {
             display: "".to_string(),
             fields: vec![],
             actions: None,
-            flows: None
+            flows: None,
+            states: None
         }
     }
 }
@@ -45,7 +47,7 @@ impl EntryDefine {
         CustomType::from(fields)
     }
 
-    pub fn create_flows(&self) -> IndexMap<String, String> {
+    pub fn create_flows_and_states(&self) -> IndexMap<String, String> {
         let mut map: IndexMap<String, String> = IndexMap::new();
 
         if let Some(list) = &self.flows {
@@ -54,21 +56,36 @@ impl EntryDefine {
             }
         }
 
+        if let Some(list) = &self.states {
+            for flow in list {
+                map.insert(flow.field.to_string(), flow.items[0].to_string());
+            }
+        }
+
         map
     }
 
-    pub fn create_title_and_date(&self, text: String) -> IndexMap<String, String> {
+    pub fn create_title_and_date(&self, title: String) -> IndexMap<String, String> {
         let date = quake_time::date_now();
 
         let mut map = IndexMap::new();
-        map.insert("title".to_string(), text);
+        map.insert("title".to_string(), title);
         map.insert("created_date".to_string(), date.clone());
         map.insert("updated_date".to_string(), date);
 
         map
     }
 
-    pub fn merge(&self, values: IndexMap<String, String>) -> IndexMap<String, String> {
+    pub fn init_to_map(&self, title: String) -> IndexMap<String, String> {
+        let basic_map = self.create_title_and_date(title);
+        let mut fields = self.merge_to_map(basic_map);
+        let flows = self.create_flows_and_states();
+        fields.extend(flows);
+
+        fields
+    }
+
+    pub fn merge_to_map(&self, values: IndexMap<String, String>) -> IndexMap<String, String> {
         let mut result: IndexMap<String, String> = IndexMap::new();
 
         for field_def in &self.fields {
@@ -130,7 +147,7 @@ mod tests {
         map.insert("content".to_string(), "sample".to_string());
         map.insert("new_field".to_string(), "sample".to_string());
 
-        let new_map = todo.merge(map);
+        let new_map = todo.merge_to_map(map);
         assert_eq!("sample", new_map.get("new_field").unwrap())
     }
 
@@ -151,14 +168,20 @@ mod tests {
   flows:
     - field: status
       items: ['Todo', 'Doing', 'Done']
+  states:
     - field: priority
       items: ['Low', 'Medium', 'High']
+
 ";
         let entries: Vec<EntryDefine> = serde_yaml::from_str(yaml).unwrap();
         let define = entries[0].clone();
-        let map = define.create_flows();
+        let map = define.create_flows_and_states();
 
         assert_eq!(map.get("status").unwrap().to_string(), "Todo".to_string());
         assert_eq!(map.get("priority").unwrap().to_string(), "Low".to_string());
+
+        let final_map = define.init_to_map("hello".to_string());
+        assert_eq!(final_map.get("status").unwrap().to_string(), "Todo".to_string());
+        assert_eq!(final_map.get("priority").unwrap().to_string(), "Low".to_string());
     }
 }

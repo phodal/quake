@@ -66,10 +66,9 @@ pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &Strin
 
 pub fn create_entry_file(entry_define: &EntryDefine, target_file: &mut PathBuf, entry_text: String) -> EntryFile {
     let mut entry_file = EntryFile::default();
-    let init_map = entry_define.create_title_and_date(entry_text);
-    // todo: add flow type
 
-    entry_file.front_matter = FrontMatter { fields: entry_define.merge(init_map) };
+    let init_map = entry_define.init_to_map(entry_text);
+    entry_file.front_matter = FrontMatter { fields: init_map };
 
     fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
 
