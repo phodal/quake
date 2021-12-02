@@ -14,11 +14,17 @@ export interface ActionDefine {
   parameters: String[]
 }
 
+export interface FlowDefine {
+  field: string,
+  items: string[]
+}
+
 export interface EntryInfo {
   type: string,
   display: string,
   fields: any[],
-  action: any[]
+  action: any[],
+  flows: FlowDefine[]
 }
 
 export interface SearchResult {
@@ -51,6 +57,11 @@ export class QuakeDashboard {
   @State() actionDefine: ActionDefine = null;
   @State() entries_info: EntryInfo[] = [];
   @State() actions_list: string[] = [];
+
+  @State() selected_entry: EntryInfo = null;
+  @State() selected_result: Map<string, object[]> = new Map();
+
+  @State() is_flow: boolean = false;
 
   @Event({
     eventName: 'dispatchAction',
@@ -121,15 +132,42 @@ export class QuakeDashboard {
   }
 
   async selectType(_e: Event, info: EntryInfo) {
+    this.selected_entry = info;
     this.query = '/' + info.type + '.';
     this.handleQuery(this);
   }
 
   async addAction(_e: Event, action: string) {
-    if(this.query.startsWith("/") && this.query.endsWith(".")) {
+    this.reset_input();
+    if (action == 'show') {
+      axios.get(`/entry/${this.selected_entry.type}`).then(response => {
+        let parsed = JSON.parse(response.data)
+
+        if (!!this.selected_entry.flows) {
+          this.is_flow = true;
+          let results_map = new Map();
+          let flow = this.selected_entry.flows[0];
+          for (let item of flow.items) {
+            results_map.set(item, []);
+          }
+
+          for (let el of parsed) {
+            results_map.get(el.status).push(el);
+          }
+
+          this.selected_result = results_map;
+        }
+      });
+    }
+
+    if (this.query.startsWith("/") && this.query.endsWith(".")) {
       this.query = this.query + action;
       this.handleQuery(this);
     }
+  }
+
+  private reset_input() {
+    this.selected_result = new Map();
   }
 
   async handleSubmit(e) {
@@ -212,6 +250,24 @@ export class QuakeDashboard {
           <ion-row>
             {this.entries_info.map((info) =>
               this.list[info.type] && this.list[info.type].length > 0 ? this.renderCol(info) : null
+            )}
+            { this.is_flow && Array.from(this.selected_result.keys()).map((key) =>
+              <ion-col>
+                <ion-text color="secondary">{key}</ion-text>
+                <ion-list>
+                  {this.selected_result.get(key).map((item: any) =>
+                    <ion-card onClick={() => this.clickEntry(item.id, this.selected_entry.type)}>
+                      <ion-card-header>
+                        <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
+                        <ion-card-title>{item.title}</ion-card-title>
+                      </ion-card-header>
+                      <ion-card-content>
+                        <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
+                      </ion-card-content>
+                    </ion-card>
+                  )}
+                </ion-list>
+              </ion-col>
             )}
           </ion-row>
         </ion-grid>
