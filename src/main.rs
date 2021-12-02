@@ -116,6 +116,12 @@ fn main() {
 
 fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&config.path).join(".quake.yaml");
+
+    let server_config = PathBuf::from(&config.path).join("QuakeServer.toml");
+    fs::write(server_config, format!("[default]
+workspace = {:?}
+", config.path))?;
+
     let define = PathBuf::from(&config.path).join("entries-define.yaml");
     let config = QuakeConfig {
         path: config.path,
@@ -131,7 +137,6 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     - title: Title
     - author: String
 ";
-
 
     let file = EntryDefines {
         entries: serde_yaml::from_str(todo_define).unwrap()
