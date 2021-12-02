@@ -236,8 +236,5 @@ mod tests {
 
         #[cfg(unix)]
         assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1,\"content\":\"\\n\\nahaha\\n\"}]");
-
-        #[cfg(windows)]
-        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1,\"content\":\"\\r\\n\\r\\nahaha\\r\\n\"}]");
     }
 }
