@@ -25,6 +25,12 @@ export interface SearchResult {
   [id: string]: Array<any>
 }
 
+enum InputType {
+  Empty,
+  Search = 'Search',
+  Action = 'Action'
+}
+
 @Component({
   tag: 'quake-dashboard',
   styleUrl: 'quake-dashboard.css',
@@ -41,7 +47,7 @@ export class QuakeDashboard {
   @State() isAction = false;
 
   @State() query: string = "";
-  @State() inputType: string = "";
+  @State() inputType: InputType = InputType.Empty;
   @State() actionDefine: ActionDefine = null;
   @State() entries_info: EntryInfo[] = [];
 
@@ -70,18 +76,18 @@ export class QuakeDashboard {
     this.query = event.target.value;
     if (this.query.length == 0) {
       this.items = [];
-      this.inputType = '';
+      this.inputType = InputType.Empty;
       this.list = {};
       return;
     }
 
     if (this.query.startsWith("/")) {
-      this.inputType = 'Action'
+      this.inputType = InputType.Action
       return;
     }
 
     this.actionDefine = null;
-    this.inputType = 'Search';
+    this.inputType = InputType.Search;
     this.createSearch(that);
   }
 
@@ -113,7 +119,7 @@ export class QuakeDashboard {
     e.preventDefault()
 
     if (this.query.startsWith("/")) {
-      this.inputType = 'Action'
+      this.inputType = InputType.Action
     } else {
       return;
     }
@@ -160,7 +166,9 @@ export class QuakeDashboard {
       <ion-header>
         <ion-toolbar>
           <ion-item>
-            {this.inputType.length > 0 ? <ion-chip><ion-label>{this.inputType}</ion-label></ion-chip> : null}
+            {this.inputType !== InputType.Empty ? <ion-chip>
+              <ion-label>{this.inputType}</ion-label>
+            </ion-chip> : null}
             <form id="search-form" onSubmit={this.handleSubmit.bind(this)}>
               <ion-input
                 placeholder="`/todo.add: hello, world` for create `todo`"
@@ -170,7 +178,6 @@ export class QuakeDashboard {
               />
               <input type="submit" value="Submit" id="submit-button"/>
             </form>
-            {/*{ this.actionType.length > 0 ? <ion-chip><ion-label>{this.actionType}</ion-label></ion-chip> : null }*/}
           </ion-item>
         </ion-toolbar>
       </ion-header>
