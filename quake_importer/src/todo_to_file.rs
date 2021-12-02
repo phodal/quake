@@ -50,7 +50,9 @@ pub fn dump_microsoft_todo(todos_lists: Vec<OutputList>, path: &PathBuf) {
 
             file.name = EntryFile::file_name(index, &*title);
             file.front_matter = matter;
-            file.content = todo.body.content;
+
+            file.content = "\n\n".to_string();
+            file.content.push_str(todo.body.content.as_str());
 
             match fs::write(path.join(file.name.clone()), file.to_string()) {
                 Ok(_) => {}

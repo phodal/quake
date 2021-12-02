@@ -39,8 +39,7 @@ pub fn write_file(path: &PathBuf, row: &Row, id: usize) {
 
         let name = name.to_string();
         if name.eq("content") {
-            file.content.push_str("\n");
-            file.content.push_str("\n");
+            file.content = "\n\n".to_string();
             file.content.push_str(&*value);
         } else {
             if name.eq("title") {
