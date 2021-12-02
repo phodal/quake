@@ -6,6 +6,8 @@ let content = fs.readFileSync('index.html');
 let text = content.toString();
 const $ = cheerio.load(text);
 
+fse.removeSync("dist");
+
 if (!fs.existsSync("dist")){
   fs.mkdirSync("dist");
 }
