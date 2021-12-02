@@ -68,3 +68,31 @@ entries:
       - created_date: Date
       - updated_date: Date
     actions: ~
+  - type: spike
+    display: "Spike"
+    fields:
+      - title: Title
+      - author: String
+      - content: Body
+      - done_by: String
+      - created_date: Date
+      - updated_date: Date
+    actions: ~
+  - type: story
+    display: "Story"
+    fields:
+      - title: Title
+      - author: String
+      - content: Body
+      - status: Flow
+      - priority: Flow
+      - created_date: Date
+      - updated_date: Date
+    actions: ~
+    flows:
+      - field: status
+        alias: S
+        items: ['Todo', 'Doing', 'Done']
+      - field: priority
+        alais: P
+        items: ['Low', 'Medium', 'High']
