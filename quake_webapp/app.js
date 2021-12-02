@@ -39,7 +39,6 @@ const edit_entry = async (context, commands) => {
   let response = await fetch(`/entry/${params.type}/${params.id}`)
   const entry = await response.json();
 
-  console.log("repsonse", entry);
   return create_editor_element(entry, params);
 }
 
