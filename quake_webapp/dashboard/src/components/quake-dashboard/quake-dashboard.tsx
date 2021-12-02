@@ -50,6 +50,7 @@ export class QuakeDashboard {
   @State() inputType: InputType = InputType.Empty;
   @State() actionDefine: ActionDefine = null;
   @State() entries_info: EntryInfo[] = [];
+  @State() actions_list: string[] = [];
 
   @Event({
     eventName: 'dispatchAction',
@@ -67,7 +68,7 @@ export class QuakeDashboard {
     axios.get('/action/suggest')
       .then((response: any) => {
         that.entries_info = response.data.entries;
-        console.log(that.entries_info);
+        that.actions_list = response.data.actions;
       });
   }
 
@@ -122,6 +123,13 @@ export class QuakeDashboard {
   async selectType(_e: Event, info: EntryInfo) {
     this.query = '/' + info.type + '.';
     this.handleQuery(this);
+  }
+
+  async addAction(_e: Event, action: string) {
+    if(this.query.startsWith("/") && this.query.endsWith(".")) {
+      this.query = this.query + action;
+      this.handleQuery(this);
+    }
   }
 
   async handleSubmit(e) {
@@ -192,6 +200,9 @@ export class QuakeDashboard {
           <ion-item>
             {this.entries_info.map((info) =>
               <ion-button onClick={(e) => this.selectType(e, info)}>{info.type}</ion-button>
+            )}
+            {this.actions_list.map((action) =>
+              <ion-button color="dark" onClick={(e) => this.addAction(e, action)}>{action}</ion-button>
             )}
           </ion-item>
         </ion-toolbar>
