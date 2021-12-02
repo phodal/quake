@@ -85,12 +85,13 @@ entries:
       - author: String
       - content: Body
       - status: Flow
-      - priority: Flow
+      - priority: State
       - created_date: Date
       - updated_date: Date
     actions: ~
     flows:
       - field: status
         items: ['Todo', 'Doing', 'Done']
+    states:
       - field: priority
         items: ['Low', 'Medium', 'High']
