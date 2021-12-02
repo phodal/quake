@@ -17,7 +17,7 @@ jobs:
             asset_name: quake-linux
           - os: windows-latest
             artifact_name: quake.exe
-            asset_name: quake-windows
+            asset_name: quake-windows.exe
           - os: macos-latest
             artifact_name: quake
             asset_name: quake-macos
