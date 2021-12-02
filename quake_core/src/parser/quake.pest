@@ -5,7 +5,15 @@ action_decl = {
 }
 
 parameters = {
-    "(" ~ parameter ~ ("," ~ parameter)* ~ ")"
+    s_quote ~ parameter ~ ("," ~ parameter)* ~ e_quote
+}
+
+s_quote = {
+    "(" | "（"
+}
+
+e_quote = {
+    ")" | "）"
 }
 
 parameter = {

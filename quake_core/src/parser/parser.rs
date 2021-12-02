@@ -64,6 +64,8 @@ fn parameters(decl: Pair<Rule>) -> Parameter {
             Rule::parameter => {
                 parameter.value = String::from(pair.as_str());
             }
+            Rule::s_quote => {}
+            Rule::e_quote => {}
             _ => {
                 println!("{}", pair);
             }
@@ -77,7 +79,7 @@ fn parameters(decl: Pair<Rule>) -> Parameter {
 #[cfg(test)]
 mod tests {
     use crate::parser::ast::SourceUnitPart;
-    use crate::parser::quake_parser::parse;
+    use crate::parser::parser::parse;
 
     #[test]
     fn should_parse_add_todo() {

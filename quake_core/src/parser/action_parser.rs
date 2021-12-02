@@ -1,6 +1,6 @@
 use std::error::Error;
 use crate::parser::ast::SourceUnitPart;
-use crate::parser::quake_parser::parse;
+use crate::parser::parser::parse;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ActionDefine {
@@ -71,7 +71,6 @@ mod tests {
         assert_eq!(1, expr.index_from_parameter());
     }
 
-
     #[test]
     fn should_parse_com() {
         let expr = ActionDefine::from("phodal_com.sync").unwrap();
@@ -79,10 +78,18 @@ mod tests {
         assert_eq!(expr.action, "sync");
     }
 
-
     #[test]
     fn should_parse_double_digital() {
         let expr = ActionDefine::from("todo.update(12)").unwrap();
+        assert_eq!(expr.object, "todo");
+        assert_eq!(expr.action, "update");
+        assert_eq!(expr.parameters[0], "12");
+        assert_eq!(12, expr.index_from_parameter());
+    }
+
+    #[test]
+    fn should_parse_chinese_quote() {
+        let expr = ActionDefine::from("todo.update（12）").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "12");
