@@ -180,7 +180,7 @@ export class QuakeDashboard {
 
   render() {
     return <ion-app>
-      <ion-header>
+      <ion-header translucent>
         <ion-toolbar>
           <ion-item>
             {this.inputType !== InputType.Empty ? <ion-chip>
@@ -202,18 +202,20 @@ export class QuakeDashboard {
               <ion-button onClick={(e) => this.selectType(e, info)}>{info.type}</ion-button>
             )}
             {this.actions_list.map((action) =>
-              <ion-button color="dark" onClick={(e) => this.addAction(e, action)}>{action}</ion-button>
+              <ion-button class="dark-button" onClick={(e) => this.addAction(e, action)}>{action}</ion-button>
             )}
           </ion-item>
         </ion-toolbar>
       </ion-header>
-      <ion-grid>
-        <ion-row>
-          {this.entries_info.map((info) =>
-            this.list[info.type] && this.list[info.type].length > 0 ? this.renderCol(info) : null
-          )}
-        </ion-row>
-      </ion-grid>
+      <ion-content fullscreen>
+        <ion-grid>
+          <ion-row>
+            {this.entries_info.map((info) =>
+              this.list[info.type] && this.list[info.type].length > 0 ? this.renderCol(info) : null
+            )}
+          </ion-row>
+        </ion-grid>
+      </ion-content>
     </ion-app>;
   }
 
