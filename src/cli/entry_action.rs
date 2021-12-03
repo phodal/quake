@@ -34,6 +34,8 @@ pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dy
 
             if conf.editor != "" {
                 editor_exec::edit_file(conf.editor, format!("{:}", target_file.display()))?;
+            } else {
+                return Err(Box::new(QuakeError("editor is empty".to_string())));
             }
         }
         "sync" => entry_usecases::sync_in_path(&paths)?,
