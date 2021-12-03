@@ -1,11 +1,62 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.5] - 2021-12-03
+
+### Bug Fixes
+
+- Throw error msg for empty editor
+
+### Documentation
+
+- Add test coverage badge
+- Update ignore for projects
+
+### Refactor
+
+- Change process cmd for testing
+- Throw error for not exist command actions
+- Use rust2018 import syntax
+
+### Testing
+
+- Add test for create new entry
+- Add hello world web server
+- Try to write test for srver api
+- Add test for importer
+
+### Build
+
+- Add grcov
+- Update coveralls config for parent
+- Update coveralls config for parent
+- Update ignore
+- Update ignore file again
+
+### Ci
+
+- Try split coverage from build
+- Fix coverage issue
+
+## [0.0.4] - 2021-12-03
+
+### Build
+
+- Add lost os info
+
 ## [0.0.3] - 2021-12-03
+
+### Bug Fixes
+
+- Fix zip issue
+- Fix lint issue
 
 ### Build
 
 - Add lost zip command for web
+- Init changelog
+- Init justfile
+- Add test cmd
 
 ## [0.0.2] - 2021-12-03
 
