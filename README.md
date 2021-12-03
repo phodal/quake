@@ -121,7 +121,23 @@ parameters = {
 1. tag: `#{tag}`
 2. custom function: `#{$block}, #{$toc}, #{$link}, #{$file = Hello.pptx}`
 
-## Developoment
+### Quake Output
+
+examples output:
+
+```
+├── entries-define.yaml         # define all type data
+├── web
+│   ├── index.html
+│   └── js
+├── yarn.lock
+└── yiki                        # data type
+    ├── 0001-hello-world.md     # a `yiki` file
+    ├── entries.csv             # tables for all `yiki`
+    └── entry-node-info.yaml    # `yiki` node info
+```
+
+## Development
 
 Languages: Rust, TypeScript (Node.js 16)
 
