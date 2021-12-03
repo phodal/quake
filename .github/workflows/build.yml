@@ -51,18 +51,3 @@ jobs:
 
       - name: Run unit tests
         run: ${{matrix.ENV_VARS}} cargo test --all
-
-      # frontend sections
-      - name: install pnpm
-        if: runner.os == 'macOS'
-        run: npm install -g pnpm
-        
-      - name: pnpm install
-        if: runner.os == 'macOS'
-        working-directory: ./quake_webapp
-        run: pnpm recursive install
-        
-      - name: pnpm build
-        if: runner.os == 'macOS'
-        working-directory: ./quake_webapp
-        run: yarn dist
