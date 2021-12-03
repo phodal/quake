@@ -52,7 +52,7 @@ pub async fn start_server() -> Result<(), Error> {
         .merge(Toml::file("QuakeServer.toml").nested())
         .merge(Env::prefixed("APP_").global())
         .select(Profile::from_env_or("workspace", "."))
-        .select(Profile::from_env_or("search_url", "http://127.0.0.1:7700"));
+        .select(Profile::from_env_or("search_url", "http://127.0.0.1:7700"))
         .select(Profile::from_env_or("server_location", "web"));
 
 
