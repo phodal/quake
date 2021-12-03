@@ -43,26 +43,26 @@ jobs:
 
       # frontend sections
       - name: install pnpm
-        if: runner.os != 'Windows'
+        if: runner.os == 'macOS'
         run: npm install -g pnpm
 
       - name: pnpm install
-        if: runner.os != 'Windows'
+        if: runner.os == 'macOS'
         working-directory: ./quake_webapp
         run: pnpm recursive install
 
       - name: pnpm build
-        if: runner.os != 'Windows'
+        if: runner.os == 'macOS'
         working-directory: ./quake_webapp
         run: yarn dist
 
       - uses: montudor/action-zip@v1
-        if: runner.os != 'Windows'
+        if: runner.os == 'macOS'
         with:
           args: zip -qq -r web.zip quake_webapp/dist
 
       - name: Upload binaries to release
-        if: runner.os != 'Windows'
+        if: runner.os == 'macOS'
         uses: svenstaro/upload-release-action@v1-release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
