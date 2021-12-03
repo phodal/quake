@@ -40,3 +40,27 @@ jobs:
           file: target/release/${{ matrix.artifact_name }}
           asset_name: ${{ matrix.asset_name }}
           tag: ${{ github.ref }}
+
+      # frontend sections
+      - name: install pnpm
+        run: npm install -g pnpm
+
+      - name: pnpm install
+        working-directory: ./quake_webapp
+        run: pnpm recursive install
+
+      - name: pnpm build
+        working-directory: ./quake_webapp
+        run: yarn dist
+
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r web.zip quake_webapp/dist
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: web.zip
+          asset_name: web.zip
+          tag: ${{ github.ref }}
