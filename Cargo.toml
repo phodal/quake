@@ -16,6 +16,7 @@ keywords = ["knowledge", "dashboard"]
 
 [dependencies]
 quake_core = { path = "quake_core", version = "0.1.0" }
+quake_tui = { path = "quake_tui", version = "0.1.0" }
 
 # cli parser
 clap = "3.0.0-beta.5"

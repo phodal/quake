@@ -1384,6 +1384,7 @@ dependencies = [
  "indexmap",
  "lazy_static",
  "quake_core",
+ "quake_tui",
  "regex",
  "reqwest",
  "rocket",
