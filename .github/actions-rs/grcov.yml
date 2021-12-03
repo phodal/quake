@@ -1,4 +1,5 @@
 branch: true
 ignore:
   - "../../../.cargo/*"
-  - "../../../.cargo/**"
+  - "../../**/.cargo/"
+  - "../../../.cargo/**/*"
