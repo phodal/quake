@@ -1,0 +1,5 @@
+branch: true
+ignore:
+  - "quake_importer/*"
+  - "quake_analysis/*"
+  - ".cargo/*"
