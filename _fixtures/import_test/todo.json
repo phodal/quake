@@ -1,0 +1,33 @@
+[
+  {
+    "displayName": "Flagged Emails",
+    "id": "AQMkADAwATM0MDAAMS04N2E2LWRhMDItMDACLTAwCgAuAAADlaHHnFnn1UuoFE2pMt0j5QEAaMraZPkN_0mltv0IMNqe5wAEmScfOgAAAA==",
+    "wellknownListName": "flaggedEmails",
+    "children": []
+  },
+  {
+    "displayName": "任务",
+    "id": "AQMkADAwATM0MDAAMS04N2E2LWRhMDItMDACLTAwCgAuAAADlaHHnFnn1UuoFE2pMt0j5QEAaMraZPkN_0mltv0IMNqe5wAAAgESAAAA",
+    "wellknownListName": "defaultList",
+    "children": [
+      {
+        "body": {
+          "content": "",
+          "contentType": "text"
+        },
+        "bodyLastModifiedDateTime": null,
+        "completedDateTime": null,
+        "createdDateTime": "2021-11-05T07:43:38.2189068Z",
+        "dueDateTime": null,
+        "id": "AQMkADAwATM0MDAAMS04N2E2LWRhMDItMDACLTAwCgBGAAADlaHHnFnn1UuoFE2pMt0j5QcAaMraZPkN_0mltv0IMNqe5wAAAgESAAAAaMraZPkN_0mltv0IMNqe5wAEy-HmfAAAAA==",
+        "importance": "normal",
+        "isReminderOn": false,
+        "lastModifiedDateTime": "2021-11-05T07:53:39.9007193Z",
+        "recurrence": null,
+        "reminderDateTime": null,
+        "status": "notStarted",
+        "title": "Game Develop"
+      }
+    ]
+  }
+]

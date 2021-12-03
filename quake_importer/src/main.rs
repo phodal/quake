@@ -106,6 +106,7 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
+    use quake_core::entry::entry_file::EntryFile;
     use std::fs;
     use std::path::PathBuf;
 
@@ -126,12 +127,25 @@ mod tests {
         let path = PathBuf::from("..").join("_fixtures").join("notes");
         let _ = dump_apple_notes("../dbs/mac_apt.db", path);
     }
-    #[ignore]
+
     #[test]
     fn dump_todo() {
-        let path = PathBuf::from("..").join("_fixtures").join("microsoft_todo");
-        let todo = fs::read_to_string("../dbs/todo-output.json").unwrap();
+        let output_dir = PathBuf::from("test_temp").join("todo");
+        fs::create_dir_all(&output_dir).unwrap();
+
+        let input = PathBuf::from("../")
+            .join("_fixtures")
+            .join("import_test")
+            .join("todo.json");
+
+        let todo = fs::read_to_string(format!("{:}", input.display())).unwrap();
         let vec: Vec<OutputList> = serde_json::from_str(&*todo).unwrap();
-        let _ = dump_microsoft_todo(vec, &path);
+        let _ = dump_microsoft_todo(vec, &output_dir);
+
+        let str = fs::read_to_string(output_dir.join("0001-game-develop.md")).unwrap();
+        let file = EntryFile::from(str.as_str(), 1).unwrap();
+
+        assert_eq!(file.field("title").unwrap(), "Game Develop");
+        // fs::remove_dir_all(output_dir).unwrap();
     }
 }
