@@ -52,15 +52,18 @@ jobs:
       - name: Run unit tests
         run: ${{matrix.ENV_VARS}} cargo test --all
 
-# frontend sections
+      # frontend sections
       - name: install pnpm
+        if: runner.os != 'Windows'
         run: npm install -g pnpm
         
       - name: pnpm install
+        if: runner.os != 'Windows'
         working-directory: ./quake_webapp
         run: pnpm recursive install
         
       - name: pnpm build
+        if: runner.os != 'Windows'
         working-directory: ./quake_webapp
         run: yarn dist
         
