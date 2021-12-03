@@ -1,8 +1,8 @@
-use std::error::Error;
-use pest::iterators::Pair;
-use pest::Parser;
 use crate::parser::ast::{ActionDecl, Parameter, SourceUnit, SourceUnitPart};
 use crate::parser::errors::QuakeParserError;
+use pest::iterators::Pair;
+use pest::Parser;
+use std::error::Error;
 
 #[derive(Parser)]
 #[grammar = "parser/quake.pest"]
@@ -10,7 +10,7 @@ struct QuakeParser;
 
 pub fn parse(text: &str) -> Result<SourceUnit, Box<dyn Error>> {
     let pairs = match QuakeParser::parse(Rule::earth, text) {
-        Ok(pairs) => { pairs }
+        Ok(pairs) => pairs,
         Err(e) => {
             let string = format!("{:?}", e);
             return Err(Box::new(QuakeParserError::new(&*string)));
@@ -24,7 +24,7 @@ pub fn parse(text: &str) -> Result<SourceUnit, Box<dyn Error>> {
                 Rule::action_decl => {
                     parts.push(SourceUnitPart::Action(action_decl(inner_pair)));
                 }
-                _ => println!("rule: {}", inner_pair)
+                _ => println!("rule: {}", inner_pair),
             };
         }
     }
@@ -74,7 +74,6 @@ fn parameters(decl: Pair<Rule>) -> Parameter {
 
     parameter
 }
-
 
 #[cfg(test)]
 mod tests {

@@ -34,8 +34,7 @@ pub struct Entrysets {
 impl Entrysets {
     pub fn read(path: PathBuf) -> Result<CsvTable, Box<dyn Error>> {
         let file = File::open(path)?;
-        let mut rdr = csv::ReaderBuilder::new()
-            .from_reader(file);
+        let mut rdr = csv::ReaderBuilder::new().from_reader(file);
 
         let mut table = CsvTable::default();
         for record in rdr.headers() {
@@ -56,7 +55,10 @@ impl Entrysets {
         Ok(table)
     }
 
-    pub fn content_by_table(header: Vec<String>, body: Vec<Vec<String>>) -> Result<String, Box<dyn Error>> {
+    pub fn content_by_table(
+        header: Vec<String>,
+        body: Vec<Vec<String>>,
+    ) -> Result<String, Box<dyn Error>> {
         header.len();
         let mut wtr = csv::WriterBuilder::new()
             .delimiter(b',')
@@ -111,7 +113,7 @@ impl Entrysets {
             let string = fs::read_to_string(&file)?;
 
             let mut entry_file = match EntryFile::from(&*string, index) {
-                Ok(file) => { file }
+                Ok(file) => file,
                 Err(err) => {
                     println!("create entry file error: {:?}", file.display());
                     return Err(err);
@@ -135,15 +137,15 @@ impl Entrysets {
 
     fn scan_files(path: &PathBuf) -> Vec<PathBuf> {
         fn is_markdown(entry: &DirEntry) -> bool {
-            entry.file_name()
+            entry
+                .file_name()
                 .to_str()
                 .map(|s| s.ends_with(".md"))
                 .unwrap_or(false)
         }
 
         let mut files = vec![];
-        for entry in WalkDir::new(path).into_iter()
-            .filter_map(|e| e.ok()) {
+        for entry in WalkDir::new(path).into_iter().filter_map(|e| e.ok()) {
             if is_markdown(&entry) {
                 files.push(entry.into_path());
             }
@@ -154,9 +156,7 @@ impl Entrysets {
 
     pub fn generate(path: &PathBuf) -> Result<(usize, String), Box<dyn Error>> {
         let map = match Entrysets::rebuild(&path) {
-            Ok((header, body)) => {
-                (header, body)
-            }
+            Ok((header, body)) => (header, body),
             Err(err) => {
                 println!("path: {:?}, {:?}", path.display(), err);
                 return Err(err);
@@ -195,7 +195,6 @@ impl Entrysets {
         Ok(define)
     }
 }
-
 
 #[cfg(test)]
 mod tests {

@@ -1,9 +1,9 @@
 use figment::providers::Yaml;
-use rocket::{Config, Error};
 use rocket::fairing::AdHoc;
-use rocket::figment::{Figment, Profile};
 use rocket::figment::providers::{Env, Format, Serialized};
+use rocket::figment::{Figment, Profile};
 use rocket::fs::FileServer;
+use rocket::{Config, Error};
 
 #[allow(unused_imports)]
 use action_api::parse_query;
@@ -11,8 +11,8 @@ use action_api::parse_query;
 use entry_api::{create_entry, get_entries, get_entry, update_entry};
 use quake_core::QuakeConfig;
 
-mod entry_api;
 mod action_api;
+mod entry_api;
 mod search_api;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -40,18 +40,23 @@ pub async fn start_server() -> Result<(), Error> {
         .select(Profile::from_env_or("search_url", "http://127.0.0.1:7700"))
         .select(Profile::from_env_or("server_location", "web"));
 
-
     let server: String = figment.extract_inner("server_location").unwrap();
     rocket::custom(figment)
         .mount("/", FileServer::from(server))
-        .mount("/entry", routes![
-            entry_api::get_entries,
-            entry_api::get_entries_csv,
-            entry_api::get_entry,
-            entry_api::create_entry,
-            entry_api::update_entry
-        ])
-        .mount("/action", routes![action_api::parse_query, action_api::suggest])
+        .mount(
+            "/entry",
+            routes![
+                entry_api::get_entries,
+                entry_api::get_entries_csv,
+                entry_api::get_entry,
+                entry_api::create_entry,
+                entry_api::update_entry
+            ],
+        )
+        .mount(
+            "/action",
+            routes![action_api::parse_query, action_api::suggest],
+        )
         .attach(AdHoc::config::<QuakeConfig>())
         .launch()
         .await

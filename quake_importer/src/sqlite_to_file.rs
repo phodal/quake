@@ -2,8 +2,8 @@ use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
 
-use rusqlite::{Connection, Row};
 use rusqlite::types::ValueRef;
+use rusqlite::{Connection, Row};
 
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::front_matter::FrontMatter;
@@ -16,9 +16,9 @@ pub fn export(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Err
 
     let mut id: usize = 1;
     while let Some(row) = rows.next()? {
-        write_file(&path, row,  id);
-        id = id +1;
-    };
+        write_file(&path, row, id);
+        id = id + 1;
+    }
 
     Ok(())
 }
@@ -30,11 +30,11 @@ pub fn write_file(path: &PathBuf, row: &Row, id: usize) {
 
     for (index, name) in row.column_names().iter().enumerate() {
         let value: String = match row.get_ref(index).unwrap() {
-            ValueRef::Null => { "".to_string() }
-            ValueRef::Integer(int) => { int.to_string() }
-            ValueRef::Real(real) => { real.to_string() }
-            ValueRef::Text(text) => { std::str::from_utf8(text).unwrap().to_string() }
-            ValueRef::Blob(bool) => { std::str::from_utf8(bool).unwrap().to_string() }
+            ValueRef::Null => "".to_string(),
+            ValueRef::Integer(int) => int.to_string(),
+            ValueRef::Real(real) => real.to_string(),
+            ValueRef::Text(text) => std::str::from_utf8(text).unwrap().to_string(),
+            ValueRef::Blob(bool) => std::str::from_utf8(bool).unwrap().to_string(),
         };
 
         let name = name.to_string();
@@ -63,12 +63,13 @@ pub fn write_file(path: &PathBuf, row: &Row, id: usize) {
 }
 
 fn simple_escape(value: String) -> String {
-    format!("{:?}", value
-        .replace(" ", " ")
-        .replace("", " ")
-        .replace("", " ")
-        .replace("", " ")
-        .replace("​", " ")
+    format!(
+        "{:?}",
+        value
+            .replace(" ", " ")
+            .replace("", " ")
+            .replace("", " ")
+            .replace("", " ")
+            .replace("​", " ")
     )
 }
-

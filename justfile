@@ -18,11 +18,11 @@ release:
 	cargo fmt -- --check
 
 @fix:
-  cargo fmt --all
+    cargo fmt --all
 
 # cargo install cargo-bloat
 @analysis:
-  cargo bloat --release -n 50
+    cargo bloat --release -n 50
 
 clean:
 	cargo clean

@@ -1,15 +1,17 @@
-use std::path::PathBuf;
-use std::process::Command;
 use lazy_static::lazy_static;
 use regex::Regex;
+use std::path::PathBuf;
+use std::process::Command;
 
 lazy_static! {
-     static ref CHANGE_REGEX: Regex = Regex::new(r"(?x)
+    static ref CHANGE_REGEX: Regex = Regex::new(
+        r"(?x)
 \s(?P<date>\d{10})
 \s(?P<author>.*?)<(?P<email>.*?)>
 \s(?P<message>.*)
-        ").unwrap();
-
+        "
+    )
+    .unwrap();
 }
 
 pub fn last_modify(exec_path: Option<String>, path: PathBuf) -> String {
@@ -61,18 +63,17 @@ pub fn parse_changes(last: String) -> Vec<FileChange> {
                 author: author.to_string(),
                 email: email.to_string(),
                 date: date.parse().unwrap(),
-                message: message.to_string()
+                message: message.to_string(),
             });
         }
     }
     changes
 }
 
-
 #[cfg(test)]
 mod tests {
-    use std::path::PathBuf;
     use crate::helper::git_cmd::{last_modify, parse_changes};
+    use std::path::PathBuf;
 
     #[test]
     #[ignore]

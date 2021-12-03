@@ -4,7 +4,7 @@ extern crate serde;
 use std::fs;
 use std::path::PathBuf;
 
-use clap::{Parser};
+use clap::Parser;
 
 pub mod sqlite_to_file;
 pub mod todo_to_file;
@@ -19,7 +19,7 @@ struct Opts {
 #[derive(Parser)]
 enum ImportCmd {
     SQLITE(SQLite),
-    MicrosoftTodo(MicrosoftTodo)
+    MicrosoftTodo(MicrosoftTodo),
 }
 
 #[derive(Parser)]
@@ -28,7 +28,7 @@ pub struct MicrosoftTodo {
     path: String,
 
     #[clap(short, long, default_value = "")]
-    output: String
+    output: String,
 }
 
 #[derive(Parser)]
@@ -45,7 +45,6 @@ pub struct SQLite {
     #[clap(short, long, default_value = "")]
     sql: String,
 }
-
 
 /// refs: https://www.swiftforensics.com/2018/02/reading-notes-database-on-macos.html
 pub fn dump_apple_notes(db_path: &str, path: PathBuf) {

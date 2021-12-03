@@ -13,7 +13,8 @@ use crate::action::entrysets::Entrysets;
 use crate::helper::meili_exec;
 
 fn is_hidden(entry: &DirEntry) -> bool {
-    entry.file_name()
+    entry
+        .file_name()
         .to_str()
         .map(|s| s.starts_with("."))
         .unwrap_or(false)
@@ -40,8 +41,11 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&conf.workspace);
     let temp_file = "dump.json";
 
-    for entry in WalkDir::new(path).min_depth(1).into_iter()
-        .filter_entry(|e| !is_hidden(e)) {
+    for entry in WalkDir::new(path)
+        .min_depth(1)
+        .into_iter()
+        .filter_entry(|e| !is_hidden(e))
+    {
         let entry = entry.unwrap();
         if !entry.path().is_dir() {
             continue;
@@ -72,8 +76,12 @@ fn sync_defines(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&conf.workspace);
 
     let mut define_file = EntryDefines::default();
-    for entry in WalkDir::new(path).min_depth(1).max_depth(1).into_iter()
-        .filter_entry(|e| !is_hidden(e)) {
+    for entry in WalkDir::new(path)
+        .min_depth(1)
+        .max_depth(1)
+        .into_iter()
+        .filter_entry(|e| !is_hidden(e))
+    {
         let entry = entry.unwrap();
         if !entry.path().is_dir() {
             continue;
@@ -82,7 +90,7 @@ fn sync_defines(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
         let path_name = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
 
         if path_name.eq(&conf.server_location) {
-            continue
+            continue;
         }
 
         let paths = EntryPaths::init(&conf.workspace, &path_name);
@@ -90,12 +98,17 @@ fn sync_defines(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
 
         let csv = entry.path().join("entries.csv");
         if csv.exists() {
-            define_file.entries.push(Entrysets::define_from_csv(path_name, csv)?);
+            define_file
+                .entries
+                .push(Entrysets::define_from_csv(path_name, csv)?);
         }
     }
 
     let content = serde_yaml::to_string(&define_file).unwrap();
-    fs::write(PathBuf::from(&conf.workspace).join("entries-define.yaml"), content)?;
+    fs::write(
+        PathBuf::from(&conf.workspace).join("entries-define.yaml"),
+        content,
+    )?;
 
     Ok(())
 }

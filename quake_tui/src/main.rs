@@ -1,6 +1,6 @@
 use std::io;
-use tui::Terminal;
 use tui::backend::CrosstermBackend;
+use tui::Terminal;
 
 fn main() -> Result<(), io::Error> {
     let stdout = io::stdout();

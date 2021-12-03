@@ -20,20 +20,20 @@ impl ActionDecl {
             action: "".to_string(),
             object: "".to_string(),
             parameters: vec![],
-            text: "".to_string()
+            text: "".to_string(),
         }
     }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Parameter {
-    pub value: String
+    pub value: String,
 }
 
 impl Default for Parameter {
     fn default() -> Self {
         Parameter {
-            value: "".to_string()
+            value: "".to_string(),
         }
     }
 }

@@ -12,13 +12,13 @@ pub struct EntryDefine {
     pub fields: Vec<IndexMap<String, String>>,
     pub actions: Option<Vec<String>>,
     pub flows: Option<Vec<EntryFlow>>,
-    pub states: Option<Vec<EntryFlow>>
+    pub states: Option<Vec<EntryFlow>>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct EntryFlow {
     pub field: String,
-    pub items: Vec<String>
+    pub items: Vec<String>,
 }
 
 impl Default for EntryDefine {
@@ -29,7 +29,7 @@ impl Default for EntryDefine {
             fields: vec![],
             actions: None,
             flows: None,
-            states: None
+            states: None,
         }
     }
 }
@@ -181,7 +181,13 @@ mod tests {
         assert_eq!(map.get("priority").unwrap().to_string(), "Low".to_string());
 
         let final_map = define.init_to_map("hello".to_string());
-        assert_eq!(final_map.get("status").unwrap().to_string(), "Todo".to_string());
-        assert_eq!(final_map.get("priority").unwrap().to_string(), "Low".to_string());
+        assert_eq!(
+            final_map.get("status").unwrap().to_string(),
+            "Todo".to_string()
+        );
+        assert_eq!(
+            final_map.get("priority").unwrap().to_string(),
+            "Low".to_string()
+        );
     }
 }

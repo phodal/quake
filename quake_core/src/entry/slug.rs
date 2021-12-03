@@ -23,7 +23,6 @@ pub fn slugify(text: &str) -> String {
         .replace("——", "-")
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::entry::slug::slugify;

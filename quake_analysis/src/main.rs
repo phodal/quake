@@ -6,7 +6,8 @@ use jieba_rs::Jieba;
 use walkdir::{DirEntry, WalkDir};
 
 fn is_markdown(entry: &DirEntry) -> bool {
-    entry.file_name()
+    entry
+        .file_name()
         .to_str()
         .map(|s| s.ends_with(".md"))
         .unwrap_or(false)

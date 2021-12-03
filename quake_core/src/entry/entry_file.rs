@@ -2,8 +2,8 @@ use std::error::Error;
 use std::path::PathBuf;
 
 use indexmap::IndexMap;
-use serde::{Deserialize, Serialize, Serializer};
 use serde::ser::SerializeMap;
+use serde::{Deserialize, Serialize, Serializer};
 use serde_yaml::Value;
 
 use crate::entry::front_matter::FrontMatter;
@@ -18,11 +18,10 @@ pub struct EntryFile {
     pub content: String,
 }
 
-
 impl Serialize for EntryFile {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         let mut map = serializer.serialize_map(Some(self.front_matter.fields.len()))?;
         for (k, v) in &self.front_matter.fields {
@@ -84,7 +83,7 @@ impl EntryFile {
         let mut fields: IndexMap<String, String> = IndexMap::new();
         for document in serde_yaml::Deserializer::from_str(&front_matter) {
             let value = match Value::deserialize(document) {
-                Ok(value) => { Ok(value) }
+                Ok(value) => Ok(value),
                 Err(err) => {
                     println!("{}", front_matter);
                     println!("{:?}", err);
@@ -154,7 +153,9 @@ impl EntryFile {
     }
 
     pub fn add_id(&mut self, value: usize) {
-        self.front_matter.fields.insert("id".to_string(), value.to_string());
+        self.front_matter
+            .fields
+            .insert("id".to_string(), value.to_string());
     }
 
     pub fn update_field(&mut self, field: &String, value: &String) {
@@ -169,7 +170,7 @@ impl EntryFile {
     pub fn update_content(&mut self, content: &String) {
         if content.starts_with("\n") || content.starts_with("\r\n") {
             self.content = content.to_string();
-            return
+            return;
         }
 
         self.content = "\n\n".to_string();
@@ -182,20 +183,19 @@ pub struct ValueConverter {}
 impl ValueConverter {
     pub fn string(value: Value) -> String {
         match value {
-            Value::Null => { "".to_string() }
-            Value::Bool(bool) => { bool.to_string() }
-            Value::Number(num) => { num.to_string() }
-            Value::String(string) => { string }
+            Value::Null => "".to_string(),
+            Value::Bool(bool) => bool.to_string(),
+            Value::Number(num) => num.to_string(),
+            Value::String(string) => string,
             Value::Sequence(seq) => {
-                let seq = seq.into_iter()
-                    .map(|value| { ValueConverter::string(value) })
+                let seq = seq
+                    .into_iter()
+                    .map(|value| ValueConverter::string(value))
                     .collect::<Vec<String>>();
 
                 seq.join(",")
             }
-            Value::Mapping(_) => {
-                "todo: mapping".to_string()
-            }
+            Value::Mapping(_) => "todo: mapping".to_string(),
         }
     }
 }
@@ -235,7 +235,10 @@ sample
     #[test]
     fn to_json() {
         let entry_file = EntryFile::from(demo_text().as_str(), 1).unwrap();
-        assert_eq!(r#"{"title":"hello, world","authors":"Phodal HUANG<h@phodal.com>","description":"a hello, world","created_date":"2021.11.23","updated_date":"2021.11.21","id":1,"content":"\n\nsample\n\n"}"#, serde_json::to_string(&entry_file).unwrap());
+        assert_eq!(
+            r#"{"title":"hello, world","authors":"Phodal HUANG<h@phodal.com>","description":"a hello, world","created_date":"2021.11.23","updated_date":"2021.11.21","id":1,"content":"\n\nsample\n\n"}"#,
+            serde_json::to_string(&entry_file).unwrap()
+        );
     }
 
     fn demo_text() -> String {
@@ -260,7 +263,11 @@ sample
 
         entry_file.update_field(&"title".to_string(), &"Hello, World".to_string());
 
-        let value = entry_file.front_matter.fields.get(&"title".to_string()).unwrap();
+        let value = entry_file
+            .front_matter
+            .fields
+            .get(&"title".to_string())
+            .unwrap();
         assert_eq!(value, &"Hello, World".to_string());
     }
 

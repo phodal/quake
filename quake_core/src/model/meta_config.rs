@@ -3,5 +3,5 @@
 ///  - template string?
 pub struct MetaConfig {
     pub name: String,
-    pub template: String
+    pub template: String,
 }

@@ -20,11 +20,11 @@ use quake_tui::tui_main_loop;
 use crate::server::start_server;
 
 pub mod action;
+pub mod cli;
+mod errors;
 pub mod helper;
 pub mod server;
 pub mod tui;
-pub mod cli;
-mod errors;
 
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
@@ -126,7 +126,7 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
         workspace: config.path.clone(),
         editor: "vim".to_string(),
         search_url: "http://127.0.0.1:7700".to_string(),
-        server_location: "web".to_string()
+        server_location: "web".to_string(),
     };
 
     fs::write(path, serde_yaml::to_string(&config)?)?;
@@ -140,7 +140,7 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
 ";
 
     let file = EntryDefines {
-        entries: serde_yaml::from_str(todo_define).unwrap()
+        entries: serde_yaml::from_str(todo_define).unwrap(),
     };
 
     fs::write(define, serde_yaml::to_string(&file)?)?;
@@ -148,11 +148,10 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-
 #[cfg(test)]
 mod tests {
-    use crate::action::entry_usecases::sync_in_path;
     use crate::action::entry_paths::EntryPaths;
+    use crate::action::entry_usecases::sync_in_path;
 
     #[ignore]
     #[test]

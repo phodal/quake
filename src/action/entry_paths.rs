@@ -1,5 +1,5 @@
-use std::path::PathBuf;
 use std::fs;
+use std::path::PathBuf;
 
 pub struct EntryPaths {
     pub base: PathBuf,

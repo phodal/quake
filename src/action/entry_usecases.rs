@@ -4,8 +4,8 @@ use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 
-use quake_core::entry::{EntryDefine, EntryNodeInfo, FrontMatter};
 use quake_core::entry::entry_file::EntryFile;
+use quake_core::entry::{EntryDefine, EntryNodeInfo, FrontMatter};
 use quake_core::quake_time::date_now;
 
 use crate::action::entry_factory;
@@ -15,10 +15,9 @@ use crate::errors::QuakeError;
 use crate::helper::file_process;
 
 pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefine {
-    let entries: Vec<EntryDefine> = entry_factory::entries_define_from_path(&paths.entries_define).into_iter()
-        .filter(|define| {
-            define.entry_type.eq(target_entry)
-        })
+    let entries: Vec<EntryDefine> = entry_factory::entries_define_from_path(&paths.entries_define)
+        .into_iter()
+        .filter(|define| define.entry_type.eq(target_entry))
         .collect();
 
     let entries_define = if entries.len() == 0 {
@@ -33,9 +32,7 @@ pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     let (size, content) = Entrysets::generate(&paths.base)?;
     fs::write(&paths.entries_csv, content)?;
 
-    update_entry_info(&paths.entry_node_info, &mut EntryNodeInfo {
-        index: size
-    });
+    update_entry_info(&paths.entry_node_info, &mut EntryNodeInfo { index: size });
 
     Ok(())
 }
@@ -45,7 +42,11 @@ pub fn update_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryNodeIn
     fs::write(&entry_info_path, result).expect("cannot write to file");
 }
 
-pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &String) -> Result<(PathBuf, EntryFile), Box<dyn Error>> {
+pub fn create_entry(
+    quake_path: &String,
+    entry_type: &String,
+    entry_text: &String,
+) -> Result<(PathBuf, EntryFile), Box<dyn Error>> {
     let paths = EntryPaths::init(quake_path, entry_type);
     let entries_define = find_entry_define(&paths, entry_type);
     let mut entry_info = entry_factory::entry_info_from_path(&paths.entry_node_info);
@@ -55,7 +56,8 @@ pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &Strin
     let mut target_path = paths.base.join(new_md_file);
     File::create(&target_path)?;
 
-    let mut entry_file = create_entry_file(&entries_define, &mut target_path, entry_text.to_string());
+    let mut entry_file =
+        create_entry_file(&entries_define, &mut target_path, entry_text.to_string());
     entry_file.id = new_index;
 
     entry_info.inc();
@@ -64,7 +66,11 @@ pub fn create_entry(quake_path: &String, entry_type: &String, entry_text: &Strin
     Ok((target_path, entry_file))
 }
 
-pub fn create_entry_file(entry_define: &EntryDefine, target_file: &mut PathBuf, entry_text: String) -> EntryFile {
+pub fn create_entry_file(
+    entry_define: &EntryDefine,
+    target_file: &mut PathBuf,
+    entry_text: String,
+) -> EntryFile {
     let mut entry_file = EntryFile::default();
 
     let init_map = entry_define.init_to_map(entry_text);
@@ -75,7 +81,11 @@ pub fn create_entry_file(entry_define: &EntryDefine, target_file: &mut PathBuf, 
     entry_file
 }
 
-pub fn find_entry_path(entry_path: PathBuf, entry_type: &String, index: usize) -> Result<PathBuf, Box<QuakeError>> {
+pub fn find_entry_path(
+    entry_path: PathBuf,
+    entry_type: &String,
+    index: usize,
+) -> Result<PathBuf, Box<QuakeError>> {
     #[allow(unused_assignments)]
     let mut target_file = PathBuf::new();
 
@@ -84,13 +94,21 @@ pub fn find_entry_path(entry_path: PathBuf, entry_type: &String, index: usize) -
     if vec.len() > 0 {
         target_file = vec[0].clone();
     } else {
-        return Err(Box::new(QuakeError(format!("cannot find {:} file {:}", entry_type, index))));
+        return Err(Box::new(QuakeError(format!(
+            "cannot find {:} file {:}",
+            entry_type, index
+        ))));
     }
 
     Ok(target_file)
 }
 
-pub fn update_entry_fields(type_path: PathBuf, entry_type: &str, index_id: usize, update_map: &HashMap<String, String>) -> Result<EntryFile, Box<dyn Error>> {
+pub fn update_entry_fields(
+    type_path: PathBuf,
+    entry_type: &str,
+    index_id: usize,
+    update_map: &HashMap<String, String>,
+) -> Result<EntryFile, Box<dyn Error>> {
     let entry_path = find_entry_path(type_path, &entry_type.to_string(), index_id)?;
     let string = fs::read_to_string(&entry_path)?;
     let mut entry_file = EntryFile::from(string.as_str(), index_id)?;
@@ -113,7 +131,6 @@ pub fn update_entry_fields(type_path: PathBuf, entry_type: &str, index_id: usize
 
     Ok(entry_file)
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -146,7 +163,10 @@ mod tests {
         let mut entry_file = EntryFile::from(string.as_str(), index_id).unwrap();
         entry_file.update_field(&"title".to_string(), &"概念知识容量表".to_string());
         // reset time
-        entry_file.update_field(&"updated_date".to_string(), &"2021-11-25 10:14:26".to_string());
+        entry_file.update_field(
+            &"updated_date".to_string(),
+            &"2021-11-25 10:14:26".to_string(),
+        );
         fs::write(&entry_path, entry_file.to_string()).unwrap();
 
         let string = fs::read_to_string(&entry_path).unwrap();
@@ -172,7 +192,10 @@ mod tests {
         let mut entry_file = EntryFile::from(string.as_str(), index_id).unwrap();
         entry_file.update_content(&"允许自定义字段\n".to_string());
         // reset time
-        entry_file.update_field(&"updated_date".to_string(), &"2021-12-01 11:08:40".to_string());
+        entry_file.update_field(
+            &"updated_date".to_string(),
+            &"2021-12-01 11:08:40".to_string(),
+        );
         fs::write(&entry_path, entry_file.to_string()).unwrap();
 
         let string = fs::read_to_string(&entry_path).unwrap();

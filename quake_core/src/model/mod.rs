@@ -2,9 +2,9 @@ use indexmap::IndexMap;
 
 use crate::model::meta_field::MetaField;
 
-pub mod meta_field;
 pub mod meta_action;
 pub mod meta_config;
+pub mod meta_field;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Author {
@@ -21,7 +21,6 @@ impl Default for Author {
     }
 }
 
-
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CustomType {
     pub fields: IndexMap<String, MetaField>,
@@ -34,9 +33,7 @@ impl CustomType {
             fields.insert(key, Self::parse_field_type(value));
         }
 
-        CustomType {
-            fields,
-        }
+        CustomType { fields }
     }
 
     pub fn field(&self, text: &str) -> Option<&MetaField> {
@@ -45,12 +42,8 @@ impl CustomType {
 
     fn parse_field_type(value: String) -> MetaField {
         let field = match value.as_str() {
-            "Text" => {
-                MetaField::Text(value)
-            }
-            "Title" => {
-                MetaField::Title(value)
-            }
+            "Text" => MetaField::Text(value),
+            "Title" => MetaField::Title(value),
             "Tagged" => {
                 let tags = vec![];
                 MetaField::Tagged(tags)
@@ -59,12 +52,8 @@ impl CustomType {
                 let author = Author::default();
                 MetaField::Author(author)
             }
-            "Date" => {
-                MetaField::Date(value)
-            }
-            _ => {
-                MetaField::Unknown(value)
-            }
+            "Date" => MetaField::Date(value),
+            _ => MetaField::Unknown(value),
         };
         field
     }
@@ -74,8 +63,8 @@ impl CustomType {
 mod tests {
     use indexmap::IndexMap;
 
-    use crate::model::CustomType;
     use crate::model::meta_field::MetaField;
+    use crate::model::CustomType;
 
     #[test]
     fn custom_type() {

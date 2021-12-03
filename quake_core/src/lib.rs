@@ -8,10 +8,9 @@ extern crate serde_derive;
 pub use parser::action_parser;
 pub use quake_config::QuakeConfig;
 
-pub mod model;
-pub mod markdown;
-pub mod quake_config;
-pub mod parser;
 pub mod entry;
+pub mod markdown;
+pub mod model;
+pub mod parser;
+pub mod quake_config;
 pub mod quake_time;
-

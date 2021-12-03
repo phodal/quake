@@ -14,7 +14,7 @@ impl Default for QuakeConfig {
             editor: "".to_string(),
             workspace: "".to_string(),
             search_url: "".to_string(),
-            server_location: "".to_string()
+            server_location: "".to_string(),
         }
     }
 }

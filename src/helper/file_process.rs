@@ -1,6 +1,6 @@
-use walkdir::{DirEntry, WalkDir};
-use std::path::PathBuf;
 use quake_core::entry::entry_file::EntryFile;
+use std::path::PathBuf;
+use walkdir::{DirEntry, WalkDir};
 
 pub fn file_prefix(index: usize) -> String {
     EntryFile::file_prefix(index)
@@ -11,7 +11,8 @@ pub fn file_name(index: usize, text: &str) -> String {
 }
 
 fn is_with_prefix(entry: &DirEntry, prefix: &String) -> bool {
-    entry.file_name()
+    entry
+        .file_name()
         .to_str()
         .map(|s| s.starts_with(prefix))
         .unwrap_or(false)
@@ -19,8 +20,7 @@ fn is_with_prefix(entry: &DirEntry, prefix: &String) -> bool {
 
 pub fn filter_by_prefix(path: PathBuf, prefix: String) -> Vec<PathBuf> {
     let mut files = vec![];
-    for entry in WalkDir::new(path).into_iter()
-        .filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(path).into_iter().filter_map(|e| e.ok()) {
         if is_with_prefix(&entry, &prefix) {
             files.push(entry.into_path());
         }

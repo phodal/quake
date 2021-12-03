@@ -23,30 +23,71 @@ pub fn dump_microsoft_todo(todos_lists: Vec<OutputList>, path: &PathBuf) {
             let mut file = EntryFile::default();
             let mut matter = FrontMatter::default();
 
-
             let title = todo.title;
-            matter.fields.insert("category".to_string(), format!("{:?}", list.display_name));
-            matter.fields.insert("title".to_string(), format!("{:?}", title.clone()));
-            matter.fields.insert("created_date".to_string(), todo.created_date_time);
-            matter.fields.insert("updated_date".to_string(), todo.last_modified_date_time);
+            matter
+                .fields
+                .insert("category".to_string(), format!("{:?}", list.display_name));
+            matter
+                .fields
+                .insert("title".to_string(), format!("{:?}", title.clone()));
+            matter
+                .fields
+                .insert("created_date".to_string(), todo.created_date_time);
+            matter
+                .fields
+                .insert("updated_date".to_string(), todo.last_modified_date_time);
 
-            matter.fields.insert("reminder_date".to_string(), format!("{:?}", match todo.reminder_date_time {
-                None => {"".to_string()}
-                Some(dat) => { dat.date_time}
-            }));
+            matter.fields.insert(
+                "reminder_date".to_string(),
+                format!(
+                    "{:?}",
+                    match todo.reminder_date_time {
+                        None => {
+                            "".to_string()
+                        }
+                        Some(dat) => {
+                            dat.date_time
+                        }
+                    }
+                ),
+            );
 
-            matter.fields.insert("completed_date".to_string(), format!("{:?}", match todo.completed_date_time {
-                None => {"".to_string()}
-                Some(dat) => { dat.date_time}
-            }));
+            matter.fields.insert(
+                "completed_date".to_string(),
+                format!(
+                    "{:?}",
+                    match todo.completed_date_time {
+                        None => {
+                            "".to_string()
+                        }
+                        Some(dat) => {
+                            dat.date_time
+                        }
+                    }
+                ),
+            );
 
-            matter.fields.insert("due_date".to_string(), format!("{:?}", match todo.due_date_time {
-                None => {"".to_string()}
-                Some(dat) => { dat.date_time}
-            }));
+            matter.fields.insert(
+                "due_date".to_string(),
+                format!(
+                    "{:?}",
+                    match todo.due_date_time {
+                        None => {
+                            "".to_string()
+                        }
+                        Some(dat) => {
+                            dat.date_time
+                        }
+                    }
+                ),
+            );
 
-            matter.fields.insert("importance".to_string(), format!("{:?}", todo.importance));
-            matter.fields.insert("status".to_string(), format!("{:?}", todo.status));
+            matter
+                .fields
+                .insert("importance".to_string(), format!("{:?}", todo.importance));
+            matter
+                .fields
+                .insert("status".to_string(), format!("{:?}", todo.status));
 
             file.name = EntryFile::file_name(index, &*title);
             file.front_matter = matter;

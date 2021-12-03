@@ -43,7 +43,6 @@ fn start_tag(tag: Tag) {
     }
 }
 
-
 fn end_tag(tag: Tag) {
     match tag {
         Tag::Paragraph => {}

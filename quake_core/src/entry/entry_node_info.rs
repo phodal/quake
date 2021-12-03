@@ -7,9 +7,7 @@ pub struct EntryNodeInfo {
 
 impl Default for EntryNodeInfo {
     fn default() -> Self {
-        EntryNodeInfo {
-            index: 0
-        }
+        EntryNodeInfo { index: 0 }
     }
 }
 

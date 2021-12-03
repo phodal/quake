@@ -17,6 +17,5 @@ pub fn edit_file(editor: String, file: String) -> Result<(), Box<dyn Error>> {
             .wait()?;
     };
 
-
     Ok(())
 }

@@ -30,6 +30,7 @@ fn list_entries_dirs() -> io::Result<Vec<PathBuf>> {
         .collect::<Result<Vec<_>, io::Error>>()?;
 
     entries.sort();
+
     Ok(entries)
 }
 

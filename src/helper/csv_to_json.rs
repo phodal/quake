@@ -2,7 +2,7 @@ use std::error::Error;
 use std::fs::File;
 
 use csv::Reader;
-use json::{array, JsonValue, object};
+use json::{array, object, JsonValue};
 
 pub fn csv_to_json(rdr: &mut Reader<File>) -> Result<JsonValue, Box<dyn Error>> {
     let mut json: JsonValue = array![];

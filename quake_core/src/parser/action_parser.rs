@@ -1,13 +1,13 @@
-use std::error::Error;
 use crate::parser::ast::SourceUnitPart;
 use crate::parser::parser::parse;
+use std::error::Error;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ActionDefine {
     pub object: String,
     pub action: String,
     pub text: String,
-    pub parameters: Vec<String>
+    pub parameters: Vec<String>,
 }
 
 impl Default for ActionDefine {
@@ -16,7 +16,7 @@ impl Default for ActionDefine {
             object: "".to_string(),
             action: "".to_string(),
             text: "".to_string(),
-            parameters: vec![]
+            parameters: vec![],
         }
     }
 }
@@ -47,7 +47,6 @@ impl ActionDefine {
         string.parse().unwrap()
     }
 }
-
 
 #[cfg(test)]
 mod tests {

@@ -1,6 +1,6 @@
-use std::{fmt, io};
 use std::error::Error as StdError;
 use std::fmt::{Debug, Formatter};
+use std::{fmt, io};
 
 pub struct QuakeParserError {
     msg: String,
@@ -26,9 +26,7 @@ impl Debug for QuakeParserError {
     }
 }
 
-impl StdError for QuakeParserError {
-
-}
+impl StdError for QuakeParserError {}
 
 impl From<io::Error> for QuakeParserError {
     fn from(err: io::Error) -> Self {
