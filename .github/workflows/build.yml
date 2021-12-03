@@ -66,4 +66,3 @@ jobs:
         if: runner.os == 'macOS'
         working-directory: ./quake_webapp
         run: yarn dist
-        
