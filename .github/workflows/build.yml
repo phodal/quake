@@ -57,8 +57,13 @@ jobs:
           echo "SQLITE3_LIB_DIR=C:\ProgramData\chocolatey\lib\SQLite\tools" >> $GITHUB_ENV
           echo "SQLITE_DATABASE_URL=C:\test.db" >> $GITHUB_ENV
 
+      - name: Run unit tests
+        if: runner.os != 'ubuntu'
+        run: ${{matrix.ENV_VARS}} cargo test --all
+
       - name: Execute tests
         uses: actions-rs/cargo@v1
+        if: runner.os == 'ubuntu'
         with:
           command: test
           args: --all
@@ -68,6 +73,7 @@ jobs:
 
       - name: Pre-installing grcov
         uses: actions-rs/install@v0.1
+        if: runner.os == 'ubuntu'
         with:
           crate: grcov
           use-tool-cache: true
@@ -75,11 +81,13 @@ jobs:
       - name: Gather coverage data
         id: coverage
         uses: actions-rs/grcov@v0.1
+        if: runner.os == 'ubuntu'
         with:
           coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
 
       - name: Coveralls upload
         uses: coverallsapp/github-action@master
+        if: runner.os == 'ubuntu'        
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel: true
