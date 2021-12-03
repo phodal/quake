@@ -8,7 +8,6 @@ use rocket::{Config, Error};
 #[allow(unused_imports)]
 use action_api::parse_query;
 #[allow(unused_imports)]
-use entry_api::{create_entry, get_entries, get_entry, update_entry};
 use quake_core::QuakeConfig;
 
 mod action_api;
@@ -48,6 +47,7 @@ pub async fn start_server() -> Result<(), Error> {
             routes![
                 entry_api::get_entries,
                 entry_api::get_entries_csv,
+                entry_api::get_entries_from_csv,
                 entry_api::get_entry,
                 entry_api::create_entry,
                 entry_api::update_entry

@@ -10,6 +10,7 @@ use crate::action::entry_paths::EntryPaths;
 use crate::action::entry_usecases;
 use crate::action::entry_usecases::find_entry_path;
 use crate::action::entrysets::Entrysets;
+use crate::errors::QuakeError;
 use crate::helper::editor_exec;
 use crate::tui::table_process;
 
@@ -36,7 +37,12 @@ pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dy
             let entries = paths.base.join("entries.csv");
             show_entrysets(&entries);
         }
-        _ => {}
+        _ => {
+            return Err(Box::new(QuakeError(format!(
+                "unknown entry action: {:?}",
+                expr
+            ))))
+        }
     }
 
     Ok(())

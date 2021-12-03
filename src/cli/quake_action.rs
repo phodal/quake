@@ -10,6 +10,7 @@ use quake_core::QuakeConfig;
 use crate::action::entry_paths::EntryPaths;
 use crate::action::entry_usecases;
 use crate::action::entrysets::Entrysets;
+use crate::errors::QuakeError;
 use crate::helper::meili_exec;
 
 fn is_hidden(entry: &DirEntry) -> bool {
@@ -31,7 +32,12 @@ pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Er
         "feed" => {
             feed_data(&conf)?;
         }
-        _ => {}
+        _ => {
+            return Err(Box::new(QuakeError(format!(
+                "unknow quake action: {:?}",
+                action
+            ))))
+        }
     }
 
     Ok(())
