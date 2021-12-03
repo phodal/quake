@@ -1,23 +1,29 @@
-name: Build
-
-on: [ push, pull_request ]
-
+# from: https://github.com/clap-rs/clap/blob/master/.github/workflows/coverage.yml
+name: Coverage
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+concurrency:
+  group: coverage-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [ macos-latest, ubuntu-latest, windows-latest ]
-    runs-on: ${{ matrix.os }}
+  coverage:
+    name: Coverage
+    continue-on-error: true
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Install rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          components: llvm-tools-preview
+          override: true
 
-      - name: Checkout submodules
-        shell: bash
-        run: |
-          git fetch --tags
-          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-          git submodule sync --recursive
-          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+      - name: Checkout
+        uses: actions/checkout@v2
+
 
       - name: install libgtk-dev
         run: |
@@ -50,5 +56,21 @@ jobs:
           echo "SQLITE3_LIB_DIR=C:\ProgramData\chocolatey\lib\SQLite\tools" >> $GITHUB_ENV
           echo "SQLITE_DATABASE_URL=C:\test.db" >> $GITHUB_ENV
 
-      - name: Run unit tests
-        run: ${{matrix.ENV_VARS}} cargo test --all
+      - name: Install llvm-cov
+        uses: actions-rs/install@v0.1
+        with:
+          crate: cargo-llvm-cov
+          version: 0.1.0-alpha.4
+          use-tool-cache: true
+
+      - name: Coverage
+        uses: actions-rs/cargo@v1
+        with:
+          command: llvm-cov
+          args: --features "wrap_help yaml regex unstable-replace unstable-multicall unstable-grouped" --lcov --output-path lcov.info
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          path-to-lcov: lcov.info
+          github-token: ${{ secrets.github_token }}
