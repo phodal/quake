@@ -4,6 +4,9 @@ setup:
 build:
     cargo build --all
 
+test:
+    cargo test --all
+
 release:
     cargo build --verbose --release --all
 
