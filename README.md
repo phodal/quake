@@ -1,5 +1,7 @@
 # Quake
 
+[![Build](https://github.com/phodal/quake/actions/workflows/build.yml/badge.svg)](https://github.com/phodal/quake/actions/workflows/build.yml)
+
 > A meta knowledge management tool for geek.
 
 Quake 是面向极客的知识管理元框架，它可以：
