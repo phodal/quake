@@ -77,16 +77,12 @@ pub(crate) async fn create_entry(
     config: &State<QuakeConfig>,
 ) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
     let workspace = config.workspace.to_string();
-    match entry_usecases::create_entry(&workspace, &entry_type, &text) {
-        Ok((_path, file)) => {
-            return Ok(Json(file));
-        }
-        Err(err) => {
-            return Err(NotFound(Json(ApiError {
-                msg: err.to_string(),
-            })));
-        }
-    }
+    return match entry_usecases::create_entry(&workspace, &entry_type, &text) {
+        Ok((_path, file)) => Ok(Json(file)),
+        Err(err) => Err(NotFound(Json(ApiError {
+            msg: err.to_string(),
+        }))),
+    };
 }
 
 #[get("/<entry_type>/<id>")]

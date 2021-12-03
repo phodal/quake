@@ -70,10 +70,23 @@ mod test {
     use rocket::http::Status;
     use rocket::local::blocking::Client;
 
+    // todo: ignore test for speed
+    #[ignore]
     #[test]
     fn hello_world() {
-        let client = Client::new(rocket()).expect("valid rocket instance");
-        let mut response = client.get("/").dispatch();
+        let client = Client::tracked(rocket()).expect("valid rocket instance");
+        let response = client.get("/").dispatch();
+
         assert_eq!(response.status(), Status::Ok);
+    }
+
+    #[ignore]
+    #[test]
+    fn get_todo_entry() {
+        let client = Client::tracked(rocket()).expect("valid rocket instance");
+        let response = client.get("/entry/todo/1").dispatch();
+
+        assert_eq!(response.status(), Status::Ok);
+        assert_eq!(response.into_string().unwrap(), "{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1,\"content\":\"\\n\\nahaha\\n\"}")
     }
 }
