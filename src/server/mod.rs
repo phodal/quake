@@ -3,7 +3,7 @@ use rocket::fairing::AdHoc;
 use rocket::figment::providers::{Env, Format, Serialized};
 use rocket::figment::{Figment, Profile};
 use rocket::fs::FileServer;
-use rocket::{Config, Error};
+use rocket::{Build, Config, Error, Rocket};
 
 #[allow(unused_imports)]
 use action_api::parse_query;
@@ -31,6 +31,10 @@ pub struct ApiSuccess {
 
 #[rocket::main]
 pub async fn start_server() -> Result<(), Error> {
+    rocket().launch().await
+}
+
+fn rocket() -> Rocket<Build> {
     let figment = Figment::from(rocket::Config::default())
         .merge(Serialized::defaults(Config::default()))
         .merge(Yaml::file(".quake.yaml"))
@@ -58,6 +62,18 @@ pub async fn start_server() -> Result<(), Error> {
             routes![action_api::parse_query, action_api::suggest],
         )
         .attach(AdHoc::config::<QuakeConfig>())
-        .launch()
-        .await
+}
+
+#[cfg(test)]
+mod test {
+    use super::rocket;
+    use rocket::http::Status;
+    use rocket::local::blocking::Client;
+
+    #[test]
+    fn hello_world() {
+        let client = Client::new(rocket()).expect("valid rocket instance");
+        let mut response = client.get("/").dispatch();
+        assert_eq!(response.status(), Status::Ok);
+    }
 }
