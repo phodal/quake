@@ -41,7 +41,6 @@ jobs:
           asset_name: ${{ matrix.asset_name }}
           tag: ${{ github.ref }}
 
-
       # frontend sections
       - name: install pnpm
         if: runner.os == 'macOS'
