@@ -38,6 +38,14 @@ Architecture:
 
 ### CLI
 
+0. init in project dirs
+
+```bash
+quake init
+```
+
+`.quake.yml` for config, `entries-define.yaml` for define.
+
 1. add entry by type
 
 ```
