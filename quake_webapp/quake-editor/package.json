@@ -24,7 +24,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build && yarn build:bundle",
-    "build:bundle": "webpack --config webpack-bundle.js",
+    "build:bundle": "yarn webpack --config webpack-bundle.js",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },
