@@ -8,6 +8,7 @@ extern crate serde_derive;
 
 use std::error::Error;
 use std::fs;
+use std::io::{stdout, Write};
 use std::path::PathBuf;
 
 use clap::Parser;
@@ -89,29 +90,29 @@ fn load_config(cmd: &Command) -> Result<QuakeConfig, Box<dyn Error>> {
     Ok(conf)
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() {
+    let mut stdout = stdout();
     let opts: Opts = Opts::parse();
+    if let Err(err) = process_cmd(opts) {
+        stdout.write(format!("{:?}", err).as_bytes()).unwrap();
+    }
+}
+
+fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
     match opts.cmd {
-        SubCommand::Init(init) => {
-            if let Err(err) = init_projects(init) {
-                println!("{:?}", err)
-            }
-        }
+        SubCommand::Init(init) => init_projects(init)?,
         SubCommand::Command(cmd) => {
             let conf = load_config(&cmd)?;
-
             if cmd.input.len() > 0 {
-                let expr = ActionDefine::from(cmd.input.as_str()).unwrap();
-                if let Err(err) = cli::action(expr, conf) {
-                    println!("{:?}", err)
-                }
+                let expr = ActionDefine::from(cmd.input.as_str())?;
+                cli::action(expr, conf)?
             }
         }
         SubCommand::Server(_) => {
-            let _ = start_server();
+            start_server()?;
         }
         SubCommand::Tui(_) => {
-            tui_main_loop().unwrap_or_else(|err| println!("{:?}", err));
+            tui_main_loop()?;
         }
     }
 

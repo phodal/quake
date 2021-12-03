@@ -4,6 +4,7 @@ use std::fs::File;
 use csv::Reader;
 use json::{array, object, JsonValue};
 
+#[allow(dead_code)]
 pub fn csv_to_json(rdr: &mut Reader<File>) -> Result<JsonValue, Box<dyn Error>> {
     let mut json: JsonValue = array![];
 
