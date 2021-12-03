@@ -1,11 +1,3 @@
-extern crate config;
-extern crate reqwest;
-#[macro_use]
-extern crate rocket;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-
 use std::error::Error;
 use std::fs;
 use std::io::{stdout, Write};
