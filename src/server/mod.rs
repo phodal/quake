@@ -1,13 +1,15 @@
+use figment::providers::Yaml;
 use rocket::{Config, Error};
 use rocket::fairing::AdHoc;
 use rocket::figment::{Figment, Profile};
-use rocket::figment::providers::{Env, Format, Serialized, Toml};
+use rocket::figment::providers::{Env, Format, Serialized};
 use rocket::fs::FileServer;
 
 #[allow(unused_imports)]
 use action_api::parse_query;
 #[allow(unused_imports)]
 use entry_api::{create_entry, get_entries, get_entry, update_entry};
+use quake_core::QuakeConfig;
 
 mod entry_api;
 mod action_api;
@@ -28,28 +30,11 @@ pub struct ApiSuccess {
     pub content: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-pub struct QuakeServerConfig {
-    pub workspace: String,
-    pub search_url: String,
-    pub server_location: String,
-}
-
-impl Default for QuakeServerConfig {
-    fn default() -> Self {
-        QuakeServerConfig {
-            workspace: "".to_string(),
-            search_url: "".to_string(),
-            server_location: "quake_webapp".to_string()
-        }
-    }
-}
-
 #[rocket::main]
 pub async fn start_server() -> Result<(), Error> {
     let figment = Figment::from(rocket::Config::default())
         .merge(Serialized::defaults(Config::default()))
-        .merge(Toml::file("Quake.toml").nested())
+        .merge(Yaml::file(".quake.yaml"))
         .merge(Env::prefixed("APP_").global())
         .select(Profile::from_env_or("workspace", "."))
         .select(Profile::from_env_or("search_url", "http://127.0.0.1:7700"))
@@ -67,7 +52,7 @@ pub async fn start_server() -> Result<(), Error> {
             entry_api::update_entry
         ])
         .mount("/action", routes![action_api::parse_query, action_api::suggest])
-        .attach(AdHoc::config::<QuakeServerConfig>())
+        .attach(AdHoc::config::<QuakeConfig>())
         .launch()
         .await
 }

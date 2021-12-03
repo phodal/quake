@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
-use rocket::fs::NamedFile;
 
+use rocket::fs::NamedFile;
 use rocket::response::status::NotFound;
 use rocket::serde::{Deserialize, Serialize};
 use rocket::serde::json::Json;
@@ -10,14 +10,15 @@ use rocket::State;
 use rocket::tokio::task::spawn_blocking;
 
 use quake_core::entry::entry_file::EntryFile;
-use crate::action::entry_paths::EntryPaths;
+use quake_core::QuakeConfig;
 
+use crate::action::entry_paths::EntryPaths;
 use crate::action::entry_usecases;
 use crate::helper::file_process;
-use crate::server::{ApiError, QuakeServerConfig};
+use crate::server::ApiError;
 
 #[get("/<entry_type>")]
-pub(crate) async fn get_entries(entry_type: &str, config: &State<QuakeServerConfig>) -> Json<String> {
+pub(crate) async fn get_entries(entry_type: &str, config: &State<QuakeConfig>) -> Json<String> {
     let request_url = format!("{:}/indexes/{:}/documents", &config.search_url, entry_type);
 
     let vec = spawn_blocking(|| reqwest::blocking::get(request_url)
@@ -31,7 +32,7 @@ pub(crate) async fn get_entries(entry_type: &str, config: &State<QuakeServerConf
 }
 
 #[get("/<entry_type>/csv")]
-pub(crate) async fn get_entries_csv(entry_type: &str, config: &State<QuakeServerConfig>) -> Option<NamedFile> {
+pub(crate) async fn get_entries_csv(entry_type: &str, config: &State<QuakeConfig>) -> Option<NamedFile> {
     let paths = EntryPaths::init(&config.workspace, &entry_type.to_string());
     let file = NamedFile::open(paths.entries_csv);
     file.await.ok()
@@ -44,7 +45,7 @@ struct EntryResponse {
 }
 
 #[post("/<entry_type>/new?<text>")]
-pub(crate) async fn create_entry(entry_type: String, text: String, config: &State<QuakeServerConfig>) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
+pub(crate) async fn create_entry(entry_type: String, text: String, config: &State<QuakeConfig>) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
     let workspace = config.workspace.to_string();
     match entry_usecases::create_entry(&workspace, &entry_type, &text) {
         Ok((_path, file)) => {
@@ -59,7 +60,7 @@ pub(crate) async fn create_entry(entry_type: String, text: String, config: &Stat
 }
 
 #[get("/<entry_type>/<id>")]
-pub(crate) async fn get_entry(entry_type: &str, id: usize, config: &State<QuakeServerConfig>) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
+pub(crate) async fn get_entry(entry_type: &str, id: usize, config: &State<QuakeConfig>) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
     let base_path = PathBuf::from(&config.workspace).join(entry_type);
     let prefix = file_process::file_prefix(id);
     let vec = file_process::filter_by_prefix(base_path, prefix);
@@ -83,7 +84,7 @@ pub struct EntryUpdate {
 }
 
 #[post("/<entry_type>/<id>", data = "<entry>")]
-pub(crate) async fn update_entry(entry_type: &str, id: usize, entry: Json<EntryUpdate>, config: &State<QuakeServerConfig>) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
+pub(crate) async fn update_entry(entry_type: &str, id: usize, entry: Json<EntryUpdate>, config: &State<QuakeConfig>) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
     let path = PathBuf::from(&config.workspace).join(entry_type);
     return match entry_usecases::update_entry_fields(path, entry_type, id, &entry.fields) {
         Ok(file) => {

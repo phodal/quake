@@ -14,12 +14,12 @@ use crate::helper::editor_exec;
 use crate::tui::table_process;
 
 pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
-    let paths = EntryPaths::init(&conf.path, &expr.object);
+    let paths = EntryPaths::init(&conf.workspace, &expr.object);
 
     // todo: export api for search
     match expr.action.as_str() {
         "add" => {
-            let target_file = entry_usecases::create_entry(&conf.path, &expr.object, &expr.text)?.0;
+            let target_file = entry_usecases::create_entry(&conf.workspace, &expr.object, &expr.text)?.0;
             editor_exec::edit_file(conf.editor, format!("{:}", target_file.display()))?;
             entry_usecases::sync_in_path(&paths)?
         }
@@ -73,7 +73,7 @@ mod tests {
     fn update_todo() {
         let expr = ActionDefine::from("todo.update(1)").unwrap();
         let mut config = QuakeConfig::default();
-        config.path = "_fixtures".to_string();
+        config.workspace = "_fixtures".to_string();
         config.editor = "".to_string();
 
         action(expr, config).expect("cannot process");

@@ -77,19 +77,18 @@ struct WebServer {
     path: String,
 }
 
-fn config(cmd: &Command) -> QuakeConfig {
-    let mut settings = config::Config::default();
-    settings.merge(config::File::with_name(&cmd.config)).unwrap();
-    let mut conf: QuakeConfig = settings.try_into().unwrap();
+fn load_config(cmd: &Command) -> Result<QuakeConfig, Box<dyn Error>> {
+    let content = fs::read_to_string(&cmd.config)?;
+    let mut conf: QuakeConfig = serde_yaml::from_str(content.as_str())?;
 
     if !cmd.editor.is_empty() {
         conf.editor = cmd.editor.clone();
     }
 
-    conf
+    Ok(conf)
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let opts: Opts = Opts::parse();
     match opts.cmd {
         SubCommand::Init(init) => {
@@ -98,7 +97,7 @@ fn main() {
             }
         }
         SubCommand::Command(cmd) => {
-            let conf: QuakeConfig = config(&cmd);
+            let conf = load_config(&cmd)?;
 
             if cmd.input.len() > 0 {
                 let expr = ActionDefine::from(cmd.input.as_str()).unwrap();
@@ -112,6 +111,8 @@ fn main() {
         }
         SubCommand::Tui(_) => {}
     }
+
+    Ok(())
 }
 
 fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
@@ -119,9 +120,8 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     let define = PathBuf::from(&config.path).join("entries-define.yaml");
 
     let config = QuakeConfig {
-        path: config.path.clone(),
-        editor: "vim".to_string(),
         workspace: config.path.clone(),
+        editor: "vim".to_string(),
         search_url: "http://127.0.0.1:7700".to_string(),
         server_location: "web".to_string()
     };

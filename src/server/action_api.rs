@@ -8,8 +8,9 @@ use rocket::tokio::task::spawn_blocking;
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::entry::EntryDefine;
 use quake_core::parser::action_parser::ActionDefine;
+use quake_core::QuakeConfig;
 
-use crate::server::{ApiError, QuakeServerConfig};
+use crate::server::ApiError;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct ActionSuggest {
@@ -41,7 +42,7 @@ pub fn parse_query(input: String) -> String {
 }
 
 #[get("/suggest")]
-pub async fn suggest(config: &State<QuakeServerConfig>) -> Json<ActionSuggest> {
+pub async fn suggest(config: &State<QuakeConfig>) -> Json<ActionSuggest> {
     let mut suggest = ActionSuggest::default();
     let path = PathBuf::from(&config.workspace).join("entries-define.yaml");
 

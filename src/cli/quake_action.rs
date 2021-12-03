@@ -37,7 +37,7 @@ pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Er
 }
 
 fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
-    let path = PathBuf::from(&conf.path);
+    let path = PathBuf::from(&conf.workspace);
     let temp_file = "dump.json";
 
     for entry in WalkDir::new(path).min_depth(1).into_iter()
@@ -53,7 +53,7 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
         }
 
         let path_name = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
-        let paths = EntryPaths::init(&conf.path, &path_name);
+        let paths = EntryPaths::init(&conf.workspace, &path_name);
 
         let map = Entrysets::jsonify(&paths.base)?;
         fs::write(temp_file, map)?;
@@ -69,19 +69,25 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
 }
 
 fn sync_defines(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
-    let path = PathBuf::from(&conf.path);
+    let path = PathBuf::from(&conf.workspace);
 
     let mut define_file = EntryDefines::default();
-    for entry in WalkDir::new(path).min_depth(1).into_iter()
+    for entry in WalkDir::new(path).min_depth(1).max_depth(1).into_iter()
         .filter_entry(|e| !is_hidden(e)) {
         let entry = entry.unwrap();
         if !entry.path().is_dir() {
             continue;
         }
+
         let path_name = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
 
-        let paths = EntryPaths::init(&conf.path, &path_name);
-        entry_usecases::sync_in_path(&paths).unwrap();
+        if path_name.eq(&conf.server_location) {
+            continue
+        }
+
+        let paths = EntryPaths::init(&conf.workspace, &path_name);
+        entry_usecases::sync_in_path(&paths)?;
+
         let csv = entry.path().join("entries.csv");
         if csv.exists() {
             define_file.entries.push(Entrysets::define_from_csv(path_name, csv)?);
@@ -89,7 +95,7 @@ fn sync_defines(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
     }
 
     let content = serde_yaml::to_string(&define_file).unwrap();
-    fs::write(PathBuf::from(&conf.path).join("entries-define.yaml"), content)?;
+    fs::write(PathBuf::from(&conf.workspace).join("entries-define.yaml"), content)?;
 
     Ok(())
 }
