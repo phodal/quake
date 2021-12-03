@@ -1,4 +1,0 @@
-[default]
-workspace = "_fixtures"
-search_url = "http://127.0.0.1:7700"
-server_location = "quake_webapp"

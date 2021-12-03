@@ -22,14 +22,19 @@ pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dy
         "add" => {
             let target_file =
                 entry_usecases::create_entry(&conf.workspace, &expr.object, &expr.text)?.0;
-            editor_exec::edit_file(conf.editor, format!("{:}", target_file.display()))?;
+            if conf.editor != "" {
+                editor_exec::edit_file(conf.editor, format!("{:}", target_file.display()))?;
+            }
+
             entry_usecases::sync_in_path(&paths)?
         }
         "edit" => {
             let target_file =
                 find_entry_path(paths.base, &expr.object, expr.index_from_parameter())?;
 
-            editor_exec::edit_file(conf.editor, format!("{:}", target_file.display()))?;
+            if conf.editor != "" {
+                editor_exec::edit_file(conf.editor, format!("{:}", target_file.display()))?;
+            }
         }
         "sync" => entry_usecases::sync_in_path(&paths)?,
         "dump" => dump_by_path(&paths)?,

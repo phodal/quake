@@ -2,6 +2,10 @@ use std::error::Error;
 use std::process::Command;
 
 pub fn edit_file(editor: String, file: String) -> Result<(), Box<dyn Error>> {
+    if editor == "~" || editor == "" {
+        return Ok(());
+    }
+
     let editor_cmd = format!("{:} {:?}", editor, file);
 
     if cfg!(target_os = "windows") {

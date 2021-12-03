@@ -158,6 +158,13 @@ impl EntryFile {
             .insert("id".to_string(), value.to_string());
     }
 
+    pub fn field(&self, field: &str) -> Option<String> {
+        match self.front_matter.fields.get(field) {
+            None => None,
+            Some(err) => return Some(err.to_string()),
+        }
+    }
+
     pub fn update_field(&mut self, field: &String, value: &String) {
         match self.front_matter.fields.get_mut(field) {
             None => {}

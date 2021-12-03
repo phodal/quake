@@ -29,13 +29,13 @@ pub mod tui;
 
 #[derive(Parser)]
 #[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
-struct Opts {
+pub struct Opts {
     #[clap(subcommand)]
     cmd: SubCommand,
 }
 
 #[derive(Parser)]
-enum SubCommand {
+pub enum SubCommand {
     /// init project
     Init(Init),
     /// command for CRUD entries
@@ -47,17 +47,20 @@ enum SubCommand {
 }
 
 #[derive(Parser)]
-struct Terminal {}
+pub struct Terminal {}
 
 #[derive(Parser)]
-struct Init {
+pub struct WebServer {}
+
+#[derive(Parser)]
+pub struct Init {
     /// init by path
     #[clap(short, long, default_value = ".")]
     path: String,
 }
 
-#[derive(Parser)]
-struct Command {
+#[derive(Parser, Debug)]
+pub struct Command {
     /// config path
     #[clap(short, long, default_value = ".quake.yaml")]
     config: String,
@@ -67,16 +70,6 @@ struct Command {
     /// config the editor
     #[clap(short, long, default_value = "")]
     editor: String,
-}
-
-#[derive(Parser)]
-struct WebServer {
-    /// Print debug info
-    #[clap(short)]
-    debug: bool,
-    /// init by path
-    #[clap(short, long, default_value = ".")]
-    path: String,
 }
 
 fn load_config(cmd: &Command) -> Result<QuakeConfig, Box<dyn Error>> {
@@ -98,7 +91,7 @@ fn main() {
     }
 }
 
-fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
+pub fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
     match opts.cmd {
         SubCommand::Init(init) => init_projects(init)?,
         SubCommand::Command(cmd) => {
@@ -120,12 +113,14 @@ fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
 }
 
 fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
+    fs::create_dir_all(&config.path)?;
+
     let path = PathBuf::from(&config.path).join(".quake.yaml");
     let define = PathBuf::from(&config.path).join("entries-define.yaml");
 
     let config = QuakeConfig {
         workspace: config.path.clone(),
-        editor: "vim".to_string(),
+        editor: "".to_string(),
         search_url: "http://127.0.0.1:7700".to_string(),
         server_location: "web".to_string(),
     };
@@ -153,6 +148,63 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
 mod tests {
     use crate::action::entry_paths::EntryPaths;
     use crate::action::entry_usecases::sync_in_path;
+    use crate::{process_cmd, Command, Init, Opts, SubCommand};
+    use quake_core::entry::entry_file::EntryFile;
+    use std::fs;
+    use std::path::PathBuf;
+
+    #[test]
+    fn should_throw_not_exist_cmds() {
+        let command = Command {
+            config: ".quake.yaml".to_string(),
+            input: "story.dddd".to_string(),
+            editor: "".to_string(),
+        };
+        let expected = process_cmd(Opts {
+            cmd: SubCommand::Command(command),
+        })
+        .expect_err("");
+
+        let error_msg = "QuakeError(\"unknown entry action: ActionDefine { object: \\\"story\\\", action: \\\"dddd\\\", text: \\\"\\\", parameters: [] }\")";
+        assert_eq!(format!("{:?}", expected), error_msg);
+    }
+
+    #[test]
+    fn should_create_test_entry() {
+        let test_dir = "test_dir";
+
+        let conf_dir = PathBuf::from("_fixtures")
+            .join("configs")
+            .join(".quake.yaml");
+
+        let command = Command {
+            config: format!("{:}", conf_dir.display()),
+            input: "water.add: samples".to_string(),
+            editor: "".to_string(),
+        };
+
+        process_cmd(Opts {
+            cmd: SubCommand::Init(Init {
+                path: test_dir.to_string(),
+            }),
+        })
+        .unwrap();
+        process_cmd(Opts {
+            cmd: SubCommand::Command(command),
+        })
+        .unwrap();
+
+        let test_path = PathBuf::from("test_dir");
+        let paths = EntryPaths::init(&format!("{:}", test_path.display()), &"water".to_string());
+
+        let content = fs::read_to_string(paths.base.join("0001-samples.md")).unwrap();
+        let file = EntryFile::from(content.as_str(), 1).unwrap();
+
+        let title = file.field("title");
+        assert_eq!(title.unwrap(), "samples");
+
+        fs::remove_dir_all(test_dir).unwrap();
+    }
 
     #[ignore]
     #[test]

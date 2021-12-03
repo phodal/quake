@@ -13,3 +13,4 @@ dbs/NoteStore.sqlite-wal
 dbs
 dump.json
 quake_webapp/temp
+test_dir
