@@ -15,6 +15,7 @@ use clap::Parser;
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::parser::action_parser::ActionDefine;
 use quake_core::QuakeConfig;
+use quake_tui::tui_main_loop;
 
 use crate::server::start_server;
 
@@ -110,7 +111,9 @@ fn main() {
         SubCommand::Server(_) => {
             let _ = start_server();
         }
-        SubCommand::Tui(_) => {}
+        SubCommand::Tui(_) => {
+            tui_main_loop().unwrap_or_else(|err| println!("{:?}", err));
+        }
     }
 }
 
