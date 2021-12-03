@@ -56,10 +56,9 @@ jobs:
         working-directory: ./quake_webapp
         run: yarn dist
 
-      - uses: montudor/action-zip@v1
-        if: runner.os == 'macOS'
-        with:
-          args: zip -qq -r web.zip quake_webapp/dist
+      - name: zip macos artifact
+        run: |
+          zip -qq -r web.zip quake_webapp/dist
 
       - name: Upload binaries to release
         if: runner.os == 'macOS'
