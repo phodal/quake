@@ -116,18 +116,14 @@ fn main() {
 
 fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&config.path).join(".quake.yaml");
-
-    let server_config = PathBuf::from(&config.path).join("Quake.toml");
-    fs::write(server_config, format!("[default]
-workspace = {:?}
-search_url = \"http://127.0.0.1:7700\"
-server_location = \"web\"
-", config.path))?;
-
     let define = PathBuf::from(&config.path).join("entries-define.yaml");
+
     let config = QuakeConfig {
-        path: config.path,
+        path: config.path.clone(),
         editor: "vim".to_string(),
+        workspace: config.path.clone(),
+        search_url: "http://127.0.0.1:7700".to_string(),
+        server_location: "web".to_string()
     };
 
     fs::write(path, serde_yaml::to_string(&config)?)?;

@@ -1,5 +1,5 @@
 ---
-title: migration .quake.yaml to Quake.toml
+title: migration Quake.toml to .quake.yaml
 author: 
 status: Doing
 priority: High

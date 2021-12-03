@@ -80,7 +80,7 @@ index
 quake command -i "quake.feed"
 ```
 
-2. config `Quake.toml`
+2. config `.quake.yaml`
 
 3. run server
 
