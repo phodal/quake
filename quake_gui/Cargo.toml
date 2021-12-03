@@ -6,14 +6,3 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio-core = "0.1"
-tokio-io = "0.1"
-tokio-signal = "0.1"
-
-futures = "0.1"
-
-# gui
-druid = "0.7.0"
-
-log = "0.4.0"
-env_logger = "0.8.4"
