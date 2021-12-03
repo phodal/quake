@@ -5,6 +5,12 @@ module.exports = {
         default: false
       }
     };
+
+    config.output = {
+      ...config.output,
+      filename: `static/quake-editor.min.js`,
+    };
+
     config.optimization.runtimeChunk = false;
     return config;
   }

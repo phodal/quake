@@ -10,6 +10,12 @@ npm install -g pnpm
 pnpm recursive install
 ```
 
+dev:
+
+```
+pnpm recursive run start
+```
+
 build: 
 
 ```bash

@@ -22,8 +22,8 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build && yarn build:bundle",
+    "start": "export PORT=4002 && react-app-rewired start",
+    "build": "react-app-rewired build",
     "build:bundle": "yarn webpack --config webpack-bundle.js",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
@@ -48,7 +48,6 @@
   },
   "devDependencies": {
     "@types/styled-components": "^5.1.15",
-    "react-app-rewired": "^2.1.8",
-    "webpack-cli": "^4.9.1"
+    "react-app-rewired": "^2.1.8"
   }
 }
