@@ -1,5 +1,6 @@
 use lazy_static::lazy_static;
 use regex::Regex;
+use serde_derive::{Deserialize, Serialize};
 use std::path::PathBuf;
 use std::process::Command;
 
