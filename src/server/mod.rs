@@ -49,7 +49,7 @@ impl Default for QuakeServerConfig {
 pub async fn start_server() -> Result<(), Error> {
     let figment = Figment::from(rocket::Config::default())
         .merge(Serialized::defaults(Config::default()))
-        .merge(Toml::file("QuakeServer.toml").nested())
+        .merge(Toml::file("Quake.toml").nested())
         .merge(Env::prefixed("APP_").global())
         .select(Profile::from_env_or("workspace", "."))
         .select(Profile::from_env_or("search_url", "http://127.0.0.1:7700"))
