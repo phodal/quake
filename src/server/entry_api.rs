@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::fs;
+use std::fs::File;
 use std::path::PathBuf;
 
 use rocket::fs::NamedFile;
@@ -14,6 +15,7 @@ use quake_core::QuakeConfig;
 
 use crate::action::entry_paths::EntryPaths;
 use crate::action::entry_usecases;
+use crate::helper::csv_to_json::csv_to_json;
 use crate::helper::file_process;
 use crate::server::ApiError;
 
@@ -29,6 +31,19 @@ pub(crate) async fn get_entries(entry_type: &str, config: &State<QuakeConfig>) -
     }).unwrap();
 
     Json(vec)
+}
+
+#[get("/<entry_type>/from_csv")]
+pub(crate) async fn get_entries_from_csv(entry_type: String, config: &State<QuakeConfig>) -> Result<Json<String>, NotFound<Json<ApiError>>> {
+    let path = PathBuf::from(config.workspace.clone()).join(entry_type).join(EntryPaths::entries_csv());
+    let content = spawn_blocking(|| {
+        let mut rdr = csv::Reader::from_reader(File::open(path).unwrap());
+        csv_to_json(&mut rdr).unwrap().to_string()
+    }).await.map_err(|err| ApiError {
+        msg: err.to_string()
+    }).unwrap();
+
+    Ok(Json(content))
 }
 
 #[get("/<entry_type>/csv")]

@@ -22,4 +22,8 @@ impl EntryPaths {
             entries_define: PathBuf::from(&path.join("entries-define.yaml")),
         }
     }
+
+    pub fn entries_csv() -> &'static str {
+        "entries.csv"
+    }
 }
