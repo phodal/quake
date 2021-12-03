@@ -59,7 +59,8 @@ export class QuakeDashboard {
   @State() actions_list: string[] = [];
 
   @State() selected_entry: EntryInfo = null;
-  @State() selected_result: Map<string, object[]> = new Map();
+  @State() selected_flow_result: Map<string, object[]> = new Map();
+  @State() selected_result: any[] = [];
 
   @State() is_flow: boolean = false;
 
@@ -144,18 +145,9 @@ export class QuakeDashboard {
         let parsed = JSON.parse(response.data)
 
         if (!!this.selected_entry.flows) {
-          this.is_flow = true;
-          let results_map = new Map();
-          let flow = this.selected_entry.flows[0];
-          for (let item of flow.items) {
-            results_map.set(item, []);
-          }
-
-          for (let el of parsed) {
-            results_map.get(el.status).push(el);
-          }
-
-          this.selected_result = results_map;
+          this.process_flow(parsed);
+        } else {
+          this.selected_result = parsed;
         }
       });
     }
@@ -166,8 +158,24 @@ export class QuakeDashboard {
     }
   }
 
+  private process_flow(parsed) {
+    this.is_flow = true;
+    let results_map = new Map();
+    let flow = this.selected_entry.flows[0];
+    for (let item of flow.items) {
+      results_map.set(item, []);
+    }
+
+    for (let el of parsed) {
+      results_map.get(el.status).push(el);
+    }
+
+    this.selected_flow_result = results_map;
+  }
+
   private reset_input() {
-    this.selected_result = new Map();
+    this.selected_result = [];
+    this.selected_flow_result = new Map();
   }
 
   async handleSubmit(e) {
@@ -251,8 +259,11 @@ export class QuakeDashboard {
             {this.entries_info.map((info) =>
               this.list[info.type] && this.list[info.type].length > 0 ? this.renderSearchCol(info) : null
             )}
-            { this.is_flow && Array.from(this.selected_result.keys()).map((key) =>
+            { this.is_flow && Array.from(this.selected_flow_result.keys()).map((key) =>
               this.renderFlowByKey(key)
+            )}
+            { !this.is_flow && this.selected_result && this.selected_result.map((item: any) =>
+              this.renderCards(item, item.type)
             )}
           </ion-row>
         </ion-grid>
@@ -264,7 +275,7 @@ export class QuakeDashboard {
     return <ion-col>
       <ion-text color="secondary">{key}</ion-text>
       <ion-list>
-        {this.selected_result.get(key).map((item: any) =>
+        {this.selected_flow_result.get(key).map((item: any) =>
           <ion-card onClick={() => this.clickEntry(item.id, this.selected_entry.type)}>
             <ion-card-header>
               <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
@@ -283,17 +294,21 @@ export class QuakeDashboard {
     return <ion-col>
       <ion-text color="secondary">{info.type}</ion-text>
       {this.list[info.type] ? this.list[info.type].map((item: any) =>
-        <ion-card onClick={() => this.clickEntry(item.id, info.type)}>
-          <ion-card-header>
-            <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
-            <ion-card-title>{item.title}</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
-          </ion-card-content>
-        </ion-card>
+        this.renderCards(item, info.type)
       ) : null
       }
     </ion-col>;
+  }
+
+  private renderCards(item: any, type: string) {
+    return <ion-card onClick={() => this.clickEntry(item.id, type)}>
+      <ion-card-header>
+        <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
+        <ion-card-title>{item.title}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
+      </ion-card-content>
+    </ion-card>;
   }
 }
