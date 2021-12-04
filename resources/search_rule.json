@@ -6,8 +6,7 @@
     "attribute",
     "sort",
     "exactness",
-    "created_date:desc",
-    "rank:desc"
+    "created_date:desc"
   ],
   "distinctAttribute": null,
   "searchableAttributes": [
@@ -22,6 +21,6 @@
     "updated_date"
   ],
   "stopWords": null,
-  "sortableAttributes": null
+  "sortableAttributes": null,
   "synonyms": null
 }
