@@ -117,7 +117,9 @@ export class QuakeDashboard {
   private search_item(that: this, doc: string) {
     const index = this.client.index(doc)
     requestAnimationFrame(() => {
-      index.search(that.query).then((result) => {
+      index.search(that.query, {
+        attributesToHighlight: ['overview']
+      }).then((result) => {
         that.list[doc] = result.hits;
         that.items = result.hits;
       })
@@ -282,6 +284,7 @@ export class QuakeDashboard {
               <ion-card-title>{item.title}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
+              { item.description && <ion-text>{item.description}</ion-text> }
               <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
             </ion-card-content>
           </ion-card>
@@ -307,6 +310,7 @@ export class QuakeDashboard {
         <ion-card-title>{item.title}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
+        { item.description && <ion-text>{item.description}</ion-text> }
         <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
       </ion-card-content>
     </ion-card>;

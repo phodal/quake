@@ -22,7 +22,7 @@ use crate::server::ApiError;
 
 #[get("/<entry_type>")]
 pub(crate) async fn get_entries(entry_type: &str, config: &State<QuakeConfig>) -> Json<String> {
-    let request_url = format!("{:}/indexes/{:}/documents", &config.search_url, entry_type);
+    let request_url = format!("{:}/indexes/{:}/search", &config.search_url, entry_type);
 
     let vec = spawn_blocking(|| reqwest::blocking::get(request_url).unwrap().text().unwrap())
         .await

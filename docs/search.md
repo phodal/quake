@@ -11,7 +11,7 @@ curl \
   --data-binary @dump.json
 ```
 
-Query
+Settings
 
 ```bash
 curl \
@@ -46,6 +46,15 @@ curl \
       ],
       "synonyms": null
   }'
+```
+
+Query
+
+```bash
+curl \
+  -X POST 'http://localhost:7700/indexes/blog/settings' \
+  -H 'Content-Type: application/json' \
+  --data-binary @resources/search_rule.json
 ```
 
 Delete

@@ -69,6 +69,7 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
         fs::write(temp_file, map)?;
 
         meili_exec::feed_command(&path_name)?;
+        meili_exec::feed_settings(&path_name)?;
 
         println!("done '{:}' feed", &path_name);
     }

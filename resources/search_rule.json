@@ -17,7 +17,9 @@
   "displayedAttributes": [
     "id",
     "title",
-    "created_date"
+    "description",
+    "created_date",
+    "updated_date"
   ],
   "stopWords": null,
   "sortableAttributes": [
