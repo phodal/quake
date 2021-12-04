@@ -52,25 +52,25 @@ quake init
 1. add entry by type
 
 ```
-quake command -i "todo.add: time support"
+quake cmd -i "todo.add: time support"
 ```
 
 2. edit entry by index
 
 ```
-quake command -i "todo.edit(1)"
+quake cmd -i "todo.edit(1)"
 ```
 
 3. list entry by type
 
 ```
-quake command -i "todo.list"
+quake cmd -i "todo.list"
 ```
 
 4. sync list
 
 ```
-quake command -i "todo.sync"
+quake cmd -i "todo.sync"
 ```
 
 5. concept [tbd]
@@ -88,7 +88,7 @@ brew install meilisearch
 index
 
 ```
-quake command -i "quake.feed"
+quake cmd -i "quake.feed"
 ```
 
 2. config `.quake.yaml`

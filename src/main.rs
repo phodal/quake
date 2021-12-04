@@ -31,7 +31,7 @@ pub enum SubCommand {
     /// init project
     Init(Init),
     /// command for CRUD entries
-    Command(Command),
+    Cmd(Command),
     /// web server for run
     Server(WebServer),
     /// Terminal UI
@@ -86,7 +86,7 @@ fn main() {
 pub fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
     match opts.cmd {
         SubCommand::Init(init) => init_projects(init)?,
-        SubCommand::Command(cmd) => {
+        SubCommand::Cmd(cmd) => {
             let conf = load_config(&cmd)?;
             if cmd.input.len() > 0 {
                 let expr = ActionDefine::from(cmd.input.as_str())?;
@@ -153,7 +153,7 @@ mod tests {
             editor: "".to_string(),
         };
         let expected = process_cmd(Opts {
-            cmd: SubCommand::Command(command),
+            cmd: SubCommand::Cmd(command),
         })
         .expect_err("");
 
@@ -182,7 +182,7 @@ mod tests {
         })
         .unwrap();
         process_cmd(Opts {
-            cmd: SubCommand::Command(command),
+            cmd: SubCommand::Cmd(command),
         })
         .unwrap();
 
