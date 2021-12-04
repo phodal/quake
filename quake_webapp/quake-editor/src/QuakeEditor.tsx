@@ -2,7 +2,6 @@ import {lighten} from "polished";
 import React from 'react';
 import Editor from "rich-markdown-editor";
 import styled from "styled-components";
-import './QuakeEditor.css';
 
 export type Props = {
   id: number,
@@ -38,9 +37,11 @@ function QuakeEditor(props: Props) {
   }, [props]);
 
   return (
-    <div className="App">
-      <StyleLabel># {props.id}</StyleLabel>
-      <StyleInput type="text" value={title} onChange={(e) => { setTitle(e.target.value)}}/>
+    <div>
+      <StyledTitle>
+        <StyleLabel># {props.id}</StyleLabel>
+        <StyleInput type="text" value={title} onChange={(e) => { setTitle(e.target.value)}}/>
+      </StyledTitle>
       <StyledEditor
         autoFocus={true}
         value={props.value}
@@ -52,6 +53,10 @@ function QuakeEditor(props: Props) {
 }
 
 export default QuakeEditor;
+
+const StyledTitle = styled.div`
+  padding: 0 40px;
+`;
 
 const StyleInput = styled.input`
   color: palevioletred;
@@ -68,6 +73,7 @@ const StyleLabel = styled.label`
 `;
 
 const StyledEditor = styled(Editor)`
+  padding: 0 60px;
   flex-grow: 1;
   justify-content: start;
 

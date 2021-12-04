@@ -1,6 +1,5 @@
 import React from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
-import './index.css';
 import QuakeEditor from './QuakeEditor';
 
 // from samples: https://github.com/sarvabowmen/rating-webcomponent/blob/master/src/ReactElement.js
