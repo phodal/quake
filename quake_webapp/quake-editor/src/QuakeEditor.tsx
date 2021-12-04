@@ -53,7 +53,7 @@ function QuakeEditor(props: Props) {
 
   const onChange = React.useCallback((getValue) => {
     setValue(getValue())
-  }, [props, setValue]);
+  }, [setValue]);
 
   const saveEntry = () => {
     onSave();
