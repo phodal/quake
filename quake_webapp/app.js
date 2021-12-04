@@ -26,7 +26,6 @@ function create_editor_element(entry, params) {
   editor.setAttribute('title', entry.title);
   editor.setAttribute('value', entry.content);
   editor.addEventListener("onSave", function (event) {
-    console.log(event.detail);
     update_entry(params.type, params.id, {
       title: event.detail.title,
       content: event.detail.value.replaceAll("\\\n", "\n")

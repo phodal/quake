@@ -145,7 +145,9 @@ export class QuakeDashboard {
     if (action == 'show') {
       axios.get(`/entry/${this.selected_entry.type}`).then(response => {
         let parsed = response.data.hits;
-        if (!!this.selected_entry.flows) {
+        this.is_flow = !!this.selected_entry.flows
+        console.log(this.is_flow, this.selected_result);
+        if (this.is_flow) {
           this.process_flow(parsed);
         } else {
           this.selected_result = parsed;
@@ -296,22 +298,24 @@ export class QuakeDashboard {
     return <ion-col>
       <ion-text color="secondary">{info.type}</ion-text>
       {this.list[info.type] ? this.list[info.type].map((item: any) =>
-        this.renderCards(item, info.type)
+          <ion-list>{this.renderCards(item, info.type)}</ion-list>
       ) : null
       }
     </ion-col>;
   }
 
   private renderCards(item: any, type: string) {
-    return <ion-card onClick={() => this.clickEntry(item.id, type)}>
-      <ion-card-header>
-        <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
-        <ion-card-title>{item.title}</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        { item.description && <p>{item.description}</p> }
-        <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
-      </ion-card-content>
-    </ion-card>;
+    return <div class="entry-show-list">
+      <ion-card onClick={() => this.clickEntry(item.id, type)}>
+        <ion-card-header>
+          <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
+          <ion-card-title>{item.title}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          { item.description && <p>{item.description}</p> }
+          <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
+        </ion-card-content>
+      </ion-card>
+    </div>;
   }
 }
