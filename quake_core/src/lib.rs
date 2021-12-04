@@ -5,7 +5,7 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
-pub use parser::action_parser;
+pub use parser::quake_parser;
 pub use quake_config::QuakeConfig;
 
 pub mod entry;

@@ -15,7 +15,7 @@ use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::errors::QuakeError;
-use quake_core::parser::action_parser::ActionDefine;
+use quake_core::parser::quake_parser::ActionDefine;
 use quake_core::QuakeConfig;
 use quake_tui::tui_main_loop;
 

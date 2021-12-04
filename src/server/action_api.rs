@@ -9,7 +9,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::entry::EntryDefine;
-use quake_core::parser::action_parser::ActionDefine;
+use quake_core::parser::quake_parser::ActionDefine;
 use quake_core::QuakeConfig;
 
 use crate::server::ApiError;

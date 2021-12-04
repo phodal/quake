@@ -3,7 +3,7 @@ use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 
-use quake_core::parser::action_parser::ActionDefine;
+use quake_core::parser::quake_parser::ActionDefine;
 use quake_core::quake_config::QuakeConfig;
 
 use crate::action::entry_paths::EntryPaths;
@@ -71,7 +71,7 @@ pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
 
 #[cfg(test)]
 mod tests {
-    use quake_core::parser::action_parser::ActionDefine;
+    use quake_core::parser::quake_parser::ActionDefine;
     use quake_core::quake_config::QuakeConfig;
 
     use crate::cli::action;

@@ -50,7 +50,7 @@ impl ActionDefine {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::action_parser::ActionDefine;
+    use crate::parser::quake_parser::ActionDefine;
 
     #[test]
     fn should_parse_expression() {

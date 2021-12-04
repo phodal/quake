@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use quake_core::action_parser::ActionDefine;
+use quake_core::quake_parser::ActionDefine;
 use quake_core::QuakeConfig;
 
 pub mod entry_action;
