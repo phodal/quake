@@ -221,6 +221,7 @@ pub fn entry_file_by_path(path: &PathBuf) -> (String, EntryFile) {
 
 #[cfg(test)]
 mod tests {
+    use async_std::task;
     use std::fs;
     use std::path::PathBuf;
 
@@ -241,62 +242,67 @@ mod tests {
         assert_eq!(1, file.id);
     }
 
-    // #[async_std::test]
-    // async fn should_throw_not_exist_cmds() {
-    //     let command = Command {
-    //         config: ".quake.yaml".to_string(),
-    //         input: "story.dddd".to_string(),
-    //         editor: "".to_string(),
-    //     };
-    //
-    //     let expected = process_cmd(Opts {
-    //         cmd: SubCommand::Cmd(command),
-    //     })
-    //     .await
-    //     .expect_err("");
-    //
-    //     let error_msg = "QuakeError(\"unknown entry action: ActionDefine { object: \\\"story\\\", action: \\\"dddd\\\", text: \\\"\\\", parameters: [] }\")";
-    //     assert_eq!(format!("{:?}", expected), error_msg);
-    // }
-    //
-    // #[async_std::test]
-    // async fn should_create_test_entry() {
-    //     let test_dir = "test_dir";
-    //
-    //     let conf_dir = PathBuf::from("_fixtures")
-    //         .join("configs")
-    //         .join(".quake.yaml");
-    //
-    //     let command = Command {
-    //         config: format!("{:}", conf_dir.display()),
-    //         input: "water.add: samples".to_string(),
-    //         editor: "".to_string(),
-    //     };
-    //
-    //     process_cmd(Opts {
-    //         cmd: SubCommand::Init(Init {
-    //             path: test_dir.to_string(),
-    //         }),
-    //     })
-    //     .await
-    //     .unwrap();
-    //     process_cmd(Opts {
-    //         cmd: SubCommand::Cmd(command),
-    //     })
-    //     .await
-    //     .unwrap();
-    //
-    //     let test_path = PathBuf::from("test_dir");
-    //     let paths = EntryPaths::init(&format!("{:}", test_path.display()), &"water".to_string());
-    //
-    //     let content = fs::read_to_string(paths.base.join("0001-samples.md")).unwrap();
-    //     let file = EntryFile::from(content.as_str(), 1).unwrap();
-    //
-    //     let title = file.field("title");
-    //     assert_eq!(title.unwrap(), "samples");
-    //
-    //     fs::remove_dir_all(test_dir).unwrap();
-    // }
+    #[test]
+    fn should_throw_not_exist_cmds() {
+        task::block_on(async {
+            let command = Command {
+                config: ".quake.yaml".to_string(),
+                input: "story.dddd".to_string(),
+                editor: "".to_string(),
+            };
+
+            let expected = process_cmd(Opts {
+                cmd: SubCommand::Cmd(command),
+            })
+            .await
+            .expect_err("");
+
+            let error_msg = "QuakeError(\"unknown entry action: ActionDefine { object: \\\"story\\\", action: \\\"dddd\\\", text: \\\"\\\", parameters: [] }\")";
+            assert_eq!(format!("{:?}", expected), error_msg);
+        });
+    }
+
+    #[test]
+    fn should_create_test_entry() {
+        task::block_on(async {
+            let test_dir = "test_dir";
+
+            let conf_dir = PathBuf::from("_fixtures")
+                .join("configs")
+                .join(".quake.yaml");
+
+            let command = Command {
+                config: format!("{:}", conf_dir.display()),
+                input: "water.add: samples".to_string(),
+                editor: "".to_string(),
+            };
+
+            process_cmd(Opts {
+                cmd: SubCommand::Init(Init {
+                    path: test_dir.to_string(),
+                }),
+            })
+            .await
+            .unwrap();
+            process_cmd(Opts {
+                cmd: SubCommand::Cmd(command),
+            })
+            .await
+            .unwrap();
+
+            let test_path = PathBuf::from("test_dir");
+            let paths =
+                EntryPaths::init(&format!("{:}", test_path.display()), &"water".to_string());
+
+            let content = fs::read_to_string(paths.base.join("0001-samples.md")).unwrap();
+            let file = EntryFile::from(content.as_str(), 1).unwrap();
+
+            let title = file.field("title");
+            assert_eq!(title.unwrap(), "samples");
+
+            fs::remove_dir_all(test_dir).unwrap();
+        });
+    }
 
     #[ignore]
     #[test]

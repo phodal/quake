@@ -1,15 +1,11 @@
-use std::future::Future;
-
 use figment::providers::Yaml;
 use rocket::fairing::AdHoc;
 use rocket::figment::providers::{Env, Format, Serialized};
 use rocket::figment::{Figment, Profile};
 use rocket::fs::FileServer;
-use rocket::{routes, Build, Config, Error, Rocket};
+use rocket::{routes, Build, Config, Rocket};
 use serde_derive::{Deserialize, Serialize};
 
-use quake_core::errors::QuakeError;
-#[allow(unused_imports)]
 use quake_core::QuakeConfig;
 
 mod action_api;
