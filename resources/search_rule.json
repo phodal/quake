@@ -1,0 +1,29 @@
+{
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+    "created_date:desc",
+    "rank:desc"
+  ],
+  "distinctAttribute": null,
+  "searchableAttributes": [
+    "title",
+    "content"
+  ],
+  "displayedAttributes": [
+    "id",
+    "title",
+    "created_date"
+  ],
+  "stopWords": null,
+  "sortableAttributes": [
+    "title",
+    "created_date",
+    "content"
+  ],
+  "synonyms": null
+}
