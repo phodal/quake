@@ -1,10 +1,10 @@
 # Quake Importer
 
-- [ ] Django / Mezzanine Database
+- [x] Django / Mezzanine Database
 - [ ] OneNote
-- [ ] Microsoft Todo
+- [x] Microsoft Todo
 - [ ] Apple Calendar
-- [ ] Apple
+- [x] Apple Notes
 
 ## Custom DSL for merge field
 
