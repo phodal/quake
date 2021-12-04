@@ -1,6 +1,82 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Bug Fixes
+
+- Fix react lint issue
+- Fix not select entry issue
+- Fix typo for feed
+- Fix default rule issues
+
+### Documentation
+
+- Add screenshots for #7
+
+### Refactor
+
+- Try to figure lots of files change in dir
+
+### Build
+
+- Update scripts for zip
+
+## [0.0.6] - 2021-12-04
+
+### Bug Fixes
+
+- Fix width issue
+- Fix select type not empty
+- Fix tests
+- Set content first for not value issue
+- Fix tests
+
+### Documentation
+
+- Update changelog
+- Update search ranking rule
+- Split search rule to resources
+- Add notes
+- Rename command
+- Update todos
+- Add dockerfile story
+
+### Features
+
+- Add title change process
+- Change search rule for content
+- Add save button for dashboard
+- Add word count
+- Try to add watch dir
+- Make watch dir for server
+
+### Refactor
+
+- Change api for make request for show all
+- Clean some code
+- Extract load config
+- Move errors & add id from name
+- Make only load file once
+- Fix quote issue
+
+### Styling
+
+- Update title style
+
+### Testing
+
+- Update test data
+- Add test for type
+
+### Build
+
+- Add lint config
+
+### Ci
+
+- Remove windows install tasks
+
 ## [0.0.5] - 2021-12-03
 
 ### Bug Fixes

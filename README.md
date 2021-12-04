@@ -21,10 +21,6 @@ Architecture:
 
 Screenshots:
 
-![Screenshots](http://quake-demo.inherd.org/screenshots.png)
-
-Web Samples:
-
 ![Web Samples](http://quake-demo.inherd.org/web.gif)
 
 ### Design principle
