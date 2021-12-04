@@ -144,8 +144,7 @@ export class QuakeDashboard {
     this.reset_input();
     if (action == 'show') {
       axios.get(`/entry/${this.selected_entry.type}`).then(response => {
-        let parsed = JSON.parse(response.data)
-
+        let parsed = response.data.hits;
         if (!!this.selected_entry.flows) {
           this.process_flow(parsed);
         } else {
@@ -284,7 +283,7 @@ export class QuakeDashboard {
               <ion-card-title>{item.title}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              { item.description && <ion-text>{item.description}</ion-text> }
+              { item.description && <p>{item.description}</p> }
               <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
             </ion-card-content>
           </ion-card>
@@ -310,7 +309,7 @@ export class QuakeDashboard {
         <ion-card-title>{item.title}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        { item.description && <ion-text>{item.description}</ion-text> }
+        { item.description && <p>{item.description}</p> }
         <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
       </ion-card-content>
     </ion-card>;

@@ -16,3 +16,7 @@
   width: 80%;
   margin-bottom: 0;
 }
+
+ion-card {
+  max-width: 15%;
+}

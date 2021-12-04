@@ -5,6 +5,7 @@ use std::path::PathBuf;
 
 use rocket::fs::NamedFile;
 use rocket::response::status::NotFound;
+use rocket::response::Redirect;
 use rocket::serde::json::Json;
 use rocket::serde::{Deserialize, Serialize};
 use rocket::tokio::task::spawn_blocking;
@@ -21,17 +22,9 @@ use crate::helper::file_process;
 use crate::server::ApiError;
 
 #[get("/<entry_type>")]
-pub(crate) async fn get_entries(entry_type: &str, config: &State<QuakeConfig>) -> Json<String> {
+pub(crate) async fn get_entries(entry_type: &str, config: &State<QuakeConfig>) -> Redirect {
     let request_url = format!("{:}/indexes/{:}/search", &config.search_url, entry_type);
-
-    let vec = spawn_blocking(|| reqwest::blocking::get(request_url).unwrap().text().unwrap())
-        .await
-        .map_err(|e| ApiError {
-            msg: format!("{:?}", e),
-        })
-        .unwrap();
-
-    Json(vec)
+    Redirect::to(request_url)
 }
 
 #[get("/<entry_type>/from_csv")]
