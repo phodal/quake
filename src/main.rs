@@ -4,13 +4,20 @@ use std::io::{stdout, Write};
 use std::path::{Path, PathBuf};
 
 use clap::Parser;
+use futures::{
+    channel::mpsc::{channel, Receiver},
+    SinkExt, StreamExt,
+};
+use notify::{Event, RecommendedWatcher, RecursiveMode, Watcher};
 
-use notify::{Error as NotifyError, Event, RecommendedWatcher, RecursiveMode, Watcher};
 use quake_core::entry::entry_defines::EntryDefines;
+use quake_core::entry::entry_file::EntryFile;
 use quake_core::parser::action_parser::ActionDefine;
 use quake_core::QuakeConfig;
 use quake_tui::tui_main_loop;
 
+use crate::helper::file_process::type_from_md_path;
+use crate::helper::meili_exec::feed_entry;
 use crate::server::start_server;
 
 pub mod action;
@@ -79,7 +86,7 @@ fn config_quake(cmd: &Command) -> Result<QuakeConfig, Box<dyn Error>> {
 
 fn load_config(path: &String) -> Result<QuakeConfig, Box<dyn Error>> {
     let content = fs::read_to_string(path)?;
-    let mut conf: QuakeConfig = serde_yaml::from_str(content.as_str())?;
+    let conf: QuakeConfig = serde_yaml::from_str(content.as_str())?;
 
     Ok(conf)
 }
@@ -103,7 +110,12 @@ pub fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
             }
         }
         SubCommand::Server(server) => {
-            config_auto_feed(&server.config)?;
+            // let path = load_config(&server.config)?.workspace;
+            // futures::executor::block_on(async {
+            //     if let Err(e) = async_watch(path).await {
+            //         println!("error: {:?}", e)
+            //     }
+            // });
             start_server()?;
         }
         SubCommand::Tui(_) => {
@@ -146,31 +158,66 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn config_auto_feed(path: &String) -> Result<(), Box<dyn Error>> {
-    let config = load_config(path)?;
-
-    let mut watcher = RecommendedWatcher::new(move |result: Result<Event, NotifyError>| {
-        let event = result.unwrap();
-        event
-            .paths
-            .into_iter()
-            .filter(|path| {
-                if path.is_dir() {
-                    return false;
-                }
-
-                if let Some(ext) = path.extension() {
-                    return ext.eq("md");
-                } else {
-                    return false;
-                }
-            })
-            .map(|path| {});
+fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
+    let (mut tx, rx) = channel(1);
+    let watcher = RecommendedWatcher::new(move |res| {
+        futures::executor::block_on(async {
+            tx.send(res).await.unwrap();
+        })
     })?;
 
-    watcher.watch(Path::new(&config.workspace), RecursiveMode::Recursive)?;
+    Ok((watcher, rx))
+}
+
+async fn async_watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
+    let (mut watcher, mut rx) = async_watcher()?;
+    watcher.watch(path.as_ref(), RecursiveMode::Recursive)?;
+
+    while let Some(res) = rx.next().await {
+        match res {
+            Ok(event) => {
+                println!("feed_by_event {:?}", event);
+                match feed_by_event(event) {
+                    Ok(_) => {}
+                    Err(err) => {
+                        println!("watch error: {:?}", err)
+                    }
+                };
+            }
+            Err(e) => println!("watch error: {:?}", e),
+        }
+    }
 
     Ok(())
+}
+
+fn feed_by_event(event: Event) -> Result<(), Box<dyn Error>> {
+    for path in event.paths {
+        if path.is_dir() {
+            continue;
+        }
+
+        if let Some(ext) = path.extension() {
+            if !ext.eq("md") {
+                continue;
+            }
+        }
+
+        let (typ, file) = entry_file_by_path(&path);
+        let string = serde_json::to_string(&file)?;
+        feed_entry(&typ, &string)?;
+    }
+
+    Ok(())
+}
+
+pub fn entry_file_by_path(path: &PathBuf) -> (String, EntryFile) {
+    let typ = type_from_md_path(&path).unwrap();
+    let file_name = path.file_name().unwrap();
+    let id = EntryFile::id_from_name(format!("{:}", file_name.to_str().unwrap()).as_str()).unwrap();
+    let content = fs::read_to_string(&path).unwrap();
+    let file = EntryFile::from(content.as_str(), id).unwrap();
+    (typ, file)
 }
 
 #[cfg(test)]
@@ -182,11 +229,25 @@ mod tests {
 
     use crate::action::entry_paths::EntryPaths;
     use crate::action::entry_usecases::sync_in_path;
-    use crate::{config_auto_feed, process_cmd, Command, Init, Opts, SubCommand};
+    use crate::{
+        config_auto_feed, entry_file_by_path, process_cmd, Command, Init, Opts, SubCommand,
+    };
 
     #[test]
+    fn entry_by_path() {
+        let buf = PathBuf::from("_fixtures")
+            .join("todo")
+            .join("0001-time-support.md");
+
+        let (typ, file) = entry_file_by_path(&buf);
+        assert_eq!(typ, "todo".to_string());
+        assert_eq!(1, file.id);
+    }
+
+    #[ignore]
+    #[test]
     fn test_auto_feed() {
-        config_auto_feed(&"_fixtures".to_string());
+        config_auto_feed(&"_fixtures".to_string()).unwrap();
     }
 
     #[test]

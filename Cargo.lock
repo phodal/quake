@@ -1520,6 +1520,7 @@ dependencies = [
  "crossbeam-channel 0.4.4",
  "csv",
  "figment",
+ "futures",
  "indexmap",
  "json",
  "lazy_static",

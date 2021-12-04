@@ -35,4 +35,22 @@ pub fn feed_settings(index_name: &String) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+pub fn feed_entry(index_name: &String, content: &String) -> Result<(), Box<dyn Error>> {
+    let url = format!("http://127.0.0.1:7700/indexes/{:}/documents", index_name);
+    let cmd_line = format!(
+        "curl -i -X POST '{:}' \
+  --header 'content-type: application/json' \
+  --data-binary {:?}",
+        url, content
+    );
+    println!("{:?}", cmd_line);
+    Command::new("/bin/sh")
+        .arg("-c")
+        .arg(cmd_line)
+        .spawn()?
+        .wait()?;
+
+    Ok(())
+}
+
 // todo: add sort by date

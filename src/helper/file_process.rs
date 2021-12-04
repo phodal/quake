@@ -1,5 +1,4 @@
 use quake_core::entry::entry_file::EntryFile;
-use std::error::Error;
 use std::path::PathBuf;
 use walkdir::{DirEntry, WalkDir};
 
@@ -29,7 +28,7 @@ pub fn filter_by_prefix(path: PathBuf, prefix: String) -> Vec<PathBuf> {
     files
 }
 
-pub fn type_from_md_path(buf: PathBuf) -> Option<String> {
+pub fn type_from_md_path(buf: &PathBuf) -> Option<String> {
     let mut ancestors = buf.ancestors();
     ancestors.next()?;
     let typ = ancestors.next()?.file_name()?;
@@ -47,7 +46,8 @@ mod tests {
         let buf = PathBuf::from("_fixtures")
             .join("todo")
             .join("0001-time-support.md");
-        let typ = type_from_md_path(buf).unwrap();
+
+        let typ = type_from_md_path(&buf).unwrap();
         assert_eq!(typ, "todo".to_string());
     }
 

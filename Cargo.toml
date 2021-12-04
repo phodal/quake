@@ -46,7 +46,7 @@ json = "0.12.4"
 
 # Search Engine
 #meilisearch-sdk = "0.12.0"
-#futures = "0.3" # To be able to block on async functions if you are not using an async runtime
+futures = "0.3" # To be able to block on async functions if you are not using an async runtime
 
 # WebServer
 figment = { version = "0.10", features = ["toml", "env", "yaml"] }
