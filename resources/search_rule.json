@@ -22,10 +22,6 @@
     "updated_date"
   ],
   "stopWords": null,
-  "sortableAttributes": [
-    "title",
-    "created_date",
-    "content"
-  ],
+  "sortableAttributes": null
   "synonyms": null
 }

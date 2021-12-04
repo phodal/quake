@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fs;
 use std::io::{stdout, Write};
 use std::path::{Path, PathBuf};
+use std::time::Duration;
 
 use clap::Parser;
 use futures::{
@@ -160,15 +161,18 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
 
 fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
     let (mut tx, rx) = channel(1);
-    let watcher = RecommendedWatcher::new(move |res| {
+    let mut watcher = RecommendedWatcher::new(move |res| {
         futures::executor::block_on(async {
             tx.send(res).await.unwrap();
         })
     })?;
 
+    let _ = watcher.configure(notify::Config::OngoingEvents(Some(Duration::from_secs(2))));
+
     Ok((watcher, rx))
 }
 
+// todo: add type merge for ranges
 async fn async_watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
     println!("start watch: {:?}", path.as_ref());
     let (mut watcher, mut rx) = async_watcher()?;
