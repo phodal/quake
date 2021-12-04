@@ -16,35 +16,39 @@ function QuakeEditor(props: Props) {
 
   React.useEffect(() => {
     setTitle(props.title);
-  }, [props.title])
+  }, [props])
 
 
   React.useEffect(() => {
     setValue(props.value);
-  }, [props.value])
+  }, [props])
 
 
   const onSave = React.useCallback(() => {
     props.onSave({
-      title: props.title,
-      value: props.value,
+      title: title,
+      value: value,
     });
-  }, [props])
+  }, [props, title, value])
 
   const onChange = React.useCallback((getValue) => {
     setValue(getValue())
-    console.log(value);
-  }, [props]);
+  }, [props, setValue]);
+
+  const saveEntry = () => {
+    onSave();
+  }
 
   return (
     <div>
       <StyledTitle>
         <StyleLabel># {props.id}</StyleLabel>
         <StyleInput type="text" value={title} onChange={(e) => { setTitle(e.target.value)}}/>
+        <StyleButton onClick={saveEntry}>Save</StyleButton>
       </StyledTitle>
       <StyledEditor
         autoFocus={true}
-        value={props.value}
+        defaultValue={props.value}
         onChange={onChange}
         onSave={onSave}
       />
@@ -54,14 +58,22 @@ function QuakeEditor(props: Props) {
 
 export default QuakeEditor;
 
+const StyleButton = styled.button`
+  border: 2px solid royalblue;
+  background: royalblue;
+  border-radius: 4px;
+  padding: 1em;
+  color: #fff;
+`;
+
 const StyledTitle = styled.div`
   padding: 0 40px;
 `;
 
 const StyleInput = styled.input`
-  color: palevioletred;
+  color: royalblue;
   font-size: 1em;
-  border: 2px solid palevioletred;
+  border: 2px solid royalblue;
   border-radius: 4px;
   margin: 1em;
   padding: 1em;
