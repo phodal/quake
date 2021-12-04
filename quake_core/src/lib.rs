@@ -9,6 +9,7 @@ pub use parser::action_parser;
 pub use quake_config::QuakeConfig;
 
 pub mod entry;
+pub mod errors;
 pub mod markdown;
 pub mod model;
 pub mod parser;

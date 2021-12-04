@@ -53,6 +53,10 @@ figment = { version = "0.10", features = ["toml", "env", "yaml"] }
 rocket = { version = "0.5.0-rc.1", features = ["json"] }
 reqwest = { version = "0.11", features = ["blocking", "json"] }
 
+# notify for dir
+crossbeam-channel = "0.4.0"
+notify = "5.0.0-pre.13"
+
 [workspace]
 members = [
     'quake_core',

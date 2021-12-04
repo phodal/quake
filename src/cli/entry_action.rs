@@ -10,9 +10,9 @@ use crate::action::entry_paths::EntryPaths;
 use crate::action::entry_usecases;
 use crate::action::entry_usecases::find_entry_path;
 use crate::action::entrysets::Entrysets;
-use crate::errors::QuakeError;
 use crate::helper::editor_exec;
 use crate::tui::table_process;
+use quake_core::errors::QuakeError;
 
 pub fn entry_action(expr: &ActionDefine, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.workspace, &expr.object);

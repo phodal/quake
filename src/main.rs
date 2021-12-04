@@ -1,10 +1,11 @@
 use std::error::Error;
 use std::fs;
 use std::io::{stdout, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use clap::Parser;
 
+use notify::{Error as NotifyError, Event, RecommendedWatcher, RecursiveMode, Watcher};
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::parser::action_parser::ActionDefine;
 use quake_core::QuakeConfig;
@@ -14,7 +15,6 @@ use crate::server::start_server;
 
 pub mod action;
 pub mod cli;
-mod errors;
 pub mod helper;
 pub mod server;
 pub mod tui;
@@ -79,7 +79,7 @@ fn config_quake(cmd: &Command) -> Result<QuakeConfig, Box<dyn Error>> {
 
 fn load_config(path: &String) -> Result<QuakeConfig, Box<dyn Error>> {
     let content = fs::read_to_string(path)?;
-    let conf: QuakeConfig = serde_yaml::from_str(content.as_str())?;
+    let mut conf: QuakeConfig = serde_yaml::from_str(content.as_str())?;
 
     Ok(conf)
 }
@@ -103,6 +103,7 @@ pub fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
             }
         }
         SubCommand::Server(server) => {
+            config_auto_feed(&server.config)?;
             start_server()?;
         }
         SubCommand::Tui(_) => {
@@ -145,6 +146,33 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+pub fn config_auto_feed(path: &String) -> Result<(), Box<dyn Error>> {
+    let config = load_config(path)?;
+
+    let mut watcher = RecommendedWatcher::new(move |result: Result<Event, NotifyError>| {
+        let event = result.unwrap();
+        event
+            .paths
+            .into_iter()
+            .filter(|path| {
+                if path.is_dir() {
+                    return false;
+                }
+
+                if let Some(ext) = path.extension() {
+                    return ext.eq("md");
+                } else {
+                    return false;
+                }
+            })
+            .map(|path| {});
+    })?;
+
+    watcher.watch(Path::new(&config.workspace), RecursiveMode::Recursive)?;
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use std::fs;
@@ -154,7 +182,12 @@ mod tests {
 
     use crate::action::entry_paths::EntryPaths;
     use crate::action::entry_usecases::sync_in_path;
-    use crate::{process_cmd, Command, Init, Opts, SubCommand};
+    use crate::{config_auto_feed, process_cmd, Command, Init, Opts, SubCommand};
+
+    #[test]
+    fn test_auto_feed() {
+        config_auto_feed(&"_fixtures".to_string());
+    }
 
     #[test]
     fn should_throw_not_exist_cmds() {

@@ -11,8 +11,8 @@ use quake_core::quake_time::date_now;
 use crate::action::entry_factory;
 use crate::action::entry_paths::EntryPaths;
 use crate::action::entrysets::Entrysets;
-use crate::errors::QuakeError;
 use crate::helper::file_process;
+use quake_core::errors::QuakeError;
 
 pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefine {
     let entries: Vec<EntryDefine> = entry_factory::entries_define_from_path(&paths.entries_define)

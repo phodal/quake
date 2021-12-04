@@ -8,6 +8,7 @@ use serde_yaml::Value;
 
 use crate::entry::front_matter::FrontMatter;
 use crate::entry::slug::slugify;
+use crate::errors::QuakeError;
 
 #[derive(Deserialize, PartialEq, Debug)]
 pub struct EntryFile {
@@ -71,6 +72,15 @@ impl EntryFile {
 
     pub fn file_name(index: usize, text: &str) -> String {
         format!("{:0>4}-{:}.md", index, slugify(text))
+    }
+
+    pub fn id_from_name(file_name: &str) -> Result<usize, Box<dyn Error>> {
+        if file_name.len() < 4 {
+            return Err(Box::new(QuakeError("length < 4".to_string())));
+        }
+        let index_str = &file_name[0..4];
+        let index: usize = index_str.parse()?;
+        Ok(index)
     }
 
     pub fn from(text: &str, index_id: usize) -> Result<EntryFile, Box<dyn Error>> {
@@ -210,6 +220,18 @@ impl ValueConverter {
 #[cfg(test)]
 mod tests {
     use crate::entry::entry_file::EntryFile;
+
+    #[test]
+    fn parse_id_from_name() {
+        let id = EntryFile::id_from_name("0001-demo.md").unwrap();
+        assert_eq!(id, 1);
+
+        let msg = EntryFile::id_from_name("000").expect_err("");
+        assert_eq!("QuakeError(\"length < 4\")", format!("{:?}", msg));
+
+        let msg = EntryFile::id_from_name("demo.md").expect_err("");
+        assert_eq!("ParseIntError { kind: InvalidDigit }", format!("{:?}", msg));
+    }
 
     #[test]
     fn entry_parse() {

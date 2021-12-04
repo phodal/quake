@@ -10,8 +10,8 @@ use quake_core::QuakeConfig;
 use crate::action::entry_paths::EntryPaths;
 use crate::action::entry_usecases;
 use crate::action::entrysets::Entrysets;
-use crate::errors::QuakeError;
 use crate::helper::meili_exec;
+use quake_core::errors::QuakeError;
 
 fn is_hidden(entry: &DirEntry) -> bool {
     entry
