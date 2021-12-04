@@ -12,7 +12,16 @@ transflow_decl = {
 }
 
 transflow_expr = {
-    from ~ parameters ~ to ~ parameter |
+    midway | endway
+}
+
+midway = {
+    from ~ parameters ~ to ~ mid_target
+}
+
+mid_target = { parameter }
+
+endway = {
     from ~ parameters ~ "." ~ to ~ s_quote ~ component_decl ~ e_quote
 }
 

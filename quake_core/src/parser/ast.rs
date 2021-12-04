@@ -12,6 +12,12 @@ pub struct TransflowDecl {
     pub(crate) flows: Vec<Transflow>,
 }
 
+impl Default for TransflowDecl {
+    fn default() -> Self {
+        TransflowDecl { flows: vec![] }
+    }
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Transflow {
     Midway(Midway),
@@ -20,14 +26,32 @@ pub enum Transflow {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Midway {
-    pub from: Vec<String>,
+    pub from: Vec<Parameter>,
     pub end: String,
+}
+
+impl Default for Midway {
+    fn default() -> Self {
+        Midway {
+            from: vec![],
+            end: "".to_string(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Endway {
-    pub from: Vec<String>,
+    pub from: Vec<Parameter>,
     pub component: String,
+}
+
+impl Default for Endway {
+    fn default() -> Self {
+        Endway {
+            from: vec![],
+            component: "".to_string(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

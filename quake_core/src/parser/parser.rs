@@ -1,4 +1,6 @@
-use crate::parser::ast::{ActionDecl, Parameter, SourceUnit, SourceUnitPart};
+use crate::parser::ast::{
+    ActionDecl, Endway, Midway, Parameter, SourceUnit, SourceUnitPart, Transflow, TransflowDecl,
+};
 use crate::parser::errors::QuakeParserError;
 use pest::iterators::Pair;
 use pest::Parser;
@@ -24,12 +26,96 @@ pub fn parse(text: &str) -> Result<SourceUnit, Box<dyn Error>> {
                 Rule::action_decl => {
                     parts.push(SourceUnitPart::Action(action_decl(inner_pair)));
                 }
+                Rule::transflow_decl => {
+                    parts.push(SourceUnitPart::Transflow(transflow_decl(inner_pair)));
+                }
                 _ => println!("rule: {}", inner_pair),
             };
         }
     }
 
     Ok(SourceUnit(parts))
+}
+
+fn transflow_decl(decl: Pair<Rule>) -> TransflowDecl {
+    let mut action = TransflowDecl::default();
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::transflow_expr => {
+                if let Some(flow) = transflow_expr(pair) {
+                    action.flows.push(flow);
+                }
+            }
+            _ => {
+                println!("{}", pair);
+            }
+        }
+    }
+    action
+}
+
+fn transflow_expr(decl: Pair<Rule>) -> Option<Transflow> {
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::midway => return Some(Transflow::Midway(midway(pair))),
+            Rule::endway => return Some(Transflow::Endway(endway(pair))),
+            _ => {
+                println!("{}", pair);
+            }
+        }
+    }
+
+    None
+}
+
+fn midway(decl: Pair<Rule>) -> Midway {
+    let mut midway = Midway::default();
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::parameters => {
+                midway.from.push(parameters(pair));
+            }
+            Rule::parameter => {
+                midway.end = String::from(pair.as_str());
+            }
+            Rule::from => {}
+            Rule::to => {}
+            _ => {
+                println!("{}", pair);
+            }
+        }
+    }
+    midway
+}
+
+fn endway(decl: Pair<Rule>) -> Endway {
+    let mut endway = Endway::default();
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::parameters => {
+                endway.from.push(parameters(pair));
+            }
+            Rule::component_decl => {
+                for name in pair.into_inner() {
+                    match name.as_rule() {
+                        Rule::component_name => endway.component = String::from(name.as_str()),
+                        _ => {
+                            println!("{}", name);
+                        }
+                    }
+                }
+            }
+            Rule::from => {}
+            Rule::to => {}
+            Rule::s_quote => {}
+            Rule::e_quote => {}
+            _ => {
+                println!("{}", pair);
+            }
+        }
+    }
+
+    endway
 }
 
 fn action_decl(decl: Pair<Rule>) -> ActionDecl {
@@ -115,5 +201,11 @@ mod tests {
     fn should_parse_com() {
         let unit = parse("phodal_com.sync").unwrap();
         assert_eq!(1, unit.0.len());
+    }
+
+    #[test]
+    fn should_parse_flow() {
+        let unit = parse("define { from('todo','blog').to(<quake-calendar>); }").unwrap();
+        println!("{:?}", unit);
     }
 }

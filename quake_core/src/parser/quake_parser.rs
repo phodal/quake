@@ -98,7 +98,8 @@ mod tests {
 
     #[test]
     fn should_create_transflow() {
-        let expr =
-            QuakeParser::from("define { from('todo','blog').to(<quake-calendar>); }").unwrap();
+        let define = "define { from('todo','blog').to(<quake-calendar>); }";
+        let expr = QuakeParser::from(define).unwrap();
+        println!("{:?}", expr);
     }
 }
