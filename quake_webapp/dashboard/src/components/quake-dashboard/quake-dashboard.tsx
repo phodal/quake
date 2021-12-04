@@ -135,6 +135,7 @@ export class QuakeDashboard {
   }
 
   async selectType(_e: Event, info: EntryInfo) {
+    this.reset_input();
     this.selected_entry = info;
     this.query = '/' + info.type + '.';
     this.handleQuery(this);
@@ -146,7 +147,6 @@ export class QuakeDashboard {
       axios.get(`/entry/${this.selected_entry.type}`).then(response => {
         let parsed = response.data.hits;
         this.is_flow = !!this.selected_entry.flows
-        console.log(this.is_flow, this.selected_result);
         if (this.is_flow) {
           this.process_flow(parsed);
         } else {
