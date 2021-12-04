@@ -12,6 +12,19 @@ export type Props = {
 }
 
 function QuakeEditor(props: Props) {
+  const [title, setTitle] = React.useState(props.title);
+  const [value, setValue] = React.useState(props.value);
+
+  React.useEffect(() => {
+    setTitle(props.title);
+  }, [props.title])
+
+
+  React.useEffect(() => {
+    setValue(props.value);
+  }, [props.value])
+
+
   const onSave = React.useCallback(() => {
     props.onSave({
       title: props.title,
@@ -20,13 +33,14 @@ function QuakeEditor(props: Props) {
   }, [props])
 
   const onChange = React.useCallback((getValue) => {
-    props.value = getValue()
+    setValue(getValue())
+    console.log(value);
   }, [props]);
 
   return (
     <div className="App">
       <StyleLabel># {props.id}</StyleLabel>
-      <StyleInput type="text" value={props.title}/>
+      <StyleInput type="text" value={title} onChange={(e) => { setTitle(e.target.value)}}/>
       <StyledEditor
         autoFocus={true}
         value={props.value}

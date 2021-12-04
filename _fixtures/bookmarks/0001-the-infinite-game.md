@@ -1,9 +1,9 @@
 ---
 title: The Infinite Game
-created:
-updated:
-tag:
-author:
+created: 
+updated: 
+tag: 
+author: 
 ---
 
 origin: ??

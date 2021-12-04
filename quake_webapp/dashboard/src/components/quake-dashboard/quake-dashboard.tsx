@@ -263,7 +263,7 @@ export class QuakeDashboard {
               this.renderFlowByKey(key)
             )}
             { !this.is_flow && this.selected_result && this.selected_result.map((item: any) =>
-              this.renderCards(item, item.type)
+              this.renderCards(item, this.selected_entry.type)
             )}
           </ion-row>
         </ion-grid>
