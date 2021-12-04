@@ -8,7 +8,8 @@ use futures::{
     channel::mpsc::{channel, Receiver},
     future, SinkExt, StreamExt,
 };
-use notify::{Event, RecommendedWatcher, RecursiveMode, Watcher};
+use notify::event::ModifyKind;
+use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::entry::entry_file::EntryFile;
@@ -175,7 +176,6 @@ async fn async_watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
     while let Some(res) = rx.next().await {
         match res {
             Ok(event) => {
-                println!("feed_by_event {:?}", event);
                 match feed_by_event(event) {
                     Ok(_) => {}
                     Err(err) => {
@@ -191,6 +191,17 @@ async fn async_watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
 }
 
 fn feed_by_event(event: Event) -> Result<(), Box<dyn Error>> {
+    // only for data modify
+    // todo: looking for better way
+    match &event.kind {
+        EventKind::Modify(modify) => match modify {
+            ModifyKind::Data(_data) => {}
+            _ => return Ok(()),
+        },
+        _ => return Ok(()),
+    }
+
+    println!("feed_by_event {:?}", &event);
     for path in event.paths {
         if path.is_dir() {
             continue;
