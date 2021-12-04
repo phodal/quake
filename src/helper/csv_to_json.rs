@@ -40,6 +40,7 @@ mod tests {
         let path = PathBuf::from("_fixtures").join("todo").join("entries.csv");
         let mut rdr = csv::Reader::from_reader(File::open(path).expect("cannot open file"));
         let output = csv_to_json(&mut rdr).unwrap();
-        assert_eq!(output.to_string(), "[{\"id\":\"1\",\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\"}]")
+
+        assert_eq!(output.to_string(), "[{\"id\":\"1\",\"title\":\"time support\",\"author\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\"}]")
     }
 }
