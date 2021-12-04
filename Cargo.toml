@@ -57,6 +57,9 @@ reqwest = { version = "0.11", features = ["blocking", "json"] }
 crossbeam-channel = "0.4.0"
 notify = "5.0.0-pre.13"
 
+# for testig
+async-std = "1.10.0"
+
 [workspace]
 members = [
     'quake_core',

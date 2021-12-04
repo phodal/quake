@@ -1,3 +1,5 @@
+use std::future::Future;
+
 use figment::providers::Yaml;
 use rocket::fairing::AdHoc;
 use rocket::figment::providers::{Env, Format, Serialized};
@@ -6,8 +8,7 @@ use rocket::fs::FileServer;
 use rocket::{routes, Build, Config, Error, Rocket};
 use serde_derive::{Deserialize, Serialize};
 
-#[allow(unused_imports)]
-use action_api::parse_query;
+use quake_core::errors::QuakeError;
 #[allow(unused_imports)]
 use quake_core::QuakeConfig;
 
@@ -30,12 +31,7 @@ pub struct ApiSuccess {
     pub content: String,
 }
 
-#[rocket::main]
-pub async fn start_server() -> Result<(), Error> {
-    rocket().launch().await
-}
-
-fn rocket() -> Rocket<Build> {
+pub fn quake_rocket() -> Rocket<Build> {
     let figment = Figment::from(rocket::Config::default())
         .merge(Serialized::defaults(Config::default()))
         .merge(Yaml::file(".quake.yaml"))
@@ -67,15 +63,16 @@ fn rocket() -> Rocket<Build> {
 
 #[cfg(test)]
 mod test {
-    use super::rocket;
     use rocket::http::Status;
     use rocket::local::blocking::Client;
+
+    use super::quake_rocket;
 
     // todo: ignore test for speed
     #[ignore]
     #[test]
     fn hello_world() {
-        let client = Client::tracked(rocket()).expect("valid rocket instance");
+        let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
         let response = client.get("/").dispatch();
 
         assert_eq!(response.status(), Status::Ok);
@@ -84,7 +81,7 @@ mod test {
     #[ignore]
     #[test]
     fn get_todo_entry() {
-        let client = Client::tracked(rocket()).expect("valid rocket instance");
+        let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
         let response = client.get("/entry/todo/1").dispatch();
 
         assert_eq!(response.status(), Status::Ok);
