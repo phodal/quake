@@ -1,6 +1,7 @@
 ---
 title: Phodal.com Process
-language: JavaScript
+created_date: 2021-12-02 20:06:20
+updated_date: 2021-12-02 20:06:20
 ---
 
 ```javascript
