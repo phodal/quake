@@ -3,16 +3,16 @@ use crate::parser::parser::parse;
 use std::error::Error;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct ActionDefine {
+pub struct QuakeParser {
     pub object: String,
     pub action: String,
     pub text: String,
     pub parameters: Vec<String>,
 }
 
-impl Default for ActionDefine {
+impl Default for QuakeParser {
     fn default() -> Self {
-        ActionDefine {
+        QuakeParser {
             object: "".to_string(),
             action: "".to_string(),
             text: "".to_string(),
@@ -21,10 +21,10 @@ impl Default for ActionDefine {
     }
 }
 
-impl ActionDefine {
-    pub fn from(text: &str) -> Result<ActionDefine, Box<dyn Error>> {
+impl QuakeParser {
+    pub fn from(text: &str) -> Result<QuakeParser, Box<dyn Error>> {
         let unit = parse(text)?;
-        let mut expr = ActionDefine::default();
+        let mut expr = QuakeParser::default();
         for part in unit.0 {
             match part {
                 SourceUnitPart::Action(action) => {
@@ -51,11 +51,11 @@ impl ActionDefine {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::quake_parser::ActionDefine;
+    use crate::parser::quake_parser::QuakeParser;
 
     #[test]
     fn should_parse_expression() {
-        let expr = ActionDefine::from("todo.add: 添加 todo 的支持").unwrap();
+        let expr = QuakeParser::from("todo.add: 添加 todo 的支持").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "add");
         assert_eq!(expr.text, "添加 todo 的支持");
@@ -63,7 +63,7 @@ mod tests {
 
     #[test]
     fn should_parse_update_parameter() {
-        let expr = ActionDefine::from("todo.update(1)").unwrap();
+        let expr = QuakeParser::from("todo.update(1)").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "1");
@@ -73,14 +73,14 @@ mod tests {
 
     #[test]
     fn should_parse_com() {
-        let expr = ActionDefine::from("phodal_com.sync").unwrap();
+        let expr = QuakeParser::from("phodal_com.sync").unwrap();
         assert_eq!(expr.object, "phodal_com");
         assert_eq!(expr.action, "sync");
     }
 
     #[test]
     fn should_parse_double_digital() {
-        let expr = ActionDefine::from("todo.update(12)").unwrap();
+        let expr = QuakeParser::from("todo.update(12)").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "12");
@@ -89,7 +89,7 @@ mod tests {
 
     #[test]
     fn should_parse_chinese_quote() {
-        let expr = ActionDefine::from("todo.update（12）").unwrap();
+        let expr = QuakeParser::from("todo.update（12）").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "12");
@@ -99,6 +99,6 @@ mod tests {
     #[test]
     fn should_create_transflow() {
         let expr =
-            ActionDefine::from("define { from('todo','blog').to(<quake-calendar>); }").unwrap();
+            QuakeParser::from("define { from('todo','blog').to(<quake-calendar>); }").unwrap();
     }
 }
