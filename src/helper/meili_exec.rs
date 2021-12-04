@@ -20,13 +20,13 @@ pub fn feed_command(index_name: &String) -> Result<(), Box<dyn Error>> {
 
 pub fn feed_settings(index_name: &String) -> Result<(), Box<dyn Error>> {
     // todo: check curl
-    let url = format!("http://127.0.0.1:7700/indexes/{:}/documents", index_name);
+    let url = format!("http://127.0.0.1:7700/indexes/{:}/settings", index_name);
     Command::new("/bin/sh")
         .arg("-c")
         .arg(format!(
             "curl -i -X POST '{:}' \
   --header 'content-type: application/json' \
-  --data-binary @resources/dump.json",
+  --data-binary @resources/search_rule.json",
             url
         ))
         .spawn()?
