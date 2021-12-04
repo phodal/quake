@@ -13,6 +13,7 @@ use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::entry::entry_file::EntryFile;
+use quake_core::errors::QuakeError;
 use quake_core::parser::action_parser::ActionDefine;
 use quake_core::QuakeConfig;
 use quake_tui::tui_main_loop;
@@ -213,7 +214,7 @@ fn feed_by_event(event: Event) -> Result<(), Box<dyn Error>> {
             }
         }
 
-        let (typ, file) = entry_file_by_path(&path);
+        let (typ, file) = entry_file_by_path(&path)?;
         let string = serde_json::to_string(&file)?;
         feed_entry(&typ, &string)?;
     }
@@ -221,13 +222,21 @@ fn feed_by_event(event: Event) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn entry_file_by_path(path: &PathBuf) -> (String, EntryFile) {
-    let typ = type_from_md_path(&path).unwrap();
-    let file_name = path.file_name().unwrap();
-    let id = EntryFile::id_from_name(format!("{:}", file_name.to_str().unwrap()).as_str()).unwrap();
-    let content = fs::read_to_string(&path).unwrap();
-    let file = EntryFile::from(content.as_str(), id).unwrap();
-    (typ, file)
+pub fn entry_file_by_path(path: &PathBuf) -> Result<(String, EntryFile), Box<dyn Error>> {
+    let typ = type_from_md_path(&path).ok_or("")?;
+    let file_name = path.file_name().ok_or("")?;
+
+    if file_name == "" || typ == "" {
+        return Err(Box::new(QuakeError(format!(
+            "emtpy typ {:?} or file_name {:?}",
+            typ, file_name
+        ))));
+    }
+
+    let id = EntryFile::id_from_name(format!("{:}", file_name.to_str().unwrap()).as_str())?;
+    let content = fs::read_to_string(&path)?;
+    let file = EntryFile::from(content.as_str(), id)?;
+    Ok((typ, file))
 }
 
 #[cfg(test)]
@@ -248,7 +257,7 @@ mod tests {
             .join("todo")
             .join("0001-time-support.md");
 
-        let (typ, file) = entry_file_by_path(&buf);
+        let (typ, file) = entry_file_by_path(&buf).unwrap();
         assert_eq!(typ, "todo".to_string());
         assert_eq!(1, file.id);
     }
