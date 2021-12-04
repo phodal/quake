@@ -13,8 +13,7 @@ Quake 是面向极客的知识管理元框架，它可以：
 - 抓住稍纵即逝的灵感。支持快速启动（CLI、TUI）与全局搜索
 - 自由的呈现画布。DSL 与自由画板
 
-
-## Intro
+## Introduction
 
 Architecture:
 
