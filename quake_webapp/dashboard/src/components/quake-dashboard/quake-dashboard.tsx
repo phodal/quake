@@ -143,6 +143,9 @@ export class QuakeDashboard {
 
   async addAction(_e: Event, action: string) {
     this.reset_input();
+    if (!this.selected_entry) {
+      return;
+    }
     if (action == 'show') {
       axios.get(`/entry/${this.selected_entry.type}`).then(response => {
         let parsed = response.data.hits;
