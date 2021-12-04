@@ -70,7 +70,6 @@ function QuakeEditor(props: Props) {
       <StyledEditor
         autoFocus={true}
         defaultValue={props.value}
-        value={value}
         onChange={onChange}
         onSave={onSave}
       />
