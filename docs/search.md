@@ -15,7 +15,7 @@ Query
 
 ```bash
 curl \
-  -X POST 'http://localhost:7700/indexes/phodal_com/settings' \
+  -X POST 'http://localhost:7700/indexes/blog/settings' \
   -H 'Content-Type: application/json' \
   --data-binary '{
       "rankingRules": [
@@ -34,16 +34,14 @@ curl \
           "content"
       ],
       "displayedAttributes": [
-          "id"
+          "id",
           "title",
-          "description",
           "created_date"
       ],
       "stopWords": null,
       "sortableAttributes": [
         "title",
         "created_date",
-        "keywords_string",
         "content"
       ],
       "synonyms": null
