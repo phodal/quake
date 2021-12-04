@@ -13,8 +13,6 @@ entries:
       - created_date: Date
       - updated_date: Date
     actions: ~
-    flows: ~
-    states: ~
   - type: bookmarks
     display: ""
     fields:
@@ -24,20 +22,10 @@ entries:
       - tag: String
       - author: String
     actions: ~
-    flows: ~
-    states: ~
   - type: code
     display: ""
     fields:
       - title: Title
-      - created_date: Date
-      - updated_date: Date
-    actions: ~
-    flows: ~
-    states: ~
-  - type: configs
-    display: ""
-    fields: []
     actions: ~
   - type: microsoft_todo
     display: ""
@@ -71,23 +59,39 @@ entries:
       - created_date: Date
       - updated_date: Date
     actions: ~
-  - type: todo
-    display: ""
-    fields:
-      - title: Title
-      - author: String
-      - created_date: Date
-      - updated_date: Date
-    actions: ~
-    flows: ~
-    states: ~
   - type: yiki
     display: ""
     fields:
       - title: Title
       - author: String
+      - content: Body
       - created_date: Date
       - updated_date: Date
     actions: ~
-    flows: ~
-    states: ~
+  - type: spike
+    display: "Spike"
+    fields:
+      - title: Title
+      - author: String
+      - content: Body
+      - done_by: String
+      - created_date: Date
+      - updated_date: Date
+    actions: ~
+  - type: story
+    display: "Story"
+    fields:
+      - title: Title
+      - author: String
+      - content: Body
+      - status: Flow
+      - priority: State
+      - created_date: Date
+      - updated_date: Date
+    actions: ~
+    flows:
+      - field: status
+        items: ['Todo', 'Doing', 'Done']
+    states:
+      - field: priority
+        items: ['Low', 'Medium', 'High']
