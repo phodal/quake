@@ -42,7 +42,10 @@ pub enum SubCommand {
 pub struct Terminal {}
 
 #[derive(Parser)]
-pub struct WebServer {}
+pub struct WebServer {
+    #[clap(short, long, default_value = ".quake.yaml")]
+    config: String,
+}
 
 #[derive(Parser)]
 pub struct Init {
@@ -64,13 +67,19 @@ pub struct Command {
     editor: String,
 }
 
-fn load_config(cmd: &Command) -> Result<QuakeConfig, Box<dyn Error>> {
-    let content = fs::read_to_string(&cmd.config)?;
-    let mut conf: QuakeConfig = serde_yaml::from_str(content.as_str())?;
+fn config_quake(cmd: &Command) -> Result<QuakeConfig, Box<dyn Error>> {
+    let mut conf = load_config(&cmd.config)?;
 
     if !cmd.editor.is_empty() {
         conf.editor = cmd.editor.clone();
     }
+
+    Ok(conf)
+}
+
+fn load_config(path: &String) -> Result<QuakeConfig, Box<dyn Error>> {
+    let content = fs::read_to_string(path)?;
+    let conf: QuakeConfig = serde_yaml::from_str(content.as_str())?;
 
     Ok(conf)
 }
@@ -87,13 +96,13 @@ pub fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
     match opts.cmd {
         SubCommand::Init(init) => init_projects(init)?,
         SubCommand::Cmd(cmd) => {
-            let conf = load_config(&cmd)?;
+            let conf = config_quake(&cmd)?;
             if cmd.input.len() > 0 {
                 let expr = ActionDefine::from(cmd.input.as_str())?;
                 cli::action(expr, conf)?
             }
         }
-        SubCommand::Server(_) => {
+        SubCommand::Server(server) => {
             start_server()?;
         }
         SubCommand::Tui(_) => {
@@ -138,12 +147,14 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+    use std::path::PathBuf;
+
+    use quake_core::entry::entry_file::EntryFile;
+
     use crate::action::entry_paths::EntryPaths;
     use crate::action::entry_usecases::sync_in_path;
     use crate::{process_cmd, Command, Init, Opts, SubCommand};
-    use quake_core::entry::entry_file::EntryFile;
-    use std::fs;
-    use std::path::PathBuf;
 
     #[test]
     fn should_throw_not_exist_cmds() {
