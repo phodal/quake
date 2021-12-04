@@ -36,6 +36,7 @@ impl ActionDefine {
                         expr.parameters.push(parameter.value);
                     }
                 }
+                SourceUnitPart::Transflow(_) => {}
             }
         }
 
@@ -93,5 +94,11 @@ mod tests {
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "12");
         assert_eq!(12, expr.index_from_parameter());
+    }
+
+    #[test]
+    fn should_create_transflow() {
+        let expr =
+            ActionDefine::from("define { from('todo','blog').to(<quake-calendar>); }").unwrap();
     }
 }

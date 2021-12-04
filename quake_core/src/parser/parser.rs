@@ -91,6 +91,7 @@ mod tests {
                 assert_eq!("todo", action.object);
                 assert_eq!("添加 todo 的支持", action.text);
             }
+            _ => {}
         }
     }
 
@@ -106,6 +107,7 @@ mod tests {
                 assert_eq!(1, action.parameters.len());
                 assert_eq!("1", action.parameters[0].value);
             }
+            _ => {}
         }
     }
 

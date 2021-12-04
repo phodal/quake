@@ -1,8 +1,31 @@
-earth = {  action_decl }
+earth = {
+    action_decl
+    | transflow_decl
+}
 
 action_decl = {
     object ~ "." ~ action ~ parameters? ~ ":"? ~ " "* ~ text?
 }
+
+transflow_decl = {
+    "define" ~ "{" ~ (transflow_expr ~ ("," ~ transflow_expr)? ~ ";"?)? ~ "}"
+}
+
+transflow_expr = {
+    from ~ parameters ~ to ~ parameter |
+    from ~ parameters ~ "." ~ to ~ s_quote ~ component_decl ~ e_quote
+}
+
+component_decl = {
+    "<" ~ component_name ~ ">"
+}
+
+component_name = {
+    alpha+
+}
+
+from = { "from" }
+to = { "to" }
 
 parameters = {
     s_quote ~ parameter ~ ("," ~ parameter)* ~ e_quote
@@ -17,7 +40,7 @@ e_quote = {
 }
 
 parameter = {
-    digit+ | string+
+    digit+ | string+ | single_quoted_string | double_quoted_string
 }
 
 string = @{
@@ -38,4 +61,6 @@ ident = { (alpha | digit)+ }
 
 alpha = { 'a'..'z' | 'A'..'Z' | "-" | "_" }
 digit = { '0'..'9' }
+
+WHITESPACE = _{ " " | "\t" | NEWLINE }
 

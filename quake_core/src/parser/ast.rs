@@ -4,6 +4,30 @@ pub struct SourceUnit(pub Vec<SourceUnitPart>);
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum SourceUnitPart {
     Action(ActionDecl),
+    Transflow(TransflowDecl),
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TransflowDecl {
+    pub(crate) flows: Vec<Transflow>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum Transflow {
+    Midway(Midway),
+    Endway(Endway),
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Midway {
+    pub from: Vec<String>,
+    pub end: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Endway {
+    pub from: Vec<String>,
+    pub component: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

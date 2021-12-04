@@ -28,10 +28,20 @@ one commmits
 define { from("todo", "blog", "yiki").to(<quake-calendar>) }
 ```
 
+second commits
+
+```
+define {
+    from("todo").to("simple_todo"),
+    from("simple_todo", "todo").to(<quake-calendar>);
+}    
+```
+
 parsed:
 
 ```json
 {
+  "name": "from_todo_blog_yiki_to_calendar",
   "entries": [
     "todo",
     "blog",
