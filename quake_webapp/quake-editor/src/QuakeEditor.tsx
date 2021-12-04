@@ -14,6 +14,26 @@ function QuakeEditor(props: Props) {
   const [title, setTitle] = React.useState(props.title);
   const [value, setValue] = React.useState(props.value);
 
+  const pattern = /[a-zA-Z0-9_\u00A0-\u02AF\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
+  const wordCount = (data: string) => {
+    if(!data  || (!!data && data.length < 0)) {
+      return 0;
+    }
+
+    const m = data.match(pattern);
+    let count = 0;
+    if (m === null) return count;
+    for (let i = 0; i < m.length; i++) {
+      if (m[i].charCodeAt(0) >= 0x4E00) {
+        count += m[i].length;
+      } else {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+
   React.useEffect(() => {
     setTitle(props.title);
   }, [props])
@@ -45,10 +65,12 @@ function QuakeEditor(props: Props) {
         <StyleLabel># {props.id}</StyleLabel>
         <StyleInput type="text" value={title} onChange={(e) => { setTitle(e.target.value)}}/>
         <StyleButton onClick={saveEntry}>Save</StyleButton>
+        <StyleCount>words：{wordCount(value)}</StyleCount>
       </StyledTitle>
       <StyledEditor
         autoFocus={true}
         defaultValue={props.value}
+        value={value}
         onChange={onChange}
         onSave={onSave}
       />
@@ -57,6 +79,10 @@ function QuakeEditor(props: Props) {
 }
 
 export default QuakeEditor;
+
+const StyleCount = styled.span`
+  margin-left: 1em;
+`
 
 const StyleButton = styled.button`
   border: 2px solid royalblue;
@@ -77,7 +103,7 @@ const StyleInput = styled.input`
   border-radius: 4px;
   margin: 1em;
   padding: 1em;
-  width: 80%;
+  width: 60%;
 `;
 
 const StyleLabel = styled.label`

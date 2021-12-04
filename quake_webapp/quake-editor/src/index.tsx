@@ -36,8 +36,8 @@ class ReactElement extends HTMLElement {
       }
     };
 
-    console.log(props);
-    console.log(this.attributes);
+    // console.log(props);
+    // console.log(this.attributes);
     // @ts-ignore
     render(<QuakeEditor {...props}/>, this);
   }
