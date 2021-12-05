@@ -148,4 +148,34 @@ mod tests {
             code[0]
         )
     }
+
+    #[cfg(not(windows))]
+    #[test]
+    fn multiple_transform() {
+        let define =
+            "transflow { from('todo','blog').to('record'), from('record').to(<quake-calendar>); }";
+        let flow = QuakeTransflowNode::from_text(define).unwrap();
+
+        let flow = Transflow::from(entry_defines(), flow);
+
+        let code = JsFlowGen::gen_transform(&flow);
+
+        assert_eq!(
+            "function from_todo_blog_to_record(todos, blogs) {
+  let results = [];
+  return results;
+}
+",
+            code[0]
+        );
+
+        assert_eq!(
+            "function from_record_to_quake_calendar(records) {
+  let results = [];
+  return results;
+}
+",
+            code[1]
+        )
+    }
 }
