@@ -74,3 +74,21 @@ router.setRoutes([
   {path: '/entry/:type/new', action: create_entry},
   {path: '/edit/:type/:id', action: edit_entry},
 ]);
+
+const timeline = async () => {
+  let el = document.querySelector('quake-calendar-timeline');
+  let todo_res = await fetch(`/entry/todo`);
+  let blog_res = await fetch(`/entry/blog`);
+  let todos = await todo_res.json();
+  let blogs = await blog_res.json();
+
+  console.log(todos, blogs);
+  let data = from_todo_blog_to_quake_calendar(todos.hits, blogs.hits);
+
+  el.setAttribute('entries', JSON.stringify({
+    items: ['blog', 'todo']
+  }));
+  el.setAttribute('data', JSON.stringify(data));
+}
+
+// timeline();
