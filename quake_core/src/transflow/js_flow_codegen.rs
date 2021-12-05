@@ -3,7 +3,65 @@ use crate::transflow::Transflow;
 
 pub struct JsFlowGen {}
 
+/// generate from typescript interface
+/// ```javascript
+///   el.setAttribute('entries', JSON.stringify({
+//     items: ['blog', 'todo']
+//   }));
+//   el.setAttribute('data', JSON.stringify(data));
+/// ```
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
+pub struct WebComponentElement {
+    pub attributes: Vec<String>,
+}
+
+impl Default for WebComponentElement {
+    fn default() -> Self {
+        WebComponentElement { attributes: vec![] }
+    }
+}
+
 impl JsFlowGen {
+    pub fn gen_element(trans: &Transflow) -> Vec<String> {
+        let mut vec = vec![];
+        for flow in &trans.flows {
+            let mut func = String::new();
+            let start = format!(
+                "const show_{:} = async (context, commands) => {{\n",
+                trans.name
+            );
+            func.push_str(start.as_str());
+
+            func.push_str(
+                format!("  const el = document.createElement('{:}');\n", flow.to).as_str(),
+            );
+
+            func.push_str("\n");
+
+            for item in &flow.from {
+                let fetch = format!("  let {:}_req = await fetch('/entry/{:}');\n", item, item);
+                let json = format!("  let {:}s = await {:}_req.json();\n", item, item);
+
+                func.push_str(fetch.as_str());
+                func.push_str(json.as_str());
+                func.push_str("\n");
+            }
+
+            let params = Self::gen_params(&flow);
+            let data = format!("  let data = {:}({:});\n", &flow.name, params);
+            func.push_str(data.as_str());
+
+            func.push_str("\n");
+
+            func.push_str("  el.setAttribute('data', JSON.stringify(data));\n");
+            func.push_str("  return el;\n");
+
+            func.push_str("}");
+            vec.push(func)
+        }
+        vec
+    }
+
     pub fn gen_transform(trans: &Transflow) -> Vec<String> {
         let mut vec = vec![];
         for flow in &trans.flows {
@@ -133,10 +191,8 @@ mod tests {
     #[test]
     fn from_transflow_string() {
         let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
-        let flow = QuakeTransflowNode::from_text(define).unwrap();
-
-        let flow = Transflow::from(entry_defines(), flow);
-
+        let node = QuakeTransflowNode::from_text(define).unwrap();
+        let flow = Transflow::from(entry_defines(), node);
         let code = JsFlowGen::gen_transform(&flow);
 
         assert_eq!(
@@ -176,6 +232,35 @@ mod tests {
 }
 ",
             code[1]
+        )
+    }
+
+    #[cfg(not(windows))]
+    #[test]
+    fn gen_element() {
+        let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
+        let node = QuakeTransflowNode::from_text(define).unwrap();
+        let mut flow = Transflow::from(entry_defines(), node);
+        flow.name = "timeline".to_string();
+        let code = JsFlowGen::gen_element(&flow);
+        println!("{:}", code[0]);
+
+        assert_eq!(
+            "const show_timeline = async (context, commands) => {
+  const el = document.createElement('quake-calendar');
+
+  let todo_req = await fetch('/entry/todo');
+  let todos = await todo_req.json();
+
+  let blog_req = await fetch('/entry/blog');
+  let blogs = await blog_req.json();
+
+  let data = from_todo_blog_to_quake_calendar(todos, blogs);
+
+  el.setAttribute('data', JSON.stringify(data));
+  return el;
+}",
+            code[0]
         )
     }
 }
