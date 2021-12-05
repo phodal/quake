@@ -30,7 +30,7 @@ pub fn type_from_md_path(buf: &PathBuf) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use crate::helper::file_process::type_from_md_path;
+    use crate::usecases::file_process::type_from_md_path;
     use std::path::PathBuf;
 
     #[test]

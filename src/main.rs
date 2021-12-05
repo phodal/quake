@@ -16,14 +16,13 @@ use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::errors::QuakeError;
 use quake_core::parser::quake::QuakeAction;
+use quake_core::usecases::file_process::type_from_md_path;
 use quake_core::QuakeConfig;
 use quake_tui::tui_main_loop;
 
-use crate::helper::file_process::type_from_md_path;
 use crate::helper::meili_exec::feed_entry;
 use crate::server::quake_rocket;
 
-pub mod action;
 pub mod cli;
 pub mod helper;
 pub mod server;
@@ -245,15 +244,16 @@ pub fn entry_file_by_path(path: &PathBuf) -> Result<(String, EntryFile), Box<dyn
 
 #[cfg(test)]
 mod tests {
-    use async_std::task;
     use std::fs;
     use std::path::PathBuf;
 
-    use quake_core::entry::entry_file::EntryFile;
+    use async_std::task;
 
-    use crate::action::entry_usecases::sync_in_path;
-    use crate::{entry_file_by_path, process_cmd, Command, Init, Opts, SubCommand};
+    use quake_core::entry::entry_file::EntryFile;
     use quake_core::entry::entry_paths::EntryPaths;
+    use quake_core::usecases::entry_usecases::sync_in_path;
+
+    use crate::{entry_file_by_path, process_cmd, Command, Init, Opts, SubCommand};
 
     #[test]
     fn entry_by_path() {

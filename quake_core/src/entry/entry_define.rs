@@ -1,5 +1,8 @@
+use crate::entry::EntryDefines;
 use indexmap::IndexMap;
 use serde_derive::{Deserialize, Serialize};
+use std::fs;
+use std::path::PathBuf;
 
 use crate::model::EntryDefineFields;
 use crate::quake_time;
@@ -189,4 +192,11 @@ mod tests {
             "Low".to_string()
         );
     }
+}
+
+pub fn entries_define_from_path(config_path: &PathBuf) -> Vec<EntryDefine> {
+    let entries_str = fs::read_to_string(config_path).expect("cannot read entries-define.yaml");
+    let entries: EntryDefines = serde_yaml::from_str(&*entries_str).unwrap();
+
+    entries.entries
 }

@@ -6,13 +6,13 @@ use std::path::PathBuf;
 use quake_core::parser::quake::QuakeAction;
 use quake_core::quake_config::QuakeConfig;
 
-use crate::action::entry_usecases;
-use crate::action::entry_usecases::find_entry_path;
-use crate::action::entrysets::Entrysets;
 use crate::helper::editor_exec;
 use crate::tui::table_process;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::errors::QuakeError;
+use quake_core::usecases::entry_usecases;
+use quake_core::usecases::entry_usecases::find_entry_path;
+use quake_core::usecases::entrysets::Entrysets;
 
 pub fn entry_action(expr: &QuakeAction, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.workspace, &expr.object);

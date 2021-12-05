@@ -4,18 +4,16 @@ use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 
-use quake_core::entry::entry_file::EntryFile;
-use quake_core::entry::{EntryDefine, EntryNodeInfo, FrontMatter};
-use quake_core::errors::QuakeError;
-use quake_core::quake_time::date_now;
-
-use crate::action::entry_factory;
-use crate::action::entrysets::Entrysets;
-use crate::helper::file_process;
-use quake_core::entry::entry_paths::EntryPaths;
+use crate::entry::entry_file::EntryFile;
+use crate::entry::entry_paths::EntryPaths;
+use crate::entry::{entry_define, entry_node_info, EntryDefine, EntryNodeInfo, FrontMatter};
+use crate::errors::QuakeError;
+use crate::quake_time::date_now;
+use crate::usecases::entrysets::Entrysets;
+use crate::usecases::file_process;
 
 pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefine {
-    let entries: Vec<EntryDefine> = entry_factory::entries_define_from_path(&paths.entries_define)
+    let entries: Vec<EntryDefine> = entry_define::entries_define_from_path(&paths.entries_define)
         .into_iter()
         .filter(|define| define.entry_type.eq(target_entry))
         .collect();
@@ -51,7 +49,7 @@ pub fn create_entry(
 ) -> Result<(PathBuf, EntryFile), Box<dyn Error>> {
     let paths = EntryPaths::init(quake_path, entry_type);
     let entries_define = find_entry_define(&paths, entry_type);
-    let mut entry_info = entry_factory::entry_info_from_path(&paths.entry_node_info);
+    let mut entry_info = entry_node_info::entry_info_from_path(&paths.entry_node_info);
 
     let new_index = entry_info.index + 1;
     let index = new_index;
@@ -142,15 +140,12 @@ mod tests {
     use std::fs;
     use std::path::PathBuf;
 
-    use rocket::form::validate::Contains;
-
-    use quake_core::entry::entry_file::EntryFile;
-
-    use crate::action::entry_usecases::{find_entry_path, update_entry_fields};
+    use crate::entry::entry_file::EntryFile;
+    use crate::usecases::entry_usecases::{find_entry_path, update_entry_fields};
 
     #[test]
     fn update_entry_title() {
-        let yiki_path = PathBuf::from("_fixtures").join("yiki");
+        let yiki_path = PathBuf::from("..").join("_fixtures").join("yiki");
         let entry_type = "yiwi";
         let index_id = 1;
 
@@ -179,7 +174,7 @@ mod tests {
 
     #[test]
     fn update_entry_content() {
-        let yiki_path = PathBuf::from("_fixtures").join("yiki");
+        let yiki_path = PathBuf::from("..").join("_fixtures").join("yiki");
         let entry_type = "yiwi";
         let index_id = 2;
 

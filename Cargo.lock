@@ -1780,6 +1780,7 @@ name = "quake_core"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "csv",
  "indexmap",
  "lazy_static",
  "pest",
@@ -1790,6 +1791,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "serde_yaml",
+ "walkdir",
 ]
 
 [[package]]

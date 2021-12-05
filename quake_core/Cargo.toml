@@ -35,3 +35,7 @@ indexmap = { version = "1.7.0", features = ["serde"] }
 
 # markdown parser
 pulldown-cmark = "0.8.0"
+
+# walkdir
+walkdir = "2"
+csv = "1.1"

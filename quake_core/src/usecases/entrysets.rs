@@ -4,13 +4,12 @@ use std::fs::File;
 use std::path::PathBuf;
 
 use indexmap::IndexMap;
-use rocket::form::validate::Contains;
 use serde::Deserialize;
 use serde_derive::Serialize;
 use walkdir::{DirEntry, WalkDir};
 
-use quake_core::entry::entry_file::EntryFile;
-use quake_core::entry::EntryDefine;
+use crate::entry::entry_file::EntryFile;
+use crate::entry::EntryDefine;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct CsvTable {
@@ -200,7 +199,7 @@ impl Entrysets {
 mod tests {
     use std::path::PathBuf;
 
-    use crate::action::entrysets::Entrysets;
+    use crate::usecases::entrysets::Entrysets;
 
     #[test]
     fn read_csv() {
@@ -217,7 +216,7 @@ mod tests {
 
     #[test]
     fn rebuild() {
-        let buf = PathBuf::from("_fixtures").join("todo");
+        let buf = PathBuf::from("..").join("_fixtures").join("todo");
         let map = Entrysets::rebuild(&buf).unwrap();
         match Entrysets::content_by_table(map.0, map.1) {
             Ok(some) => {
@@ -231,7 +230,7 @@ mod tests {
 
     #[test]
     fn jsonify_todo() {
-        let buf = PathBuf::from("_fixtures").join("todo");
+        let buf = PathBuf::from("..").join("_fixtures").join("todo");
         let json = Entrysets::jsonify(&buf).unwrap();
 
         #[cfg(unix)]
