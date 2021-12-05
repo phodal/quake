@@ -9,8 +9,6 @@ specifiers:
   '@types/react': ^17.0.0
   '@types/react-dom': ^17.0.0
   '@types/styled-components': ^5.1.15
-  glob: ^7.2.0
-  polished: ^4.1.3
   react: ^17.0.2
   react-app-rewired: ^2.1.8
   react-dom: ^17.0.2
@@ -18,7 +16,6 @@ specifiers:
   rich-markdown-editor: ^11.20.0
   styled-components: ^5.3.3
   typescript: ^4.1.2
-  uglifyjs-webpack-plugin: ^2.2.0
   web-vitals: ^1.0.1
 
 dependencies:
@@ -29,15 +26,12 @@ dependencies:
   '@types/node': 12.20.37
   '@types/react': 17.0.37
   '@types/react-dom': 17.0.11
-  glob: 7.2.0
-  polished: 4.1.3
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-scripts: 4.0.3_react@17.0.2+typescript@4.5.2
   rich-markdown-editor: 11.20.1_7a082f7d10047d47195aea793f958a14
   styled-components: 5.3.3_react-dom@17.0.2+react@17.0.2
   typescript: 4.5.2
-  uglifyjs-webpack-plugin: 2.2.0
   web-vitals: 1.1.2
 
 devDependencies:
@@ -8789,13 +8783,6 @@ packages:
       - typescript
     dev: false
 
-  /polished/4.1.3:
-    resolution: {integrity: sha512-ocPAcVBUOryJEKe0z2KLd1l9EBa1r5mSwlKpExmrLzsnIzJo4axsoU9O2BjOTkDGDT4mZ0WFE5XKTlR3nLnZOA==}
-    engines: {node: '>=10'}
-    dependencies:
-      '@babel/runtime': 7.16.3
-    dev: false
-
   /portfinder/1.0.28:
     resolution: {integrity: sha512-Se+2isanIcEqf2XMHjyUKskczxbPH7dQnlMjXX6+dybayyHvAf/TCgyMRlzf/B6QDhAEFOGes0pzRo3by4AbMA==}
     engines: {node: '>= 0.12.0'}
@@ -10607,10 +10594,6 @@ packages:
       statuses: 1.5.0
     dev: false
 
-  /serialize-javascript/1.9.1:
-    resolution: {integrity: sha512-0Vb/54WJ6k5v8sSWN09S0ora+Hnr+cX40r9F170nT+mSkaxltoE/7R3OrIdBSUv1OoiobH1QoWQbCnAO+e8J1A==}
-    dev: false
-
   /serialize-javascript/4.0.0:
     resolution: {integrity: sha512-GaNA54380uFefWghODBWEGisLZFj00nS5ACs6yHa9nLqlLpVLO8ChDGeKRjZnV4Nh4n0Qi7nhYZD/9fCPzEqkw==}
     dependencies:
@@ -11615,29 +11598,6 @@ packages:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
     dev: false
 
-  /uglify-js/3.14.4:
-    resolution: {integrity: sha512-AbiSR44J0GoCeV81+oxcy/jDOElO2Bx3d0MfQCUShq7JRXaM4KtQopZsq2vFv8bCq2yMaGrw1FgygUd03RyRDA==}
-    engines: {node: '>=0.8.0'}
-    hasBin: true
-    dev: false
-
-  /uglifyjs-webpack-plugin/2.2.0:
-    resolution: {integrity: sha512-mHSkufBmBuJ+KHQhv5H0MXijtsoA1lynJt1lXOaotja8/I0pR4L9oGaPIZw+bQBOFittXZg9OC1sXSGO9D9ZYg==}
-    engines: {node: '>= 6.9.0'}
-    peerDependencies:
-      webpack: ^4.0.0
-    dependencies:
-      cacache: 12.0.4
-      find-cache-dir: 2.1.0
-      is-wsl: 1.1.0
-      schema-utils: 1.0.0
-      serialize-javascript: 1.9.1
-      source-map: 0.6.1
-      uglify-js: 3.14.4
-      webpack-sources: 1.4.3
-      worker-farm: 1.7.0
-    dev: false
-
   /unbox-primitive/1.0.1:
     resolution: {integrity: sha512-tZU/3NqK3dA5gpE1KtyiJUrEB0lxnGkMFHptJ7q6ewdZ8s12QrODwNbhIJStmJkd1QDXa1NRA8aF2A1zk/Ypyw==}
     dependencies:
@@ -12023,7 +11983,7 @@ packages:
     dev: false
 
   /webpack/4.44.2:
-    resolution: {integrity: sha512-6KJVGlCxYdISyurpQ0IPTklv+DULv05rs2hseIXer6D7KrUicRDLFb4IUM1S6LUAKypPM/nSiVSuv8jHu1m3/Q==, registry: https://registry.yarnpkg.com/}
+    resolution: {integrity: sha512-6KJVGlCxYdISyurpQ0IPTklv+DULv05rs2hseIXer6D7KrUicRDLFb4IUM1S6LUAKypPM/nSiVSuv8jHu1m3/Q==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/webpack/-/webpack-4.44.2.tgz}
     engines: {node: '>=6.11.5'}
     hasBin: true
     peerDependencies:
