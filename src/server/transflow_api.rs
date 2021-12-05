@@ -1,3 +1,4 @@
+use rocket::fs::NamedFile;
 use std::fs;
 use std::path::PathBuf;
 
@@ -41,6 +42,15 @@ pub(crate) async fn transflow_defines(
     };
 
     Ok(Json(flows))
+}
+
+#[get("/script")]
+pub(crate) async fn transfunc_script(config: &State<QuakeConfig>) -> Option<NamedFile> {
+    let path = PathBuf::from(config.workspace.clone());
+    let fs = path.join(EntryPaths::transfuncs());
+
+    let file = NamedFile::open(fs);
+    file.await.ok()
 }
 
 #[get("/query?<input>")]
