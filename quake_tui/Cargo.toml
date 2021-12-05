@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 crossterm = "0.22"
 tui = { version = "0.16", default-features = false, features = ['crossterm'] }
+unicode-width = "0.1.9"
