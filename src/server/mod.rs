@@ -55,7 +55,10 @@ pub fn quake_rocket() -> Rocket<Build> {
             "/action",
             routes![action_api::parse_query, action_api::suggest],
         )
-        .mount("/transflow", routes![transflow_api::transflow_defines])
+        .mount(
+            "/transflow",
+            routes![transflow_api::transflow_defines, transflow_api::translate],
+        )
         .attach(AdHoc::config::<QuakeConfig>())
 }
 

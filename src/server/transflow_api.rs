@@ -1,9 +1,12 @@
 use std::fs;
 use std::path::PathBuf;
 
+use quake_core::entry::EntryDefines;
+use quake_core::quake::QuakeTransflowNode;
 use rocket::get;
 use rocket::response::status::NotFound;
 use rocket::serde::json::Json;
+use rocket::tokio::task::spawn_blocking;
 use rocket::State;
 
 use quake_core::transflow::Transflow;
@@ -38,4 +41,34 @@ pub(crate) async fn transflow_defines(
     };
 
     Ok(Json(flows))
+}
+
+#[get("/query?<input>")]
+pub(crate) async fn translate(
+    input: String,
+    config: &State<QuakeConfig>,
+) -> Result<Json<Transflow>, Json<ApiError>> {
+    let path = PathBuf::from(&config.workspace).join("entries-define.yaml");
+
+    let result = spawn_blocking(|| {
+        let entries_str = fs::read_to_string(path).expect("cannot read entries-define.yaml");
+        let entries: EntryDefines = serde_yaml::from_str(&*entries_str).unwrap();
+        entries.entries
+    })
+    .await;
+
+    let defines = match result {
+        Ok(defines) => defines,
+        Err(err) => {
+            return Err(Json(ApiError {
+                msg: format!("{:?}", err),
+            }))
+        }
+    };
+
+    let node = QuakeTransflowNode::from_text(input.as_str()).unwrap();
+
+    let flow = Transflow::from(defines, node);
+
+    Ok(Json(flow))
 }
