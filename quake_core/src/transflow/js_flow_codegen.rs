@@ -1,4 +1,4 @@
-use crate::transflow::transflow::Mapping;
+use crate::transflow::transflow::{Flow, Mapping};
 use crate::transflow::Transflow;
 
 pub struct JsFlowGen {}
@@ -9,18 +9,13 @@ impl JsFlowGen {
         for flow in &trans.flows {
             let mut func = String::new();
 
-            let mut params = String::new();
-            for from in &flow.from {
-                params.push_str(format!("{:}s, ", from).as_str());
-            }
-            params.remove(params.len() - 1);
-            params.remove(params.len() - 1);
+            let params = Self::gen_params(&flow);
 
             func.push_str(format!("function {:}({:}) {{\n", &flow.name, params).as_str());
             func.push_str("  let results = [];\n");
 
             if flow.mappings.is_some() {
-                let mappings = JsFlowGen::gen_mappings(&flow.mappings.as_ref().unwrap());
+                let mappings = JsFlowGen::gen_object_forloop(&flow.mappings.as_ref().unwrap());
                 func.push_str(mappings.join("\n").as_str());
             }
 
@@ -32,43 +27,58 @@ impl JsFlowGen {
         vec
     }
 
-    fn gen_mappings(mappings: &Vec<Mapping>) -> Vec<String> {
+    fn gen_params(flow: &Flow) -> String {
+        let mut params = String::new();
+        for from in &flow.from {
+            params.push_str(format!("{:}s, ", from).as_str());
+        }
+        params.remove(params.len() - 1);
+        params.remove(params.len() - 1);
+        params
+    }
+
+    fn gen_object_forloop(mappings: &Vec<Mapping>) -> Vec<String> {
         let mut vec = vec![];
         for mapping in mappings {
             let mut loop_expr = String::new();
             loop_expr.push_str(
                 format!(
-                    "  for (let {:} of {:}s) {{\n    results.push({{",
+                    "  for (let {:} of {:}s) {{\n    results.push(",
                     &mapping.entry, &mapping.entry
                 )
                 .as_str(),
             );
 
-            loop_expr.push_str(format!("\n      type: {:?},", &mapping.entry).as_str());
-
-            let len = mapping.source.len();
-            if len == mapping.target.len() {
-                for (index, field) in mapping.source.iter().enumerate() {
-                    let mut split = ",";
-                    if index == len - 1 {
-                        split = ""
-                    }
-                    loop_expr.push_str(
-                        format!(
-                            "\n      {:}: {:}.{:}{:}",
-                            &mapping.target[index], &mapping.entry, field, split
-                        )
-                        .as_str(),
-                    );
-                }
-            }
-
-            loop_expr.push_str("\n    })\n  }\n");
-
+            loop_expr.push_str(Self::gen_mapping(&mapping).as_str());
+            loop_expr.push_str(")\n  }\n");
             vec.push(loop_expr);
         }
 
         vec
+    }
+
+    fn gen_mapping(m: &&Mapping) -> String {
+        let mut result = String::new();
+        result.push_str(format!("{{\n      type: {:?},", &m.entry).as_str());
+        let len = m.source.len();
+
+        if len == m.target.len() {
+            for (index, field) in m.source.iter().enumerate() {
+                let mut end = ",";
+                if index == len - 1 {
+                    end = ""
+                }
+
+                let map = format!(
+                    "\n      {:}: {:}.{:}{:}",
+                    &m.target[index], &m.entry, field, end
+                );
+                result.push_str(map.as_str());
+            }
+        }
+        result.push_str("\n    }");
+
+        result
     }
 }
 
