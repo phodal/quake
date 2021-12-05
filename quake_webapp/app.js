@@ -77,12 +77,12 @@ router.setRoutes([
 
 const timeline = async () => {
   let el = document.querySelector('quake-calendar-timeline');
-  let todo_res = await fetch(`/entry/todo`);
-  let blog_res = await fetch(`/entry/blog`);
-  let todos = await todo_res.json();
-  let blogs = await blog_res.json();
+  let todo_req = await fetch(`/entry/todo`);
+  let todos = await todo_req.json();
 
-  console.log(todos, blogs);
+  let blog_req = await fetch(`/entry/blog`);
+  let blogs = await blog_req.json();
+
   let data = from_todo_blog_to_quake_calendar(todos.hits, blogs.hits);
 
   el.setAttribute('entries', JSON.stringify({
