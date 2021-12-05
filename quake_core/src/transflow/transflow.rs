@@ -1,11 +1,13 @@
+use std::collections::HashMap;
+
 use crate::entry::EntryDefine;
 use crate::parser::quake::{QuakeTransflowNode, Route};
-use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct Transflow {
     pub name: String,
-    pub defines_map: HashMap<String, EntryDefine>,
+    #[serde(skip_serializing)]
+    pub defines_map: Option<HashMap<String, EntryDefine>>,
     pub flows: Vec<Flow>,
     pub target: String,
 }
@@ -25,8 +27,8 @@ pub struct Flow {
     pub name: String,
     pub from: Vec<String>,
     pub to: String,
-    pub mappings: Vec<Mapping>,
-    pub filters: Vec<Filter>,
+    pub mappings: Option<Vec<Mapping>>,
+    pub filters: Option<Vec<Filter>>,
 }
 
 impl Flow {
@@ -35,8 +37,8 @@ impl Flow {
             name: route.name,
             from: route.from.clone(),
             to: route.to.clone(),
-            mappings: vec![],
-            filters: vec![],
+            mappings: None,
+            filters: None,
         }
     }
 }
@@ -61,23 +63,23 @@ impl Transflow {
             entries_map.insert(define.entry_type.clone(), define);
         }
 
+        let mut map = HashMap::new();
         for route in &node.routes {
             if route.is_end_way {
                 transflow.target = route.to.clone();
             } else {
                 if let Some(some) = entries_map.get(route.to.as_str()) {
-                    transflow
-                        .defines_map
-                        .insert(route.to.clone(), (*some).clone());
+                    map.insert(route.to.clone(), (*some).clone());
                 }
             }
 
             for from in &route.from {
                 if let Some(some) = entries_map.get(from.as_str()) {
-                    transflow.defines_map.insert(from.clone(), (*some).clone());
+                    map.insert(from.clone(), (*some).clone());
                 }
             }
         }
+        transflow.defines_map = Some(map);
 
         for route in node.routes {
             transflow.flows.push(Flow::from_route(route));
@@ -92,6 +94,8 @@ mod tests {
     use crate::entry::EntryDefine;
     use crate::quake::QuakeTransflowNode;
     use crate::transflow::transflow::Transflow;
+    use std::fs;
+    use std::path::PathBuf;
 
     fn entry_defines() -> Vec<EntryDefine> {
         let yaml = "
@@ -115,6 +119,17 @@ mod tests {
     }
 
     #[test]
+    fn serialize_from_file() {
+        let path = PathBuf::from("../")
+            .join("_fixtures")
+            .join("transflows.yaml");
+        let content = fs::read_to_string(path).unwrap();
+        let flows: Vec<Transflow> = serde_yaml::from_str(&*content).unwrap();
+
+        assert_eq!(1, flows.len());
+    }
+
+    #[test]
     fn stringify_defines() {
         let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
         let flow = QuakeTransflowNode::from_text(define).unwrap();
@@ -122,7 +137,7 @@ mod tests {
         let flow = Transflow::from(entry_defines(), flow);
 
         println!("{:?}", flow);
-        assert_eq!(2, flow.defines_map.len());
+        assert_eq!(2, flow.defines_map.unwrap().len());
         assert_eq!(1, flow.flows.len());
         assert_eq!("quake-calendar", flow.target);
     }
