@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.1.0] - 2021-12-05
 
 ### Bug Fixes
 
@@ -9,18 +9,74 @@ All notable changes to this project will be documented in this file.
 - Fix not select entry issue
 - Fix typo for feed
 - Fix default rule issues
+- Fix testings
+- Fix digtal parse issue
+- Fix test
+- Fix empty dir generate csv issue
+- Fix codegen issues
+- Add lost types
+- Fix webapp error issues
+- Fix lint build
+- Fix typo
 
 ### Documentation
 
 - Add screenshots for #7
+- Update changelog
+- Add calendar story
+- Add first version define for transflow
+- Add transflow define
+- Add samples for transform
+- Update story
+- Reorg code for codegen
+- Udpate code design
+- Add qrcode
+
+### Features
+
+- Init calendar view
+- Add a simple typeflow logic component
+- Add basic transflow parser
+- Add basic parse for flow
+- Make transflow
+- Add naming route
+- Make multiple records works
+- Make return map
+- Transform from source
+- Add for loading defines
+- Add query api for transflow
+- Add basic codegen
+- Add api for load js
+- Add script to loading
+- Add baisc timeline translate funciton
+- Try to add flow
+- Simple command mode
 
 ### Refactor
 
 - Try to figure lots of files change in dir
+- Rename core logic
+- Rename parser
+- Make parse parameter
+- Split actions & flows logic
+- Renaming process
+- Rename transflow node
+- Rename transform
+- Naming route
+- Update flow define
+- Move paths to core
+- Move action to core to usecases
+
+### Testing
+
+- Add testing for parameter
 
 ### Build
 
 - Update scripts for zip
+- Clear deps
+- Ignore test for windows
+- Make samples works
 
 ## [0.0.6] - 2021-12-04
 
