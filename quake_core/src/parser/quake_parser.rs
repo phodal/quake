@@ -36,7 +36,7 @@ impl QuakeParser {
                         expr.parameters.push(parameter.value);
                     }
                 }
-                SourceUnitPart::Transflow(_) => {}
+                SourceUnitPart::Transflow(_transflow) => {}
             }
         }
 

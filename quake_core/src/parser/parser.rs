@@ -73,7 +73,7 @@ fn midway(decl: Pair<Rule>) -> Midway {
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::parameters => {
-                midway.from.push(parameters(pair));
+                midway.from = parameters(pair);
             }
             Rule::parameter => {
                 midway.end = String::from(pair.as_str());
@@ -93,7 +93,7 @@ fn endway(decl: Pair<Rule>) -> Endway {
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::parameters => {
-                endway.from.push(parameters(pair));
+                endway.from = parameters(pair);
             }
             Rule::component_decl => {
                 for name in pair.into_inner() {
@@ -123,7 +123,7 @@ fn action_decl(decl: Pair<Rule>) -> ActionDecl {
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::parameters => {
-                action.parameters.push(parameters(pair));
+                action.parameters = parameters(pair);
             }
             Rule::action => {
                 action.action = String::from(pair.as_str());
@@ -143,12 +143,15 @@ fn action_decl(decl: Pair<Rule>) -> ActionDecl {
     action
 }
 
-fn parameters(decl: Pair<Rule>) -> Parameter {
-    let mut parameter = Parameter::default();
+fn parameters(decl: Pair<Rule>) -> Vec<Parameter> {
+    let mut params = vec![];
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::parameter => {
-                parameter.value = String::from(pair.as_str());
+                let mut param = Parameter::default();
+                param.value = String::from(pair.as_str());
+
+                params.push(param)
             }
             Rule::s_quote => {}
             Rule::e_quote => {}
@@ -158,12 +161,12 @@ fn parameters(decl: Pair<Rule>) -> Parameter {
         }
     }
 
-    parameter
+    params
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::ast::SourceUnitPart;
+    use crate::parser::ast::{SourceUnitPart, Transflow};
     use crate::parser::parser::parse;
 
     #[test]
@@ -206,6 +209,24 @@ mod tests {
     #[test]
     fn should_parse_flow() {
         let unit = parse("define { from('todo','blog').to(<quake-calendar>); }").unwrap();
+        assert_eq!(1, unit.0.len());
         println!("{:?}", unit);
+        match &unit.0[0] {
+            SourceUnitPart::Transflow(decl) => {
+                let flow = decl.flows[0].clone();
+                match flow {
+                    Transflow::Midway(_) => {
+                        assert!(false);
+                    }
+                    Transflow::Endway(end) => {
+                        assert_eq!(2, end.from.len());
+                        assert_eq!("quake-calendar", end.component);
+                    }
+                }
+            }
+            _ => {
+                assert!(false);
+            }
+        }
     }
 }
