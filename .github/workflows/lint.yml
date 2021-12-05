@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [master]
   push:
-    branches: [staging, trying]
+    branches: [master]
 concurrency:
   group: lint-${{ github.ref }}
   cancel-in-progress: true
@@ -26,17 +26,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Clippy for almost no features
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --no-default-features --features "std cargo"
-
       - name: Clippy for all features
         uses: actions-rs/cargo@v1
         with:
           command: clippy
           args: -- -D warnings
+
+      - name: Clippy for tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --tests
 
       - name: Format check
         uses: actions-rs/cargo@v1
