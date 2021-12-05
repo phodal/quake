@@ -45,7 +45,7 @@ impl Default for QuakeTransflow {
 pub struct Route {
     pub from: Vec<String>,
     pub to: String,
-    pub is_component: bool,
+    pub is_end_way: bool,
 }
 
 impl Default for Route {
@@ -53,7 +53,7 @@ impl Default for Route {
         Route {
             from: vec![],
             to: "".to_string(),
-            is_component: false,
+            is_end_way: false,
         }
     }
 }
@@ -150,7 +150,7 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflow {
                 }
                 TransflowEnum::Endway(way) => {
                     route.to = way.component.clone();
-                    route.is_component = true;
+                    route.is_end_way = true;
                     route.from = way
                         .from
                         .iter()
@@ -217,7 +217,7 @@ mod tests {
         let define = "define { from('todo','blog').to(<quake-calendar>); }";
         let expr = QuakeTransflow::from_text(define).unwrap();
         assert_eq!(1, expr.routes.len());
-        assert_eq!(true, expr.routes[0].is_component);
+        assert_eq!(true, expr.routes[0].is_end_way);
         assert_eq!("quake-calendar", expr.routes[0].to);
     }
 
@@ -227,11 +227,11 @@ mod tests {
             "define { from('todo','blog').to('record'), from('record').to(<quake-calendar>); }";
         let expr = QuakeTransflow::from_text(define).unwrap();
         assert_eq!(2, expr.routes.len());
-        assert_eq!(false, expr.routes[0].is_component);
+        assert_eq!(false, expr.routes[0].is_end_way);
         assert_eq!("record", expr.routes[0].to);
 
         assert_eq!("record", expr.routes[1].from[0]);
-        assert_eq!(true, expr.routes[1].is_component);
+        assert_eq!(true, expr.routes[1].is_end_way);
         assert_eq!("quake-calendar", expr.routes[1].to);
     }
 
