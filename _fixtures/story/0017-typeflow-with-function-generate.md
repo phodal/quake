@@ -1,7 +1,7 @@
 ---
 title: typeflow with function generate
-author: 
-status: Todo
+author: Phodal
+status: Doing
 priority: Low
 created_date: 2021-12-05 02:03:24
 updated_date: 2021-12-05 02:03:24
