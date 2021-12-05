@@ -5,7 +5,9 @@ use crate::quake::QuakeTransflowNode;
 pub struct Transflow {}
 
 impl Transflow {
-    pub fn generate(_defines: Vec<EntryDefine>, _node: QuakeTransflowNode) {}
+    pub fn generate(_defines: Vec<EntryDefine>, _node: QuakeTransflowNode) {
+        // filter_define
+    }
 }
 
 #[cfg(test)]

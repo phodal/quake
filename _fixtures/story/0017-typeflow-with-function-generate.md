@@ -41,18 +41,24 @@ parsed:
 
 ```json
 {
-  "name": "from_todo_blog_yiki_to_calendar",
-  "entries": [
-    "todo",
-    "blog",
-    "yiki"
+  "routes": [
+    {
+      "from": [
+        {
+          "field": ""
+        }
+      ],
+      "to": "",
+      "name": "",
+      "is_end_way": ""
+    }
   ],
   "defines": {
     "todo": {},
     "blog": {},
     "yiki": {}
   },
-  "target": []
+  "target": "quake-calendar"
 }
 ```
 

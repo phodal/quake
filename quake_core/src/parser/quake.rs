@@ -43,6 +43,7 @@ impl Default for QuakeTransflowNode {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Route {
+    pub name: String,
     pub from: Vec<String>,
     pub to: String,
     pub is_end_way: bool,
@@ -51,6 +52,7 @@ pub struct Route {
 impl Default for Route {
     fn default() -> Self {
         Route {
+            name: "".to_string(),
             from: vec![],
             to: "".to_string(),
             is_end_way: false,
@@ -59,12 +61,12 @@ impl Default for Route {
 }
 
 impl Route {
-    pub fn naming(&self) -> String {
-        format!(
+    pub fn naming(&mut self) {
+        self.name = format!(
             "from_{:}_to_{:}",
             self.from.join("_"),
             self.to.replace("-", "_")
-        )
+        );
     }
 }
 
@@ -146,7 +148,9 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                         .from
                         .iter()
                         .map(|param| param.value.clone())
-                        .collect::<Vec<String>>()
+                        .collect::<Vec<String>>();
+
+                    route.naming();
                 }
                 TransflowEnum::Endway(way) => {
                     route.to = way.component.clone();
@@ -155,7 +159,9 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                         .from
                         .iter()
                         .map(|param| param.value.clone())
-                        .collect::<Vec<String>>()
+                        .collect::<Vec<String>>();
+
+                    route.naming();
                 }
             }
             route
@@ -239,6 +245,8 @@ mod tests {
     fn should_create_route_func_name() {
         let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
-        assert_eq!("from_todo_blog_to_quake_calendar", expr.routes[0].naming());
+        let route = expr.routes[0].clone();
+
+        assert_eq!("from_todo_blog_to_quake_calendar", route.name);
     }
 }
