@@ -33,7 +33,6 @@ function QuakeEditor(props: Props) {
     return count;
   }
 
-
   React.useEffect(() => {
     setTitle(props.title);
   }, [props])

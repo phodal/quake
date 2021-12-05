@@ -14,10 +14,11 @@ function from_todo_blog_to_quake_calendar(todos, blogs) {
     results.push({
       type: "blog",
       title: blog.title,
-      content: blog.content,
+      content: blog.description,
       start_time: blog.created_date,
       end_time: blog.updated_date
     })
   }
+
   return results;
 }

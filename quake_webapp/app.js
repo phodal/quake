@@ -56,8 +56,28 @@ const create_entry = async (context, commands) => {
 
   const entry = await response.json();
   params.id = entry.id;
+
   return create_editor_element(entry, params);
 }
+
+const timeline =  async (context, commands) => {
+  const el = document.createElement('quake-calendar-timeline');
+  let todo_req = await fetch(`/entry/todo`);
+  let todos = await todo_req.json();
+
+  let blog_req = await fetch(`/entry/blog`);
+  let blogs = await blog_req.json();
+
+  let data = from_todo_blog_to_quake_calendar(todos.hits, blogs.hits);
+
+  el.setAttribute('entries', JSON.stringify({
+    items: ['blog', 'todo']
+  }));
+  el.setAttribute('data', JSON.stringify(data));
+
+  return el;
+}
+
 
 const update_entry = async (entry_type, id, fields) => {
   let response = await fetch(`/entry/${entry_type}/${id}`, {
@@ -71,24 +91,7 @@ const update_entry = async (entry_type, id, fields) => {
 
 router.setRoutes([
   {path: '/', action: home},
+  {path: '/transflow/timeline', action: timeline},
   {path: '/entry/:type/new', action: create_entry},
   {path: '/edit/:type/:id', action: edit_entry},
 ]);
-
-const timeline = async () => {
-  let el = document.querySelector('quake-calendar-timeline');
-  let todo_req = await fetch(`/entry/todo`);
-  let todos = await todo_req.json();
-
-  let blog_req = await fetch(`/entry/blog`);
-  let blogs = await blog_req.json();
-
-  let data = from_todo_blog_to_quake_calendar(todos.hits, blogs.hits);
-
-  el.setAttribute('entries', JSON.stringify({
-    items: ['blog', 'todo']
-  }));
-  el.setAttribute('data', JSON.stringify(data));
-}
-
-// timeline();

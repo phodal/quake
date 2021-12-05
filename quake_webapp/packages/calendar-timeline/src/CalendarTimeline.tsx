@@ -4,14 +4,14 @@ import 'react-calendar-timeline/lib/Timeline.css'
 import dayjs from "dayjs";
 
 export type Props = {
-  entries: {
-    items: any[]
-  },
+  entries: any,
   data: any[],
 }
 
 function CalendarTimeline(props: Props) {
-  let group_map: any = {};
+  let group_map: any = useMemo(() => {
+    return {}
+  }, []);
 
   const [entries, setEntries] = React.useState(props.entries);
   const [data, setData] = React.useState(props.data);
@@ -24,14 +24,20 @@ function CalendarTimeline(props: Props) {
     setEntries(props.entries);
   }, [props])
 
-  const buildData =  useMemo(() => {
+  const calculateData = useMemo(() => {
     let items: any = [];
+    let index = 1;
+    for (let item of entries.items) {
+      group_map[item] = index;
+      index = index + 1;
+    }
+
     if (!!data && data.length > 0) {
       let index = 1;
       for (let datum of data) {
         items.push({
           id: index,
-          group: group_map[datum],
+          group: group_map[datum.type],
           title: datum.title,
           start_time: dayjs(datum.start_time).toDate(),
           end_time: dayjs(datum.end_time).toDate()
@@ -44,9 +50,8 @@ function CalendarTimeline(props: Props) {
     return items
   }, [data, group_map])
 
-  const buildGroups = useMemo(() => {
+  const calculateGroup = useMemo(() => {
     let groups: any = [];
-    console.log(entries);
     if (entries && entries.items) {
       let index = 1;
       for (let item of entries.items) {
@@ -54,20 +59,20 @@ function CalendarTimeline(props: Props) {
           id: index,
           title: item
         })
+
         group_map[item] = index;
         index = index + 1;
       }
     }
 
-    console.log(groups);
     return groups;
   }, [entries, group_map]);
 
   return (
     <div>
       <Timeline
-        groups={buildGroups}
-        items={buildData}
+        items={calculateData}
+        groups={calculateGroup}
         defaultTimeStart={dayjs().add(-7, 'day').toDate()}
         defaultTimeEnd={dayjs().add(7, 'day').toDate()}
       />
