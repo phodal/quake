@@ -32,6 +32,7 @@ impl EntryPaths {
     pub fn transflows_yaml() -> &'static str {
         "transflows.yaml"
     }
+
     pub fn transfuncs() -> &'static str {
         "transfuncs.js"
     }

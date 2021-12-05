@@ -35,7 +35,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: llvm-cov
-          args: --lcov --output-path lcov.info
+          args: --all-features --lcov --output-path lcov.info
 
       - name: Coveralls
         uses: coverallsapp/github-action@master

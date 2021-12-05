@@ -1,5 +1,7 @@
 setup:
     cargo install git-cliff
+    rustup component add llvm-tools-preview --toolchain nightly
+    cargo install cargo-llvm-cov
 
 build:
     cargo build --all
@@ -9,6 +11,9 @@ test:
 
 release:
     cargo build --verbose --release --all
+
+coverage:
+    cargo llvm-cov --all-features --workspace --html
 
 @bench:
 	cargo bench

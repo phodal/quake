@@ -102,7 +102,7 @@ mod tests {
         entries
     }
 
-    #[cfg(unix)]
+    #[cfg(not(windows))]
     #[test]
     fn mapping_to_file() {
         let fixtures = PathBuf::from("../").join("_fixtures");
@@ -119,7 +119,7 @@ mod tests {
         assert_eq!(content, code[0]);
     }
 
-    #[cfg(unix)]
+    #[cfg(not(windows))]
     #[test]
     fn from_transflow_string() {
         let define = "transflow { from('todo','blog').to(<quake-calendar>); }";

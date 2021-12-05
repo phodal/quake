@@ -233,7 +233,7 @@ mod tests {
         let buf = PathBuf::from("..").join("_fixtures").join("todo");
         let json = Entrysets::jsonify(&buf).unwrap();
 
-        #[cfg(unix)]
+        #[cfg(not(windows))]
         assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1,\"content\":\"\\n\\nahaha\\n\"}]");
     }
 }
