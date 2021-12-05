@@ -7,7 +7,7 @@ use crate::parser::parser::parse;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct QuakeIt {
     pub actions: Vec<QuakeAction>,
-    pub transflows: Vec<QuakeTransflow>,
+    pub transflows: Vec<QuakeTransflowNode>,
 }
 
 impl Default for QuakeIt {
@@ -20,12 +20,12 @@ impl Default for QuakeIt {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct QuakeTransflow {
+pub struct QuakeTransflowNode {
     pub routes: Vec<Route>,
 }
 
-impl QuakeTransflow {
-    pub fn from_text(text: &str) -> Result<QuakeTransflow, Box<dyn Error>> {
+impl QuakeTransflowNode {
+    pub fn from_text(text: &str) -> Result<QuakeTransflowNode, Box<dyn Error>> {
         let it = quake(text)?;
         if it.transflows.is_empty() {
             return Err(Box::new(QuakeParserError::new("not match transflows")));
@@ -35,9 +35,9 @@ impl QuakeTransflow {
     }
 }
 
-impl Default for QuakeTransflow {
+impl Default for QuakeTransflowNode {
     fn default() -> Self {
-        QuakeTransflow { routes: vec![] }
+        QuakeTransflowNode { routes: vec![] }
     }
 }
 
@@ -132,8 +132,8 @@ pub fn quake(text: &str) -> Result<QuakeIt, Box<dyn Error>> {
     Ok(quakes)
 }
 
-fn build_transflow(decl: TransflowDecl) -> QuakeTransflow {
-    let mut transflow = QuakeTransflow::default();
+fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
+    let mut transflow = QuakeTransflowNode::default();
     transflow.routes = decl
         .flows
         .iter()
@@ -167,7 +167,7 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflow {
 #[cfg(test)]
 mod tests {
     use crate::parser::quake::QuakeAction;
-    use crate::quake::QuakeTransflow;
+    use crate::quake::QuakeTransflowNode;
 
     #[test]
     fn should_parse_expression() {
@@ -215,7 +215,7 @@ mod tests {
     #[test]
     fn should_create_transflow() {
         let define = "define { from('todo','blog').to(<quake-calendar>); }";
-        let expr = QuakeTransflow::from_text(define).unwrap();
+        let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!(1, expr.routes.len());
         assert_eq!(true, expr.routes[0].is_end_way);
         assert_eq!("quake-calendar", expr.routes[0].to);
@@ -225,7 +225,7 @@ mod tests {
     fn should_create_transflows() {
         let define =
             "define { from('todo','blog').to('record'), from('record').to(<quake-calendar>); }";
-        let expr = QuakeTransflow::from_text(define).unwrap();
+        let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!(2, expr.routes.len());
         assert_eq!(false, expr.routes[0].is_end_way);
         assert_eq!("record", expr.routes[0].to);
@@ -238,7 +238,7 @@ mod tests {
     #[test]
     fn should_create_route_func_name() {
         let define = "define { from('todo','blog').to(<quake-calendar>); }";
-        let expr = QuakeTransflow::from_text(define).unwrap();
+        let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!("from_todo_blog_to_quake_calendar", expr.routes[0].naming());
     }
 }
