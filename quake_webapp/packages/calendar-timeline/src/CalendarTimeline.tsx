@@ -4,34 +4,43 @@ import 'react-calendar-timeline/lib/Timeline.css'
 import dayjs from "dayjs";
 
 export type Props = {
-  data: any,
+  entries: {
+    items: any[]
+  },
+  data: any[],
 }
 
-function CalendarTimeline(_props: Props) {
-  const groups = [{ id: 1, title: 'group 1' }, { id: 2, title: 'group 2' }]
-  const items = [
-    {
-      id: 1,
-      group: 1,
-      title: 'item 1',
-      start_time: dayjs().toDate(),
-      end_time: dayjs().add(1, 'hour').toDate()
-    },
-    {
-      id: 2,
-      group: 2,
-      title: 'item 2',
-      start_time: dayjs().add(-0.5, 'hour').toDate(),
-      end_time: dayjs().add(0.5, 'hour').toDate()
-    },
-    {
-      id: 3,
-      group: 1,
-      title: 'item 3',
-      start_time: dayjs().add(2, 'hour').toDate(),
-      end_time: dayjs().add(3, 'hour').toDate()
+function CalendarTimeline(props: Props) {
+  let groups: any = [];
+  let group_map: any = {};
+  let items: any = [];
+
+  if (props.entries && props.entries.items) {
+    let index = 1;
+    for (let item of props.entries.items) {
+      groups.push({
+        id: index,
+        title: item
+      })
+      group_map[item] = index;
+      index = index + 1;
     }
-  ]
+  }
+
+  if (!!props.data && props.data.length > 0) {
+    let index = 1;
+    for (let datum of props.data) {
+      items.push({
+        id: index,
+        group: group_map[datum],
+        title: datum.title,
+        start_time: dayjs(datum.start_time).toDate(),
+        end_time: dayjs(datum.end_time).toDate()
+      })
+
+      index = index + 1;
+    }
+  }
 
   return (
     <div>

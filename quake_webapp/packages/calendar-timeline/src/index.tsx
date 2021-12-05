@@ -26,14 +26,7 @@ class ReactElement extends HTMLElement {
   mount() {
     const props = {
       ...this.getProps(this.attributes),
-      ...this.getEvents(),
-      children: this.innerHTML,
-      // todo: merge to auto event
-      onSave: (args: any) => {
-        this.dispatchEvent(new CustomEvent("onSave", {
-          detail: args
-        }))
-      }
+      ...this.getEvents()
     };
 
     // @ts-ignore
@@ -68,7 +61,7 @@ class ReactElement extends HTMLElement {
       value = attrValue === 'true';
     else if (!isNaN(attrValue) && attrValue !== '')
       value = +attrValue;
-    else if (/^{.*}/.exec(attrValue))
+    else if ((/^{.*}/.exec(attrValue)) || (/^\[.*]/.exec(attrValue)) )
       value = JSON.parse(attrValue);
     return {
       name: attrName,
