@@ -4,7 +4,7 @@ use crate::transflow::Transflow;
 pub struct JsFlowGen {}
 
 impl JsFlowGen {
-    pub fn from(trans: &Transflow) -> Vec<String> {
+    pub fn gen_transform(trans: &Transflow) -> Vec<String> {
         let mut vec = vec![];
         for flow in &trans.flows {
             let mut func = String::new();
@@ -32,7 +32,7 @@ impl JsFlowGen {
         vec
     }
 
-    pub fn gen_mappings(mappings: &Vec<Mapping>) -> Vec<String> {
+    fn gen_mappings(mappings: &Vec<Mapping>) -> Vec<String> {
         let mut vec = vec![];
         for mapping in mappings {
             let mut loop_expr = String::new();
@@ -111,7 +111,7 @@ mod tests {
         let content = fs::read_to_string(path).unwrap();
         let flows: Vec<Transflow> = serde_yaml::from_str(&*content).unwrap();
 
-        let code = JsFlowGen::from(&flows[0]);
+        let code = JsFlowGen::gen_transform(&flows[0]);
 
         let except_path = fixtures.join("codegen").join("todos_blogs.js");
         let content = fs::read_to_string(except_path).unwrap();
@@ -127,7 +127,7 @@ mod tests {
 
         let flow = Transflow::from(entry_defines(), flow);
 
-        let code = JsFlowGen::from(&flow);
+        let code = JsFlowGen::gen_transform(&flow);
 
         assert_eq!(
             "function from_todo_blog_to_quake_calendar(todos, blogs) {
