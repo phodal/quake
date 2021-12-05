@@ -1,13 +1,15 @@
 - name: "show calendar"
+  target: "quake-calendar"
+  defines_map: ~
   flows:
     - from: [ "todo", "blog" ]
       to: "<quake-calendar>"
       mapping:
-        - source: "todo"
-          fields: ["title", "content", "created_date", "updated"]
+        - entry: "todo"
+          source: ["title", "content", "created_date", "updated"]
           target: ["title", "content", "start_time", "end_time"]
-        - source: "blog"
-          fields: ["title", "content", "created_date", "updated"]
+        - entry: "blog"
+          source: ["title", "content", "created_date", "updated"]
           target: ["title", "content", "start_time", "end_time"]
       filter: ~
 
