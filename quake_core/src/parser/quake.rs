@@ -41,11 +41,12 @@ impl Default for QuakeTransflowNode {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct Route {
     pub name: String,
     pub from: Vec<String>,
     pub to: String,
+    #[serde(skip_serializing)]
     pub is_end_way: bool,
 }
 

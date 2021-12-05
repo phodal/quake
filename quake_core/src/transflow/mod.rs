@@ -1,12 +1,54 @@
 use crate::entry::EntryDefine;
-use crate::quake::QuakeTransflowNode;
+use crate::quake::{QuakeTransflowNode, Route};
+use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-pub struct Transflow {}
+pub struct Transflow {
+    pub routes: Vec<Route>,
+    pub defines_map: HashMap<String, EntryDefine>,
+    pub target: String,
+}
+
+impl Default for Transflow {
+    fn default() -> Self {
+        Transflow {
+            routes: vec![],
+            defines_map: Default::default(),
+            target: "".to_string(),
+        }
+    }
+}
 
 impl Transflow {
-    pub fn generate(_defines: Vec<EntryDefine>, _node: QuakeTransflowNode) {
-        // filter_define
+    pub fn from(defines: Vec<EntryDefine>, node: QuakeTransflowNode) -> Transflow {
+        let mut transflow = Transflow::default();
+
+        let mut entries_map: HashMap<String, &EntryDefine> = HashMap::new();
+        for define in &defines {
+            entries_map.insert(define.entry_type.clone(), define);
+        }
+
+        for route in &node.routes {
+            if route.is_end_way {
+                transflow.target = route.to.clone();
+            } else {
+                if let Some(some) = entries_map.get(route.to.as_str()) {
+                    transflow
+                        .defines_map
+                        .insert(route.to.clone(), (*some).clone());
+                }
+            }
+
+            for from in &route.from {
+                if let Some(some) = entries_map.get(from.as_str()) {
+                    transflow.defines_map.insert(from.clone(), (*some).clone());
+                }
+            }
+        }
+
+        transflow.routes = node.routes;
+
+        transflow
     }
 }
 
@@ -42,6 +84,11 @@ mod tests {
         let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
         let flow = QuakeTransflowNode::from_text(define).unwrap();
 
-        Transflow::generate(entry_defines(), flow);
+        let flow = Transflow::from(entry_defines(), flow);
+
+        println!("{:?}", flow);
+        assert_eq!(2, flow.defines_map.len());
+        assert_eq!(1, flow.routes.len());
+        assert_eq!("quake-calendar", flow.target);
     }
 }
