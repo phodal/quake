@@ -12,7 +12,7 @@ pub struct Transflow {
     pub target: String,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct Mapping {
     pub entry: String,
     pub source: Vec<String>,
