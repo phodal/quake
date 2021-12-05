@@ -1,10 +1,10 @@
-- name: "show calendar"
-  target: "quake-calendar"
+- name: "show_timeline"
+  target: "quake-calendar-timeline"
   defines_map: ~
   flows:
-    - name: "from_todo_blog_to_quake_calendar"
+    - name: "from_todo_blog_to_quake_calendar_timeline"
       from: [ "todo", "blog" ]
-      to: "<quake-calendar>"
+      to: "<quake-calendar-timeline>"
       mappings:
         - entry: "todo"
           source: ["title", "content", "created_date", "updated_date"]

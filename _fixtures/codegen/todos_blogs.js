@@ -1,4 +1,4 @@
-function from_todo_blog_to_quake_calendar(todos, blogs) {
+function from_todo_blog_to_quake_calendar_timeline(todos, blogs) {
   let results = [];
   for (let todo of todos) {
     results.push({
