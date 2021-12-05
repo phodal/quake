@@ -281,7 +281,7 @@ mod tests {
             .await
             .expect_err("");
 
-            let error_msg = "QuakeError(\"unknown entry action: QuakeParser { object: \\\"story\\\", action: \\\"dddd\\\", text: \\\"\\\", parameters: [] }\")";
+            let error_msg = "QuakeError(\"unknown entry action: QuakeAction { object: \\\"story\\\", action: \\\"dddd\\\", text: \\\"\\\", parameters: [] }\")";
             assert_eq!(format!("{:?}", expected), error_msg);
         });
     }
@@ -291,12 +291,8 @@ mod tests {
         task::block_on(async {
             let test_dir = "test_dir";
 
-            let conf_dir = PathBuf::from("_fixtures")
-                .join("configs")
-                .join(".quake.yaml");
-
             let command = Command {
-                config: format!("{:}", conf_dir.display()),
+                config: format!("{:}", config_dir().display()),
                 input: "water.add: samples".to_string(),
                 editor: "".to_string(),
             };
@@ -308,15 +304,17 @@ mod tests {
             })
             .await
             .unwrap();
+
             process_cmd(Opts {
                 cmd: SubCommand::Cmd(command),
             })
             .await
             .unwrap();
 
-            let test_path = PathBuf::from("test_dir");
-            let paths =
-                EntryPaths::init(&format!("{:}", test_path.display()), &"water".to_string());
+            let paths = EntryPaths::init(
+                &format!("{:}", PathBuf::from(test_dir).display()),
+                &"water".to_string(),
+            );
 
             let content = fs::read_to_string(paths.base.join("0001-samples.md")).unwrap();
             let file = EntryFile::from(content.as_str(), 1).unwrap();
@@ -326,6 +324,13 @@ mod tests {
 
             fs::remove_dir_all(test_dir).unwrap();
         });
+    }
+
+    fn config_dir() -> PathBuf {
+        let conf_dir = PathBuf::from("_fixtures")
+            .join("configs")
+            .join(".quake.yaml");
+        conf_dir
     }
 
     #[ignore]
