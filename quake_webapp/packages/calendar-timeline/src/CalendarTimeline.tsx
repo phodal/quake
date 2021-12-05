@@ -48,7 +48,7 @@ function CalendarTimeline(props: Props) {
     }
 
     return items
-  }, [data, group_map])
+  }, [data, entries, group_map])
 
   const calculateGroup = useMemo(() => {
     let groups: any = [];
