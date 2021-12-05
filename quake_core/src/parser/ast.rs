@@ -9,7 +9,7 @@ pub enum SourceUnitPart {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct TransflowDecl {
-    pub(crate) flows: Vec<Transflow>,
+    pub(crate) flows: Vec<TransflowEnum>,
 }
 
 impl Default for TransflowDecl {
@@ -19,7 +19,7 @@ impl Default for TransflowDecl {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum Transflow {
+pub enum TransflowEnum {
     Midway(Midway),
     Endway(Endway),
 }

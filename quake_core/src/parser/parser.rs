@@ -1,5 +1,5 @@
 use crate::parser::ast::{
-    ActionDecl, Endway, Midway, Parameter, SourceUnit, SourceUnitPart, Transflow, TransflowDecl,
+    ActionDecl, Endway, Midway, Parameter, SourceUnit, SourceUnitPart, TransflowDecl, TransflowEnum,
 };
 use crate::parser::errors::QuakeParserError;
 use pest::iterators::Pair;
@@ -54,11 +54,11 @@ fn transflow_decl(decl: Pair<Rule>) -> TransflowDecl {
     action
 }
 
-fn transflow_expr(decl: Pair<Rule>) -> Option<Transflow> {
+fn transflow_expr(decl: Pair<Rule>) -> Option<TransflowEnum> {
     for pair in decl.into_inner() {
         match pair.as_rule() {
-            Rule::midway => return Some(Transflow::Midway(midway(pair))),
-            Rule::endway => return Some(Transflow::Endway(endway(pair))),
+            Rule::midway => return Some(TransflowEnum::Midway(midway(pair))),
+            Rule::endway => return Some(TransflowEnum::Endway(endway(pair))),
             _ => {
                 println!("{}", pair);
             }
@@ -195,7 +195,7 @@ pub fn replace_string_markers(input: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::ast::{SourceUnitPart, Transflow};
+    use crate::parser::ast::{SourceUnitPart, TransflowEnum};
     use crate::parser::parser::parse;
 
     #[test]
@@ -243,10 +243,10 @@ mod tests {
             SourceUnitPart::Transflow(decl) => {
                 let flow = decl.flows[0].clone();
                 match flow {
-                    Transflow::Midway(_) => {
+                    TransflowEnum::Midway(_) => {
                         assert!(false);
                     }
-                    Transflow::Endway(end) => {
+                    TransflowEnum::Endway(end) => {
                         assert_eq!(2, end.from.len());
                         assert_eq!("todo", end.from[0].value);
                         assert_eq!("blog", end.from[1].value);

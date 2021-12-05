@@ -15,7 +15,7 @@ use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::errors::QuakeError;
-use quake_core::parser::quake_parser::QuakeParser;
+use quake_core::parser::quake::QuakeAction;
 use quake_core::QuakeConfig;
 use quake_tui::tui_main_loop;
 
@@ -109,7 +109,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
         SubCommand::Cmd(cmd) => {
             let conf = config_quake(&cmd)?;
             if cmd.input.len() > 0 {
-                let expr = QuakeParser::from(cmd.input.as_str())?;
+                let expr = QuakeAction::action_from_text(cmd.input.as_str())?;
                 cli::action(expr, conf)?
             }
         }
