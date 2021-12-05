@@ -149,7 +149,7 @@ fn parameters(decl: Pair<Rule>) -> Vec<Parameter> {
         match pair.as_rule() {
             Rule::parameter => {
                 let mut param = Parameter::default();
-                param.value = String::from(pair.as_str());
+                param.value = value(pair);
 
                 params.push(param)
             }
@@ -162,6 +162,35 @@ fn parameters(decl: Pair<Rule>) -> Vec<Parameter> {
     }
 
     params
+}
+
+fn value(decl: Pair<Rule>) -> String {
+    let mut value: String = "".to_string();
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::double_quoted_string | Rule::single_quoted_string => {
+                value = string_from_pair(pair);
+            }
+            _ => {
+                value = String::from(pair.as_str());
+            }
+        }
+    }
+
+    value
+}
+
+fn string_from_pair(pair: Pair<Rule>) -> String {
+    replace_string_markers(pair.as_str())
+}
+
+pub fn replace_string_markers(input: &str) -> String {
+    match input.chars().next().unwrap() {
+        '"' => input.replace('"', ""),
+        '\'' => input.replace('\'', ""),
+        '`' => input.replace('`', ""),
+        _ => unreachable!("error: {:?}", input),
+    }
 }
 
 #[cfg(test)]
@@ -209,7 +238,6 @@ mod tests {
     #[test]
     fn should_parse_flow() {
         let unit = parse("define { from('todo','blog').to(<quake-calendar>); }").unwrap();
-        assert_eq!(1, unit.0.len());
         println!("{:?}", unit);
         match &unit.0[0] {
             SourceUnitPart::Transflow(decl) => {
@@ -220,6 +248,8 @@ mod tests {
                     }
                     Transflow::Endway(end) => {
                         assert_eq!(2, end.from.len());
+                        assert_eq!("todo", end.from[0].value);
+                        assert_eq!("blog", end.from[1].value);
                         assert_eq!("quake-calendar", end.component);
                     }
                 }

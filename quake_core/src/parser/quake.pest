@@ -49,7 +49,7 @@ e_quote = {
 }
 
 parameter = {
-    digit+ | string+ | single_quoted_string | double_quoted_string
+    digit+ | single_quoted_string | double_quoted_string
 }
 
 string = @{
