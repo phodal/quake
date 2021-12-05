@@ -222,6 +222,20 @@ mod tests {
     }
 
     #[test]
+    fn should_create_transflows() {
+        let define =
+            "define { from('todo','blog').to('record'), from('record').to(<quake-calendar>); }";
+        let expr = QuakeTransflow::from_text(define).unwrap();
+        assert_eq!(2, expr.routes.len());
+        assert_eq!(false, expr.routes[0].is_component);
+        assert_eq!("record", expr.routes[0].to);
+
+        assert_eq!("record", expr.routes[1].from[0]);
+        assert_eq!(true, expr.routes[1].is_component);
+        assert_eq!("quake-calendar", expr.routes[1].to);
+    }
+
+    #[test]
     fn should_create_route_func_name() {
         let define = "define { from('todo','blog').to(<quake-calendar>); }";
         let expr = QuakeTransflow::from_text(define).unwrap();

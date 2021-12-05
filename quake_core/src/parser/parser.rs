@@ -76,10 +76,9 @@ fn midway(decl: Pair<Rule>) -> Midway {
                 midway.from = parameters(pair);
             }
             Rule::parameter => {
-                midway.end = String::from(pair.as_str());
+                midway.end = value(pair);
             }
-            Rule::from => {}
-            Rule::to => {}
+            Rule::from | Rule::to | Rule::s_quote | Rule::e_quote => {}
             _ => {
                 println!("{}", pair);
             }
@@ -105,10 +104,7 @@ fn endway(decl: Pair<Rule>) -> Endway {
                     }
                 }
             }
-            Rule::from => {}
-            Rule::to => {}
-            Rule::s_quote => {}
-            Rule::e_quote => {}
+            Rule::from | Rule::to | Rule::s_quote | Rule::e_quote => {}
             _ => {
                 println!("{}", pair);
             }

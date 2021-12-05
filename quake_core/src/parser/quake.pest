@@ -16,10 +16,8 @@ transflow_expr = {
 }
 
 midway = {
-    from ~ parameters ~ to ~ mid_target
+    from ~ parameters ~ "." ~ to ~ s_quote ~ parameter ~ e_quote
 }
-
-mid_target = { parameter }
 
 endway = {
     from ~ parameters ~ "." ~ to ~ s_quote ~ component_decl ~ e_quote
@@ -30,7 +28,7 @@ component_decl = {
 }
 
 component_name = {
-    alpha+
+    ident
 }
 
 from = { "from" }
