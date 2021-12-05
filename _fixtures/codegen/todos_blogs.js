@@ -1,7 +1,8 @@
-function from_todo_blog_to_quake_calendar(todos, blog) {
+function from_todo_blog_to_quake_calendar(todos, blogs) {
   let results = [];
   for (let todo of todos) {
     results.push({
+      type: "todo",
       title: todo.title,
       content: todo.content,
       start_time: todo.created_date,
@@ -11,6 +12,7 @@ function from_todo_blog_to_quake_calendar(todos, blog) {
 
   for (let blog of blogs) {
     results.push({
+      type: "blog",
       title: blog.title,
       content: blog.content,
       start_time: blog.created_date,

@@ -44,6 +44,8 @@ impl JsFlowGen {
                 .as_str(),
             );
 
+            loop_expr.push_str(format!("\n      type: {:?},", &mapping.entry).as_str());
+
             let len = mapping.source.len();
             if len == mapping.target.len() {
                 for (index, field) in mapping.source.iter().enumerate() {
