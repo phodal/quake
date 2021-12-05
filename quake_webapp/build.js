@@ -38,6 +38,10 @@ $('body > script').map((i, script) => {
     let split = attribs.src.split("/");
     let file_name = split[split.length - 1];
 
+    if (attribs.src.startsWith('/transflow/')) {
+      return;
+    }
+
     if (attribs.type !== 'module') {
       text = text.replace(attribs.src, `js/${file_name}`);
 
