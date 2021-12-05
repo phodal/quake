@@ -77,13 +77,13 @@ mod tests {
     use crate::cli::action;
 
     #[test]
-    #[ignore]
-    fn update_todo() {
-        let expr = QuakeParser::from("todo.update(1)").unwrap();
+    fn throw_editor_empty() {
+        let expr = QuakeParser::from("todo.edit(1)").unwrap();
         let mut config = QuakeConfig::default();
         config.workspace = "_fixtures".to_string();
         config.editor = "".to_string();
 
-        action(expr, config).expect("cannot process");
+        let expected = action(expr, config).expect_err("cannot process");
+        assert_eq!(format!("{:?}", expected), "QuakeError(\"editor is empty\")");
     }
 }

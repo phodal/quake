@@ -281,7 +281,7 @@ mod tests {
             .await
             .expect_err("");
 
-            let error_msg = "QuakeError(\"unknown entry action: ActionDefine { object: \\\"story\\\", action: \\\"dddd\\\", text: \\\"\\\", parameters: [] }\")";
+            let error_msg = "QuakeError(\"unknown entry action: QuakeParser { object: \\\"story\\\", action: \\\"dddd\\\", text: \\\"\\\", parameters: [] }\")";
             assert_eq!(format!("{:?}", expected), error_msg);
         });
     }
