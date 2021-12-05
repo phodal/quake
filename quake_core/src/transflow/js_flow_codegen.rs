@@ -8,7 +8,14 @@ impl JsFlowGen {
         let mut vec = vec![];
         for flow in &trans.flows {
             let mut func = String::new();
-            let params = &flow.from.join("s, ");
+
+            let mut params = String::new();
+            for from in &flow.from {
+                params.push_str(format!("{:}s, ", from).as_str());
+            }
+            params.remove(params.len() - 1);
+            params.remove(params.len() - 1);
+
             func.push_str(format!("function {:}({:}) {{\n", &flow.name, params).as_str());
             func.push_str("  let results = [];\n");
 
@@ -121,7 +128,7 @@ mod tests {
         let code = JsFlowGen::from(&flow);
 
         assert_eq!(
-            "function from_todo_blog_to_quake_calendar(todos, blog) {
+            "function from_todo_blog_to_quake_calendar(todos, blogs) {
   let results = [];
   return results;
 }
