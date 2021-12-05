@@ -233,7 +233,7 @@ mod tests {
 
     #[test]
     fn should_parse_flow() {
-        let unit = parse("define { from('todo','blog').to(<quake-calendar>); }").unwrap();
+        let unit = parse("transflow { from('todo','blog').to(<quake-calendar>); }").unwrap();
         println!("{:?}", unit);
         match &unit.0[0] {
             SourceUnitPart::Transflow(decl) => {

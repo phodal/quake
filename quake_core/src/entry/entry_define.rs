@@ -1,7 +1,7 @@
 use indexmap::IndexMap;
 use serde_derive::{Deserialize, Serialize};
 
-use crate::model::CustomType;
+use crate::model::EntryDefineFields;
 use crate::quake_time;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
@@ -35,8 +35,7 @@ impl Default for EntryDefine {
 }
 
 impl EntryDefine {
-    // todo: add custom type support
-    pub fn create_custom_type(&self) -> CustomType {
+    pub fn to_type(&self) -> EntryDefineFields {
         let mut fields: IndexMap<String, String> = IndexMap::new();
         for map in &self.fields {
             for (key, value) in map {
@@ -44,7 +43,7 @@ impl EntryDefine {
             }
         }
 
-        CustomType::from(fields)
+        EntryDefineFields::from(fields)
     }
 
     pub fn create_flows_and_states(&self) -> IndexMap<String, String> {
@@ -132,7 +131,7 @@ mod tests {
         let todo = &custom_entry_from_yaml()[0];
         assert_eq!(3, todo.fields.len());
 
-        let custom_type = todo.create_custom_type();
+        let custom_type = todo.to_type();
         let option = custom_type.field("title").unwrap();
         assert_eq!(&MetaField::Title(String::from("Title")), option)
     }

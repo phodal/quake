@@ -214,7 +214,7 @@ mod tests {
 
     #[test]
     fn should_create_transflow() {
-        let define = "define { from('todo','blog').to(<quake-calendar>); }";
+        let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!(1, expr.routes.len());
         assert_eq!(true, expr.routes[0].is_end_way);
@@ -224,7 +224,7 @@ mod tests {
     #[test]
     fn should_create_transflows() {
         let define =
-            "define { from('todo','blog').to('record'), from('record').to(<quake-calendar>); }";
+            "transflow { from('todo','blog').to('record'), from('record').to(<quake-calendar>); }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!(2, expr.routes.len());
         assert_eq!(false, expr.routes[0].is_end_way);
@@ -237,7 +237,7 @@ mod tests {
 
     #[test]
     fn should_create_route_func_name() {
-        let define = "define { from('todo','blog').to(<quake-calendar>); }";
+        let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!("from_todo_blog_to_quake_calendar", expr.routes[0].naming());
     }

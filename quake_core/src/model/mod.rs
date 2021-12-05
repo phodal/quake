@@ -22,18 +22,18 @@ impl Default for Author {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct CustomType {
+pub struct EntryDefineFields {
     pub fields: IndexMap<String, MetaField>,
 }
 
-impl CustomType {
-    pub fn from(map: IndexMap<String, String>) -> CustomType {
+impl EntryDefineFields {
+    pub fn from(map: IndexMap<String, String>) -> EntryDefineFields {
         let mut fields = IndexMap::new();
         for (key, value) in map {
             fields.insert(key, Self::parse_field_type(value));
         }
 
-        CustomType { fields }
+        EntryDefineFields { fields }
     }
 
     pub fn field(&self, text: &str) -> Option<&MetaField> {
@@ -44,6 +44,7 @@ impl CustomType {
         let field = match value.as_str() {
             "Text" => MetaField::Text(value),
             "Title" => MetaField::Title(value),
+            "Flow" => MetaField::Flow(value),
             "Tagged" => {
                 let tags = vec![];
                 MetaField::Tagged(tags)
@@ -64,14 +65,14 @@ mod tests {
     use indexmap::IndexMap;
 
     use crate::model::meta_field::MetaField;
-    use crate::model::CustomType;
+    use crate::model::EntryDefineFields;
 
     #[test]
     fn custom_type() {
         let mut map = IndexMap::new();
         map.insert("title".to_string(), "Title".to_string());
 
-        let custom_type = CustomType::from(map);
+        let custom_type = EntryDefineFields::from(map);
 
         let option = custom_type.fields.get("title").unwrap();
         assert_eq!(&MetaField::Title(String::from("Title")), option)
