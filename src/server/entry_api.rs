@@ -15,11 +15,11 @@ use rocket::{get, post};
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::QuakeConfig;
 
-use crate::action::entry_paths::EntryPaths;
 use crate::action::entry_usecases;
 use crate::helper::csv_to_json::csv_to_json;
 use crate::helper::file_process;
 use crate::server::ApiError;
+use quake_core::entry::entry_paths::EntryPaths;
 
 #[get("/<entry_type>")]
 pub(crate) async fn get_entries(entry_type: &str, config: &State<QuakeConfig>) -> Redirect {
@@ -86,7 +86,8 @@ pub(crate) async fn get_entry(
     config: &State<QuakeConfig>,
 ) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
     let base_path = PathBuf::from(&config.workspace).join(entry_type);
-    let prefix = file_process::file_prefix(id);
+    let index = id;
+    let prefix = EntryFile::file_prefix(index);
     let vec = file_process::filter_by_prefix(base_path, prefix);
     if vec.len() == 0 {
         return Err(NotFound(Json(ApiError {

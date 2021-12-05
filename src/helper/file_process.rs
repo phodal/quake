@@ -1,14 +1,6 @@
-use quake_core::entry::entry_file::EntryFile;
 use std::path::PathBuf;
+
 use walkdir::{DirEntry, WalkDir};
-
-pub fn file_prefix(index: usize) -> String {
-    EntryFile::file_prefix(index)
-}
-
-pub fn file_name(index: usize, text: &str) -> String {
-    EntryFile::file_name(index, text)
-}
 
 fn is_with_prefix(entry: &DirEntry, prefix: &String) -> bool {
     entry
@@ -38,7 +30,7 @@ pub fn type_from_md_path(buf: &PathBuf) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use crate::helper::file_process::{file_name, type_from_md_path};
+    use crate::helper::file_process::type_from_md_path;
     use std::path::PathBuf;
 
     #[test]
@@ -49,11 +41,5 @@ mod tests {
 
         let typ = type_from_md_path(&buf).unwrap();
         assert_eq!(typ, "todo".to_string());
-    }
-
-    #[test]
-    fn format_test() {
-        assert_eq!("0001-hello.md", file_name(1, "hello"));
-        assert_eq!("1111-world.md", file_name(1111, "world"));
     }
 }

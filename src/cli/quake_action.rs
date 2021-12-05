@@ -7,10 +7,10 @@ use walkdir::{DirEntry, WalkDir};
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::QuakeConfig;
 
-use crate::action::entry_paths::EntryPaths;
 use crate::action::entry_usecases;
 use crate::action::entrysets::Entrysets;
 use crate::helper::meili_exec;
+use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::errors::QuakeError;
 
 fn is_hidden(entry: &DirEntry) -> bool {

@@ -315,4 +315,14 @@ sample
         let result = EntryFile::from(text, 1).unwrap();
         assert_eq!(text, result.to_string());
     }
+
+    #[test]
+    fn format_test() {
+        let index = 1;
+        let text = "hello";
+        assert_eq!("0001-hello.md", EntryFile::file_name(index, text));
+        let index = 1111;
+        let text = "world";
+        assert_eq!("1111-world.md", EntryFile::file_name(index, text));
+    }
 }

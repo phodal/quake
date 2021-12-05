@@ -6,13 +6,13 @@ use std::path::PathBuf;
 
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::{EntryDefine, EntryNodeInfo, FrontMatter};
+use quake_core::errors::QuakeError;
 use quake_core::quake_time::date_now;
 
 use crate::action::entry_factory;
-use crate::action::entry_paths::EntryPaths;
 use crate::action::entrysets::Entrysets;
 use crate::helper::file_process;
-use quake_core::errors::QuakeError;
+use quake_core::entry::entry_paths::EntryPaths;
 
 pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefine {
     let entries: Vec<EntryDefine> = entry_factory::entries_define_from_path(&paths.entries_define)
@@ -54,7 +54,9 @@ pub fn create_entry(
     let mut entry_info = entry_factory::entry_info_from_path(&paths.entry_node_info);
 
     let new_index = entry_info.index + 1;
-    let new_md_file = file_process::file_name(new_index, entry_text.as_str());
+    let index = new_index;
+    let text = entry_text.as_str();
+    let new_md_file = EntryFile::file_name(index, text);
     let mut target_path = paths.base.join(new_md_file);
     File::create(&target_path)?;
 
@@ -91,7 +93,7 @@ pub fn find_entry_path(
     #[allow(unused_assignments)]
     let mut target_file = PathBuf::new();
 
-    let prefix = file_process::file_prefix(index);
+    let prefix = EntryFile::file_prefix(index);
     let vec = file_process::filter_by_prefix(entry_path, prefix);
     if vec.len() > 0 {
         target_file = vec[0].clone();

@@ -251,9 +251,9 @@ mod tests {
 
     use quake_core::entry::entry_file::EntryFile;
 
-    use crate::action::entry_paths::EntryPaths;
     use crate::action::entry_usecases::sync_in_path;
     use crate::{entry_file_by_path, process_cmd, Command, Init, Opts, SubCommand};
+    use quake_core::entry::entry_paths::EntryPaths;
 
     #[test]
     fn entry_by_path() {

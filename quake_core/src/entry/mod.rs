@@ -3,6 +3,7 @@ pub mod entry_file;
 pub mod entry_node_info;
 // pub mod entry_entity;
 pub mod entry_defines;
+pub mod entry_paths;
 pub mod front_matter;
 pub mod slug;
 

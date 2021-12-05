@@ -13,8 +13,8 @@ use rocket::State;
 use quake_core::transflow::Transflow;
 use quake_core::QuakeConfig;
 
-use crate::action::entry_paths::EntryPaths;
 use crate::server::ApiError;
+use quake_core::entry::entry_paths::EntryPaths;
 
 #[get("/define")]
 pub(crate) async fn transflow_defines(
