@@ -19,6 +19,11 @@ impl Default for QuakeIt {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct QuakeTransflow {
+    pub routes: Vec<Route>,
+}
+
 impl QuakeTransflow {
     pub fn from_text(text: &str) -> Result<QuakeTransflow, Box<dyn Error>> {
         let it = quake(text)?;
@@ -28,11 +33,6 @@ impl QuakeTransflow {
 
         Ok(it.transflows[0].clone())
     }
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct QuakeTransflow {
-    pub routes: Vec<Route>,
 }
 
 impl Default for QuakeTransflow {
@@ -55,6 +55,16 @@ impl Default for Route {
             to: "".to_string(),
             is_component: false,
         }
+    }
+}
+
+impl Route {
+    pub fn naming(&self) -> String {
+        format!(
+            "from_{:}_to_{:}",
+            self.from.join("_"),
+            self.to.replace("-", "_")
+        )
     }
 }
 
@@ -209,5 +219,12 @@ mod tests {
         assert_eq!(1, expr.routes.len());
         assert_eq!(true, expr.routes[0].is_component);
         assert_eq!("quake-calendar", expr.routes[0].to);
+    }
+
+    #[test]
+    fn should_create_route_func_name() {
+        let define = "define { from('todo','blog').to(<quake-calendar>); }";
+        let expr = QuakeTransflow::from_text(define).unwrap();
+        assert_eq!("from_todo_blog_to_quake_calendar", expr.routes[0].naming());
     }
 }
