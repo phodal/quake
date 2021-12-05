@@ -30,9 +30,11 @@ pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefi
 
 pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     let (size, content) = Entrysets::generate(&paths.base)?;
-    fs::write(&paths.entries_csv, content)?;
 
-    update_entry_info(&paths.entry_node_info, &mut EntryNodeInfo { index: size });
+    if size > 0 {
+        fs::write(&paths.entries_csv, content)?;
+        update_entry_info(&paths.entry_node_info, &mut EntryNodeInfo { index: size });
+    }
 
     Ok(())
 }

@@ -95,7 +95,6 @@ fn sync_defines(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
         }
 
         let path_name = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
-
         if path_name.eq(&conf.server_location) {
             continue;
         }
