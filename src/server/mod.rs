@@ -11,6 +11,7 @@ use quake_core::QuakeConfig;
 mod action_api;
 mod entry_api;
 mod search_api;
+mod transflow_api;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ApiString {
@@ -54,6 +55,7 @@ pub fn quake_rocket() -> Rocket<Build> {
             "/action",
             routes![action_api::parse_query, action_api::suggest],
         )
+        .mount("/transflow", routes![transflow_api::transflow_defines])
         .attach(AdHoc::config::<QuakeConfig>())
 }
 
