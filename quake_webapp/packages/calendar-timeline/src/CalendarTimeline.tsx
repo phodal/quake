@@ -38,8 +38,8 @@ function CalendarTimeline(_props: Props) {
       <Timeline
         groups={groups}
         items={items}
-        defaultTimeStart={dayjs().add(-12, 'hour').toDate()}
-        defaultTimeEnd={dayjs().add(12, 'hour').toDate()}
+        defaultTimeStart={dayjs().add(-7, 'day').toDate()}
+        defaultTimeEnd={dayjs().add(7, 'day').toDate()}
       />
     </div>
   );
