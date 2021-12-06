@@ -16,7 +16,7 @@ use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::errors::QuakeError;
 use quake_core::parser::quake::QuakeAction;
-use quake_core::usecases::file_process::type_from_md_path;
+use quake_core::usecases::file_filter::type_from_md_path;
 use quake_core::QuakeConfig;
 use quake_tui::tui_main_loop;
 
@@ -36,13 +36,13 @@ pub struct Opts {
 
 #[derive(Parser)]
 pub enum SubCommand {
-    /// init project
+    /// init quake workspace
     Init(Init),
-    /// command for CRUD entries
+    /// cli command for CRUD entries
     Cmd(Command),
     /// web server for run
     Server(WebServer),
-    /// Terminal UI
+    /// terminal UI
     Tui(Terminal),
 }
 

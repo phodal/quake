@@ -13,14 +13,6 @@ use quake_core::errors::QuakeError;
 use quake_core::usecases::entry_usecases;
 use quake_core::usecases::entrysets::Entrysets;
 
-fn is_hidden(entry: &DirEntry) -> bool {
-    entry
-        .file_name()
-        .to_str()
-        .map(|s| s.starts_with("."))
-        .unwrap_or(false)
-}
-
 pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
     match action.as_str() {
         "sync" => {
@@ -41,6 +33,14 @@ pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Er
     }
 
     Ok(())
+}
+
+pub fn is_hidden(entry: &DirEntry) -> bool {
+    entry
+        .file_name()
+        .to_str()
+        .map(|s| s.starts_with("."))
+        .unwrap_or(false)
 }
 
 fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {

@@ -10,7 +10,7 @@ use crate::entry::{entry_define, entry_node_info, EntryDefine, EntryNodeInfo, Fr
 use crate::errors::QuakeError;
 use crate::quake_time::date_now;
 use crate::usecases::entrysets::Entrysets;
-use crate::usecases::file_process;
+use crate::usecases::file_filter;
 
 pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefine {
     let entries: Vec<EntryDefine> = entry_define::entries_define_from_path(&paths.entries_define)
@@ -92,7 +92,7 @@ pub fn find_entry_path(
     let mut target_file = PathBuf::new();
 
     let prefix = EntryFile::file_prefix(index);
-    let vec = file_process::filter_by_prefix(entry_path, prefix);
+    let vec = file_filter::filter_by_prefix(entry_path, prefix);
     if vec.len() > 0 {
         target_file = vec[0].clone();
     } else {

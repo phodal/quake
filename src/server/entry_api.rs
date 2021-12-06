@@ -15,7 +15,7 @@ use rocket::{get, post};
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::usecases::entry_usecases;
-use quake_core::usecases::file_process;
+use quake_core::usecases::file_filter;
 use quake_core::QuakeConfig;
 
 use crate::helper::csv_to_json::csv_to_json;
@@ -88,7 +88,7 @@ pub(crate) async fn get_entry(
     let base_path = PathBuf::from(&config.workspace).join(entry_type);
     let index = id;
     let prefix = EntryFile::file_prefix(index);
-    let vec = file_process::filter_by_prefix(base_path, prefix);
+    let vec = file_filter::filter_by_prefix(base_path, prefix);
     if vec.len() == 0 {
         return Err(NotFound(Json(ApiError {
             msg: "file not found".to_string(),
