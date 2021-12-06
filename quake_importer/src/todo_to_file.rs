@@ -3,6 +3,7 @@ use std::path::PathBuf;
 
 use quake_microsoft_todo::tasks::{TodoTask, WellknownListName};
 
+use crate::sqlite_to_file::simple_escape;
 use quake_core::entry::entry_file::EntryFile;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -23,7 +24,7 @@ pub fn dump_microsoft_todo(todos_lists: Vec<OutputList>, path: &PathBuf) {
 
             let title = todo.title;
             file.add_field("category", format!("{:?}", list.display_name));
-            file.add_field("title", format!("{:?}", title.clone()));
+            file.add_field("title", format!("{:?}", simple_escape(title.clone())));
             file.add_field("created_date", todo.created_date_time);
             file.add_field("updated_date", todo.last_modified_date_time);
 
@@ -48,7 +49,7 @@ pub fn dump_microsoft_todo(todos_lists: Vec<OutputList>, path: &PathBuf) {
             file.add_field("importance", format!("{:?}", todo.importance));
             file.add_field("status", format!("{:?}", todo.status));
 
-            file.name = EntryFile::file_name(index, &*title);
+            file.name = EntryFile::file_name(index, title.as_str());
 
             file.content = "\n\n".to_string();
             file.content.push_str(todo.body.content.as_str());

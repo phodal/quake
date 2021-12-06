@@ -59,10 +59,12 @@ pub fn write_file(path: &PathBuf, row: &Row, id: usize) {
     }
 }
 
-fn simple_escape(value: String) -> String {
+pub fn simple_escape(value: String) -> String {
     format!(
-        "{:?}",
+        "{:}",
         value
+            .replace("，", "-")
+            .replace("\u{2005}", " ")
             .replace(" ", " ")
             .replace("", " ")
             .replace("", " ")

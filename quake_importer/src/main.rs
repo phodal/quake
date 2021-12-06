@@ -114,6 +114,7 @@ mod tests {
     use crate::dump_apple_notes;
     use crate::dump_phodal_com;
     use crate::onenote::SectionVO;
+    use crate::sqlite_to_file::simple_escape;
     use crate::todo_to_file::{dump_microsoft_todo, OutputList};
 
     #[ignore]
@@ -159,20 +160,24 @@ mod tests {
         for section in sections {
             for page in section.pages {
                 let mut file = EntryFile::default();
-                file.name = EntryFile::file_name(index, &*page.title);
+                let title = simple_escape(page.title.clone());
+                file.name = EntryFile::file_name(index, title.as_str());
 
                 file.add_field("category", format!("{:?}", section.display_name));
                 file.add_field("notebook", format!("{:?}", section.parent_name));
-                file.add_field("title", format!("{:?}", page.title));
-                file.add_field("created_date", page.created_date_time.clone());
-                file.add_field("updated_date", page.created_date_time);
+                file.add_field("title", format!("{:?}", title));
+                file.add_field(
+                    "created_date",
+                    format!("{:?}", page.created_date_time.clone()),
+                );
+                file.add_field("updated_date", format!("{:?}", page.created_date_time));
 
                 file.content = "\n\n".to_string();
 
                 let source_file = content_path.join(format!("{:}.md", page.id));
                 let content = fs::read_to_string(source_file).unwrap_or("".to_string());
 
-                file.content.push_str(content.as_str());
+                file.content.push_str(simple_escape(content).as_str());
 
                 match fs::write(&target.join(file.name.clone()), file.to_string()) {
                     Ok(_) => {}
