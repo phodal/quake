@@ -71,7 +71,7 @@ where
     match app.main_widget {
         MainWidget::Home => frame.render_widget(Block::default(), area),
         MainWidget::Dirs => {
-            let entry_dirs: Vec<ListItem> = list_entries_dirs()
+            let entry_dirs: Vec<ListItem> = list_workspaces()
                 .unwrap_or_default()
                 .iter()
                 .rev()
@@ -92,10 +92,10 @@ where
     }
 }
 
-fn list_entries_dirs() -> io::Result<Vec<PathBuf>> {
+fn list_workspaces() -> io::Result<Vec<PathBuf>> {
     let mut entries = fs::read_dir(".")?
         .map(|res| res.map(|e| e.path()))
-        .filter(|path| path.as_deref().map(is_entries_dir).unwrap_or(false))
+        .filter(|path| path.as_deref().map(is_workspace).unwrap_or(false))
         .collect::<Result<Vec<_>, io::Error>>()?;
 
     entries.sort();
@@ -103,6 +103,6 @@ fn list_entries_dirs() -> io::Result<Vec<PathBuf>> {
     Ok(entries)
 }
 
-fn is_entries_dir(path: &Path) -> bool {
+fn is_workspace(path: &Path) -> bool {
     path.is_dir() && path.join("entries.csv").exists()
 }
