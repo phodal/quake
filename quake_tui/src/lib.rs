@@ -46,12 +46,11 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<(
 
         if let Event::Key(key) = event::read()? {
             match app.mode {
-                Mode::Normal => match key.code {
-                    KeyCode::Char(':') => {
+                Mode::Normal => {
+                    if let KeyCode::Char(':') = key.code {
                         app.mode = Mode::Command;
                     }
-                    _ => {}
-                },
+                }
                 Mode::Command => match key.code {
                     KeyCode::Enter => {
                         let command: String = app.command.drain(..).collect();
