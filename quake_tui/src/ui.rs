@@ -2,9 +2,9 @@ use crate::app::{App, MainWidget, Mode};
 use std::path::{Path, PathBuf};
 use std::{fs, io};
 use tui::backend::Backend;
-use tui::layout::{Constraint, Corner, Direction, Layout, Rect};
+use tui::layout::{Alignment, Constraint, Corner, Direction, Layout, Rect};
 use tui::style::{Color, Modifier, Style};
-use tui::text::{Span, Spans, Text};
+use tui::text::{Span, Spans};
 use tui::widgets::{Block, Borders, List, ListItem, Paragraph};
 use tui::Frame;
 use unicode_width::UnicodeWidthStr;
@@ -13,55 +13,24 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .margin(2)
-        .constraints(
-            [
-                Constraint::Length(1),
-                Constraint::Length(3),
-                Constraint::Min(1),
-            ]
-            .as_ref(),
-        )
+        .constraints([Constraint::Length(3), Constraint::Min(1)].as_ref())
         .split(f.size());
-    let (msg, style) = match app.mode {
-        Mode::Normal => (
-            vec![
-                Span::raw("Press "),
-                Span::styled(":", Style::default().add_modifier(Modifier::BOLD)),
-                Span::raw(" to start command mode."),
-            ],
-            Style::default().add_modifier(Modifier::RAPID_BLINK),
-        ),
-        Mode::Command => (
-            vec![
-                Span::raw("Press "),
-                Span::styled("Esc", Style::default().add_modifier(Modifier::BOLD)),
-                Span::raw(" to quit command mode, "),
-                Span::styled("Enter", Style::default().add_modifier(Modifier::BOLD)),
-                Span::raw(" to record the message"),
-            ],
-            Style::default(),
-        ),
-    };
-    let mut text = Text::from(Spans::from(msg));
-    text.patch_style(style);
-    let help_message = Paragraph::new(text);
-    f.render_widget(help_message, chunks[0]);
-    let action = Paragraph::new(app.command.as_ref())
+    let command_bar = Paragraph::new(app.command.as_ref())
         .style(match app.mode {
             Mode::Normal => Style::default(),
             Mode::Command => Style::default().fg(Color::Yellow),
         })
         .block(Block::default().borders(Borders::ALL).title("Action"));
-    f.render_widget(action, chunks[1]);
+    f.render_widget(command_bar, chunks[0]);
     match app.mode {
         Mode::Normal => {}
         Mode::Command => f.set_cursor(
-            chunks[1].x + app.command.width() as u16 + 1,
-            chunks[1].y + 1,
+            chunks[0].x + app.command.width() as u16 + 1,
+            chunks[0].y + 1,
         ),
     }
 
-    draw_main(app, f, chunks[2]);
+    draw_main(app, f, chunks[1]);
 }
 
 fn draw_main<B>(app: &App, frame: &mut Frame<B>, area: Rect)
@@ -69,7 +38,33 @@ where
     B: Backend,
 {
     match app.main_widget {
-        MainWidget::Home => frame.render_widget(Block::default(), area),
+        MainWidget::Home => {
+            let help_messages = vec![
+                Spans::from(vec![
+                    Span::raw("Press "),
+                    Span::styled(":", Style::default().add_modifier(Modifier::BOLD)),
+                    Span::raw(" into command mode, "),
+                    Span::styled("Esc", Style::default().add_modifier(Modifier::BOLD)),
+                    Span::raw(" back to normal mode."),
+                ]),
+                Spans::from(vec![
+                    Span::raw("Command "),
+                    Span::styled("listAll", Style::default().add_modifier(Modifier::BOLD)),
+                    Span::raw(" list all workspace."),
+                ]),
+                Spans::from(vec![
+                    Span::raw("Command "),
+                    Span::styled("quit", Style::default().add_modifier(Modifier::BOLD)),
+                    Span::raw(" quit quake app."),
+                ]),
+            ];
+            frame.render_widget(
+                Paragraph::new(help_messages)
+                    .block(Block::default().title("Main").borders(Borders::ALL))
+                    .alignment(Alignment::Center),
+                area,
+            )
+        }
         MainWidget::Dirs => {
             let entry_dirs: Vec<ListItem> = list_workspaces()
                 .unwrap_or_default()
