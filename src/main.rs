@@ -1,11 +1,11 @@
 use std::error::Error;
 use std::fs;
-use std::io::{stdout, Write};
 use std::path::PathBuf;
 
 use clap::Parser;
 use futures::future;
 use helper::entry_watcher;
+use tracing::error;
 
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::parser::quake::QuakeAction;
@@ -69,10 +69,11 @@ pub struct Command {
 
 #[rocket::main]
 async fn main() {
-    let mut stdout = stdout();
     let opts: Opts = Opts::parse();
+
+    setup_log();
     if let Err(err) = process_cmd(opts).await {
-        stdout.write(format!("{:?}", err).as_bytes()).unwrap();
+        error!("{:?}", err);
     }
 }
 
@@ -99,6 +100,17 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
+}
+
+fn setup_log() {
+    use tracing_subscriber::prelude::*;
+    let filter_layer = tracing_subscriber::filter::LevelFilter::DEBUG;
+    let fmt_layer = tracing_subscriber::fmt::layer().with_target(true);
+
+    tracing_subscriber::registry()
+        .with(filter_layer)
+        .with(fmt_layer)
+        .init();
 }
 
 fn config_quake(cmd: &Command) -> Result<QuakeConfig, Box<dyn Error>> {

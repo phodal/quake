@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
+use tracing::info;
 
 use walkdir::{DirEntry, WalkDir};
 
@@ -71,7 +72,7 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
         meili_exec::feed_command(&path_name)?;
         meili_exec::feed_settings(&path_name)?;
 
-        println!("done '{:}' feed", &path_name);
+        info!("done '{:}' feed", &path_name);
     }
 
     fs::remove_file(temp_file)?;

@@ -1,15 +1,19 @@
-use crate::exec_wrapper::meili_exec::feed_entry;
-use futures::channel::mpsc::{channel, Receiver};
-use futures::{SinkExt, StreamExt};
-use notify::event::ModifyKind;
-use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
-use quake_core::entry::entry_file::EntryFile;
-use quake_core::errors::QuakeError;
-use quake_core::usecases::file_filter::type_from_md_path;
 use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
+
+use futures::channel::mpsc::{channel, Receiver};
+use futures::{SinkExt, StreamExt};
+use notify::event::ModifyKind;
+use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
+use tracing::{debug, error};
+
+use quake_core::entry::entry_file::EntryFile;
+use quake_core::errors::QuakeError;
+use quake_core::usecases::file_filter::type_from_md_path;
+
+use crate::exec_wrapper::meili_exec::feed_entry;
 
 fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
     let (mut tx, rx) = channel(1);
@@ -26,7 +30,7 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
 
 // todo: add type merge for ranges
 pub async fn async_watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
-    println!("start watch: {:?}", path.as_ref());
+    debug!("start watch: {:?}", path.as_ref());
     let (mut watcher, mut rx) = async_watcher()?;
     watcher.watch(path.as_ref(), RecursiveMode::Recursive)?;
 
@@ -36,11 +40,11 @@ pub async fn async_watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
                 match feed_by_event(event) {
                     Ok(_) => {}
                     Err(err) => {
-                        println!("watch error: {:?}", err)
+                        error!("watch error: {:?}", err)
                     }
                 };
             }
-            Err(e) => println!("watch error: {:?}", e),
+            Err(e) => error!("watch error: {:?}", e),
         }
     }
 
@@ -58,7 +62,7 @@ fn feed_by_event(event: Event) -> Result<(), Box<dyn Error>> {
         _ => return Ok(()),
     }
 
-    println!("feed_by_event {:?}", &event);
+    debug!("feed_by_event {:?}", &event);
     for path in event.paths {
         if path.is_dir() {
             continue;
