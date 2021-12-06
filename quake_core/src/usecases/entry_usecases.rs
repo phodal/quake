@@ -145,7 +145,7 @@ mod tests {
 
     #[test]
     fn update_entry_title() {
-        let yiki_path = PathBuf::from("..").join("_fixtures").join("yiki");
+        let yiki_path = PathBuf::from("..").join("examples").join("yiki");
         let entry_type = "yiwi";
         let index_id = 1;
 
@@ -174,7 +174,7 @@ mod tests {
 
     #[test]
     fn update_entry_content() {
-        let yiki_path = PathBuf::from("..").join("_fixtures").join("yiki");
+        let yiki_path = PathBuf::from("..").join("examples").join("yiki");
         let entry_type = "yiwi";
         let index_id = 2;
 

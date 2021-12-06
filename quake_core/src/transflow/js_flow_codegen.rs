@@ -175,7 +175,7 @@ mod tests {
     fn mapping_to_file() {
         let fixtures = PathBuf::from("../").join("_fixtures");
 
-        let path = fixtures.join("transflows.yaml");
+        let path = fixtures.join("transflows").join("transflows.yaml");
         let content = fs::read_to_string(path).unwrap();
         let flows: Vec<Transflow> = serde_yaml::from_str(&*content).unwrap();
 

@@ -37,7 +37,7 @@ mod tests {
 
     #[test]
     fn json_to_csv() {
-        let path = PathBuf::from("_fixtures").join("todo").join("entries.csv");
+        let path = PathBuf::from("examples").join("todo").join("entries.csv");
         let mut rdr = csv::Reader::from_reader(File::open(path).expect("cannot open file"));
         let output = csv_to_json(&mut rdr).unwrap();
 

@@ -121,7 +121,7 @@ mod tests {
     #[test]
     fn serialize_from_file() {
         let path = PathBuf::from("../")
-            .join("_fixtures")
+            .join("examples")
             .join("transflows.yaml");
         let content = fs::read_to_string(path).unwrap();
         let flows: Vec<Transflow> = serde_yaml::from_str(&*content).unwrap();

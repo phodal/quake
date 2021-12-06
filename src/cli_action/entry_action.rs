@@ -80,7 +80,7 @@ mod tests {
     fn throw_editor_empty() {
         let expr = QuakeAction::action_from_text("todo.edit(1)").unwrap();
         let mut config = QuakeConfig::default();
-        config.workspace = "_fixtures".to_string();
+        config.workspace = "examples".to_string();
         config.editor = "".to_string();
 
         let expected = action(expr, config).expect_err("cannot process");

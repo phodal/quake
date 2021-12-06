@@ -15,7 +15,7 @@ Quake 是面向极客的知识管理元框架，它可以：
 
 文档示例：
 
-1. [_fixtures](https://github.com/phodal/quake/tree/master/_fixtures)
+1. [examples](./examples)
 
 欢迎入群讨论：
 

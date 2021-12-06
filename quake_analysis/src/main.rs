@@ -14,7 +14,7 @@ fn is_markdown(entry: &DirEntry) -> bool {
 }
 
 fn main() {
-    count_by_path(PathBuf::from("_fixtures").join("blog"));
+    count_by_path(PathBuf::from("examples").join("blog"));
 }
 
 fn count_by_path(path: PathBuf) {

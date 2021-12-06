@@ -203,7 +203,7 @@ mod tests {
 
     #[test]
     fn read_csv() {
-        let buf = PathBuf::from("_fixtures").join("todo").join("entries.csv");
+        let buf = PathBuf::from("examples").join("todo").join("entries.csv");
         match Entrysets::read(buf) {
             Ok(_table) => {
                 // println!("{:?}", table);
@@ -216,7 +216,7 @@ mod tests {
 
     #[test]
     fn rebuild() {
-        let buf = PathBuf::from("..").join("_fixtures").join("todo");
+        let buf = PathBuf::from("..").join("examples").join("todo");
         let map = Entrysets::rebuild(&buf).unwrap();
         match Entrysets::content_by_table(map.0, map.1) {
             Ok(some) => {
@@ -230,7 +230,7 @@ mod tests {
 
     #[test]
     fn jsonify_todo() {
-        let buf = PathBuf::from("..").join("_fixtures").join("todo");
+        let buf = PathBuf::from("..").join("examples").join("todo");
         let json = Entrysets::jsonify(&buf).unwrap();
 
         #[cfg(not(windows))]

@@ -35,7 +35,7 @@ mod tests {
 
     #[test]
     fn type_from() {
-        let buf = PathBuf::from("_fixtures")
+        let buf = PathBuf::from("examples")
             .join("todo")
             .join("0001-time-support.md");
 

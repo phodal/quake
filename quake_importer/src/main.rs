@@ -117,15 +117,27 @@ mod tests {
     #[ignore]
     #[test]
     fn dump_test() {
-        let path = PathBuf::from("..").join("_fixtures").join("phodal_com");
+        let path = PathBuf::from("..").join("examples").join("phodal_com");
         let _ = dump_phodal_com("../dbs/phodal.dev", path);
     }
 
     #[ignore]
     #[test]
     fn dump_notes() {
-        let path = PathBuf::from("..").join("_fixtures").join("notes");
+        let path = PathBuf::from("..").join("examples").join("notes");
         let _ = dump_apple_notes("../dbs/mac_apt.db", path);
+    }
+
+    #[ignore]
+    #[test]
+    fn dump_local_todo() {
+        let output_dir = PathBuf::from("../").join("examples").join("microsoft_todo");
+
+        let input = PathBuf::from("..").join("dbs").join("todo-output.json");
+        let todo = fs::read_to_string(format!("{:}", input.display())).unwrap();
+        let vec: Vec<OutputList> = serde_json::from_str(&*todo).unwrap();
+
+        let _ = dump_microsoft_todo(vec, &output_dir);
     }
 
     #[test]
@@ -146,6 +158,6 @@ mod tests {
         let file = EntryFile::from(str.as_str(), 1).unwrap();
 
         assert_eq!(file.field("title").unwrap(), "Game Develop");
-        // fs::remove_dir_all(output_dir).unwrap();
+        fs::remove_dir_all(output_dir).unwrap();
     }
 }

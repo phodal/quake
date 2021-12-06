@@ -2,9 +2,9 @@
 .idea
 dev.db
 phodal.dev
-_fixtures/blog/*
-_fixtures/notes/*
-_fixtures/microsoft_todo/*
+examples/blog/*
+examples/notes/*
+examples/microsoft_todo/*
 .DS_Store
 quake_importer/scripts/readnotes/*
 dbs/NoteStore.sqlite

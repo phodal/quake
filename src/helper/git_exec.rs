@@ -73,7 +73,7 @@ pub fn parse_changes(last: String) -> Vec<FileChange> {
 
 #[cfg(test)]
 mod tests {
-    use crate::helper::git_cmd::{last_modify, parse_changes};
+    use crate::helper::git_exec::{last_modify, parse_changes};
     use std::path::PathBuf;
 
     #[test]
