@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use clap::Parser;
 use futures::future;
 use helper::entry_watcher;
-use tracing::error;
+use tracing::{debug, error};
 
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::parser::quake::QuakeAction;
@@ -143,7 +143,8 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
         server_location: "web".to_string(),
     };
 
-    fs::write(path, serde_yaml::to_string(&config)?)?;
+    fs::write(&path, serde_yaml::to_string(&config)?)?;
+    debug!("create .quake.yaml in {:?}", &path.display());
 
     let todo_define = "
 - type: todo
@@ -157,7 +158,8 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
         entries: serde_yaml::from_str(todo_define).unwrap(),
     };
 
-    fs::write(define, serde_yaml::to_string(&file)?)?;
+    fs::write(&define, serde_yaml::to_string(&file)?)?;
+    debug!("create default entry defines in {:?}", &define.display());
 
     Ok(())
 }
