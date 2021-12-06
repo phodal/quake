@@ -74,7 +74,7 @@ mod tests {
     use quake_core::parser::quake::QuakeAction;
     use quake_core::quake_config::QuakeConfig;
 
-    use crate::cli::action;
+    use crate::cli_action::action;
 
     #[test]
     fn throw_editor_empty() {
