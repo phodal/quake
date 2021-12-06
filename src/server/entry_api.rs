@@ -18,7 +18,7 @@ use quake_core::usecases::entry_usecases;
 use quake_core::usecases::file_filter;
 use quake_core::QuakeConfig;
 
-use crate::helper::csv_to_json::csv_to_json;
+use crate::server::helper::csv_to_json::csv_to_json;
 use crate::server::ApiError;
 
 #[get("/<entry_type>")]

@@ -33,7 +33,7 @@ mod tests {
     use std::fs::File;
     use std::path::PathBuf;
 
-    use crate::helper::csv_to_json::csv_to_json;
+    use crate::server::helper::csv_to_json::csv_to_json;
 
     #[test]
     fn json_to_csv() {

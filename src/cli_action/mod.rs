@@ -4,6 +4,7 @@ use quake_core::quake::QuakeAction;
 use quake_core::QuakeConfig;
 
 pub mod entry_action;
+pub mod helper;
 pub mod quake_action;
 pub mod transflow_action;
 

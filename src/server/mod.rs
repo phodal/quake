@@ -10,6 +10,7 @@ use quake_core::QuakeConfig;
 
 mod action_api;
 mod entry_api;
+mod helper;
 mod search_api;
 mod transflow_api;
 
