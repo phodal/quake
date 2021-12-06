@@ -3,7 +3,7 @@ use std::fs;
 use std::path::PathBuf;
 use tracing::info;
 
-use walkdir::{DirEntry, WalkDir};
+use walkdir::{DirEntry, FilterEntry, IntoIter, WalkDir};
 
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::QuakeConfig;
@@ -48,11 +48,7 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&conf.workspace);
     let temp_file = "dump.json";
 
-    for entry in WalkDir::new(path)
-        .min_depth(1)
-        .into_iter()
-        .filter_entry(|e| !is_hidden(e))
-    {
+    for entry in walk_in_path(path) {
         let entry = entry.unwrap();
         if !entry.path().is_dir() {
             continue;
@@ -80,16 +76,19 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn sync_defines(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
-    let path = PathBuf::from(&conf.workspace);
-
-    let mut define_file = EntryDefines::default();
-    for entry in WalkDir::new(path)
+fn walk_in_path(path: PathBuf) -> FilterEntry<IntoIter, fn(&DirEntry) -> bool> {
+    WalkDir::new(path)
         .min_depth(1)
         .max_depth(1)
         .into_iter()
         .filter_entry(|e| !is_hidden(e))
-    {
+}
+
+fn sync_defines(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
+    let path = PathBuf::from(&conf.workspace);
+
+    let mut define_file = EntryDefines::default();
+    for entry in walk_in_path(path) {
         let entry = entry.unwrap();
         if !entry.path().is_dir() {
             continue;
