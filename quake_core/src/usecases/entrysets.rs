@@ -213,10 +213,27 @@ mod tests {
                 assert_eq!("id".to_string(), table.header[0]);
                 assert_eq!("1".to_string(), table.rows[0][0]);
             }
-            Err(err) => {
+            Err(_err) => {
                 assert!(false);
             }
         }
+    }
+
+    #[test]
+    fn test_define_from_csv() {
+        let buf = PathBuf::from("..")
+            .join("examples")
+            .join("todo")
+            .join("entries.csv");
+
+        let define = Entrysets::define_from_csv("todo".to_string(), buf).unwrap();
+
+        assert_eq!("todo", define.entry_type);
+
+        assert_eq!("Title", define.fields[0].get("title").unwrap());
+        assert_eq!("String", define.fields[1].get("author").unwrap());
+        assert_eq!("Date", define.fields[2].get("created_date").unwrap());
+        assert_eq!("Date", define.fields[3].get("updated_date").unwrap());
     }
 
     #[test]
