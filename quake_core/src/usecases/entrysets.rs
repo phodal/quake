@@ -203,13 +203,18 @@ mod tests {
 
     #[test]
     fn read_csv() {
-        let buf = PathBuf::from("examples").join("todo").join("entries.csv");
+        let buf = PathBuf::from("..")
+            .join("examples")
+            .join("todo")
+            .join("entries.csv");
+
         match Entrysets::read(buf) {
-            Ok(_table) => {
-                // println!("{:?}", table);
+            Ok(table) => {
+                assert_eq!("id".to_string(), table.header[0]);
+                assert_eq!("1".to_string(), table.rows[0][0]);
             }
             Err(err) => {
-                println!("{:?}", err);
+                assert!(false);
             }
         }
     }

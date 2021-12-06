@@ -29,8 +29,6 @@ csv = "1.1"
 
 walkdir = "2"
 
-indexmap = { version = "1.7.0", features = ["serde"] }
-
 chrono = "0.4"
 
 # Termnial ui
