@@ -162,7 +162,7 @@ impl EntryFile {
         (header, column)
     }
 
-    pub fn add_id(&mut self, value: usize) {
+    pub fn insert_id(&mut self, value: usize) {
         self.front_matter
             .fields
             .insert("id".to_string(), value.to_string());

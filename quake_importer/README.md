@@ -14,6 +14,10 @@
 
 use `https://github.com/quakeworks/microsoft-todo-export` for Microsoft Todo
 
+### Microsoft OneNote
+
+use `https://github.com/quakeworks/microsoft-todo-export` for Microsoft OneNote
+
 ### Apple Notes
 
 use `https://github.com/quakeworks/readnotes` for build `mac_apt.db`
