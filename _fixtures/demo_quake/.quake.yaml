@@ -1,0 +1,4 @@
+workspace: "."
+search_url: "http://127.0.0.1:7700"
+server_location: "dist"
+editor: vim

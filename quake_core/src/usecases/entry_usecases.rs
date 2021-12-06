@@ -140,7 +140,30 @@ mod tests {
     use std::path::PathBuf;
 
     use crate::entry::entry_file::EntryFile;
-    use crate::usecases::entry_usecases::{find_entry_path, update_entry_fields};
+    use crate::usecases::entry_usecases::{create_entry, find_entry_path, update_entry_fields};
+    #[test]
+    fn create_todo_entry() {
+        let quake_path = PathBuf::from("..").join("_fixtures").join("demo_quake");
+        let path = quake_path.display().to_string();
+
+        let result = create_entry(
+            &path,
+            &"create_todo_entry".to_string(),
+            &"hello, world".to_string(),
+        );
+
+        match result {
+            Ok((path, file)) => {
+                assert!(path.display().to_string().contains("0001-hello-world.md"));
+                assert_eq!("hello, world", file.field("title").unwrap())
+            }
+            Err(_err) => {
+                assert!(false)
+            }
+        }
+
+        let _ = fs::remove_dir_all(quake_path.join("create_todo_entry")).unwrap();
+    }
 
     #[test]
     fn update_entry_title() {

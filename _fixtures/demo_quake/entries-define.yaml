@@ -1,0 +1,11 @@
+---
+entries:
+  - type: todo
+    display: ""
+    fields:
+      - title: Title
+      - author: String
+      - content: Body
+      - created_date: Date
+      - updated_date: Date
+    actions: ~

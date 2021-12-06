@@ -237,6 +237,16 @@ mod tests {
     }
 
     #[test]
+    fn test_generate() {
+        let buf = PathBuf::from("..").join("examples").join("todo");
+
+        let (size, string) = Entrysets::generate(&buf).unwrap();
+
+        assert_eq!(1, size);
+        assert_eq!( "\"id\",\"title\",\"author\",\"created_date\",\"updated_date\"\n1,\"time support\",\"\",\"2021-11-24 19:14:10\",\"2021-11-24 19:14:10\"\n", string);
+    }
+
+    #[test]
     fn rebuild() {
         let buf = PathBuf::from("..").join("examples").join("todo");
         let map = Entrysets::rebuild(&buf).unwrap();
