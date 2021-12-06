@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use quake_core::parser::quake::QuakeAction;
 use quake_core::quake_config::QuakeConfig;
 
-use crate::helper::editor_exec;
+use crate::exec_wrapper::editor_exec;
 use crate::helper::table_process;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::errors::QuakeError;

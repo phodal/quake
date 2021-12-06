@@ -1,4 +1,4 @@
-use crate::helper::meili_exec::feed_entry;
+use crate::exec_wrapper::meili_exec::feed_entry;
 use futures::channel::mpsc::{channel, Receiver};
 use futures::{SinkExt, StreamExt};
 use notify::event::ModifyKind;
@@ -99,7 +99,7 @@ pub fn entry_file_by_path(path: &PathBuf) -> Result<(String, EntryFile), Box<dyn
 mod tests {
     use std::path::PathBuf;
 
-    use crate::entry_watcher::entry_file_by_path;
+    use crate::helper::entry_watcher::entry_file_by_path;
 
     #[test]
     fn entry_by_path() {

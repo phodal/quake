@@ -5,6 +5,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 use futures::future;
+use helper::entry_watcher;
 
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::parser::quake::QuakeAction;
@@ -14,7 +15,7 @@ use quake_tui::tui_main_loop;
 use crate::server::quake_rocket;
 
 pub mod cli_action;
-pub mod entry_watcher;
+pub mod exec_wrapper;
 pub mod helper;
 pub mod server;
 
