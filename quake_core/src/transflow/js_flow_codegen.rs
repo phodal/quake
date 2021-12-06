@@ -1,17 +1,6 @@
 use crate::transflow::transflow::{Flow, Mapping};
 use crate::transflow::Transflow;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
-pub struct WebComponentElement {
-    pub attributes: Vec<String>,
-}
-
-impl Default for WebComponentElement {
-    fn default() -> Self {
-        WebComponentElement { attributes: vec![] }
-    }
-}
-
 /// generate from typescript interface
 /// ```javascript
 ///   el.setAttribute('entries', JSON.stringify({
