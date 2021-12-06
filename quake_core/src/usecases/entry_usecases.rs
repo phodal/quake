@@ -121,7 +121,7 @@ pub fn update_entry_fields(
         }
     }
 
-    if let Some(_val) = entry_file.front_matter.fields.get("updated_date") {
+    if let Some(_val) = entry_file.fields.get("updated_date") {
         entry_file.update_field(&"updated_date".to_string(), &date_now())
     }
 

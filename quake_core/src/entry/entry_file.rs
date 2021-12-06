@@ -6,7 +6,6 @@ use serde::ser::SerializeMap;
 use serde::{Deserialize, Serialize, Serializer};
 use serde_yaml::Value;
 
-use crate::entry::front_matter::FrontMatter;
 use crate::entry::slug::slugify;
 use crate::errors::QuakeError;
 
@@ -15,7 +14,7 @@ pub struct EntryFile {
     pub id: usize,
     pub path: PathBuf,
     pub name: String,
-    pub front_matter: FrontMatter,
+    pub fields: IndexMap<String, String>,
     pub content: String,
 }
 
@@ -24,8 +23,8 @@ impl Serialize for EntryFile {
     where
         S: Serializer,
     {
-        let mut map = serializer.serialize_map(Some(self.front_matter.fields.len()))?;
-        for (k, v) in &self.front_matter.fields {
+        let mut map = serializer.serialize_map(Some(self.fields.len()))?;
+        for (k, v) in &self.fields {
             map.serialize_entry(&k.to_string(), &v)?;
         }
 
@@ -41,7 +40,7 @@ impl Default for EntryFile {
             id: 1,
             path: Default::default(),
             name: "".to_string(),
-            front_matter: FrontMatter::default(),
+            fields: IndexMap::default(),
             content: "".to_string(),
         }
     }
@@ -51,7 +50,7 @@ impl ToString for EntryFile {
     fn to_string(&self) -> String {
         let mut output = vec![];
         output.push("---".to_string());
-        for (key, value) in &self.front_matter.fields {
+        for (key, value) in &self.fields {
             if !key.eq("content") {
                 output.push(format!("{}: {}", key, value));
             }
@@ -113,7 +112,7 @@ impl EntryFile {
             id: index_id,
             path: Default::default(),
             name: "".to_string(),
-            front_matter: FrontMatter { fields },
+            fields: fields,
             content: String::from(content),
         })
     }
@@ -152,7 +151,7 @@ impl EntryFile {
         let mut column: Vec<String> = vec![];
         column.push(index.to_string());
 
-        for (key, value) in self.front_matter.fields {
+        for (key, value) in self.fields {
             if !key.eq("content") {
                 header.push(key);
                 column.push(value);
@@ -163,30 +162,26 @@ impl EntryFile {
     }
 
     pub fn insert_id(&mut self, value: usize) {
-        self.front_matter
-            .fields
-            .insert("id".to_string(), value.to_string());
+        self.fields.insert("id".to_string(), value.to_string());
     }
 
     pub fn field(&self, field: &str) -> Option<String> {
-        match self.front_matter.fields.get(field) {
+        match self.fields.get(field) {
             None => None,
             Some(err) => return Some(err.to_string()),
         }
     }
 
     pub fn add_field(&mut self, key: &str, value: &str) {
-        self.front_matter
-            .fields
-            .insert(key.to_string(), value.to_string());
+        self.fields.insert(key.to_string(), value.to_string());
     }
 
     pub fn set_fields(&mut self, fields: IndexMap<String, String>) {
-        self.front_matter.fields = fields;
+        self.fields = fields;
     }
 
     pub fn update_field(&mut self, field: &String, value: &String) {
-        match self.front_matter.fields.get_mut(field) {
+        match self.fields.get_mut(field) {
             None => {}
             Some(val) => {
                 *val = value.to_string();
@@ -261,7 +256,7 @@ sample
 
         assert_eq!(text, entry_file.to_string());
 
-        let map = entry_file.front_matter.fields;
+        let map = entry_file.fields;
         entry_file.name = "0001-hello-world.md".to_string();
 
         assert_eq!("hello, world", map.get("title").unwrap());
@@ -302,11 +297,7 @@ sample
 
         entry_file.update_field(&"title".to_string(), &"Hello, World".to_string());
 
-        let value = entry_file
-            .front_matter
-            .fields
-            .get(&"title".to_string())
-            .unwrap();
+        let value = entry_file.fields.get(&"title".to_string()).unwrap();
         assert_eq!(value, &"Hello, World".to_string());
     }
 
