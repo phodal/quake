@@ -49,6 +49,7 @@ impl EntryDefine {
         EntryDefineFields::from(fields)
     }
 
+    /// set default flow value from first values
     pub fn create_flows_and_states(&self) -> IndexMap<String, String> {
         let mut map: IndexMap<String, String> = IndexMap::new();
 
@@ -67,6 +68,7 @@ impl EntryDefine {
         map
     }
 
+    /// add `title`, `created_date`, `updated_date` value to system
     pub fn create_title_and_date(&self, title: String) -> IndexMap<String, String> {
         let date = quake_time::date_now();
 
@@ -78,16 +80,18 @@ impl EntryDefine {
         map
     }
 
-    pub fn init_to_map(&self, title: String) -> IndexMap<String, String> {
+    /// create default fields with title, date, flows, dates
+    pub fn create_default_fields(&self, title: String) -> IndexMap<String, String> {
         let basic_map = self.create_title_and_date(title);
-        let mut fields = self.merge_to_map(basic_map);
+        let mut fields = self.merge_to_fields(basic_map);
         let flows = self.create_flows_and_states();
         fields.extend(flows);
 
         fields
     }
 
-    pub fn merge_to_map(&self, values: IndexMap<String, String>) -> IndexMap<String, String> {
+    /// merge custom yaml map list to Indexmap
+    pub fn merge_to_fields(&self, values: IndexMap<String, String>) -> IndexMap<String, String> {
         let mut result: IndexMap<String, String> = IndexMap::new();
 
         for field_def in &self.fields {
@@ -149,7 +153,7 @@ mod tests {
         map.insert("content".to_string(), "sample".to_string());
         map.insert("new_field".to_string(), "sample".to_string());
 
-        let new_map = todo.merge_to_map(map);
+        let new_map = todo.merge_to_fields(map);
         assert_eq!("sample", new_map.get("new_field").unwrap())
     }
 
@@ -182,7 +186,7 @@ mod tests {
         assert_eq!(map.get("status").unwrap().to_string(), "Todo".to_string());
         assert_eq!(map.get("priority").unwrap().to_string(), "Low".to_string());
 
-        let final_map = define.init_to_map("hello".to_string());
+        let final_map = define.create_default_fields("hello".to_string());
         assert_eq!(
             final_map.get("status").unwrap().to_string(),
             "Todo".to_string()

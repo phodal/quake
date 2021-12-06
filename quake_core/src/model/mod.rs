@@ -2,8 +2,6 @@ use indexmap::IndexMap;
 
 use crate::model::meta_field::MetaField;
 
-pub mod meta_action;
-pub mod meta_config;
 pub mod meta_field;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]

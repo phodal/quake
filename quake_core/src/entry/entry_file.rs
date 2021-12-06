@@ -172,8 +172,8 @@ impl EntryFile {
         }
     }
 
-    pub fn add_field(&mut self, key: &str, value: &str) {
-        self.fields.insert(key.to_string(), value.to_string());
+    pub fn add_field(&mut self, key: &str, value: String) {
+        self.fields.insert(key.to_string(), value);
     }
 
     pub fn set_fields(&mut self, fields: IndexMap<String, String>) {

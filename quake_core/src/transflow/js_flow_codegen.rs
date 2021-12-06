@@ -1,15 +1,6 @@
 use crate::transflow::transflow::{Flow, Mapping};
 use crate::transflow::Transflow;
 
-pub struct JsFlowGen {}
-
-/// generate from typescript interface
-/// ```javascript
-///   el.setAttribute('entries', JSON.stringify({
-//     items: ['blog', 'todo']
-//   }));
-//   el.setAttribute('data', JSON.stringify(data));
-/// ```
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct WebComponentElement {
     pub attributes: Vec<String>,
@@ -20,6 +11,15 @@ impl Default for WebComponentElement {
         WebComponentElement { attributes: vec![] }
     }
 }
+
+/// generate from typescript interface
+/// ```javascript
+///   el.setAttribute('entries', JSON.stringify({
+//     items: ['blog', 'todo']
+//   }));
+//   el.setAttribute('data', JSON.stringify(data));
+/// ```
+pub struct JsFlowGen {}
 
 impl JsFlowGen {
     pub fn gen_element(trans: &Transflow) -> Vec<String> {

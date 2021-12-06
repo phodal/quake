@@ -75,8 +75,7 @@ pub fn create_entry_file(
 ) -> EntryFile {
     let mut entry_file = EntryFile::default();
 
-    let init_map = entry_define.init_to_map(entry_text);
-    entry_file.set_fields(init_map);
+    entry_file.set_fields(entry_define.create_default_fields(entry_text));
 
     fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
 

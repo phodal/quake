@@ -145,22 +145,18 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
             match flow_decl {
                 TransflowEnum::Midway(way) => {
                     route.to = way.end.clone();
-                    route.from = way
-                        .from
-                        .iter()
-                        .map(|param| param.value.clone())
-                        .collect::<Vec<String>>();
+                    for param in &way.from {
+                        route.from.push(param.value.clone())
+                    }
 
                     route.naming();
                 }
                 TransflowEnum::Endway(way) => {
                     route.to = way.component.clone();
                     route.is_end_way = true;
-                    route.from = way
-                        .from
-                        .iter()
-                        .map(|param| param.value.clone())
-                        .collect::<Vec<String>>();
+                    for param in &way.from {
+                        route.from.push(param.value.clone())
+                    }
 
                     route.naming();
                 }

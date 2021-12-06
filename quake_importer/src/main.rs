@@ -161,16 +161,15 @@ mod tests {
                 let mut file = EntryFile::default();
                 file.name = EntryFile::file_name(index, &*page.title);
 
-                file.add_field("category", format!("{:?}", section.display_name).as_str());
-                file.add_field("notebook", format!("{:?}", section.parent_name).as_str());
-                file.add_field("title", format!("{:?}", page.title).as_str());
-                file.add_field("created_date", page.created_date_time.clone().as_str());
-                file.add_field("updated_date", page.created_date_time.as_str());
+                file.add_field("category", format!("{:?}", section.display_name));
+                file.add_field("notebook", format!("{:?}", section.parent_name));
+                file.add_field("title", format!("{:?}", page.title));
+                file.add_field("created_date", page.created_date_time.clone());
+                file.add_field("updated_date", page.created_date_time);
 
                 file.content = "\n\n".to_string();
 
                 let source_file = content_path.join(format!("{:}.md", page.id));
-                println!("{:}", &source_file.display());
                 let content = fs::read_to_string(source_file).unwrap_or("".to_string());
 
                 file.content.push_str(content.as_str());
