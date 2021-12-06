@@ -108,7 +108,6 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use quake_core::entry::entry_file::EntryFile;
-    use quake_core::entry::FrontMatter;
     use std::fs;
     use std::path::PathBuf;
 
@@ -160,7 +159,6 @@ mod tests {
         for section in sections {
             for page in section.pages {
                 let mut file = EntryFile::default();
-                let mut matter = FrontMatter::default();
                 file.name = EntryFile::file_name(index, &*page.title);
 
                 file.add_field("category", format!("{:?}", section.display_name).as_str());
@@ -169,7 +167,6 @@ mod tests {
                 file.add_field("created_date", page.created_date_time.clone().as_str());
                 file.add_field("updated_date", page.created_date_time.as_str());
 
-                file.front_matter = matter;
                 file.content = "\n\n".to_string();
 
                 let source_file = content_path.join(format!("{:}.md", page.id));

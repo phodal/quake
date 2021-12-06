@@ -95,3 +95,12 @@ entries:
     states:
       - field: priority
         items: ['Low', 'Medium', 'High']
+  - type: onenote
+    display: "Onenote"
+    fields:
+      - title: Title
+      - created_date: String
+      - updated_date: Date
+      - category: String
+      - notebook: String
+    actions: ~

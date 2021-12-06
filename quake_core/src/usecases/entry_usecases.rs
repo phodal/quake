@@ -6,7 +6,7 @@ use std::path::PathBuf;
 
 use crate::entry::entry_file::EntryFile;
 use crate::entry::entry_paths::EntryPaths;
-use crate::entry::{entry_define, entry_node_info, EntryDefine, EntryNodeInfo, FrontMatter};
+use crate::entry::{entry_define, entry_node_info, EntryDefine, EntryNodeInfo};
 use crate::errors::QuakeError;
 use crate::quake_time::date_now;
 use crate::usecases::entrysets::Entrysets;
@@ -76,7 +76,7 @@ pub fn create_entry_file(
     let mut entry_file = EntryFile::default();
 
     let init_map = entry_define.init_to_map(entry_text);
-    entry_file.front_matter = FrontMatter { fields: init_map };
+    entry_file.set_fields(init_map);
 
     fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
 

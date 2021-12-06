@@ -181,6 +181,10 @@ impl EntryFile {
             .insert(key.to_string(), value.to_string());
     }
 
+    pub fn set_fields(&mut self, fields: IndexMap<String, String>) {
+        self.front_matter.fields = fields;
+    }
+
     pub fn update_field(&mut self, field: &String, value: &String) {
         match self.front_matter.fields.get_mut(field) {
             None => {}
