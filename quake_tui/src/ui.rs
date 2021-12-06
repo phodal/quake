@@ -1,5 +1,5 @@
 use crate::app::{App, MainWidget, Mode};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::{fs, io};
 use tui::backend::Backend;
 use tui::layout::{Constraint, Corner, Direction, Layout, Rect};
@@ -72,7 +72,7 @@ where
         MainWidget::Home => frame.render_widget(Block::default(), area),
         MainWidget::Dirs => {
             let entry_dirs: Vec<ListItem> = list_entries_dirs()
-                .unwrap_or(vec![])
+                .unwrap_or_default()
                 .iter()
                 .rev()
                 .map(|dir| {
@@ -95,7 +95,7 @@ where
 fn list_entries_dirs() -> io::Result<Vec<PathBuf>> {
     let mut entries = fs::read_dir(".")?
         .map(|res| res.map(|e| e.path()))
-        .filter(|path| path.as_ref().map(is_entries_dir).unwrap_or(false))
+        .filter(|path| path.as_deref().map(is_entries_dir).unwrap_or(false))
         .collect::<Result<Vec<_>, io::Error>>()?;
 
     entries.sort();
@@ -103,6 +103,6 @@ fn list_entries_dirs() -> io::Result<Vec<PathBuf>> {
     Ok(entries)
 }
 
-fn is_entries_dir(path: &PathBuf) -> bool {
+fn is_entries_dir(path: &Path) -> bool {
     path.is_dir() && path.join("entries.csv").exists()
 }
