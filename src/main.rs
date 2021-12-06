@@ -23,13 +23,12 @@ use quake_tui::tui_main_loop;
 use crate::helper::meili_exec::feed_entry;
 use crate::server::quake_rocket;
 
-pub mod cli;
+pub mod cli_action;
 pub mod helper;
 pub mod server;
-pub mod tui;
 
 #[derive(Parser)]
-#[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
+#[clap(version = "0.1.2", author = "Inherd <quake@inherd.org>")]
 pub struct Opts {
     #[clap(subcommand)]
     cmd: SubCommand,
@@ -109,7 +108,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
             let conf = config_quake(&cmd)?;
             if cmd.input.len() > 0 {
                 let expr = QuakeAction::action_from_text(cmd.input.as_str())?;
-                cli::action(expr, conf)?
+                cli_action::action(expr, conf)?
             }
         }
         SubCommand::Server(server) => {

@@ -12,6 +12,7 @@ pub fn action(expr: QuakeAction, conf: QuakeConfig) -> Result<(), Box<dyn Error>
         return quake_action::quake_action(expr.action, &conf);
     } else if expr.object == "flow" {
         // todo: add flow.gen
+        return transflow_action::transflow_action(expr.action, &conf);
     }
 
     entry_action::entry_action(&expr, conf)
