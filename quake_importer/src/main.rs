@@ -6,6 +6,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
+pub mod onenote;
 pub mod sqlite_to_file;
 pub mod todo_to_file;
 
@@ -107,11 +108,13 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use quake_core::entry::entry_file::EntryFile;
+    use quake_core::entry::FrontMatter;
     use std::fs;
     use std::path::PathBuf;
 
     use crate::dump_apple_notes;
     use crate::dump_phodal_com;
+    use crate::onenote::SectionVO;
     use crate::todo_to_file::{dump_microsoft_todo, OutputList};
 
     #[ignore]
@@ -138,6 +141,54 @@ mod tests {
         let vec: Vec<OutputList> = serde_json::from_str(&*todo).unwrap();
 
         let _ = dump_microsoft_todo(vec, &output_dir);
+    }
+
+    #[ignore]
+    #[test]
+    fn dump_onenote() {
+        let source = PathBuf::from("..").join("dbs");
+        let target = PathBuf::from("..").join("examples").join("onenote");
+        fs::create_dir_all(&target).unwrap();
+
+        let content_path = PathBuf::from("..").join("dbs").join("content");
+        let src = source.join("onenote-output.json");
+
+        let todo = fs::read_to_string(format!("{:}", src.display())).unwrap();
+        let sections: Vec<SectionVO> = serde_json::from_str(&*todo).unwrap();
+
+        let mut index = 1;
+        for section in sections {
+            for page in section.pages {
+                let mut file = EntryFile::default();
+                let mut matter = FrontMatter::default();
+                file.name = EntryFile::file_name(index, &*page.title);
+
+                file.add_field("category", format!("{:?}", section.display_name).as_str());
+                file.add_field("notebook", format!("{:?}", section.parent_name).as_str());
+                file.add_field("title", format!("{:?}", page.title).as_str());
+                file.add_field("created_date", page.created_date_time.clone().as_str());
+                file.add_field("updated_date", page.created_date_time.as_str());
+
+                file.front_matter = matter;
+                file.content = "\n\n".to_string();
+
+                let source_file = content_path.join(format!("{:}.md", page.id));
+                println!("{:}", &source_file.display());
+                let content = fs::read_to_string(source_file).unwrap_or("".to_string());
+
+                file.content.push_str(content.as_str());
+
+                match fs::write(&target.join(file.name.clone()), file.to_string()) {
+                    Ok(_) => {}
+                    Err(err) => {
+                        println!("{:?}", file.name.clone());
+                        println!("{:?}", err);
+                    }
+                }
+
+                index = index + 1
+            }
+        }
     }
 
     #[test]

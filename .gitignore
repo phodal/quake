@@ -5,6 +5,7 @@ phodal.dev
 examples/blog/*
 examples/notes/*
 examples/microsoft_todo/*
+examples/onenote/*
 .DS_Store
 quake_importer/scripts/readnotes/*
 dbs/NoteStore.sqlite

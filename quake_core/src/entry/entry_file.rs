@@ -175,6 +175,12 @@ impl EntryFile {
         }
     }
 
+    pub fn add_field(&mut self, key: &str, value: &str) {
+        self.front_matter
+            .fields
+            .insert(key.to_string(), value.to_string());
+    }
+
     pub fn update_field(&mut self, field: &String, value: &String) {
         match self.front_matter.fields.get_mut(field) {
             None => {}
