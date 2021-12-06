@@ -6,7 +6,6 @@ use rusqlite::types::ValueRef;
 use rusqlite::{Connection, Row};
 
 use quake_core::entry::entry_file::EntryFile;
-use quake_core::entry::front_matter::FrontMatter;
 
 pub fn export(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Error>> {
     let conn = Connection::open(db_name)?;
@@ -25,7 +24,6 @@ pub fn export(db_name: &str, sql: &str, path: PathBuf) -> Result<(), Box<dyn Err
 
 pub fn write_file(path: &PathBuf, row: &Row, id: usize) {
     let mut file = EntryFile::default();
-    let mut matter = FrontMatter::default();
     let mut title = "".to_string();
 
     for (index, name) in row.column_names().iter().enumerate() {
@@ -46,12 +44,11 @@ pub fn write_file(path: &PathBuf, row: &Row, id: usize) {
                 title = value.clone();
             }
 
-            matter.fields.insert(name.to_string(), simple_escape(value));
+            file.add_field(name.as_str(), simple_escape(value).as_str());
         }
     }
 
     file.name = EntryFile::file_name(id, title.as_str());
-    file.front_matter = matter;
 
     match fs::write(path.join(file.name.clone()), file.to_string()) {
         Ok(_) => {}
