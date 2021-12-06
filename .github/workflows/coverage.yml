@@ -35,10 +35,17 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: llvm-cov
-          args: --all-features --lcov --output-path lcov.info
+          args: --all-features --workspace --lcov --output-path lcov.info
 
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
           path-to-lcov: lcov.info
           github-token: ${{ secrets.github_token }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          files: lcov.info
+          fail_ci_if_error: true
