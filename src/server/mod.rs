@@ -11,7 +11,6 @@ use quake_core::QuakeConfig;
 mod action_api;
 mod entry_api;
 mod helper;
-mod search_api;
 mod transflow_api;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -35,7 +34,6 @@ pub fn quake_rocket() -> Rocket<Build> {
         .merge(Yaml::file(".quake.yaml"))
         .merge(Env::prefixed("APP_").global())
         .select(Profile::from_env_or("workspace", "."))
-        .select(Profile::from_env_or("search_url", "http://127.0.0.1:7700"))
         .select(Profile::from_env_or("server_location", "web"));
 
     let server: String = figment.extract_inner("server_location").unwrap();
