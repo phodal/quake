@@ -28,9 +28,10 @@ function create_editor_element(entry, params) {
   editor.setAttribute('id', entry.id);
   editor.setAttribute('title', entry.title);
   editor.addEventListener("onSave", function (event) {
+    let data = event.detail;
     update_entry(params.type, params.id, {
-      title: event.detail.title,
-      content: event.detail.value.replaceAll("\\\n", "\n")
+      title: data.title,
+      content: data.value.replaceAll("\\\n", "\n")
     })
   });
   return editor
@@ -77,7 +78,6 @@ const timeline =  async (context, commands) => {
 
   return el;
 }
-
 
 const update_entry = async (entry_type, id, fields) => {
   let response = await fetch(`/entry/${entry_type}/${id}`, {
