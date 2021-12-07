@@ -45,6 +45,10 @@ pub struct Terminal {}
 pub struct WebServer {
     #[clap(short, long, default_value = ".quake.yaml")]
     config: String,
+
+    #[clap(short, long)]
+    /// auto watch entry change, and feed to search engine
+    watch: bool,
 }
 
 #[derive(Parser)]
@@ -91,13 +95,18 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
             let config = load_config(&server.config)?;
             let path = config.workspace;
             let search_url = config.search_url;
-            futures::executor::block_on(async {
-                let (_s, _g) = future::join(
-                    quake_rocket().launch(),
-                    entry_watcher::async_watch(path, search_url),
-                )
-                .await;
-            });
+
+            if server.watch {
+                futures::executor::block_on(async {
+                    let (_s, _g) = future::join(
+                        quake_rocket().launch(),
+                        entry_watcher::async_watch(path, search_url),
+                    )
+                    .await;
+                });
+            } else {
+                let _ = futures::executor::block_on(async { quake_rocket().launch() }).await;
+            }
         }
         SubCommand::Tui(_) => {
             tui_main_loop()?;
