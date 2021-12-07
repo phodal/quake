@@ -66,14 +66,14 @@ pub fn quake_rocket() -> Rocket<Build> {
 }
 
 #[cfg(test)]
+#[allow(unused_imports)]
 mod test {
     use rocket::http::Status;
     use rocket::local::blocking::Client;
 
     use super::quake_rocket;
 
-    // todo: ignore test for speed
-    #[ignore]
+    #[cfg(feature = "webserver")]
     #[test]
     fn hello_world() {
         let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
@@ -82,7 +82,7 @@ mod test {
         assert_eq!(response.status(), Status::Ok);
     }
 
-    #[ignore]
+    #[cfg(feature = "webserver")]
     #[test]
     fn get_todo_entry() {
         let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
