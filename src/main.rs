@@ -88,10 +88,15 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
             }
         }
         SubCommand::Server(server) => {
-            let path = load_config(&server.config)?.workspace;
+            let config = load_config(&server.config)?;
+            let path = config.workspace;
+            let search_url = config.search_url;
             futures::executor::block_on(async {
-                let (_s, _g) =
-                    future::join(quake_rocket().launch(), entry_watcher::async_watch(path)).await;
+                let (_s, _g) = future::join(
+                    quake_rocket().launch(),
+                    entry_watcher::async_watch(path, search_url),
+                )
+                .await;
             });
         }
         SubCommand::Tui(_) => {

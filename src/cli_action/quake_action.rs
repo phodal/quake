@@ -17,13 +17,13 @@ use quake_core::usecases::entrysets::Entrysets;
 pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
     match action.as_str() {
         "sync" => {
-            sync_defines(&conf)?;
+            sync_defines(conf)?;
         }
         "migration" => {
             // todo: add migrations for on entries
         }
         "feed" => {
-            feed_data(&conf)?;
+            feed_data(conf)?;
         }
         _ => {
             return Err(Box::new(QuakeError(format!(
@@ -44,7 +44,7 @@ pub fn is_hidden(entry: &DirEntry) -> bool {
         .unwrap_or(false)
 }
 
-fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
+fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&conf.workspace);
     let temp_file = "dump.json";
 
@@ -65,8 +65,8 @@ fn feed_data(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
         let map = Entrysets::jsonify(&paths.base)?;
         fs::write(temp_file, map)?;
 
-        meili_exec::feed_command(&path_name)?;
-        meili_exec::feed_settings(&path_name)?;
+        meili_exec::feed_command(&path_name, &conf.search_url)?;
+        meili_exec::feed_settings(&path_name, &conf.search_url)?;
 
         info!("done '{:}' feed", &path_name);
     }
@@ -84,7 +84,7 @@ fn walk_in_path(path: PathBuf) -> FilterEntry<IntoIter, fn(&DirEntry) -> bool> {
         .filter_entry(|e| !is_hidden(e))
 }
 
-fn sync_defines(conf: &&QuakeConfig) -> Result<(), Box<dyn Error>> {
+fn sync_defines(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&conf.workspace);
 
     let mut define_file = EntryDefines::default();

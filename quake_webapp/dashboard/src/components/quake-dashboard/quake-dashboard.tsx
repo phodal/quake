@@ -173,7 +173,7 @@ export class QuakeDashboard {
     }
 
     for (let el of parsed) {
-      results_map.get(el.status).push(el);
+      results_map.get(el.status)?.push(el);
     }
 
     this.selected_flow_result = results_map;

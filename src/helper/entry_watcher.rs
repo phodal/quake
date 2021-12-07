@@ -29,7 +29,7 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
 }
 
 // todo: add type merge for ranges
-pub async fn async_watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
+pub async fn async_watch<P: AsRef<Path>>(path: P, search_url: String) -> notify::Result<()> {
     debug!("start watch: {:?}", path.as_ref());
     let (mut watcher, mut rx) = async_watcher()?;
     watcher.watch(path.as_ref(), RecursiveMode::Recursive)?;
@@ -37,7 +37,7 @@ pub async fn async_watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
     while let Some(res) = rx.next().await {
         match res {
             Ok(event) => {
-                match feed_by_event(event) {
+                match feed_by_event(event, &search_url) {
                     Ok(_) => {}
                     Err(err) => {
                         error!("watch error: {:?}", err)
@@ -51,7 +51,7 @@ pub async fn async_watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
     Ok(())
 }
 
-fn feed_by_event(event: Event) -> Result<(), Box<dyn Error>> {
+fn feed_by_event(event: Event, search_url: &String) -> Result<(), Box<dyn Error>> {
     // only for data modify
     // todo: looking for better way
     match &event.kind {
@@ -76,7 +76,7 @@ fn feed_by_event(event: Event) -> Result<(), Box<dyn Error>> {
 
         let (typ, file) = entry_file_by_path(&path)?;
         let string = serde_json::to_string(&file)?;
-        feed_entry(&typ, &string)?;
+        feed_entry(&typ, &string, &search_url)?;
     }
 
     Ok(())

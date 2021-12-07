@@ -1,49 +1,59 @@
 use std::error::Error;
 use std::process::Command;
+use tracing::info;
 
-pub fn feed_command(index_name: &String) -> Result<(), Box<dyn Error>> {
-    // todo: check curl
-    let url = format!("http://127.0.0.1:7700/indexes/{:}/documents", index_name);
-    Command::new("/bin/sh")
-        .arg("-c")
-        .arg(format!(
-            "curl -i -X POST '{:}' \
+pub fn feed_command(index_name: &String, search_url: &String) -> Result<(), Box<dyn Error>> {
+    let url = format!("{:}/indexes/{:}/documents", search_url, index_name);
+    let cmd_line = format!(
+        "curl -i -X POST '{:}' \
   --header 'content-type: application/json' \
   --data-binary @dump.json",
-            url
-        ))
-        .spawn()?
-        .wait()?;
+        url
+    );
 
-    Ok(())
-}
-
-pub fn feed_settings(index_name: &String) -> Result<(), Box<dyn Error>> {
-    // todo: check curl
-    let url = format!("http://127.0.0.1:7700/indexes/{:}/settings", index_name);
+    info!("{:?}", cmd_line);
     Command::new("/bin/sh")
         .arg("-c")
-        .arg(format!(
-            "curl -i -X POST '{:}' \
-  --header 'content-type: application/json' \
-  --data-binary @resources/search_rule.json",
-            url
-        ))
+        .arg(cmd_line)
         .spawn()?
         .wait()?;
 
     Ok(())
 }
 
-pub fn feed_entry(index_name: &String, content: &String) -> Result<(), Box<dyn Error>> {
-    let url = format!("http://127.0.0.1:7700/indexes/{:}/documents", index_name);
+pub fn feed_settings(index_name: &String, search_url: &String) -> Result<(), Box<dyn Error>> {
+    let url = format!("{:}/indexes/{:}/settings", search_url, index_name);
+    let cmd_line = format!(
+        "curl -i -X POST '{:}' \
+  --header 'content-type: application/json' \
+  --data-binary @resources/search_rule.json",
+        url
+    );
+
+    info!("{:?}", cmd_line);
+    Command::new("/bin/sh")
+        .arg("-c")
+        .arg(cmd_line)
+        .spawn()?
+        .wait()?;
+
+    Ok(())
+}
+
+pub fn feed_entry(
+    index_name: &String,
+    content: &String,
+    search_url: &String,
+) -> Result<(), Box<dyn Error>> {
+    let url = format!("{:}/indexes/{:}/documents", search_url, index_name);
     let cmd_line = format!(
         "curl -i -X POST '{:}' \
   --header 'content-type: application/json' \
   --data-binary {:?}",
         url, content
     );
-    println!("{:?}", cmd_line);
+
+    info!("{:?}", cmd_line);
     Command::new("/bin/sh")
         .arg("-c")
         .arg(cmd_line)
