@@ -91,7 +91,7 @@ entries:
     actions: ~
     flows:
       - field: status
-        items: ['Todo', 'Doing', 'Done']
+        items: ['Spike', 'Todo', 'Doing', 'Done']
     states:
       - field: priority
         items: ['Low', 'Medium', 'High']
