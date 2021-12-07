@@ -212,4 +212,6 @@ Tech stacks:
 License
 ---
 
+markdown parser based on: [https://github.com/zoni/obsidian-export](https://github.com/zoni/obsidian-export) with Apache and MIT
+
 @ 2021 This code is distributed under the MIT license. See `LICENSE` in this directory.
