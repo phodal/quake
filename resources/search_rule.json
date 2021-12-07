@@ -9,17 +9,8 @@
     "created_date:desc"
   ],
   "distinctAttribute": null,
-  "searchableAttributes": [
-    "title",
-    "content"
-  ],
-  "displayedAttributes": [
-    "id",
-    "title",
-    "description",
-    "created_date",
-    "updated_date"
-  ],
+  "searchableAttributes": null,
+  "displayedAttributes": null,
   "stopWords": null,
   "sortableAttributes": null,
   "synonyms": null
