@@ -295,4 +295,13 @@ mod tests {
         let string = transform("![[note::SourceCode]]").unwrap();
         assert_eq!("[note::SourceCode](note::SourceCode)", string);
     }
+
+    #[test]
+    fn transform_admonition() {
+        let admonition = "!!! note \"An optional title\"
+    Here is something you should pay attention to.
+";
+        let string = transform(admonition).unwrap();
+        println!("{:}", string);
+    }
 }
