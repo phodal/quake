@@ -27,17 +27,6 @@ impl Transflow {
     /// - `defines_map` with mapping to `todo` and `blog` [EntryDefine]
     /// - `flows` with have informations of `from('todo','blog').to(<quake-calendar>`
     ///
-    /// ```
-    ///let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
-    ///let flow = QuakeTransflowNode::from_text(define).unwrap();
-    ///
-    ///let flow = Transflow::from(entry_defines(), flow);
-    ///
-    ///assert_eq!(2, flow.defines_map.unwrap().len());
-    ///assert_eq!(1, flow.flows.len());
-    ///assert_eq!("quake-calendar", flow.target);
-    /// ```
-    ///
     pub fn from(defines: Vec<EntryDefine>, node: QuakeTransflowNode) -> Transflow {
         let mut transflow = Transflow::default();
 

@@ -8,7 +8,7 @@ const show_timeline = async (context, commands) => {
   let blogs = await blog_req.json();
 
   let data = from_todo_blog_to_quake_calendar(todos, blogs);
-
   el.setAttribute('data', JSON.stringify(data));
+
   return el;
 }
