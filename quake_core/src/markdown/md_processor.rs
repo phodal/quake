@@ -27,22 +27,18 @@ use std::error::Error;
 use std::ffi::OsString;
 use std::path::PathBuf;
 
-use crate::markdown::md_struct::MdStruct;
 use pulldown_cmark::{CodeBlockKind, CowStr, Event, Options, Parser, Tag};
 use pulldown_cmark_to_cmark::cmark_with_options;
 
 use crate::markdown::references::{NoteReference, RefParser, RefParserState, RefType};
-use crate::markdown::tokenizer::QuakeDown;
 
 pub type MarkdownEvents<'a> = Vec<Event<'a>>;
 
-pub struct MdProcessor {
-    pub pieces: Vec<MdStruct>,
-}
+pub struct MdProcessor {}
 
 impl Default for MdProcessor {
     fn default() -> Self {
-        MdProcessor { pieces: vec![] }
+        MdProcessor {}
     }
 }
 
@@ -54,10 +50,6 @@ impl MdProcessor {
         let mapping = events.into_iter().map(event_to_owned).collect();
 
         Ok(events_to_text(mapping))
-    }
-
-    pub fn token_it(content: &str) {
-        QuakeDown::from(content);
     }
 
     // based on https://github.com/zoni/obsidian-export/blob/main/src/lib.rs
@@ -318,14 +310,5 @@ mod tests {
     fn transform_page_file() {
         let string = MdProcessor::transform("![[note::SourceCode]]").unwrap();
         assert_eq!("[note::SourceCode](note::SourceCode)", string);
-    }
-
-    #[test]
-    fn down_code_token() {
-        let code = "```
-console.log('hello,world')
-```";
-
-        MdProcessor::token_it(code);
     }
 }
