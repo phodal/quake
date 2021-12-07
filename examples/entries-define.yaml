@@ -104,3 +104,11 @@ entries:
       - category: String
       - notebook: String
     actions: ~
+  - type: framework_doc
+    display: "Frameworks Documentation"
+    fields:
+      - title: Title
+      - created_date: String
+      - updated_date: Date
+      - category: String
+    actions: ~

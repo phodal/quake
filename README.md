@@ -193,7 +193,7 @@ Tech stacks:
 - [x] 基于 Git 的数据存储
 - [x] Search anywhere
   - [x] search frameworks
-  - [ ] auto suggest
+  - [x] auto suggest
 
 ### 1.0: Knowledge map 
 
