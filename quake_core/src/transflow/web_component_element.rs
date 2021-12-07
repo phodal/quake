@@ -21,6 +21,7 @@ impl Default for WebComponentElement {
     }
 }
 
+#[allow(dead_code)]
 impl WebComponentElement {
     pub fn from_js(
         element: &str,
