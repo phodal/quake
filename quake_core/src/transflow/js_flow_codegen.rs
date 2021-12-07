@@ -1,9 +1,11 @@
 use crate::transflow::transflow::{Flow, Mapping};
+use crate::transflow::web_component_element::{EventListener, WebComponentElement};
 use crate::transflow::Transflow;
 
-pub struct JsFlowGen {}
+/// Javascript Transflow Code generate
+pub struct JsFlowCodegen {}
 
-impl JsFlowGen {
+impl JsFlowCodegen {
     /// generate from typescript interface
     /// ```javascript
     ///   el.setAttribute('entries', JSON.stringify({
@@ -11,7 +13,7 @@ impl JsFlowGen {
     //   }));
     //   el.setAttribute('data', JSON.stringify(data));
     /// ```
-    pub fn gen_element(trans: &Transflow) -> Vec<String> {
+    pub fn gen_element(trans: &Transflow, element: Option<WebComponentElement>) -> Vec<String> {
         let mut vec = vec![];
         for flow in &trans.flows {
             let mut func = String::new();
@@ -37,18 +39,36 @@ impl JsFlowGen {
             }
 
             let params = Self::gen_params(&flow);
-            let data = format!("  let data = {:}({:});\n", &flow.name, params);
-            func.push_str(data.as_str());
+            Self::gen_data_attribute(&flow, &mut func, params);
 
-            func.push_str("\n");
+            if let Some(el) = &element {
+                Self::gen_events(&mut func, &el.events)
+            }
 
-            func.push_str("  el.setAttribute('data', JSON.stringify(data));\n");
             func.push_str("  return el;\n");
-
-            func.push_str("}");
+            func.push_str("}\n");
             vec.push(func)
         }
         vec
+    }
+
+    fn gen_events(func: &mut String, events: &Vec<EventListener>) {
+        for event in events {
+            let event_code = format!(
+                "  editor.addEventListener('{:}', function (event) {{
+    let data = event.detail;
+    console.log(data);
+  }});\n\n",
+                event.event_name
+            );
+            func.push_str(event_code.as_str())
+        }
+    }
+
+    fn gen_data_attribute(flow: &&Flow, func: &mut String, params: String) {
+        let data = format!("  let data = {:}({:});\n", &flow.name, params);
+        func.push_str(data.as_str());
+        func.push_str("  el.setAttribute('data', JSON.stringify(data));\n\n");
     }
 
     pub fn gen_transform(trans: &Transflow) -> Vec<String> {
@@ -62,7 +82,7 @@ impl JsFlowGen {
             func.push_str("  let results = [];\n");
 
             if flow.mappings.is_some() {
-                let mappings = JsFlowGen::gen_object_forloop(&flow.mappings.as_ref().unwrap());
+                let mappings = JsFlowCodegen::gen_object_forloop(&flow.mappings.as_ref().unwrap());
                 func.push_str(mappings.join("\n").as_str());
             }
 
@@ -133,9 +153,11 @@ impl JsFlowGen {
 mod tests {
     use crate::entry::EntryDefine;
     use crate::quake::QuakeTransflowNode;
-    use crate::transflow::js_flow_codegen::JsFlowGen;
+    use crate::transflow::js_flow_codegen::JsFlowCodegen;
+    use crate::transflow::web_component_element::WebComponentElement;
     use crate::transflow::Transflow;
     use std::fs;
+    use std::option::Option::None;
     use std::path::PathBuf;
 
     fn entry_defines() -> Vec<EntryDefine> {
@@ -168,7 +190,7 @@ mod tests {
         let content = fs::read_to_string(path).unwrap();
         let flows: Vec<Transflow> = serde_yaml::from_str(&*content).unwrap();
 
-        let code = JsFlowGen::gen_transform(&flows[0]);
+        let code = JsFlowCodegen::gen_transform(&flows[0]);
 
         let except_path = fixtures.join("codegen").join("todos_blogs.js");
         let content = fs::read_to_string(except_path).unwrap();
@@ -182,7 +204,7 @@ mod tests {
         let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
         let node = QuakeTransflowNode::from_text(define).unwrap();
         let flow = Transflow::from(entry_defines(), node);
-        let code = JsFlowGen::gen_transform(&flow);
+        let code = JsFlowCodegen::gen_transform(&flow);
 
         assert_eq!(
             "function from_todo_blog_to_quake_calendar(todos, blogs) {
@@ -203,7 +225,7 @@ mod tests {
 
         let flow = Transflow::from(entry_defines(), flow);
 
-        let code = JsFlowGen::gen_transform(&flow);
+        let code = JsFlowCodegen::gen_transform(&flow);
 
         assert_eq!(
             "function from_todo_blog_to_record(todos, blogs) {
@@ -231,25 +253,37 @@ mod tests {
         let node = QuakeTransflowNode::from_text(define).unwrap();
         let mut flow = Transflow::from(entry_defines(), node);
         flow.name = "timeline".to_string();
-        let code = JsFlowGen::gen_element(&flow);
-        println!("{:}", code[0]);
+        let code = JsFlowCodegen::gen_element(&flow, None);
 
-        assert_eq!(
-            "const show_timeline = async (context, commands) => {
-  const el = document.createElement('quake-calendar');
+        let except_path = PathBuf::from("_fixtures")
+            .join("transflow")
+            .join("show_calendar_timeline.code");
 
-  let todo_req = await fetch('/entry/todo');
-  let todos = await todo_req.json();
+        let except = fs::read_to_string(except_path).unwrap();
 
-  let blog_req = await fetch('/entry/blog');
-  let blogs = await blog_req.json();
+        assert_eq!(except, code[0])
+    }
 
-  let data = from_todo_blog_to_quake_calendar(todos, blogs);
+    #[cfg(not(windows))]
+    #[test]
+    fn gen_element_with_wc() {
+        let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
+        let node = QuakeTransflowNode::from_text(define).unwrap();
+        let mut flow = Transflow::from(entry_defines(), node);
+        flow.name = "timeline".to_string();
 
-  el.setAttribute('data', JSON.stringify(data));
-  return el;
-}",
-            code[0]
-        )
+        let mut element = WebComponentElement::default();
+        element.add_event("onSave");
+        element.add_event("onChange");
+
+        let code = JsFlowCodegen::gen_element(&flow, Some(element));
+
+        let except_path = PathBuf::from("_fixtures")
+            .join("transflow")
+            .join("event_with_calendar_timeline.code");
+
+        let except = fs::read_to_string(except_path).unwrap();
+
+        assert_eq!(except, code[0])
     }
 }

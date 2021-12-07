@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct WebComponentElement {
-    /// element id, such as `quake-dashboard`
+    /// element id, such as `<quake-dashboard>`
     pub id: String,
     /// element's input attributes, such
     /// data in `<quake-dashboard data=""></quake-dashboard>`
@@ -21,7 +21,6 @@ impl Default for WebComponentElement {
     }
 }
 
-#[allow(dead_code)]
 impl WebComponentElement {
     pub fn from_js(
         element: &str,
@@ -46,6 +45,13 @@ impl WebComponentElement {
         }
 
         wce
+    }
+
+    pub fn add_event(&mut self, event_name: &str) {
+        self.events.push(EventListener {
+            event_name: event_name.to_string(),
+            event_data: None,
+        });
     }
 }
 

@@ -1,0 +1,24 @@
+const show_timeline = async (context, commands) => {
+  const el = document.createElement('quake-calendar');
+
+  let todo_req = await fetch('/entry/todo');
+  let todos = await todo_req.json();
+
+  let blog_req = await fetch('/entry/blog');
+  let blogs = await blog_req.json();
+
+  let data = from_todo_blog_to_quake_calendar(todos, blogs);
+  el.setAttribute('data', JSON.stringify(data));
+
+  editor.addEventListener('onSave', function (event) {
+    let data = event.detail;
+    console.log(data);
+  });
+
+  editor.addEventListener('onChange', function (event) {
+    let data = event.detail;
+    console.log(data);
+  });
+
+  return el;
+}

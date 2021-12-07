@@ -1,5 +1,5 @@
 ---
-title: typeflow with function generate
+title: transflow with function generate
 author: Phodal
 status: Doing
 priority: Low

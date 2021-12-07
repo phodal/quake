@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use crate::entry::EntryDefine;
 use crate::parser::quake::{QuakeTransflowNode, Route};
 
+/// Transflow defines the data process flow
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct Transflow {
     pub name: String,
