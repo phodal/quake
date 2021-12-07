@@ -27,6 +27,7 @@ use std::error::Error;
 use std::ffi::OsString;
 use std::path::PathBuf;
 
+use crate::markdown::md_struct::MdStruct;
 use pulldown_cmark::{CodeBlockKind, CowStr, Event, Options, Parser, Tag};
 use pulldown_cmark_to_cmark::cmark_with_options;
 
@@ -34,153 +35,174 @@ use crate::markdown::references::{NoteReference, RefParser, RefParserState, RefT
 
 pub type MarkdownEvents<'a> = Vec<Event<'a>>;
 
-pub fn transform(content: &str) -> Result<String, Box<dyn Error>> {
-    let events = tokenizer(&content)?;
-
-    let mapping = events.into_iter().map(event_to_owned).collect();
-    Ok(events_to_text(mapping))
+pub struct QuakeDown {
+    pub pieces: Vec<MdStruct>,
 }
 
-// based on https://github.com/zoni/obsidian-export/blob/main/src/lib.rs
-fn tokenizer<'a>(content: &'a str) -> Result<Vec<Event<'a>>, Box<dyn Error>> {
-    let mut parser_options = Options::empty();
-    parser_options.insert(Options::ENABLE_TABLES);
-    parser_options.insert(Options::ENABLE_FOOTNOTES);
-    parser_options.insert(Options::ENABLE_STRIKETHROUGH);
-    parser_options.insert(Options::ENABLE_TASKLISTS);
-    parser_options.insert(Options::ENABLE_SMART_PUNCTUATION);
+impl Default for QuakeDown {
+    fn default() -> Self {
+        QuakeDown { pieces: vec![] }
+    }
+}
 
-    let mut events = vec![];
-    let mut ref_parser = RefParser::new();
-    let mut buffer = Vec::with_capacity(5);
+impl QuakeDown {
+    pub fn transform(content: &str) -> Result<String, Box<dyn Error>> {
+        let mut down = QuakeDown::default();
+        let events = down.tokenizer(&content)?;
 
-    for event in Parser::new_ext(&content, parser_options) {
-        if ref_parser.state == RefParserState::Resetting {
-            events.append(&mut buffer);
-            buffer.clear();
-            ref_parser.reset();
-        }
-        buffer.push(event.clone());
-        match ref_parser.state {
-            RefParserState::NoState => {
-                match event {
-                    Event::Text(CowStr::Borrowed("![")) => {
-                        ref_parser.ref_type = Some(RefType::Embed);
-                        ref_parser.transition(RefParserState::ExpectSecondOpenBracket);
-                    }
-                    Event::Text(CowStr::Borrowed("[")) => {
-                        ref_parser.ref_type = Some(RefType::Link);
-                        ref_parser.transition(RefParserState::ExpectSecondOpenBracket);
-                    }
-                    _ => {
-                        events.push(event);
-                        buffer.clear();
-                    },
-                };
-            }
-            RefParserState::ExpectSecondOpenBracket => match event {
-                Event::Text(CowStr::Borrowed("[")) => {
-                    ref_parser.transition(RefParserState::ExpectRefText);
-                }
-                _ => {
-                    ref_parser.transition(RefParserState::Resetting);
-                }
-            },
-            RefParserState::ExpectRefText => match event {
-                Event::Text(CowStr::Borrowed("]")) => {
-                    ref_parser.transition(RefParserState::Resetting);
-                }
-                Event::Text(text) => {
-                    ref_parser.ref_text.push_str(&text);
-                    ref_parser.transition(RefParserState::ExpectRefTextOrCloseBracket);
-                }
-                _ => {
-                    ref_parser.transition(RefParserState::Resetting);
-                }
-            },
-            RefParserState::ExpectRefTextOrCloseBracket => match event {
-                Event::Text(CowStr::Borrowed("]")) => {
-                    ref_parser.transition(RefParserState::ExpectFinalCloseBracket);
-                }
-                Event::Text(text) => {
-                    ref_parser.ref_text.push_str(&text);
-                }
-                _ => {
-                    ref_parser.transition(RefParserState::Resetting);
-                }
-            },
-            RefParserState::ExpectFinalCloseBracket => match event {
-                Event::Text(CowStr::Borrowed("]")) => match ref_parser.ref_type {
-                    Some(RefType::Link) => {
-                        let mut elements = make_link_to_file(
-                            NoteReference::from_str(
-                                ref_parser.ref_text.clone().as_ref()
-                            )
-                        );
-                        events.append(&mut elements);
-                        buffer.clear();
-                        ref_parser.transition(RefParserState::Resetting);
-                    }
-                    Some(RefType::Embed) => {
-                        let mut elements = embed_file(
-                            ref_parser.ref_text.clone().as_ref()
-                        )?;
-                        events.append(&mut elements);
-                        buffer.clear();
-                        ref_parser.transition(RefParserState::Resetting);
-                    }
-                    None => panic!("In state ExpectFinalCloseBracket but ref_type is None"),
-                },
-                _ => {
-                    ref_parser.transition(RefParserState::Resetting);
-                }
-            },
-            RefParserState::Resetting => panic!("Reached Resetting state, but it should have been handled prior to this match block"),
-        }
+        let mapping = events.into_iter().map(event_to_owned).collect();
+
+        Ok(events_to_text(mapping))
     }
 
-    Ok(events)
-}
+    // based on https://github.com/zoni/obsidian-export/blob/main/src/lib.rs
+    fn tokenizer<'a>(&mut self, content: &'a str) -> Result<Vec<Event<'a>>, Box<dyn Error>> {
+        let mut parser_options = Options::empty();
+        parser_options.insert(Options::ENABLE_TABLES);
+        parser_options.insert(Options::ENABLE_FOOTNOTES);
+        parser_options.insert(Options::ENABLE_STRIKETHROUGH);
+        parser_options.insert(Options::ENABLE_TASKLISTS);
+        parser_options.insert(Options::ENABLE_SMART_PUNCTUATION);
 
-fn make_link_to_file<'b, 'c>(reference: NoteReference<'b>) -> MarkdownEvents<'c> {
-    let link = match reference.file {
-        None => "".to_string(),
-        Some(file) => file.to_string(),
-    };
+        let mut events = vec![];
+        let mut ref_parser = RefParser::new();
+        let mut buffer = Vec::with_capacity(5);
 
-    let link_tag = pulldown_cmark::Tag::Link(
-        pulldown_cmark::LinkType::Inline,
-        CowStr::from(link),
-        CowStr::from(""),
-    );
+        for event in Parser::new_ext(&content, parser_options) {
+            if ref_parser.state == RefParserState::Resetting {
+                events.append(&mut buffer);
+                buffer.clear();
+                ref_parser.reset();
+            }
+            buffer.push(event.clone());
 
-    vec![
-        Event::Start(link_tag.clone()),
-        Event::Text(CowStr::from(reference.display())),
-        Event::End(link_tag.clone()),
-    ]
-}
-
-fn embed_file<'b>(link_text: &str) -> Result<MarkdownEvents<'b>, Box<dyn Error>> {
-    let note_ref = NoteReference::from_str(link_text);
-    let path = match note_ref.file {
-        None => {
-            return Ok(make_link_to_file(note_ref));
+            match ref_parser.state {
+                RefParserState::NoState => {
+                    match event {
+                        Event::Text(CowStr::Borrowed("![")) => {
+                            ref_parser.ref_type = Some(RefType::Embed);
+                            ref_parser.transition(RefParserState::ExpectSecondOpenBracket);
+                        }
+                        Event::Text(CowStr::Borrowed("[")) => {
+                            ref_parser.ref_type = Some(RefType::Link);
+                            ref_parser.transition(RefParserState::ExpectSecondOpenBracket);
+                        }
+                        _ => {
+                            events.push(event);
+                            buffer.clear();
+                        },
+                    };
+                }
+                RefParserState::ExpectSecondOpenBracket => match event {
+                    Event::Text(CowStr::Borrowed("[")) => {
+                        ref_parser.transition(RefParserState::ExpectRefText);
+                    }
+                    _ => {
+                        ref_parser.transition(RefParserState::Resetting);
+                    }
+                },
+                RefParserState::ExpectRefText => match event {
+                    Event::Text(CowStr::Borrowed("]")) => {
+                        ref_parser.transition(RefParserState::Resetting);
+                    }
+                    Event::Text(text) => {
+                        ref_parser.ref_text.push_str(&text);
+                        ref_parser.transition(RefParserState::ExpectRefTextOrCloseBracket);
+                    }
+                    _ => {
+                        ref_parser.transition(RefParserState::Resetting);
+                    }
+                },
+                RefParserState::ExpectRefTextOrCloseBracket => match event {
+                    Event::Text(CowStr::Borrowed("]")) => {
+                        ref_parser.transition(RefParserState::ExpectFinalCloseBracket);
+                    }
+                    Event::Text(text) => {
+                        ref_parser.ref_text.push_str(&text);
+                    }
+                    _ => {
+                        ref_parser.transition(RefParserState::Resetting);
+                    }
+                },
+                RefParserState::ExpectFinalCloseBracket => match event {
+                    Event::Text(CowStr::Borrowed("]")) => match ref_parser.ref_type {
+                        Some(RefType::Link) => {
+                            let mut elements = self.make_link_to_file(
+                                NoteReference::from_str(
+                                    ref_parser.ref_text.clone().as_ref()
+                                )
+                            );
+                            events.append(&mut elements);
+                            buffer.clear();
+                            ref_parser.transition(RefParserState::Resetting);
+                        }
+                        Some(RefType::Embed) => {
+                            let mut elements = self.embed_file(
+                                ref_parser.ref_text.clone().as_ref()
+                            )?;
+                            events.append(&mut elements);
+                            buffer.clear();
+                            ref_parser.transition(RefParserState::Resetting);
+                        }
+                        None => panic!("In state ExpectFinalCloseBracket but ref_type is None"),
+                    },
+                    _ => {
+                        ref_parser.transition(RefParserState::Resetting);
+                    }
+                },
+                RefParserState::Resetting => panic!("Reached Resetting state, but it should have been handled prior to this match block"),
+            }
         }
-        Some(file) => Some(PathBuf::from(file)),
-    };
 
-    let path = path.unwrap();
-    let no_ext = OsString::new();
+        Ok(events)
+    }
 
-    let events = match path.extension().unwrap_or(&no_ext).to_str() {
-        _ => make_link_to_file(note_ref),
-    };
+    pub fn make_link_to_file<'b, 'c>(
+        &mut self,
+        reference: NoteReference<'b>,
+    ) -> MarkdownEvents<'c> {
+        let link = match reference.file {
+            None => "".to_string(),
+            Some(file) => file.to_string(),
+        };
 
-    Ok(events)
+        let link_tag = pulldown_cmark::Tag::Link(
+            pulldown_cmark::LinkType::Inline,
+            CowStr::from(link),
+            CowStr::from(""),
+        );
+
+        vec![
+            Event::Start(link_tag.clone()),
+            Event::Text(CowStr::from(reference.display())),
+            Event::End(link_tag.clone()),
+        ]
+    }
+
+    pub fn embed_file<'b>(
+        &mut self,
+        link_text: &str,
+    ) -> Result<MarkdownEvents<'b>, Box<dyn Error>> {
+        let note_ref = NoteReference::from_str(link_text);
+        let path = match note_ref.file {
+            None => {
+                return Ok(self.make_link_to_file(note_ref));
+            }
+            Some(file) => Some(PathBuf::from(file)),
+        };
+
+        let path = path.unwrap();
+        let no_ext = OsString::new();
+
+        let events = match path.extension().unwrap_or(&no_ext).to_str() {
+            _ => self.make_link_to_file(note_ref),
+        };
+
+        Ok(events)
+    }
 }
 
-fn events_to_text(markdown: Vec<Event>) -> String {
+pub fn events_to_text(markdown: Vec<Event>) -> String {
     let mut buffer = String::new();
     cmark_with_options(
         markdown.iter(),
@@ -253,7 +275,7 @@ fn codeblock_kind_to_owned<'a>(codeblock_kind: CodeBlockKind) -> CodeBlockKind<'
 
 #[cfg(test)]
 mod tests {
-    use crate::markdown::md_processor::{tokenizer, transform};
+    use crate::markdown::md_processor::QuakeDown;
     use std::fs;
     use std::path::PathBuf;
 
@@ -267,41 +289,26 @@ mod tests {
         let target = base.join("new.md");
         let expect = fs::read_to_string(target).unwrap();
 
-        let actual = transform(src.as_str()).unwrap();
+        let actual = QuakeDown::transform(src.as_str()).unwrap();
 
         assert_eq!(actual, expect);
     }
 
     #[test]
-    fn tokenizer_link() {
-        let events = tokenizer("[[note::SourceCode]]").unwrap();
-        println!("{:?}", events);
-    }
-
-    #[test]
     fn br_tag_in_html() {
-        let string = transform("demo `<br />` demo").unwrap();
+        let string = QuakeDown::transform("demo `<br />` demo").unwrap();
         assert_eq!("demo `<br />` demo", string);
     }
 
     #[test]
     fn transform_page_link() {
-        let string = transform("[[note::SourceCode]]").unwrap();
+        let string = QuakeDown::transform("[[note::SourceCode]]").unwrap();
         assert_eq!("[note::SourceCode](note::SourceCode)", string);
     }
 
     #[test]
     fn transform_page_file() {
-        let string = transform("![[note::SourceCode]]").unwrap();
+        let string = QuakeDown::transform("![[note::SourceCode]]").unwrap();
         assert_eq!("[note::SourceCode](note::SourceCode)", string);
-    }
-
-    #[test]
-    fn transform_admonition() {
-        let admonition = "!!! note \"An optional title\"
-    Here is something you should pay attention to.
-";
-        let string = transform(admonition).unwrap();
-        println!("{:}", string);
     }
 }
