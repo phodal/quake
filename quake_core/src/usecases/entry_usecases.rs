@@ -26,6 +26,7 @@ pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefi
     entries_define
 }
 
+/// generate entries.csv from by paths
 pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     let (size, content) = Entrysets::generate(&paths.base)?;
 
@@ -42,6 +43,12 @@ pub fn update_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryNodeIn
     fs::write(&entry_info_path, result).expect("cannot write to file");
 }
 
+/// create entry by `path`, `type`, `text`
+/// process:
+/// 1. looking for entry define file
+/// 2. create entry file
+/// 3. update entry node info index
+///
 pub fn create_entry(
     quake_path: &String,
     entry_type: &String,
@@ -68,17 +75,15 @@ pub fn create_entry(
     Ok((target_path, entry_file))
 }
 
+/// create really entry file
 pub fn create_entry_file(
     entry_define: &EntryDefine,
     target_file: &mut PathBuf,
     entry_text: String,
 ) -> EntryFile {
     let mut entry_file = EntryFile::default();
-
     entry_file.set_fields(entry_define.create_default_fields(entry_text));
-
     fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
-
     entry_file
 }
 

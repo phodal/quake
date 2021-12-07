@@ -12,49 +12,31 @@ pub struct Transflow {
     pub target: String,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub struct Mapping {
-    pub entry: String,
-    pub source: Vec<String>,
-    pub target: Vec<String>,
-}
-
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
-pub struct Filter {}
-
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
-pub struct Flow {
-    pub name: String,
-    pub from: Vec<String>,
-    pub to: String,
-    pub mappings: Option<Vec<Mapping>>,
-    pub filters: Option<Vec<Filter>>,
-}
-
-impl Flow {
-    pub fn from_route(route: Route) -> Flow {
-        Flow {
-            name: route.name,
-            from: route.from.clone(),
-            to: route.to.clone(),
-            mappings: None,
-            filters: None,
-        }
-    }
-}
-
-impl Default for Transflow {
-    fn default() -> Self {
-        Transflow {
-            name: "".to_string(),
-            defines_map: Default::default(),
-            flows: vec![],
-            target: "".to_string(),
-        }
-    }
-}
-
 impl Transflow {
+    /// parse from transflow DSL which is [QuakeTransflowNode]
+    ///
+    /// # Examples
+    ///
+    /// transflow define:
+    ///
+    /// ```bash
+    /// transflow { from('todo','blog').to(<quake-calendar>); }
+    /// ```
+    /// - `quake-calendar` with be [Transflow.target]
+    /// - `defines_map` with mapping to `todo` and `blog` [EntryDefine]
+    /// - `flows` with have informations of `from('todo','blog').to(<quake-calendar>`
+    ///
+    /// ```
+    ///let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
+    ///let flow = QuakeTransflowNode::from_text(define).unwrap();
+    ///
+    ///let flow = Transflow::from(entry_defines(), flow);
+    ///
+    ///assert_eq!(2, flow.defines_map.unwrap().len());
+    ///assert_eq!(1, flow.flows.len());
+    ///assert_eq!("quake-calendar", flow.target);
+    /// ```
+    ///
     pub fn from(defines: Vec<EntryDefine>, node: QuakeTransflowNode) -> Transflow {
         let mut transflow = Transflow::default();
 
@@ -86,6 +68,55 @@ impl Transflow {
         }
 
         transflow
+    }
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+pub struct Mapping {
+    pub entry: String,
+    pub source: Vec<String>,
+    pub target: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
+pub struct Filter {
+    /// simple javascript filter expression
+    /// ```javascript
+    /// date.created_date > 2012.23.31
+    /// date.name == "today"
+    /// ```
+    pub expression: String,
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
+pub struct Flow {
+    pub name: String,
+    pub from: Vec<String>,
+    pub to: String,
+    pub mappings: Option<Vec<Mapping>>,
+    pub filters: Option<Vec<Filter>>,
+}
+
+impl Flow {
+    pub fn from_route(route: Route) -> Flow {
+        Flow {
+            name: route.name,
+            from: route.from.clone(),
+            to: route.to.clone(),
+            mappings: None,
+            filters: None,
+        }
+    }
+}
+
+impl Default for Transflow {
+    fn default() -> Self {
+        Transflow {
+            name: "".to_string(),
+            defines_map: Default::default(),
+            flows: vec![],
+            target: "".to_string(),
+        }
     }
 }
 
@@ -136,7 +167,6 @@ mod tests {
 
         let flow = Transflow::from(entry_defines(), flow);
 
-        println!("{:?}", flow);
         assert_eq!(2, flow.defines_map.unwrap().len());
         assert_eq!(1, flow.flows.len());
         assert_eq!("quake-calendar", flow.target);

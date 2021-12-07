@@ -1,16 +1,16 @@
 use crate::transflow::transflow::{Flow, Mapping};
 use crate::transflow::Transflow;
 
-/// generate from typescript interface
-/// ```javascript
-///   el.setAttribute('entries', JSON.stringify({
-//     items: ['blog', 'todo']
-//   }));
-//   el.setAttribute('data', JSON.stringify(data));
-/// ```
 pub struct JsFlowGen {}
 
 impl JsFlowGen {
+    /// generate from typescript interface
+    /// ```javascript
+    ///   el.setAttribute('entries', JSON.stringify({
+    //     items: ['blog', 'todo']
+    //   }));
+    //   el.setAttribute('data', JSON.stringify(data));
+    /// ```
     pub fn gen_element(trans: &Transflow) -> Vec<String> {
         let mut vec = vec![];
         for flow in &trans.flows {
