@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct WebComponentElement {
     /// element id, such as `quake-dashboard`
@@ -58,9 +60,9 @@ pub enum AttributeType {
     Array(Vec<AttributeType>),
     Boolean(bool),
     Number(usize),
-    Object,
-    Date(String),
     String(String),
+    Date(String),
+    Object(HashMap<String, AttributeType>),
 }
 
 pub type EventValue = Attribute;
