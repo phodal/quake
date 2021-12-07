@@ -32,31 +32,39 @@ use pulldown_cmark::{CodeBlockKind, CowStr, Event, Options, Parser, Tag};
 use pulldown_cmark_to_cmark::cmark_with_options;
 
 use crate::markdown::references::{NoteReference, RefParser, RefParserState, RefType};
+use crate::markdown::tokenizer::QuakeDown;
 
 pub type MarkdownEvents<'a> = Vec<Event<'a>>;
 
-pub struct QuakeDown {
+pub struct MdProcessor {
     pub pieces: Vec<MdStruct>,
 }
 
-impl Default for QuakeDown {
+impl Default for MdProcessor {
     fn default() -> Self {
-        QuakeDown { pieces: vec![] }
+        MdProcessor { pieces: vec![] }
     }
 }
 
-impl QuakeDown {
+impl MdProcessor {
     pub fn transform(content: &str) -> Result<String, Box<dyn Error>> {
-        let mut down = QuakeDown::default();
-        let events = down.tokenizer(&content)?;
+        let mut down = MdProcessor::default();
+        let events = down.add_custom_syntax(&content)?;
 
         let mapping = events.into_iter().map(event_to_owned).collect();
 
         Ok(events_to_text(mapping))
     }
 
+    pub fn token_it(content: &str) {
+        QuakeDown::from(content);
+    }
+
     // based on https://github.com/zoni/obsidian-export/blob/main/src/lib.rs
-    fn tokenizer<'a>(&mut self, content: &'a str) -> Result<Vec<Event<'a>>, Box<dyn Error>> {
+    fn add_custom_syntax<'a>(
+        &mut self,
+        content: &'a str,
+    ) -> Result<Vec<Event<'a>>, Box<dyn Error>> {
         let mut parser_options = Options::empty();
         parser_options.insert(Options::ENABLE_TABLES);
         parser_options.insert(Options::ENABLE_FOOTNOTES);
@@ -275,7 +283,7 @@ fn codeblock_kind_to_owned<'a>(codeblock_kind: CodeBlockKind) -> CodeBlockKind<'
 
 #[cfg(test)]
 mod tests {
-    use crate::markdown::md_processor::QuakeDown;
+    use crate::markdown::md_processor::MdProcessor;
     use std::fs;
     use std::path::PathBuf;
 
@@ -289,26 +297,35 @@ mod tests {
         let target = base.join("new.md");
         let expect = fs::read_to_string(target).unwrap();
 
-        let actual = QuakeDown::transform(src.as_str()).unwrap();
+        let actual = MdProcessor::transform(src.as_str()).unwrap();
 
         assert_eq!(actual, expect);
     }
 
     #[test]
     fn br_tag_in_html() {
-        let string = QuakeDown::transform("demo `<br />` demo").unwrap();
+        let string = MdProcessor::transform("demo `<br />` demo").unwrap();
         assert_eq!("demo `<br />` demo", string);
     }
 
     #[test]
     fn transform_page_link() {
-        let string = QuakeDown::transform("[[note::SourceCode]]").unwrap();
+        let string = MdProcessor::transform("[[note::SourceCode]]").unwrap();
         assert_eq!("[note::SourceCode](note::SourceCode)", string);
     }
 
     #[test]
     fn transform_page_file() {
-        let string = QuakeDown::transform("![[note::SourceCode]]").unwrap();
+        let string = MdProcessor::transform("![[note::SourceCode]]").unwrap();
         assert_eq!("[note::SourceCode](note::SourceCode)", string);
+    }
+
+    #[test]
+    fn down_code_token() {
+        let code = "```
+console.log('hello,world')
+```";
+
+        MdProcessor::token_it(code);
     }
 }
