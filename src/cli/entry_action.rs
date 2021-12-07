@@ -6,8 +6,8 @@ use std::path::PathBuf;
 use quake_core::parser::quake::QuakeActionNode;
 use quake_core::quake_config::QuakeConfig;
 
-use crate::cli_action::helper::table_process;
-use crate::exec_wrapper::editor_exec;
+use crate::cli::helper::table_process;
+use crate::helper::exec_wrapper::editor_exec;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::errors::QuakeError;
 use quake_core::usecases::entry_usecases;
@@ -74,7 +74,7 @@ mod tests {
     use quake_core::parser::quake::QuakeActionNode;
     use quake_core::quake_config::QuakeConfig;
 
-    use crate::cli_action::action;
+    use crate::cli::action;
 
     #[test]
     fn throw_editor_empty() {

@@ -13,7 +13,7 @@ use quake_core::entry::entry_file::EntryFile;
 use quake_core::errors::QuakeError;
 use quake_core::helper::file_filter::type_from_md_path;
 
-use crate::exec_wrapper::meili_exec::feed_entry;
+use crate::helper::exec_wrapper::meili_exec::feed_entry;
 
 fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
     let (mut tx, rx) = channel(1);

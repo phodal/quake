@@ -14,8 +14,7 @@ use quake_tui::tui_main_loop;
 
 use crate::server::quake_rocket;
 
-pub mod cli_action;
-pub mod exec_wrapper;
+pub mod cli;
 pub mod helper;
 pub mod server;
 
@@ -88,7 +87,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
             let conf = config_quake(&cmd)?;
             if cmd.input.len() > 0 {
                 let expr = QuakeActionNode::action_from_text(cmd.input.as_str())?;
-                cli_action::action(expr, conf)?
+                cli::action(expr, conf)?
             }
         }
         SubCommand::Server(server) => {

@@ -8,7 +8,7 @@ use walkdir::{DirEntry, FilterEntry, IntoIter, WalkDir};
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::QuakeConfig;
 
-use crate::exec_wrapper::meili_exec;
+use crate::helper::exec_wrapper::meili_exec;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::errors::QuakeError;
 use quake_core::usecases::entry_usecases;
