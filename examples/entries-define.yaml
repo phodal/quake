@@ -112,3 +112,10 @@ entries:
       - updated_date: Date
       - category: String
     actions: ~
+  - type: roadmp
+    display: "Roadmap"
+    fields:
+      - title: Title
+      - created_date: String
+      - updated_date: Date
+    actions: ~
