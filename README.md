@@ -182,16 +182,16 @@ Tech stacks:
   - [x] Django/Mezzanine
   - [x] Apple Notes
   - [x] Microsoft Todo
-  - [ ] Microsoft Onenote
+  - [x] Microsoft Onenote
 - [x] 自定义条目类型
   - [x] CRUD
   - [x] dynamic update entries-define
 - [x] CLI 交互与列表呈现
 - [ ] MVP API 设计
   - [x] Web Server
-  - [ ] GraphQL
+  - [ ] ~~GraphQL~~
 - [x] 基于 Git 的数据存储
-- [ ] Search anywhere
+- [x] Search anywhere
   - [x] search frameworks
   - [ ] auto suggest
 
