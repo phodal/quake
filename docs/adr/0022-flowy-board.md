@@ -6,6 +6,8 @@ Date: 2021-12-01
 
 2021-12-01 proposed
 
+2021-12-07 done
+
 ## Context
 
 - Kanban
