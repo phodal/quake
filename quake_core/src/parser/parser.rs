@@ -11,6 +11,9 @@ use std::error::Error;
 struct QuakeParser;
 
 /// parse text to SourceUnit
+/// convert support:
+///   - Action
+///   - Transflow
 pub fn parse(text: &str) -> Result<SourceUnit, Box<dyn Error>> {
     let pairs = match QuakeParser::parse(Rule::earth, text) {
         Ok(pairs) => pairs,

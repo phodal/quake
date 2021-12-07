@@ -8,9 +8,8 @@ use crate::entry::entry_file::EntryFile;
 use crate::entry::entry_paths::EntryPaths;
 use crate::entry::{entry_define, entry_node_info, EntryDefine, EntryNodeInfo};
 use crate::errors::QuakeError;
-use crate::quake_time::date_now;
+use crate::helper::{date_now, file_filter};
 use crate::usecases::entrysets::Entrysets;
-use crate::usecases::file_filter;
 
 pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefine {
     let entries: Vec<EntryDefine> = entry_define::entries_define_from_path(&paths.entries_define)
@@ -146,6 +145,7 @@ mod tests {
 
     use crate::entry::entry_file::EntryFile;
     use crate::usecases::entry_usecases::{create_entry, find_entry_path, update_entry_fields};
+
     #[test]
     fn create_todo_entry() {
         let quake_path = PathBuf::from("..").join("_fixtures").join("demo_quake");

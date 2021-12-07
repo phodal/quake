@@ -8,7 +8,7 @@ use helper::entry_watcher;
 use tracing::{debug, error};
 
 use quake_core::entry::entry_defines::EntryDefines;
-use quake_core::parser::quake::QuakeAction;
+use quake_core::quake::QuakeActionNode;
 use quake_core::QuakeConfig;
 use quake_tui::tui_main_loop;
 
@@ -87,7 +87,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
         SubCommand::Cmd(cmd) => {
             let conf = config_quake(&cmd)?;
             if cmd.input.len() > 0 {
-                let expr = QuakeAction::action_from_text(cmd.input.as_str())?;
+                let expr = QuakeActionNode::action_from_text(cmd.input.as_str())?;
                 cli_action::action(expr, conf)?
             }
         }
@@ -206,7 +206,7 @@ mod tests {
             .await
             .expect_err("");
 
-            let error_msg = "QuakeError(\"unknown entry action: QuakeAction { object: \\\"story\\\", action: \\\"dddd\\\", text: \\\"\\\", parameters: [] }\")";
+            let error_msg = "QuakeError(\"unknown entry action: QuakeActionNode { object: \\\"story\\\", action: \\\"dddd\\\", text: \\\"\\\", parameters: [] }\")";
             assert_eq!(format!("{:?}", expected), error_msg);
         });
     }

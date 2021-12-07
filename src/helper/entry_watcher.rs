@@ -11,7 +11,7 @@ use tracing::{debug, error};
 
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::errors::QuakeError;
-use quake_core::usecases::file_filter::type_from_md_path;
+use quake_core::helper::file_filter::type_from_md_path;
 
 use crate::exec_wrapper::meili_exec::feed_entry;
 

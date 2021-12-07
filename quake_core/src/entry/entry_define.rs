@@ -1,11 +1,10 @@
 use crate::entry::EntryDefines;
+use crate::helper::quake_time;
+use crate::meta::EntryDefineFields;
 use indexmap::IndexMap;
 use serde_derive::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
-
-use crate::model::EntryDefineFields;
-use crate::quake_time;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct EntryDefine {
@@ -117,7 +116,7 @@ mod tests {
     use indexmap::IndexMap;
 
     use crate::entry::entry_define::EntryDefine;
-    use crate::model::meta_field::MetaField;
+    use crate::meta::MetaField;
 
     fn custom_entry_from_yaml() -> Vec<EntryDefine> {
         let yaml = "

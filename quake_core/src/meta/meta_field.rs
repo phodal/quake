@@ -1,6 +1,5 @@
+use crate::meta::Author;
 use std::fmt::{Display, Formatter};
-
-use crate::model::Author;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub enum MetaField {
@@ -65,7 +64,7 @@ pub enum MetaType {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::meta_field::MetaField;
+    use crate::meta::meta_field::MetaField;
 
     #[test]
     fn display_title() {

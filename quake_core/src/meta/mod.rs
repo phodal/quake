@@ -1,8 +1,8 @@
 use indexmap::IndexMap;
 
-use crate::model::meta_field::MetaField;
-
 pub mod meta_field;
+
+pub use meta_field::MetaField;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Author {
@@ -60,10 +60,8 @@ impl EntryDefineFields {
 
 #[cfg(test)]
 mod tests {
+    use crate::meta::{EntryDefineFields, MetaField};
     use indexmap::IndexMap;
-
-    use crate::model::meta_field::MetaField;
-    use crate::model::EntryDefineFields;
 
     #[test]
     fn custom_type() {

@@ -9,7 +9,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::entry::EntryDefine;
-use quake_core::parser::quake::QuakeAction;
+use quake_core::parser::quake::QuakeActionNode;
 use quake_core::QuakeConfig;
 
 use crate::server::ApiError;
@@ -31,7 +31,7 @@ impl Default for ActionSuggest {
 
 #[get("/query?<input>")]
 pub fn parse_query(input: String) -> String {
-    let result = QuakeAction::action_from_text(input.as_str());
+    let result = QuakeActionNode::action_from_text(input.as_str());
     let output = match result {
         Ok(value) => serde_json::to_string(&value).unwrap(),
         Err(err) => serde_json::to_string(&ApiError {

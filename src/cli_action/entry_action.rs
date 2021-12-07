@@ -3,7 +3,7 @@ use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 
-use quake_core::parser::quake::QuakeAction;
+use quake_core::parser::quake::QuakeActionNode;
 use quake_core::quake_config::QuakeConfig;
 
 use crate::cli_action::helper::table_process;
@@ -14,7 +14,7 @@ use quake_core::usecases::entry_usecases;
 use quake_core::usecases::entry_usecases::find_entry_path;
 use quake_core::usecases::entrysets::Entrysets;
 
-pub fn entry_action(expr: &QuakeAction, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
+pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.workspace, &expr.object);
 
     // todo: export api for search
@@ -71,14 +71,14 @@ pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
 
 #[cfg(test)]
 mod tests {
-    use quake_core::parser::quake::QuakeAction;
+    use quake_core::parser::quake::QuakeActionNode;
     use quake_core::quake_config::QuakeConfig;
 
     use crate::cli_action::action;
 
     #[test]
     fn throw_editor_empty() {
-        let expr = QuakeAction::action_from_text("todo.edit(1)").unwrap();
+        let expr = QuakeActionNode::action_from_text("todo.edit(1)").unwrap();
         let mut config = QuakeConfig::default();
         config.workspace = "examples".to_string();
         config.editor = "".to_string();

@@ -6,7 +6,7 @@ use crate::parser::parser::parse;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct QuakeIt {
-    pub actions: Vec<QuakeAction>,
+    pub actions: Vec<QuakeActionNode>,
     pub transflows: Vec<QuakeTransflowNode>,
 }
 
@@ -25,6 +25,7 @@ pub struct QuakeTransflowNode {
 }
 
 impl QuakeTransflowNode {
+    /// return first [QuakeTransflowNode] from text
     pub fn from_text(text: &str) -> Result<QuakeTransflowNode, Box<dyn Error>> {
         let it = quake(text)?;
         if it.transflows.is_empty() {
@@ -72,16 +73,16 @@ impl Route {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct QuakeAction {
+pub struct QuakeActionNode {
     pub object: String,
     pub action: String,
     pub text: String,
     pub parameters: Vec<String>,
 }
 
-impl Default for QuakeAction {
+impl Default for QuakeActionNode {
     fn default() -> Self {
-        QuakeAction {
+        QuakeActionNode {
             object: "".to_string(),
             action: "".to_string(),
             text: "".to_string(),
@@ -90,8 +91,10 @@ impl Default for QuakeAction {
     }
 }
 
-impl QuakeAction {
-    pub fn action_from_text(text: &str) -> Result<QuakeAction, Box<dyn Error>> {
+impl QuakeActionNode {
+    /// QuakeAction will only process one by one in current
+    /// so, just return first action
+    pub fn action_from_text(text: &str) -> Result<QuakeActionNode, Box<dyn Error>> {
         let it = quake(text)?;
         if it.actions.is_empty() {
             return Err(Box::new(QuakeParserError::new("not match action")));
@@ -106,6 +109,9 @@ impl QuakeAction {
     }
 }
 
+/// parse pure text to `QuakeIt` collections which include all
+/// - QuakeAction       , the action for handle data in Quake
+/// - QuakeTransflowNode, the data transform in Quake
 pub fn quake(text: &str) -> Result<QuakeIt, Box<dyn Error>> {
     let mut quakes = QuakeIt::default();
     let unit = parse(text)?;
@@ -113,7 +119,7 @@ pub fn quake(text: &str) -> Result<QuakeIt, Box<dyn Error>> {
     for part in unit.0 {
         match part {
             SourceUnitPart::Action(decl) => {
-                let mut action = QuakeAction::default();
+                let mut action = QuakeActionNode::default();
 
                 action.action = decl.action;
                 action.object = decl.object;
@@ -169,12 +175,12 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::quake::QuakeAction;
+    use crate::parser::quake::QuakeActionNode;
     use crate::quake::QuakeTransflowNode;
 
     #[test]
     fn should_parse_expression() {
-        let expr = QuakeAction::action_from_text("todo.add: 添加 todo 的支持").unwrap();
+        let expr = QuakeActionNode::action_from_text("todo.add: 添加 todo 的支持").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "add");
         assert_eq!(expr.text, "添加 todo 的支持");
@@ -182,7 +188,7 @@ mod tests {
 
     #[test]
     fn should_parse_update_parameter() {
-        let expr = QuakeAction::action_from_text("todo.update(1)").unwrap();
+        let expr = QuakeActionNode::action_from_text("todo.update(1)").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "1");
@@ -192,14 +198,14 @@ mod tests {
 
     #[test]
     fn should_parse_com() {
-        let expr = QuakeAction::action_from_text("phodal_com.sync").unwrap();
+        let expr = QuakeActionNode::action_from_text("phodal_com.sync").unwrap();
         assert_eq!(expr.object, "phodal_com");
         assert_eq!(expr.action, "sync");
     }
 
     #[test]
     fn should_parse_double_digital() {
-        let expr = QuakeAction::action_from_text("todo.update(12)").unwrap();
+        let expr = QuakeActionNode::action_from_text("todo.update(12)").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "12");
@@ -208,7 +214,7 @@ mod tests {
 
     #[test]
     fn should_parse_chinese_quote() {
-        let expr = QuakeAction::action_from_text("todo.update（12）").unwrap();
+        let expr = QuakeActionNode::action_from_text("todo.update（12）").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "12");

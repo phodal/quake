@@ -10,10 +10,10 @@ pub use quake_config::QuakeConfig;
 
 pub mod entry;
 pub mod errors;
+pub mod helper;
 pub mod markdown;
-pub mod model;
+pub mod meta;
 pub mod parser;
 pub mod quake_config;
-pub mod quake_time;
 pub mod transflow;
 pub mod usecases;
