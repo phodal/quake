@@ -95,3 +95,23 @@ router.setRoutes([
   {path: '/entry/:type/new', action: create_entry},
   {path: '/edit/:type/:id', action: edit_entry},
 ]);
+
+const Quake = {
+  client: new MeiliSearch({
+    host: 'http://127.0.0.1:7700'
+  }),
+  router: router,
+  query: function (entry, query, filter) {
+    let index = Quake.client.index(entry);
+    let options = {
+      attributesToHighlight: ['overview']
+    };
+
+    // check filter
+    Object.assign(options, filter);
+
+    return index.search(query, options).then((result) => {
+      return result.hits
+    })
+  }
+}

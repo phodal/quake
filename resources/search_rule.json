@@ -11,6 +11,10 @@
   "distinctAttribute": null,
   "searchableAttributes": null,
   "displayedAttributes": null,
+  "filterableAttributes": [
+    "created_date",
+    "updated_date"
+  ],
   "stopWords": null,
   "sortableAttributes": null,
   "synonyms": null
