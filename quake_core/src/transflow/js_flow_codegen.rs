@@ -7,12 +7,16 @@ pub struct JsFlowCodegen {}
 
 impl JsFlowCodegen {
     /// generate from typescript interface
+    ///
+    /// - a transflow function nme will start with `tl_{:}` prefix
+    ///
     /// ```javascript
     ///   el.setAttribute('entries', JSON.stringify({
     //     items: ['blog', 'todo']
     //   }));
     //   el.setAttribute('data', JSON.stringify(data));
     /// ```
+    ///
     pub fn gen_element(trans: &Transflow, element: Option<WebComponentElement>) -> Vec<String> {
         let mut vec = vec![];
         for flow in &trans.flows {
