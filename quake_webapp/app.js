@@ -1,4 +1,4 @@
-var Router = Vaadin.Router;
+const Router = Vaadin.Router;
 const outlet = document.getElementById('outlet');
 const router = new Router(outlet);
 
@@ -61,7 +61,7 @@ const create_entry = async (context, commands) => {
   return create_editor_element(entry, params);
 }
 
-const tl_timeline =  async (context, commands) => {
+const tl_timeline = async (context, commands) => {
   const el = document.createElement('quake-calendar');
 
   let todos = await Quake.query('todo');
@@ -76,7 +76,7 @@ const tl_timeline =  async (context, commands) => {
 const update_entry = async (entry_type, id, fields) => {
   let response = await fetch(`/entry/${entry_type}/${id}`, {
     method: 'POST',
-    body: JSON.stringify({ fields: fields })
+    body: JSON.stringify({fields: fields})
   });
 
   let data = await response.json();
@@ -85,7 +85,6 @@ const update_entry = async (entry_type, id, fields) => {
 
 router.setRoutes([
   {path: '/', action: home},
-  {path: '/transflow/timeline', action: tl_timeline},
   {path: '/entry/:type/new', action: create_entry},
   {path: '/edit/:type/:id', action: edit_entry},
 ]);
@@ -110,3 +109,5 @@ const Quake = {
     })
   }
 }
+
+Quake.router.addRoutes({path: '/transflow/show_calendar', action: tl_timeline},)
