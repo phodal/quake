@@ -297,6 +297,16 @@ export class QuakeDashboard {
               <ion-button class="dark-button" onClick={(e) => this.addAction(e, action)}>{action}</ion-button>
             )}
           </ion-item>
+          <ion-item>
+            <ion-select multiple={true} cancelText="Nah" okText="Okay!" placeholder="Select Range">
+              <ion-select-option value="last_week">Last Week</ion-select-option>
+              <ion-select-option value="last_month">Last Month</ion-select-option>
+              <ion-select-option value="last_quarter">Last Quarter</ion-select-option>
+              <ion-select-option value="last_year">Last Year</ion-select-option>
+            </ion-select>
+            <ion-datetime displayFormat="YYYY MM DD" placeholder="Created Date"></ion-datetime>
+            <ion-datetime displayFormat="YYYY MM DD" placeholder="Updated Date"></ion-datetime>
+          </ion-item>
         </ion-toolbar>
       </ion-header>
       <ion-content fullscreen>
