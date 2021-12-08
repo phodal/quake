@@ -1,7 +1,7 @@
 mod app;
 mod ui;
 
-use app::{App, MainWidget, Mode};
+use crate::app::{App, MainWidget, Mode};
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
@@ -39,6 +39,7 @@ pub fn tui_main_loop() -> Result<(), Box<dyn Error>> {
 }
 
 fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<()> {
+    // TODO: refactor
     loop {
         terminal.draw(|f| {
             draw(f, &mut app);

@@ -1,6 +1,10 @@
 use crate::app::{App, MainWidget, Mode};
-use std::path::{Path, PathBuf};
-use std::{fs, io};
+use quake_core::entry::EntryDefines;
+use quake_core::QuakeConfig;
+use serde_yaml;
+use std::error::Error;
+use std::fs;
+use std::path::Path;
 use tui::backend::Backend;
 use tui::layout::{Alignment, Constraint, Corner, Direction, Layout, Rect};
 use tui::style::{Color, Modifier, Style};
@@ -66,38 +70,31 @@ where
             )
         }
         MainWidget::Dirs => {
-            let entry_dirs: Vec<ListItem> = list_workspaces()
-                .unwrap_or_default()
-                .iter()
-                .rev()
-                .map(|dir| {
-                    let dir_name = Spans::from(vec![Span::styled(
-                        dir.display().to_string(),
-                        Style::default().fg(Color::Yellow),
-                    )]);
-
-                    ListItem::new(vec![Spans::from("-".repeat(area.width as usize)), dir_name])
-                })
-                .collect();
-            let dir_list = List::new(entry_dirs)
+            let entry_types: Vec<ListItem> = list_entry_types().unwrap_or_default();
+            let entry_types_list = List::new(entry_types)
                 .block(Block::default().borders(Borders::ALL).title("List"))
                 .start_corner(Corner::TopLeft);
-            frame.render_widget(dir_list, area);
+            frame.render_widget(entry_types_list, area);
         }
     }
 }
 
-fn list_workspaces() -> io::Result<Vec<PathBuf>> {
-    let mut entries = fs::read_dir(".")?
-        .map(|res| res.map(|e| e.path()))
-        .filter(|path| path.as_deref().map(is_workspace).unwrap_or(false))
-        .collect::<Result<Vec<_>, io::Error>>()?;
+fn list_entry_types() -> Result<Vec<ListItem<'static>>, Box<dyn Error>> {
+    let config: QuakeConfig = serde_yaml::from_str(fs::read_to_string(".quake.yaml")?.as_str())?;
+    let entry_defines_path = Path::new(&config.workspace).join("entries-define.yaml");
+    let entry_defines: EntryDefines =
+        serde_yaml::from_str(&fs::read_to_string(entry_defines_path)?)?;
 
-    entries.sort();
+    Ok(entry_defines
+        .entries
+        .iter()
+        .map(|define| {
+            let entry_type = Spans::from(vec![Span::styled(
+                define.entry_type.clone(),
+                Style::default().fg(Color::Yellow),
+            )]);
 
-    Ok(entries)
-}
-
-fn is_workspace(path: &Path) -> bool {
-    path.is_dir() && path.join("entries.csv").exists()
+            ListItem::new(vec![entry_type])
+        })
+        .collect())
 }
