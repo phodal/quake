@@ -3,16 +3,19 @@ use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 
-use quake_core::parser::quake::QuakeActionNode;
-use quake_core::quake_config::QuakeConfig;
+use tracing::info;
 
-use crate::cli::helper::table_process;
-use crate::helper::exec_wrapper::editor_exec;
+use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::errors::QuakeError;
+use quake_core::parser::quake::QuakeActionNode;
+use quake_core::quake_config::QuakeConfig;
 use quake_core::usecases::entry_usecases;
 use quake_core::usecases::entry_usecases::find_entry_path;
 use quake_core::usecases::entrysets::Entrysets;
+
+use crate::cli::helper::table_process;
+use crate::helper::exec_wrapper::editor_exec;
 
 pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.workspace, &expr.object);
@@ -40,6 +43,9 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
         }
         "sync" => entry_usecases::sync_in_path(&paths)?,
         "dump" => dump_by_path(&paths)?,
+        "show" => {
+            show_entry_detail(&expr, &paths)?;
+        }
         "list" => {
             let entries = paths.base.join("entries.csv");
             show_entrysets(&entries);
@@ -53,6 +59,39 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
     }
 
     Ok(())
+}
+
+fn show_entry_detail(expr: &QuakeActionNode, paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
+    let index = expr.index_from_parameter();
+    let target_file = find_entry_path(paths.base.clone(), &expr.object, index)?;
+    info!("show file: {:}", &target_file.display());
+    let content = fs::read_to_string(target_file)?;
+    let file = EntryFile::from(content.as_str(), index)?;
+
+    highlight_content(format!("{:?}", file.fields).as_str(), "json");
+
+    println!("{:}", file.content);
+
+    Ok(())
+}
+
+fn highlight_content(string: &str, lang: &str) {
+    use syntect::easy::HighlightLines;
+    use syntect::highlighting::{Style, ThemeSet};
+    use syntect::parsing::SyntaxSet;
+    use syntect::util::{as_24_bit_terminal_escaped, LinesWithEndings};
+
+    // Load these once at the start of your program
+    let ps = SyntaxSet::load_defaults_newlines();
+    let ts = ThemeSet::load_defaults();
+
+    let syntax = ps.find_syntax_by_extension(lang).unwrap();
+    let mut h = HighlightLines::new(syntax, &ts.themes["base16-ocean.dark"]);
+    for line in LinesWithEndings::from(string) {
+        let ranges: Vec<(Style, &str)> = h.highlight(line, &ps);
+        let escaped = as_24_bit_terminal_escaped(&ranges[..], true);
+        println!("{}", escaped);
+    }
 }
 
 fn show_entrysets(path: &PathBuf) {
