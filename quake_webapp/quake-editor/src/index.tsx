@@ -36,6 +36,10 @@ class ReactElement extends HTMLElement {
       }
     };
 
+    if (typeof (props as any).content !== "string") {
+      (props as any).content = "";
+    }
+
     // console.log(props);
     // console.log(this.attributes);
     // @ts-ignore
