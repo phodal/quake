@@ -10,13 +10,12 @@ specifiers:
   '@types/react-calendar-timeline': ^0.26.5
   '@types/react-dom': ^17.0.0
   '@types/styled-components': ^5.1.15
-  dayjs: ^1.10.7
+  date-fns: ^2.27.0
   interactjs: ^1.10.11
   polished: ^4.1.3
   react: ^17.0.2
   react-app-rewired: ^2.1.8
   react-big-calendar: ^0.38.1
-  react-calendar-timeline: ^0.27.0
   react-dom: ^17.0.2
   react-scripts: 4.0.3
   styled-components: ^5.3.3
@@ -31,12 +30,11 @@ dependencies:
   '@types/node': 12.20.37
   '@types/react': 17.0.37
   '@types/react-dom': 17.0.11
-  dayjs: 1.10.7
+  date-fns: 2.27.0
   interactjs: 1.10.11
   polished: 4.1.3
   react: 17.0.2
   react-big-calendar: 0.38.1_react-dom@17.0.2+react@17.0.2
-  react-calendar-timeline: 0.27.0_e700c828ab3c73c4a000c3b16b840bee
   react-dom: 17.0.2_react@17.0.2
   react-scripts: 4.0.3_react@17.0.2+typescript@4.5.2
   styled-components: 5.3.3_react-dom@17.0.2+react@17.0.2
@@ -3325,10 +3323,6 @@ packages:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
     dev: false
 
-  /batch-processor/1.0.0:
-    resolution: {integrity: sha1-dclcMrdI4IUNEMKxaPa9vpiRrOg=}
-    dev: false
-
   /batch/0.6.1:
     resolution: {integrity: sha1-3DQxT05nkxgJP8dgJyUl+UvyXBY=}
     dev: false
@@ -3814,10 +3808,6 @@ packages:
       static-extend: 0.1.2
     dev: false
 
-  /classnames/2.3.1:
-    resolution: {integrity: sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==}
-    dev: false
-
   /clean-css/4.2.4:
     resolution: {integrity: sha512-EJUDT7nDVFDvaQgAo2G/PJvxmp1o/c6iXLbswsBbUFXi1Nr+AjA2cKmfbKDMjMvzEe75g3P6JkaDDAKk96A85A==}
     engines: {node: '>= 4.0'}
@@ -4136,17 +4126,6 @@ packages:
       ripemd160: 2.0.2
       safe-buffer: 5.2.1
       sha.js: 2.4.11
-    dev: false
-
-  /create-react-context/0.3.0_react@17.0.2:
-    resolution: {integrity: sha512-dNldIoSuNSvlTJ7slIKC/ZFGKexBMBrrcc+TTe1NdmROnaASuLPvqpwj9v4XS4uXZ8+YPu0sNmShX2rXI5LNsw==}
-    peerDependencies:
-      prop-types: ^15.0.0
-      react: ^0.14.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      gud: 1.0.0
-      react: 17.0.2
-      warning: 4.0.3
     dev: false
 
   /cross-spawn/6.0.5:
@@ -4468,8 +4447,9 @@ packages:
     resolution: {integrity: sha512-QWxYLR5P/6GStZcdem+V1xoto6DMadYWpMXU82ES3/RfR3Wdwr3D0+be7mgOJ+Ov0G9D5Dmb9T17sNLQYj9XOg==}
     dev: false
 
-  /dayjs/1.10.7:
-    resolution: {integrity: sha512-P6twpd70BcPK34K26uJ1KT3wlhpuOAPoMwJzpsIWUxHZ7wpmbdZL/hQqBDfz7hGurYSa5PhzdhDHtt319hL3ig==}
+  /date-fns/2.27.0:
+    resolution: {integrity: sha512-sj+J0Mo2p2X1e306MHq282WS4/A8Pz/95GIFcsPNMPMZVI3EUrAdSv90al1k+p74WGLCruMXk23bfEDZa71X9Q==}
+    engines: {node: '>=0.11'}
     dev: false
 
   /debug/2.6.9:
@@ -4827,12 +4807,6 @@ packages:
 
   /electron-to-chromium/1.4.8:
     resolution: {integrity: sha512-Cu5+dbg55+1E3ohlsa8HT0s4b8D0gBewXEGG8s5wBl8ynWv60VuvYW25GpsOeTVXpulhyU/U8JYZH+yxASSJBQ==}
-    dev: false
-
-  /element-resize-detector/1.2.3:
-    resolution: {integrity: sha512-+dhNzUgLpq9ol5tyhoG7YLoXL3ssjfFW+0gpszXPwRU6NjGr1fVHMEAF8fVzIiRJq57Nre0RFeIjJwI8Nh2NmQ==}
-    dependencies:
-      batch-processor: 1.0.0
     dev: false
 
   /elliptic/6.5.4:
@@ -5966,10 +5940,6 @@ packages:
     resolution: {integrity: sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=}
     dev: false
     optional: true
-
-  /gud/1.0.0:
-    resolution: {integrity: sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==}
-    dev: false
 
   /gzip-size/5.1.1:
     resolution: {integrity: sha512-FNHi6mmoHvs1mxZAds4PpdCS6QG8B4C1krxJsMutgxl5t3+GlRTzzI3NEkifXx2pVsOvJdOGSmIgDhQ55FwdPA==}
@@ -7665,10 +7635,6 @@ packages:
 
   /lodash.debounce/4.0.8:
     resolution: {integrity: sha1-gteb/zCmfEAF/9XiUVMArZyk168=}
-    dev: false
-
-  /lodash.isequal/4.5.0:
-    resolution: {integrity: sha1-QVxEePK8wwEgwizhDtMib30+GOA=}
     dev: false
 
   /lodash.memoize/4.1.2:
@@ -9678,25 +9644,6 @@ packages:
       react-dom: 17.0.2_react@17.0.2
       react-overlays: 4.1.1_react-dom@17.0.2+react@17.0.2
       uncontrollable: 7.2.1_react@17.0.2
-    dev: false
-
-  /react-calendar-timeline/0.27.0_e700c828ab3c73c4a000c3b16b840bee:
-    resolution: {integrity: sha512-LOC7yrLT5bkfZAhfUKDhDkxyYd14dMnb3jXJzkpOyciPJyUwYWhxCDhjxwddfXjcB317NJVpszcqpk7xJw0mQg==}
-    peerDependencies:
-      interactjs: ^1.3.4
-      moment: '*'
-      prop-types: ^15.6.2
-      react: '>=16.3'
-      react-dom: '>=16.3'
-    dependencies:
-      classnames: 2.3.1
-      create-react-context: 0.3.0_react@17.0.2
-      element-resize-detector: 1.2.3
-      interactjs: 1.10.11
-      lodash.isequal: 4.5.0
-      memoize-one: 5.2.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
     dev: false
 
   /react-dev-utils/11.0.4:

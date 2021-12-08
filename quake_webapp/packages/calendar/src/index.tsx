@@ -1,6 +1,6 @@
 import React from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
-import CalendarTimeline from './CalendarTimeline';
+import QuakeCalendar from './QuakeCalendar';
 
 // from samples: https://github.com/sarvabowmen/rating-webcomponent/blob/master/src/ReactElement.js
 class ReactElement extends HTMLElement {
@@ -30,7 +30,7 @@ class ReactElement extends HTMLElement {
     };
 
     // @ts-ignore
-    render(<CalendarTimeline {...props}/>, this);
+    render(<QuakeCalendar {...props}/>, this);
   }
 
   unmount() {
@@ -71,4 +71,4 @@ class ReactElement extends HTMLElement {
 
 }
 
-customElements.define('quake-calendar-timeline', ReactElement);
+customElements.define('quake-calendar', ReactElement);
