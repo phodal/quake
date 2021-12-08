@@ -121,6 +121,9 @@ entries:
     actions: ~
   - type: issue
     display: "Issue"
+    config:
+    #
+      - view_type: List
     fields:
       - title: Title
       - assignee: Author

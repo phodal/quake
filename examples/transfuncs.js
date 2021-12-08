@@ -3,20 +3,22 @@ function from_todo_blog_to_quake_calendar(todos, blogs) {
   for (let todo of todos) {
     results.push({
       type: "todo",
+      id: todo.id,
       title: todo.title,
       content: todo.content,
-      start_time: todo.created_date,
-      end_time: todo.updated_date
+      start: todo.created_date,
+      end: todo.updated_date
     })
   }
 
   for (let blog of blogs) {
     results.push({
       type: "blog",
+      id: blog.id,
       title: blog.title,
       content: blog.description,
-      start_time: blog.created_date,
-      end_time: blog.updated_date
+      start: blog.created_date,
+      end: blog.updated_date
     })
   }
 

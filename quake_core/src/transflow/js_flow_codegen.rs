@@ -34,11 +34,8 @@ impl JsFlowCodegen {
             func.push_str("\n");
 
             for item in &flow.from {
-                let fetch = format!("  let {:}_req = await fetch('/entry/{:}');\n", item, item);
-                let json = format!("  let {:}s = await {:}_req.json();\n", item, item);
-
+                let fetch = format!("  let {:}s = await Quake.query('{:}');\n", item, item);
                 func.push_str(fetch.as_str());
-                func.push_str(json.as_str());
                 func.push_str("\n");
             }
 
@@ -59,7 +56,7 @@ impl JsFlowCodegen {
     fn gen_events(func: &mut String, events: &Vec<EventListener>) {
         for event in events {
             let event_code = format!(
-                "  editor.addEventListener('{:}', function (event) {{
+                "  el.addEventListener('{:}', function (event) {{
     let data = event.detail;
     console.log(data);
   }});\n\n",
@@ -86,8 +83,11 @@ impl JsFlowCodegen {
             func.push_str("  let results = [];\n");
 
             if flow.mappings.is_some() {
-                let mappings = JsFlowCodegen::gen_object_forloop(&flow.mappings.as_ref().unwrap());
+                let mappings = JsFlowCodegen::gen_obj_mapping(&flow.mappings.as_ref().unwrap());
                 func.push_str(mappings.join("\n").as_str());
+            } else {
+                let results = JsFlowCodegen::gen_obj_concat(&flow.from);
+                func.push_str(results.join("").as_str());
             }
 
             func.push_str("  return results;\n");
@@ -108,17 +108,26 @@ impl JsFlowCodegen {
         params
     }
 
-    fn gen_object_forloop(mappings: &Vec<Mapping>) -> Vec<String> {
+    fn gen_obj_concat(entries: &Vec<String>) -> Vec<String> {
+        let mut vec = vec![];
+        for entry in entries {
+            let string = format!("  results = results.concat({:}s);\n", &entry);
+            vec.push(string);
+        }
+
+        vec
+    }
+
+    fn gen_obj_mapping(mappings: &Vec<Mapping>) -> Vec<String> {
         let mut vec = vec![];
         for mapping in mappings {
             let mut loop_expr = String::new();
-            loop_expr.push_str(
-                format!(
-                    "  for (let {:} of {:}s) {{\n    results.push(",
-                    &mapping.entry, &mapping.entry
-                )
-                .as_str(),
+            let string = format!(
+                "  for (let {:} of {:}s) {{\n    results.push(",
+                &mapping.entry, &mapping.entry
             );
+
+            loop_expr.push_str(string.as_str());
 
             loop_expr.push_str(Self::gen_mapping(&mapping).as_str());
             loop_expr.push_str(")\n  }\n");
@@ -213,6 +222,8 @@ mod tests {
         assert_eq!(
             "function from_todo_blog_to_quake_calendar(todos, blogs) {
   let results = [];
+  results = results.concat(todos);
+  results = results.concat(blogs);
   return results;
 }
 ",
@@ -234,6 +245,8 @@ mod tests {
         assert_eq!(
             "function from_todo_blog_to_record(todos, blogs) {
   let results = [];
+  results = results.concat(todos);
+  results = results.concat(blogs);
   return results;
 }
 ",
@@ -243,6 +256,7 @@ mod tests {
         assert_eq!(
             "function from_record_to_quake_calendar(records) {
   let results = [];
+  results = results.concat(records);
   return results;
 }
 ",

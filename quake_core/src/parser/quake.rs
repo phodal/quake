@@ -110,8 +110,8 @@ impl QuakeActionNode {
 }
 
 /// parse pure text to `QuakeIt` collections which include all
-/// - QuakeAction       , the action for handle data in Quake
-/// - QuakeTransflowNode, the data transform in Quake
+/// - QuakeAction        , the action for handle data in Quake
+/// - QuakeTransflowNode , the data transform in Quake
 pub fn quake(text: &str) -> Result<QuakeIt, Box<dyn Error>> {
     let mut quakes = QuakeIt::default();
     let unit = parse(text)?;

@@ -8,10 +8,10 @@
       mappings:
         - entry: "todo"
           source: ["title", "content", "created_date", "updated_date"]
-          target: ["title", "content", "start_time", "end_time"]
+          target: ["title", "content", "created_date", "updated_date"]
         - entry: "blog"
           source: ["title", "content", "created_date", "updated_date"]
-          target: ["title", "content", "start_time", "end_time"]
+          target: ["title", "content", "created_date", "updated_date"]
       filter:
         - entry: "todo"
           expression: "created_date > 2020.12.30 AND updated_date < 2022.01.01"
