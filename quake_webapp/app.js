@@ -61,7 +61,7 @@ const create_entry = async (context, commands) => {
   return create_editor_element(entry, params);
 }
 
-const timeline =  async (context, commands) => {
+const tl_timeline =  async (context, commands) => {
   const el = document.createElement('quake-calendar-timeline');
   let todo_req = await fetch(`/entry/todo`);
   let todos = await todo_req.json();
@@ -91,7 +91,7 @@ const update_entry = async (entry_type, id, fields) => {
 
 router.setRoutes([
   {path: '/', action: home},
-  {path: '/transflow/timeline', action: timeline},
+  {path: '/transflow/timeline', action: tl_timeline},
   {path: '/entry/:type/new', action: create_entry},
   {path: '/edit/:type/:id', action: edit_entry},
 ]);
