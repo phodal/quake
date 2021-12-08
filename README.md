@@ -190,6 +190,13 @@ see in [mvp](examples/roadmap/0001-first-mvp.md)
   - [ ] Mindmap from Ledge Framework?
   - [ ] Mindmap connect to Entry (`${connect.todo("0001", "${title}"}`)
 - [ ] Dashboard
+  - [ ] Todo APP 
+  - [ ] Kanban
+  - [ ] DataView
+    - DataGrid: https://github.com/adazzle/react-data-grid
+    - AGGrid: https://github.com/ag-grid/ag-grid
+  - [ ] Calendar: https://github.com/jquense/react-big-calendar
+  - [ ] PDF Viewer: https://github.com/react-pdf-viewer/react-pdf-viewer
 - [ ] Editor (TBD)
   - markdown editor
 
