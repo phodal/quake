@@ -1,6 +1,146 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Bug Fixes
+
+- Fix some import issue
+- Fix typo
+- Fix typo
+- Fix tests
+- Fix tests
+- Read entry types from defines file
+
+### Documentation
+
+- Thinking in attribute type
+- Add test file for compare
+- Add some syntax design for markdown
+- Update mvp for docs
+- Create mvp notes
+- Clean code
+- Update search config
+- Update status
+- Add more docs for long code
+- Add lost doc for pretl
+- Thinking in contract desing
+- Add some docs
+- Add more story
+- Update todo
+
+### Features
+
+- Main screen with help message
+- Try to add onenote
+- Add logger
+- Split web component element
+- Add init wce logic
+- Init basic parser
+- Init web component element
+- Try to parse markdown
+- Add basic struct define
+- Try to writer markdown parser
+- Add auto watch for cli
+- Add generate for wc element
+- Init basic quake.js design
+- Add infinite for select result
+- Init time search ui
+- Add show command
+- Migration core to quake.js t ofetch data
+
+### Refactor
+
+- Rename cli aciton
+- Rename file filter
+- Clean code
+- Split examples from _fixtures
+- Fix lint error
+- Rename list workspaces function
+- Extract actions behavior
+- Clean fm insert
+- Clean fm insert
+- Clean fe class
+- Review code and add some docs
+- Create exec wrapper for exec
+- Split helper
+- Remove search_api
+- Use same walk rule for sync & feed
+- Clean test code
+- Extract event.detail
+- Org code to quakedown
+- Clean code of struct
+- Change docs org
+- Fix exec url not config issues
+- Clean unused git code
+- Reorg code
+- Align cli_action to cli to make concept align
+- Use  as prefix of transflow functions
+- Naming api to prefix with tl
+- Remove unused main.rs
+- Rename calendar timeline to calendar
+- Migration dashboard
+- Change calendar component
+- Clean some deps
+
+### Testing
+
+- Add test for load from csv
+- Add test for create entry
+- Try to set test server in ci
+
+### Build
+
+- Add some logs examples
+- Try to add md render
+- Set vesion to 2021
+
+### Ci
+
+- Update coverage script
+
+## [0.1.2] - 2021-12-05
+
+### Bug Fixes
+
+- Fix deps issues
+
+### Features
+
+- Add generate for show func
+
+### Refactor
+
+- Rename functions
+- Exract functions for reading
+
+### Testing
+
+- Add test for multiple flow
+
+### Build
+
+- Add lost deps
+- Update coverage config
+
+## [0.1.1] - 2021-12-05
+
+### Bug Fixes
+
+- Fix build scripts issues
+
+### Documentation
+
+- Add doc example
+
+### Miscellaneous Tasks
+
+- Release 0.1.0
+
+### Build
+
+- Update locks file
+
 ## [0.1.0] - 2021-12-05
 
 ### Bug Fixes
