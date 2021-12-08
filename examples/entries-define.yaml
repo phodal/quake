@@ -112,10 +112,26 @@ entries:
       - updated_date: Date
       - category: String
     actions: ~
-  - type: roadmp
+  - type: roadmap
     display: "Roadmap"
     fields:
       - title: Title
       - created_date: String
       - updated_date: Date
+    actions: ~
+  - type: issue
+    display: "Issue"
+    fields:
+      - title: Title
+      - assignee: Author
+      - created_by: Author
+      - status: State
+      - description: String
+      - attachements: StringList
+      - link: EntryList
+      - created_date: Date
+      - updated_date: Date
+    states:
+      - field: priority
+        items: ['Low', 'Medium', 'High']
     actions: ~
