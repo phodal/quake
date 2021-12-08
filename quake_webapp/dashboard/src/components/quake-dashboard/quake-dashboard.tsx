@@ -44,9 +44,12 @@ enum InputType {
 })
 export class QuakeDashboard {
   ionInputElement;
+  infiniteScroll: HTMLIonInfiniteScrollElement;
+
+  @Element() el: HTMLElement;
 
   @Prop() indexName: string = "";
-  @Element() el: HTMLElement;
+
   @State() items: Array<object> = [];
   @State() list: SearchResult = {};
 
@@ -63,6 +66,7 @@ export class QuakeDashboard {
   @State() selected_result: any[] = [];
 
   @State() is_flow: boolean = false;
+  @State() offset: object = {};
 
   @Event({
     eventName: 'dispatchAction',
@@ -147,21 +151,34 @@ export class QuakeDashboard {
       return;
     }
     if (action == 'show') {
-      axios.get(`/entry/${this.selected_entry.type}`).then(response => {
-        let parsed = response.data.hits;
+      let type = this.selected_entry.type;
+      this.offset[type] = 0;
+      this.queryItems(this.offset[type]).then((result) => {
+        this.offset[type] = this.offset[type] + 40;
+
+        let parsed = result.hits;
         this.is_flow = !!this.selected_entry.flows
         if (this.is_flow) {
           this.process_flow(parsed);
         } else {
           this.selected_result = parsed;
         }
-      });
+      })
     }
 
     if (this.query.startsWith("/") && this.query.endsWith(".")) {
       this.query = this.query + action;
       this.handleQuery(this);
     }
+  }
+
+  private queryItems(offset: number) {
+    const index = this.client.index(this.selected_entry.type)
+    return index.search('', {
+      attributesToHighlight: ['overview'],
+      limit: 40,
+      offset
+    })
   }
 
   private process_flow(parsed) {
@@ -230,6 +247,29 @@ export class QuakeDashboard {
     return toast.present();
   }
 
+  loadData(_ev) {
+    if (this.infiniteScroll && this.infiniteScroll.disabled) {
+      return "no more data";
+    }
+
+    console.log('Loaded data');
+    let type = this.selected_entry.type;
+    this.queryItems(this.offset[type]).then((result) => {
+      this.offset[type] = this.offset[type] + 40;
+      this.infiniteScroll.complete().then(_r => {});
+
+      let parsed = result.hits;
+      if (parsed.length == 0) {
+        this.infiniteScroll.disabled = true;
+        return;
+      }
+
+      this.selected_result = this.selected_result.concat(parsed);
+      console.log(this.selected_result.length);
+    })
+
+  }
+
   render() {
     return <ion-app>
       <ion-header translucent>
@@ -265,12 +305,20 @@ export class QuakeDashboard {
             {this.entries_info.map((info) =>
               this.list[info.type] && this.list[info.type].length > 0 ? this.renderSearchCol(info) : null
             )}
-            { this.is_flow && Array.from(this.selected_flow_result.keys()).map((key) =>
+            {this.is_flow && Array.from(this.selected_flow_result.keys()).map((key) =>
               this.renderFlowByKey(key)
             )}
-            { !this.is_flow && this.selected_result && this.selected_result.map((item: any) =>
+            {!this.is_flow && this.selected_result && this.selected_result.map((item: any) =>
               this.renderCards(item, this.selected_entry.type)
             )}
+            {!this.is_flow && this.selected_result.length > 0 &&
+              <ion-infinite-scroll ref={(el) => (this.infiniteScroll = el)} onIonInfinite={(ev) => this.loadData(ev)}>
+                <ion-infinite-scroll-content
+                  loadingSpinner="bubbles"
+                  loadingText="Loading more data...">
+                </ion-infinite-scroll-content>
+              </ion-infinite-scroll>
+            }
           </ion-row>
         </ion-grid>
       </ion-content>
@@ -288,7 +336,7 @@ export class QuakeDashboard {
               <ion-card-title>{item.title}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              { item.description && <p>{item.description}</p> }
+              {item.description && <p>{item.description}</p>}
               <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
             </ion-card-content>
           </ion-card>
@@ -301,7 +349,7 @@ export class QuakeDashboard {
     return <ion-col>
       <ion-text color="secondary">{info.type}</ion-text>
       {this.list[info.type] ? this.list[info.type].map((item: any) =>
-          <ion-list>{this.renderCards(item, info.type)}</ion-list>
+        <ion-list>{this.renderCards(item, info.type)}</ion-list>
       ) : null
       }
     </ion-col>;
@@ -315,7 +363,7 @@ export class QuakeDashboard {
           <ion-card-title>{item.title}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          { item.description && <p>{item.description}</p> }
+          {item.description && <p>{item.description}</p>}
           <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
         </ion-card-content>
       </ion-card>
