@@ -297,16 +297,6 @@ export class QuakeDashboard {
               <ion-button class="dark-button" onClick={(e) => this.addAction(e, action)}>{action}</ion-button>
             )}
           </ion-item>
-          <ion-item>
-            <ion-select multiple={true} cancelText="Nah" okText="Okay!" placeholder="Select Range">
-              <ion-select-option value="last_week">Last Week</ion-select-option>
-              <ion-select-option value="last_month">Last Month</ion-select-option>
-              <ion-select-option value="last_quarter">Last Quarter</ion-select-option>
-              <ion-select-option value="last_year">Last Year</ion-select-option>
-            </ion-select>
-            <ion-datetime displayFormat="YYYY MM DD" placeholder="Created Date"></ion-datetime>
-            <ion-datetime displayFormat="YYYY MM DD" placeholder="Updated Date"></ion-datetime>
-          </ion-item>
         </ion-toolbar>
       </ion-header>
       <ion-content fullscreen>
@@ -367,7 +357,7 @@ export class QuakeDashboard {
 
   private renderCards(item: any, type: string) {
     return <div class="entry-show-list">
-      <ion-card onClick={() => this.clickEntry(item.id, type)}>
+      <ion-card  size-xs="3" size-md="3" onClick={() => this.clickEntry(item.id, type)}>
         <ion-card-header>
           <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
           <ion-card-title>{item.title}</ion-card-title>
@@ -378,5 +368,21 @@ export class QuakeDashboard {
         </ion-card-content>
       </ion-card>
     </div>;
+  }
+
+  // @ts-ignore
+  private renderConditionSearch() {
+    return <ion-item>
+      <select>
+        <option value="last_week">Last Week</option>
+        <option value="last_month">Last Month</option>
+        <option value="last_quarter">Last Quarter</option>
+        <option value="last_year">Last Year</option>
+      </select>
+      <ion-text>Created Date</ion-text>
+      <input type="date" id="created_date" name="trip-start" />
+      <ion-text>Updated Date</ion-text>
+      <input type="date" id="end_date" name="trip-start" />
+    </ion-item>;
   }
 }

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Dashboard</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css"/>
-  <link rel="stylesheet" href="./packages/calendar-timeline/build/static/css/main.00d233f1.css">
+  <link rel="stylesheet" href="packages/calendar/build/static/css/main.3bad1123.css">
   <style>
     body {
       /* fix in ionic.css */
@@ -16,8 +16,10 @@
   </style>
 </head>
 <body>
-<a href="/">Go Home</a>
-<a href="/transflow/timeline">timeline</a>
+<div id="navigator">
+  <a href="/">Go Home</a>
+  <a href="/transflow/Calendar">timeline</a>
+</div>
 <div id="outlet"></div>
 </body>
 
@@ -33,7 +35,7 @@
 <script src="https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js"></script>
 
 <script src="./quake-editor/build/static/quake-editor.min.js"></script>
-<script src="./packages/calendar-timeline/build/static/quake-calendar-timeline.min.js"></script>
+<script src="packages/calendar/build/static/quake-calendar-timeline.min.js"></script>
 
 <script src="app.js"></script>
 
