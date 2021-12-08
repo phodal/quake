@@ -1,11 +1,21 @@
-use crate::entry::EntryDefines;
-use crate::helper::quake_time;
-use crate::meta::EntryDefineFields;
-use indexmap::IndexMap;
-use serde_derive::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 
+use indexmap::IndexMap;
+use serde_derive::{Deserialize, Serialize};
+
+use crate::entry::EntryDefines;
+use crate::helper::quake_time;
+use crate::meta::EntryDefineFields;
+
+/// Define a new entry:
+/// - `entry_type`: the entry_type for operation in system, should be in letter or `_` use in `dir`, `storage` such as
+/// - `display`: the name for display
+/// - `fields`: in yaml is a key-value list, need to be convert to HashMap
+/// - `actions`: custom behavior action, can be use as API #TBD
+/// - `flows`: use for a simple workflow like **kanban**
+/// - `states`: use for a **filterable** condition
+///
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct EntryDefine {
     #[serde(rename = "type")]
@@ -14,11 +24,17 @@ pub struct EntryDefine {
     pub fields: Vec<IndexMap<String, String>>,
     pub actions: Option<Vec<String>>,
     pub flows: Option<Vec<EntryFlow>>,
-    pub states: Option<Vec<EntryFlow>>,
+    pub states: Option<Vec<EntryState>>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct EntryFlow {
+    pub field: String,
+    pub items: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+pub struct EntryState {
     pub field: String,
     pub items: Vec<String>,
 }
@@ -111,6 +127,13 @@ impl EntryDefine {
     }
 }
 
+pub fn entries_define_from_path(config_path: &PathBuf) -> Vec<EntryDefine> {
+    let entries_str = fs::read_to_string(config_path).expect("cannot read entries-define.yaml");
+    let entries: EntryDefines = serde_yaml::from_str(&*entries_str).unwrap();
+
+    entries.entries
+}
+
 #[cfg(test)]
 mod tests {
     use indexmap::IndexMap;
@@ -195,11 +218,4 @@ mod tests {
             "Low".to_string()
         );
     }
-}
-
-pub fn entries_define_from_path(config_path: &PathBuf) -> Vec<EntryDefine> {
-    let entries_str = fs::read_to_string(config_path).expect("cannot read entries-define.yaml");
-    let entries: EntryDefines = serde_yaml::from_str(&*entries_str).unwrap();
-
-    entries.entries
 }

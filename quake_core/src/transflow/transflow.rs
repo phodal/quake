@@ -70,6 +70,7 @@ pub struct Mapping {
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct Filter {
+    pub entry: String,
     /// simple javascript filter expression
     /// ```javascript
     /// date.created_date > 2012.23.31
