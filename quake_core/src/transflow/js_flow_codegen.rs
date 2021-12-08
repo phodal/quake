@@ -18,7 +18,7 @@ impl JsFlowCodegen {
         for flow in &trans.flows {
             let mut func = String::new();
             let start = format!(
-                "const show_{:} = async (context, commands) => {{\n",
+                "const tl_{:} = async (context, commands) => {{\n",
                 trans.name
             );
             func.push_str(start.as_str());
@@ -252,7 +252,7 @@ mod tests {
         let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
         let node = QuakeTransflowNode::from_text(define).unwrap();
         let mut flow = Transflow::from(entry_defines(), node);
-        flow.name = "timeline".to_string();
+        flow.name = "show_timeline".to_string();
         let code = JsFlowCodegen::gen_element(&flow, None);
 
         let except_path = PathBuf::from("_fixtures")
@@ -270,7 +270,7 @@ mod tests {
         let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
         let node = QuakeTransflowNode::from_text(define).unwrap();
         let mut flow = Transflow::from(entry_defines(), node);
-        flow.name = "timeline".to_string();
+        flow.name = "show_timeline".to_string();
 
         let mut element = WebComponentElement::default();
         element.add_event("onSave");

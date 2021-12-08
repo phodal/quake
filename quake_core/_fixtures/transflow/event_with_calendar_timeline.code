@@ -1,4 +1,4 @@
-const show_timeline = async (context, commands) => {
+const tl_show_timeline = async (context, commands) => {
   const el = document.createElement('quake-calendar');
 
   let todo_req = await fetch('/entry/todo');
