@@ -1,5 +1,7 @@
 # Development
 
+![Architecture](docs/quake-arch.svg)
+
 系统主要由以下四个部分的应用构成交互：
 
 - Terminal UI
@@ -58,5 +60,77 @@ cargo run --  server -w
 
 1. install，在 `quake_webapp` 目录下执行 `pnpm recursive install`
 2. build，在 `quake_webapp` 目录下执行 `yarn dist`
-	- 构建每个前端应用，生成对应的 WebComponents 组件
-	- 复制组件到 `dist` 目录
+    - 构建每个前端应用，生成对应的 WebComponents 组件
+    - 复制组件到 `dist` 目录
+
+
+# Quake Web 开发指南
+
+Quake 的组件都由 Web Component 构成，通过 Web Component Router 将它们组合在一起，即 [app.js](quake_webapp/app.js)。 如下一个简单的 Web Component 创建过程，基于纯原生的 JavaScript：
+
+```javascript
+const tl_timeline =  async (context, commands) => {
+  const el = document.createElement('quake-calendar');
+
+  let todos = await Quake.query('todo');
+  let blogs = await Quake.query('blog');
+  let data = from_todo_blog_to_quake_calendar(todos, blogs);
+
+  el.setAttribute('data', JSON.stringify(data));
+
+  return el;
+}
+```
+
+通过 `Quake.query` 可以直接访问搜索引擎，获得对应的数据，并将数据置换为 `<quake-calendar data="[]"></quake-calendar>` 需要的形式。
+
+随后，通过路由将组件组合在一起：
+
+```javascript
+router.setRoutes([
+  {path: '/', action: home},
+  {path: '/transflow/timeline', action: tl_timeline},
+  {path: '/entry/:type/new', action: create_entry},
+  {path: '/edit/:type/:id', action: edit_entry},
+]);
+```
+
+因此，剩下的重点就是如何去创建一个个的 Web Component 组件：
+
+- quake-dashboard. 首页默认的是 Quake Dashboard 应用，一个基于 Stencil.js 的 App。
+- quake-editor.    Quake 的编辑器（待完善）
+- quake-render.    Quake 的渲染器（待开发）
+- typeform.        渲染 entry 的表单（待开发）
+- packages         其它  Quake 组件
+    - calendar     日历
+    - 其它
+
+## 创建新的 Quake 组件
+
+### React 篇
+
+可以参考示例应用：[Quake Calendar](quake_webapp/packages/calendar)
+
+使用 `create-react-app` 创建，与常规的应用开发大致相同，稍有不同的是：
+
+- public/index.html   添加我们的组件，用来测试，如：`<quake-calendar-timeline data="{}"></quake-calendar-timeline>`
+- config-overrides.js 添加修改暴露的组件名称
+- src/index.ts        用于自动化绑定生成的 Web Component 组件
+
+
+还需要注意对于 CSS 的使用。
+
+### Angular 篇
+
+参考官方的构建指南即可「TBD」
+
+### Vue 篇
+
+参考官方的构建指南即可「TBD」
+
+
+### Stencil.js 篇
+
+使用标准的 Stencil.js 开发即可。
+
+

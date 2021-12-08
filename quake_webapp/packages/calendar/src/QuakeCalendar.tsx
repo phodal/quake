@@ -47,7 +47,6 @@ function QuakeCalendar(props: Props) {
       }
     }
 
-    console.log(items);
     return items
   }, [data])
 
