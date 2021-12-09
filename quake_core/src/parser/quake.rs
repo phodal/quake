@@ -51,6 +51,7 @@ pub struct Route {
     pub name: String,
     pub from: Vec<String>,
     pub to: String,
+    pub filter: String,
     #[serde(skip_serializing)]
     pub is_end_way: bool,
 }
@@ -61,6 +62,7 @@ impl Default for Route {
             name: "".to_string(),
             from: vec![],
             to: "".to_string(),
+            filter: "".to_string(),
             is_end_way: false,
         }
     }
@@ -160,6 +162,7 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                         route.from.push(param.value.clone())
                     }
 
+                    // build router rule
                     route.naming();
                 }
                 TransflowEnum::Endway(way) => {
@@ -169,6 +172,7 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                         route.from.push(param.value.clone())
                     }
 
+                    // build router rule
                     route.naming();
                 }
             }
@@ -258,5 +262,14 @@ mod tests {
         let route = expr.routes[0].clone();
 
         assert_eq!("from_todo_blog_to_quake_calendar", route.name);
+    }
+
+    #[test]
+    fn should_parse_filter() {
+        let define = "transflow show_calendar {
+         from('todo','blog').to(<quake-calendar>).filter('created_date > 2021.01.01 and created_date < 2021.12.31') 
+}";
+        let expr = QuakeTransflowNode::from_text(define).unwrap();
+        println!("{:?}", expr);
     }
 }

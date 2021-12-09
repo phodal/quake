@@ -87,6 +87,16 @@ fn midway(decl: Pair<Rule>) -> Midway {
                 midway.end = value(pair);
             }
             Rule::from | Rule::to | Rule::left_bracket | Rule::right_bracket => {}
+            Rule::filter_expr => {
+                for inner in pair.into_inner() {
+                    match inner.as_rule() {
+                        Rule::double_quoted_string | Rule::single_quoted_string => {
+                            midway.filter = string_from_pair(inner);
+                        }
+                        _ => {}
+                    }
+                }
+            }
             _ => {
                 println!("{}", pair);
             }
@@ -113,6 +123,16 @@ fn endway(decl: Pair<Rule>) -> Endway {
                 }
             }
             Rule::from | Rule::to | Rule::left_bracket | Rule::right_bracket => {}
+            Rule::filter_expr => {
+                for inner in pair.into_inner() {
+                    match inner.as_rule() {
+                        Rule::double_quoted_string | Rule::single_quoted_string => {
+                            endway.filter = string_from_pair(inner);
+                        }
+                        _ => {}
+                    }
+                }
+            }
             _ => {
                 println!("{}", pair);
             }

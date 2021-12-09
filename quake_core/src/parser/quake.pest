@@ -12,20 +12,22 @@ transflow_decl = {
 }
 
 transflow_expr = {
-    (midway | endway) ~ ("." ~ left_bracket ~ filter_expr ~ right_bracket)?
+    midway | endway
 }
 
 midway = {
-    from ~ parameters ~ "." ~ to ~ left_bracket ~ parameter ~ right_bracket
+    from ~ parameters ~ "." ~ to ~ left_bracket ~ parameter ~ right_bracket ~ filter_expr?
 }
 
 endway = {
-    from ~ parameters ~ "." ~ to ~ left_bracket ~ component_decl ~ right_bracket
+    from ~ parameters ~ "." ~ to ~ left_bracket ~ component_decl ~ right_bracket ~ filter_expr?
 }
 
 filter_expr = {
-    single_quoted_string
+    "." ~ filter_str ~ left_bracket ~ string ~ right_bracket
 }
+
+filter_str = { "filter" | "FILTER" }
 
 component_decl = {
     "<" ~ component_name ~ ">"

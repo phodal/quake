@@ -32,6 +32,7 @@ pub enum TransflowEnum {
 pub struct Midway {
     pub from: Vec<Parameter>,
     pub end: String,
+    pub filter: String,
 }
 
 impl Default for Midway {
@@ -39,6 +40,7 @@ impl Default for Midway {
         Midway {
             from: vec![],
             end: "".to_string(),
+            filter: "".to_string(),
         }
     }
 }
@@ -47,6 +49,7 @@ impl Default for Midway {
 pub struct Endway {
     pub from: Vec<Parameter>,
     pub component: String,
+    pub filter: String,
 }
 
 impl Default for Endway {
@@ -54,6 +57,7 @@ impl Default for Endway {
         Endway {
             from: vec![],
             component: "".to_string(),
+            filter: "".to_string(),
         }
     }
 }
