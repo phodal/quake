@@ -51,47 +51,52 @@ Screenshots:
 
 ## Usage
 
-### CLI
+1. init, `quake init`
+2. config
+ - `.quake.yml` to config quake
+ -  edit `entries-define.yaml` to
 
-0. init in project dirs
+## Terminal GUI
 
-```bash
-quake init
+```
+quake tui
 ```
 
-`.quake.yml` for config, `entries-define.yaml` for define.
+### CLI
 
 1. add entry by type
 
-```
+```bash
 quake cmd -i "todo.add: time support"
 ```
 
 2. edit entry by index
 
-```
+```bash
 quake cmd -i "todo.edit(1)"
 ```
 
 3. list entry by type
 
-```
+```bash
 quake cmd -i "todo.list"
 ```
 
 4. sync list
 
-```
+```bash
 quake cmd -i "todo.sync"
 ```
 
-5. concept [tbd]
+5. show entry
 
-6. network [tbd]
- 
+```bash
+quake cmd -i "todo.show(1)
+```
+
 ### Web
 
-1. setup serach engine
+1. setup search engine
 
 ```bash
 brew install meilisearch
@@ -103,15 +108,13 @@ index
 quake cmd -i "quake.feed"
 ```
 
-2. config `.quake.yaml`
-
-3. run server
+2. run server
 
 ```
 quake server
 ```
 
-4. visit: [http://localhost:8000/](http://localhost:8000/)
+3. visit: [http://localhost:8000/](http://localhost:8000/)
 
 ### GUI (TBD)
 
