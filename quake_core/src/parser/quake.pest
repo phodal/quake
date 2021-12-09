@@ -24,7 +24,7 @@ endway = {
 }
 
 filter_expr = {
-    "." ~ filter_str ~ left_bracket ~ string ~ right_bracket
+    "." ~ filter_str ~ left_bracket ~ (double_quoted_string |single_quoted_string) ~ right_bracket
 }
 
 filter_str = { "filter" | "FILTER" }

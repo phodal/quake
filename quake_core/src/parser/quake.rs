@@ -1,3 +1,4 @@
+use crate::helper::quake_time::replace_to_unix;
 use std::error::Error;
 
 use crate::parser::ast::{SourceUnitPart, TransflowDecl, TransflowEnum};
@@ -162,6 +163,8 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                         route.from.push(param.value.clone())
                     }
 
+                    route.filter = replace_to_unix(way.filter.as_str());
+
                     // build router rule
                     route.naming();
                 }
@@ -171,6 +174,8 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                     for param in &way.from {
                         route.from.push(param.value.clone())
                     }
+
+                    route.filter = replace_to_unix(way.filter.as_str());
 
                     // build router rule
                     route.naming();
@@ -270,6 +275,9 @@ mod tests {
          from('todo','blog').to(<quake-calendar>).filter('created_date > 2021.01.01 and created_date < 2021.12.31') 
 }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
-        println!("{:?}", expr);
+        assert_eq!(
+            expr.routes[0].filter,
+            "created_date > 1609459200 and created_date < 1640908800"
+        );
     }
 }
