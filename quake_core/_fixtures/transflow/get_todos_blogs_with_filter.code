@@ -1,0 +1,16 @@
+const tl_show_calendar = async (context, commands) => {
+  const el = document.createElement('quake-calendar');
+
+  let todos = await Quake.query('todo', '', {
+    filter: 'created_date > 1609459200 and created_date < 1640908800'
+  });
+
+  let blogs = await Quake.query('blog', '', {
+    filter: 'created_date > 1609459200 and created_date < 1640908800'
+  });
+
+  let data = from_todo_blog_to_quake_calendar(todos, blogs);
+  el.setAttribute('data', JSON.stringify(data));
+
+  return el;
+}

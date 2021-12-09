@@ -34,7 +34,15 @@ impl JsFlowCodegen {
             func.push_str("\n");
 
             for item in &flow.from {
-                let fetch = format!("  let {:}s = await Quake.query('{:}');\n", item, item);
+                let mut filter = "".to_string();
+                if flow.filter.len() > 0 {
+                    filter = format!(", '', {{\n    filter: '{:}'\n  }}", &flow.filter).to_string();
+                }
+
+                let fetch = format!(
+                    "  let {:}s = await Quake.query('{:}'{:});\n",
+                    item, item, filter
+                );
                 func.push_str(fetch.as_str());
                 func.push_str("\n");
             }
@@ -299,6 +307,26 @@ mod tests {
         let except_path = PathBuf::from("_fixtures")
             .join("transflow")
             .join("event_with_calendar.code");
+
+        let except = fs::read_to_string(except_path).unwrap();
+
+        assert_eq!(except, code[0])
+    }
+
+    #[cfg(not(windows))]
+    #[test]
+    fn gen_element_with_filter() {
+        let define = "transflow show_calendar {
+         from('todo','blog').to(<quake-calendar>).filter('created_date > 2021.01.01 and created_date < 2021.12.31');
+}";
+
+        let node = QuakeTransflowNode::from_text(define).unwrap();
+        let flow = Transflow::from(entry_defines(), node);
+        let code = JsFlowCodegen::gen_element(&flow, None);
+
+        let except_path = PathBuf::from("_fixtures")
+            .join("transflow")
+            .join("get_todos_blogs_with_filter.code");
 
         let except = fs::read_to_string(except_path).unwrap();
 

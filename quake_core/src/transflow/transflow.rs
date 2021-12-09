@@ -70,23 +70,12 @@ pub struct Mapping {
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-pub struct Filter {
-    pub entry: String,
-    /// simple javascript filter expression
-    /// ```javascript
-    /// date.created_date > 2012.23.31
-    /// date.name == "today"
-    /// ```
-    pub expression: String,
-}
-
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct Flow {
     pub name: String,
     pub from: Vec<String>,
     pub to: String,
     pub mappings: Option<Vec<Mapping>>,
-    pub filters: Option<Vec<Filter>>,
+    pub filter: String,
 }
 
 impl Flow {
@@ -96,7 +85,7 @@ impl Flow {
             from: route.from.clone(),
             to: route.to.clone(),
             mappings: None,
-            filters: None,
+            filter: route.filter,
         }
     }
 }
