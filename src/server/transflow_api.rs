@@ -17,36 +17,8 @@ use quake_core::QuakeConfig;
 
 use crate::server::ApiError;
 
-#[get("/define")]
-pub(crate) async fn transflow_defines(
-    config: &State<QuakeConfig>,
-) -> Result<Json<Vec<Transflow>>, NotFound<Json<ApiError>>> {
-    let path = PathBuf::from(config.workspace.clone());
-    let yaml = path.join(EntryPaths::transflows_yaml());
-
-    let content = match fs::read_to_string(yaml) {
-        Ok(content) => content,
-        Err(err) => {
-            return Err(NotFound(Json(ApiError {
-                msg: err.to_string(),
-            })));
-        }
-    };
-
-    let flows: Vec<Transflow> = match serde_yaml::from_str(&*content) {
-        Ok(content) => content,
-        Err(err) => {
-            return Err(NotFound(Json(ApiError {
-                msg: err.to_string(),
-            })));
-        }
-    };
-
-    Ok(Json(flows))
-}
-
 /// create temp transflow to show element
-#[post("/temp/<name>", data = "<input>")]
+#[post("/translate/<name>", data = "<input>")]
 pub(crate) async fn translate(
     name: String,
     input: String,
@@ -99,13 +71,13 @@ mod test {
     #[test]
     fn transflow_script() {
         let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
-        let url = format!("/transflow/temp/{:}", "show_timeline");
+        let url = format!("/transflow/translate/{:}", "show_timeline");
         let response = client
             .post(url)
             .body("from('todo','blog').to(<quake-calendar>)")
             .dispatch();
 
-        assert_eq!(response.status(), Status::Ok);
         println!("{:?}", response.body());
+        assert_eq!(response.status(), Status::Ok);
     }
 }
