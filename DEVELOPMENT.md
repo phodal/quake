@@ -2,6 +2,20 @@
 
 ![Architecture](docs/quake-arch.svg)
 
+Languages: Rust, TypeScript (Node.js 16)
+
+Tech stacks:
+
+- Search Engine: [MeiliSearch](https://github.com/meilisearch/MeiliSearch)
+- Web API: Rocket.rs
+- Frontend:
+    - MV* Frameworks: Stencil.js, React, Angular, Vue..
+    - Charts: D3.js, MxGraph, Echarts
+- Database: Git + CSV + Yaml
+- Analysis API: Jieba.rs
+- TUI: tbd
+- GUI: tbd
+
 系统主要由以下四个部分的应用构成交互：
 
 - Terminal UI
@@ -62,8 +76,7 @@ cargo run --  server -w
 2. build，在 `quake_webapp` 目录下执行 `yarn dist`
     - 构建每个前端应用，生成对应的 WebComponents 组件
     - 复制组件到 `dist` 目录
-
-
+    
 # Quake Web 开发指南
 
 Quake 的组件都由 Web Component 构成，通过 Web Component Router 将它们组合在一起，即 [app.js](quake_webapp/app.js)。 如下一个简单的 Web Component 创建过程，基于纯原生的 JavaScript：
@@ -199,3 +212,38 @@ const tl_show_timeline = async (context, commands) => {
 
 还有尚在开发中的数据过滤。
 
+
+## Query Syntax
+
+more in: [quake.pest](quake_core/src/parser/quake.pest)
+
+```pest
+action_decl = {
+    object ~ "." ~ action ~ parameters? ~ ":"? ~ " "* ~ text?
+}
+
+parameters = {
+    "(" ~ parameter ~ ("," ~ parameter)* ~ ")"
+}
+```
+
+## Markdown Extends syntax [TBD]
+
+1. tag: `#{tag}`
+2. custom function: `#{$block}, #{$toc}, #{$link}, #{$file = Hello.pptx}`
+
+## Quake Output
+
+examples output:
+
+```
+├── entries-define.yaml         # define all type data
+├── web
+│   ├── index.html
+│   └── js
+├── yarn.lock
+└── yiki                        # data type
+    ├── 0001-hello-world.md     # a `yiki` file
+    ├── entries.csv             # tables for all `yiki`
+    └── entry-node-info.yaml    # `yiki` node info
+```
