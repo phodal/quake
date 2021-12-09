@@ -1,20 +1,21 @@
-use rocket::fs::NamedFile;
 use std::fs;
 use std::path::PathBuf;
 
-use quake_core::entry::EntryDefines;
-use quake_core::quake::QuakeTransflowNode;
-use rocket::get;
+use rocket::fs::NamedFile;
+use rocket::response::content::JavaScript;
 use rocket::response::status::NotFound;
 use rocket::serde::json::Json;
-use rocket::tokio::task::spawn_blocking;
 use rocket::State;
+use rocket::{get, post};
 
+use quake_core::entry::entry_paths::EntryPaths;
+use quake_core::entry::EntryDefines;
+use quake_core::quake::QuakeTransflowNode;
+use quake_core::transflow::js_flow_codegen::JsFlowCodegen;
 use quake_core::transflow::Transflow;
 use quake_core::QuakeConfig;
 
 use crate::server::ApiError;
-use quake_core::entry::entry_paths::EntryPaths;
 
 #[get("/define")]
 pub(crate) async fn transflow_defines(
@@ -44,6 +45,39 @@ pub(crate) async fn transflow_defines(
     Ok(Json(flows))
 }
 
+/// create temp transflow to show element
+#[post("/temp/<name>", data = "<input>")]
+pub(crate) async fn translate(
+    name: String,
+    input: String,
+    config: &State<QuakeConfig>,
+) -> Result<JavaScript<String>, Json<ApiError>> {
+    let format = format!("transflow {:} {{ {:} }}", name, input);
+    let node = match QuakeTransflowNode::from_text(format.as_str()) {
+        Ok(node) => node,
+        Err(err) => {
+            return Err(Json(ApiError {
+                msg: err.to_string(),
+            }));
+        }
+    };
+
+    let path = PathBuf::from(config.workspace.clone()).join(EntryPaths::entries_define());
+
+    let content = fs::read_to_string(path).unwrap();
+    let defines: EntryDefines = serde_yaml::from_str(&*content).unwrap();
+
+    let flow = Transflow::from(defines.entries, node);
+    //
+    let trans = JsFlowCodegen::gen_transform(&flow);
+    let elements = JsFlowCodegen::gen_element(&flow, None);
+
+    let scripts = format!("{:} \n{:}", trans.join("\n"), elements.join("\n"));
+
+    Ok(JavaScript(scripts))
+}
+
+/// saved transflow scripts
 #[get("/script")]
 pub(crate) async fn transfunc_script(config: &State<QuakeConfig>) -> Option<NamedFile> {
     let path = PathBuf::from(config.workspace.clone());
@@ -53,32 +87,25 @@ pub(crate) async fn transfunc_script(config: &State<QuakeConfig>) -> Option<Name
     file.await.ok()
 }
 
-#[get("/query?<input>")]
-pub(crate) async fn translate(
-    input: String,
-    config: &State<QuakeConfig>,
-) -> Result<Json<Transflow>, Json<ApiError>> {
-    let path = PathBuf::from(&config.workspace).join("entries-define.yaml");
+#[cfg(test)]
+#[allow(unused_imports)]
+mod test {
+    use rocket::http::Status;
+    use rocket::local::blocking::Client;
 
-    let result = spawn_blocking(|| {
-        let entries_str = fs::read_to_string(path).expect("cannot read entries-define.yaml");
-        let entries: EntryDefines = serde_yaml::from_str(&*entries_str).unwrap();
-        entries.entries
-    })
-    .await;
+    use crate::quake_rocket;
 
-    let defines = match result {
-        Ok(defines) => defines,
-        Err(err) => {
-            return Err(Json(ApiError {
-                msg: format!("{:?}", err),
-            }))
-        }
-    };
+    #[cfg(feature = "webserver")]
+    #[test]
+    fn transflow_script() {
+        let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
+        let url = format!("/transflow/temp/{:}", "show_timeline");
+        let response = client
+            .post(url)
+            .body("from('todo','blog').to(<quake-calendar>)")
+            .dispatch();
 
-    let node = QuakeTransflowNode::from_text(input.as_str()).unwrap();
-
-    let flow = Transflow::from(defines, node);
-
-    Ok(Json(flow))
+        assert_eq!(response.status(), Status::Ok);
+        println!("{:?}", response.body());
+    }
 }

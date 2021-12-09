@@ -98,7 +98,7 @@ quake cmd -i "todo.sync"
 5. show entry
 
 ```bash
-quake cmd -i "todo.show(1)
+quake cmd -i "todo.show(1)"
 ```
 
 ### Web
