@@ -1,5 +1,5 @@
+use crate::helper::exec_wrapper::exec_runner;
 use std::error::Error;
-use std::process::Command;
 use tracing::info;
 
 pub fn feed_command(index_name: &String, search_url: &String) -> Result<(), Box<dyn Error>> {
@@ -12,11 +12,7 @@ pub fn feed_command(index_name: &String, search_url: &String) -> Result<(), Box<
     );
 
     info!("{:?}", cmd_line);
-    Command::new("/bin/sh")
-        .arg("-c")
-        .arg(cmd_line)
-        .spawn()?
-        .wait()?;
+    exec_runner::cmd_runner(cmd_line)?;
 
     Ok(())
 }
@@ -31,11 +27,7 @@ pub fn feed_settings(index_name: &String, search_url: &String) -> Result<(), Box
     );
 
     info!("{:?}", cmd_line);
-    Command::new("/bin/sh")
-        .arg("-c")
-        .arg(cmd_line)
-        .spawn()?
-        .wait()?;
+    exec_runner::cmd_runner(cmd_line)?;
 
     Ok(())
 }
@@ -54,11 +46,7 @@ pub fn feed_entry(
     );
 
     info!("{:?}", cmd_line);
-    Command::new("/bin/sh")
-        .arg("-c")
-        .arg(cmd_line)
-        .spawn()?
-        .wait()?;
+    exec_runner::cmd_runner(cmd_line)?;
 
     Ok(())
 }
