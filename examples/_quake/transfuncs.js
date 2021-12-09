@@ -6,8 +6,8 @@ function from_todo_blog_to_quake_calendar(todos, blogs) {
       id: todo.id,
       title: todo.title,
       content: todo.content,
-      start: todo.created_date,
-      end: todo.updated_date
+      created_date: todo.created_date,
+      updated_date: todo.updated_date
     })
   }
 
@@ -17,8 +17,8 @@ function from_todo_blog_to_quake_calendar(todos, blogs) {
       id: blog.id,
       title: blog.title,
       content: blog.description,
-      start: blog.created_date,
-      end: blog.updated_date
+      created_date: blog.created_date,
+      created_date: blog.updated_date
     })
   }
 

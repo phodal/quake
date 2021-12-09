@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use rocket::fs::NamedFile;
 use rocket::response::content::JavaScript;
 use rocket::serde::json::Json;
+use rocket::serde::{Deserialize, Serialize};
 use rocket::State;
 use rocket::{get, post};
 
@@ -16,14 +17,20 @@ use quake_core::QuakeConfig;
 
 use crate::server::ApiError;
 
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct FlowRequest {
+    flow: String,
+}
+
 /// create temp transflow to show element
-#[post("/translate/<name>", data = "<input>")]
+#[post("/translate/<name>", data = "<flow>")]
 pub(crate) async fn translate(
     name: String,
-    input: String,
+    flow: Json<FlowRequest>,
     config: &State<QuakeConfig>,
 ) -> Result<JavaScript<String>, Json<ApiError>> {
-    let format = format!("transflow {:} {{ {:} }}", name, input);
+    let format = format!("transflow {:} {{ {:} }}", name, flow.flow);
     let node = match QuakeTransflowNode::from_text(format.as_str()) {
         Ok(node) => node,
         Err(err) => {
@@ -67,16 +74,16 @@ mod test {
     use rocket::local::blocking::Client;
 
     use crate::quake_rocket;
+    use crate::server::transflow_api::FlowRequest;
 
     #[cfg(feature = "webserver")]
     #[test]
     fn transflow_script() {
         let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
         let url = format!("/transflow/translate/{:}", "show_timeline");
-        let response = client
-            .post(url)
-            .body("from('todo','blog').to(<quake-calendar>)")
-            .dispatch();
+        let flow = "from('todo','blog').to(<quake-calendar>)";
+        let body = format!("{{ \"flow\": {:?} }}", flow);
+        let response = client.post(url).body(body).dispatch();
 
         println!("{:?}", response.body());
         assert_eq!(response.status(), Status::Ok);
