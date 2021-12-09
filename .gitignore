@@ -1,5 +1,6 @@
 /target
 .idea
+.local
 dev.db
 phodal.dev
 examples/blog/*

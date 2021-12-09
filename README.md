@@ -64,6 +64,13 @@ quake tui
 
 ### CLI
 
+0. install
+
+```bash
+git clone https://github.com/phodal/quake && cd quake
+cargo install --path .  # or: just install 
+```
+
 1. add entry by type
 
 ```bash
