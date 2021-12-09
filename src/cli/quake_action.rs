@@ -64,7 +64,9 @@ fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
         let entry_type = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
 
         let paths = EntryPaths::init(&conf.workspace, &entry_type);
-        let define = defines.find(&entry_type);
+        let define = defines
+            .find(&entry_type)
+            .expect(format!("lost entry define for: {:?}", &entry_type).as_str());
 
         let map = Entrysets::jsonify_with_format_date(&paths.base, define)?;
         fs::write(temp_file, map)?;

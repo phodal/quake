@@ -11,6 +11,8 @@ use walkdir::{DirEntry, WalkDir};
 
 use crate::entry::entry_file::EntryFile;
 use crate::entry::EntryDefine;
+use crate::helper::quake_time;
+use crate::meta::MetaField;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct CsvTable {
@@ -101,12 +103,13 @@ impl Entrysets {
     /// format json from define
     pub fn jsonify_with_format_date(
         path: &PathBuf,
-        _define: Option<EntryDefine>,
+        define: EntryDefine,
     ) -> Result<String, Box<dyn Error>> {
         let files = Self::scan_files(path);
         let mut index = 1;
 
         let mut json: JsonValue = array![];
+        let type_maps = define.to_field_type();
         for file in files {
             let mut element = object! {};
             let string = fs::read_to_string(&file)?;
@@ -115,6 +118,16 @@ impl Entrysets {
             entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
 
             for (k, v) in &entry_file.fields {
+                // convert for time
+                if let Some(field_type) = type_maps.get(k) {
+                    if let MetaField::Date(_date) = field_type {
+                        let value = quake_time::replace_to_unix(v);
+                        let time: usize = value.parse().expect("cannot convert time");
+                        element[k.clone()] = time.into();
+                        continue;
+                    }
+                }
+
                 element[k.clone()] = v.clone().into();
             }
 
@@ -320,9 +333,9 @@ mod tests {
     #[test]
     fn jsonify_todo_with_date() {
         let buf = PathBuf::from("..").join("examples").join("todo");
-        let json = Entrysets::jsonify_with_format_date(&buf, Some(todo_define())).unwrap();
+        let json = Entrysets::jsonify_with_format_date(&buf, todo_define()).unwrap();
 
         #[cfg(not(windows))]
-        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\\n\\nahaha\\n\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1}]");
+        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\\n\\nahaha\\n\",\"created_date\":1637781250,\"updated_date\":1637781250,\"id\":1}]");
     }
 }
