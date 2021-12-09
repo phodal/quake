@@ -6,24 +6,11 @@ use std::path::PathBuf;
 
 use crate::entry::entry_file::EntryFile;
 use crate::entry::entry_paths::EntryPaths;
-use crate::entry::{entry_defines, entry_node_info, EntryDefine, EntryNodeInfo};
+use crate::entry::{entry_node_info, EntryDefine, EntryNodeInfo};
 use crate::errors::QuakeError;
 use crate::helper::{date_now, file_filter};
+use crate::usecases::entry_define_usecases;
 use crate::usecases::entrysets::Entrysets;
-
-pub fn find_entry_define(target_entry: &String, path: &PathBuf) -> EntryDefine {
-    let entries: Vec<EntryDefine> = entry_defines::entries_define_from_path(path)
-        .into_iter()
-        .filter(|define| define.entry_type.eq(target_entry))
-        .collect();
-
-    let entries_define = if entries.len() == 0 {
-        EntryDefine::default()
-    } else {
-        entries[0].clone()
-    };
-    entries_define
-}
 
 /// generate entries.csv from by paths
 pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
@@ -54,7 +41,8 @@ pub fn create_entry(
     entry_text: &String,
 ) -> Result<(PathBuf, EntryFile), Box<dyn Error>> {
     let paths = EntryPaths::init(quake_path, entry_type);
-    let entries_define = find_entry_define(entry_type, &paths.entries_define);
+    let entries_define =
+        entry_define_usecases::find_entry_define(entry_type, &paths.entries_define);
     let mut entry_info = entry_node_info::entry_info_from_path(&paths.entry_node_info);
 
     let new_index = entry_info.index + 1;
