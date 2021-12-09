@@ -4,6 +4,7 @@ use std::fs::File;
 use std::path::PathBuf;
 
 use indexmap::IndexMap;
+use json::{array, object, JsonValue};
 use serde::Deserialize;
 use serde_derive::Serialize;
 use walkdir::{DirEntry, WalkDir};
@@ -105,19 +106,27 @@ impl Entrysets {
         let files = Self::scan_files(path);
         let mut index = 1;
 
-        let mut entry_sets: Vec<EntryFile> = vec![];
+        let mut json: JsonValue = array![];
         for file in files {
+            let mut element = object! {};
             let string = fs::read_to_string(&file)?;
 
             let mut entry_file = EntryFile::from(&*string, index)?;
             entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
 
-            entry_sets.push(entry_file);
+            for (k, v) in &entry_file.fields {
+                element[k.clone()] = v.clone().into();
+            }
+
+            element["id".to_string()] = entry_file.id.into();
+            element["content".to_string()] = entry_file.content.into();
+
+            json.push(element)?;
 
             index = index + 1;
         }
 
-        Ok(serde_json::to_string(&entry_sets)?)
+        Ok(json.to_string())
     }
 
     /// scan all entries files, and rebuild indexes
@@ -220,6 +229,7 @@ impl Entrysets {
 
 #[cfg(test)]
 mod tests {
+    use crate::entry::EntryDefine;
     use std::path::PathBuf;
 
     use crate::usecases::entrysets::Entrysets;
@@ -290,5 +300,29 @@ mod tests {
 
         #[cfg(not(windows))]
         assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1,\"content\":\"\\n\\nahaha\\n\"}]");
+    }
+
+    fn todo_define() -> EntryDefine {
+        let yaml = "
+- type: todo
+  display: Todo
+  fields:
+    - title: Title
+    - author: Author
+    - created_date: Date
+    - updated_date: Date
+";
+
+        let entries: Vec<EntryDefine> = serde_yaml::from_str(yaml).unwrap();
+        entries[0].clone()
+    }
+
+    #[test]
+    fn jsonify_todo_with_date() {
+        let buf = PathBuf::from("..").join("examples").join("todo");
+        let json = Entrysets::jsonify_with_format_date(&buf, Some(todo_define())).unwrap();
+
+        #[cfg(not(windows))]
+        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\\n\\nahaha\\n\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1}]");
     }
 }

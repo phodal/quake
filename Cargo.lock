@@ -2026,6 +2026,7 @@ dependencies = [
  "chrono",
  "csv",
  "indexmap",
+ "json",
  "lazy_static",
  "pest",
  "pest_derive",
