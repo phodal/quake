@@ -154,6 +154,7 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
         editor: "".to_string(),
         search_url: "http://127.0.0.1:7700".to_string(),
         server_location: "web".to_string(),
+        port: 8000,
     };
 
     fs::write(&path, serde_yaml::to_string(&config)?)?;

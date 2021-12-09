@@ -6,6 +6,7 @@ pub struct QuakeConfig {
     pub workspace: String,
     pub search_url: String,
     pub server_location: String,
+    pub port: u32,
 }
 
 impl Default for QuakeConfig {
@@ -15,6 +16,7 @@ impl Default for QuakeConfig {
             workspace: "".to_string(),
             search_url: "".to_string(),
             server_location: "".to_string(),
+            port: 9999,
         }
     }
 }
