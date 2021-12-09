@@ -48,6 +48,8 @@ fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&conf.workspace);
     let temp_file = "dump.json";
 
+    let _entry_defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
+
     for entry in walk_in_path(path) {
         let entry = entry.unwrap();
         if !entry.path().is_dir() {
@@ -59,16 +61,17 @@ fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
             continue;
         }
 
-        let path_name = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
-        let paths = EntryPaths::init(&conf.workspace, &path_name);
+        let entry_type = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
+
+        let paths = EntryPaths::init(&conf.workspace, &entry_type);
 
         let map = Entrysets::jsonify(&paths.base)?;
         fs::write(temp_file, map)?;
 
-        meili_exec::feed_command(&path_name, &conf.search_url)?;
-        meili_exec::feed_settings(&path_name, &conf.search_url)?;
+        meili_exec::feed_command(&entry_type, &conf.search_url)?;
+        meili_exec::feed_settings(&entry_type, &conf.search_url)?;
 
-        info!("done '{:}' feed", &path_name);
+        info!("done '{:}' feed", &entry_type);
     }
 
     fs::remove_file(temp_file)?;

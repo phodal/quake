@@ -6,13 +6,13 @@ use std::path::PathBuf;
 
 use crate::entry::entry_file::EntryFile;
 use crate::entry::entry_paths::EntryPaths;
-use crate::entry::{entry_define, entry_node_info, EntryDefine, EntryNodeInfo};
+use crate::entry::{entry_defines, entry_node_info, EntryDefine, EntryNodeInfo};
 use crate::errors::QuakeError;
 use crate::helper::{date_now, file_filter};
 use crate::usecases::entrysets::Entrysets;
 
-pub fn find_entry_define(paths: &EntryPaths, target_entry: &String) -> EntryDefine {
-    let entries: Vec<EntryDefine> = entry_define::entries_define_from_path(&paths.entries_define)
+pub fn find_entry_define(target_entry: &String, path: &PathBuf) -> EntryDefine {
+    let entries: Vec<EntryDefine> = entry_defines::entries_define_from_path(path)
         .into_iter()
         .filter(|define| define.entry_type.eq(target_entry))
         .collect();
@@ -54,7 +54,7 @@ pub fn create_entry(
     entry_text: &String,
 ) -> Result<(PathBuf, EntryFile), Box<dyn Error>> {
     let paths = EntryPaths::init(quake_path, entry_type);
-    let entries_define = find_entry_define(&paths, entry_type);
+    let entries_define = find_entry_define(entry_type, &paths.entries_define);
     let mut entry_info = entry_node_info::entry_info_from_path(&paths.entry_node_info);
 
     let new_index = entry_info.index + 1;
