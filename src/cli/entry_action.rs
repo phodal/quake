@@ -32,24 +32,17 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
             entry_usecases::sync_in_path(&paths)?
         }
         "edit" => {
-            let target_file =
-                find_entry_path(paths.base, &expr.object, expr.index_from_parameter())?;
-
+            let file = find_entry_path(paths.base, &expr.object, expr.index_from_parameter())?;
             if conf.editor != "" {
-                editor_exec::edit_file(conf.editor, format!("{:}", target_file.display()))?;
+                editor_exec::edit_file(conf.editor, format!("{:}", file.display()))?;
             } else {
-                return Err(Box::new(QuakeError("editor is empty".to_string())));
+                return Err(Box::new(QuakeError("editor config is empty".to_string())));
             }
         }
         "sync" => entry_usecases::sync_in_path(&paths)?,
         "dump" => dump_by_path(&paths)?,
-        "show" => {
-            show_entry_detail(&expr, &paths)?;
-        }
-        "list" => {
-            let entries = paths.base.join("entries.csv");
-            show_entrysets(&entries);
-        }
+        "show" => show_entry_detail(&expr, &paths)?,
+        "list" => show_entrysets(&paths.base.join("entries.csv")),
         _ => {
             return Err(Box::new(QuakeError(format!(
                 "unknown entry action: {:?}",
