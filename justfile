@@ -3,6 +3,9 @@ setup:
     rustup component add llvm-tools-preview --toolchain nightly
     cargo install cargo-llvm-cov
 
+install:
+    cargo install --path .
+
 build:
     cargo build --all
 

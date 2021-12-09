@@ -19,7 +19,7 @@ quake_core = { path = "quake_core", version = "0.1.0" }
 quake_tui = { path = "quake_tui", version = "0.1.0" }
 
 # cli parser
-clap = "3.0.0-beta.5"
+clap = { version = "3.0.0-beta.5", features = ["derive"] }
 config = { version = "0.11", features = ["yaml"] }
 
 regex = "1.0"
@@ -62,7 +62,7 @@ async-std = "1.10.0"
 tracing = "0.1"
 tracing-subscriber = "0.2"
 
-syntect = { version = "4.2", default-features = false, features = ["default-fancy"]}
+syntect = { version = "4.2", default-features = false, features = ["default-fancy"] }
 
 [features]
 webserver = []
