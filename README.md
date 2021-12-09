@@ -114,7 +114,7 @@ quake cmd -i "quake.feed"
 quake server
 ```
 
-3. visit: [http://localhost:8000/](http://localhost:8000/)
+3. visit: [http://localhost:9999/](http://localhost:9999/)
 
 ### GUI (TBD)
 

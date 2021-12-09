@@ -61,7 +61,7 @@ cargo run -- cmd -i "quake.feed"
 cargo run --  server -w
 ```
 
-4. visit: [http://localhost:8000/](http://localhost:8000/) （需要构建前端部份）
+4. visit: [http://localhost:9999/](http://localhost:9999/) （需要构建前端部份）
 
 
 ### 前端部分
