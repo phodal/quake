@@ -12,6 +12,8 @@
   "searchableAttributes": null,
   "displayedAttributes": null,
   "filterableAttributes": [
+    "title",
+    "content",
     "created_date",
     "updated_date"
   ],

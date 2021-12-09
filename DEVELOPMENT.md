@@ -247,3 +247,7 @@ examples output:
     ├── entries.csv             # tables for all `yiki`
     └── entry-node-info.yaml    # `yiki` node info
 ```
+
+# Issues
+
+IndexMap not working: [https://github.com/intellij-rust/intellij-rust/issues/8007](https://github.com/intellij-rust/intellij-rust/issues/8007)
