@@ -42,20 +42,24 @@ pub fn parse(text: &str) -> Result<SourceUnit, Box<dyn Error>> {
 }
 
 fn transflow_decl(decl: Pair<Rule>) -> TransflowDecl {
-    let mut action = TransflowDecl::default();
+    let mut transflow = TransflowDecl::default();
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::transflow_expr => {
                 if let Some(flow) = transflow_expr(pair) {
-                    action.flows.push(flow);
+                    transflow.flows.push(flow);
                 }
+            }
+            Rule::ident => {
+                transflow.name = String::from(pair.as_str());
             }
             _ => {
                 println!("{}", pair);
             }
         }
     }
-    action
+
+    transflow
 }
 
 fn transflow_expr(decl: Pair<Rule>) -> Option<TransflowEnum> {
@@ -237,7 +241,8 @@ mod tests {
 
     #[test]
     fn should_parse_flow() {
-        let unit = parse("transflow { from('todo','blog').to(<quake-calendar>); }").unwrap();
+        let unit =
+            parse("transflow show_calendar { from('todo','blog').to(<quake-calendar>); }").unwrap();
         println!("{:?}", unit);
         match &unit.0[0] {
             SourceUnitPart::Transflow(decl) => {

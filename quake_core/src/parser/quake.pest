@@ -8,7 +8,7 @@ action_decl = {
 }
 
 transflow_decl = {
-    "transflow" ~ "{" ~ (transflow_expr ~ ("," ~ transflow_expr)? ~ ";"?)? ~ "}"
+    "transflow" ~ ident ~ "{" ~ (transflow_expr ~ ("," ~ transflow_expr)? ~ ";"?)? ~ "}"
 }
 
 transflow_expr = {

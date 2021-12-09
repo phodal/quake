@@ -21,6 +21,7 @@ impl Default for QuakeIt {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct QuakeTransflowNode {
+    pub name: String,
     pub routes: Vec<Route>,
 }
 
@@ -38,7 +39,10 @@ impl QuakeTransflowNode {
 
 impl Default for QuakeTransflowNode {
     fn default() -> Self {
-        QuakeTransflowNode { routes: vec![] }
+        QuakeTransflowNode {
+            name: "".to_string(),
+            routes: vec![],
+        }
     }
 }
 
@@ -143,6 +147,7 @@ pub fn quake(text: &str) -> Result<QuakeIt, Box<dyn Error>> {
 
 fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
     let mut transflow = QuakeTransflowNode::default();
+    transflow.name = decl.name;
     transflow.routes = decl
         .flows
         .iter()
@@ -223,17 +228,18 @@ mod tests {
 
     #[test]
     fn should_create_transflow() {
-        let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
+        let define = "transflow show_calendar { from('todo','blog').to(<quake-calendar>); }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!(1, expr.routes.len());
         assert_eq!(true, expr.routes[0].is_end_way);
         assert_eq!("quake-calendar", expr.routes[0].to);
+        assert_eq!("show_calendar", expr.name);
     }
 
     #[test]
     fn should_create_transflows() {
         let define =
-            "transflow { from('todo','blog').to('record'), from('record').to(<quake-calendar>); }";
+            "transflow show_calendar { from('todo','blog').to('record'), from('record').to(<quake-calendar>); }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!(2, expr.routes.len());
         assert_eq!(false, expr.routes[0].is_end_way);
@@ -242,11 +248,12 @@ mod tests {
         assert_eq!("record", expr.routes[1].from[0]);
         assert_eq!(true, expr.routes[1].is_end_way);
         assert_eq!("quake-calendar", expr.routes[1].to);
+        assert_eq!("show_calendar", expr.name);
     }
 
     #[test]
     fn should_create_route_func_name() {
-        let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
+        let define = "transflow show_calendar { from('todo','blog').to(<quake-calendar>); }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
         let route = expr.routes[0].clone();
 

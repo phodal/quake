@@ -1,4 +1,4 @@
-const tl_show_timeline = async (context, commands) => {
+const tl_show_calendar = async (context, commands) => {
   const el = document.createElement('quake-calendar');
 
   let todos = await Quake.query('todo');

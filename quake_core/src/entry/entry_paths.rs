@@ -25,6 +25,10 @@ impl EntryPaths {
         }
     }
 
+    pub fn entries_define() -> &'static str {
+        "entries-define.yaml"
+    }
+
     pub fn entries_csv() -> &'static str {
         "entries.csv"
     }

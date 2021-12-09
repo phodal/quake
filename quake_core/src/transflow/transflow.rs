@@ -29,6 +29,7 @@ impl Transflow {
     ///
     pub fn from(defines: Vec<EntryDefine>, node: QuakeTransflowNode) -> Transflow {
         let mut transflow = Transflow::default();
+        transflow.name = node.name;
 
         let mut entries_map: HashMap<String, &EntryDefine> = HashMap::new();
         for define in &defines {
@@ -144,7 +145,9 @@ mod tests {
     fn serialize_from_file() {
         let path = PathBuf::from("../")
             .join("examples")
+            .join("_quake")
             .join("transflows.yaml");
+
         let content = fs::read_to_string(path).unwrap();
         let flows: Vec<Transflow> = serde_yaml::from_str(&*content).unwrap();
 
@@ -153,7 +156,7 @@ mod tests {
 
     #[test]
     fn stringify_defines() {
-        let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
+        let define = "transflow show_calendar { from('todo','blog').to(<quake-calendar>); }";
         let flow = QuakeTransflowNode::from_text(define).unwrap();
 
         let flow = Transflow::from(entry_defines(), flow);

@@ -50,28 +50,11 @@ impl JsFlowCodegen {
             func.push_str("}\n");
             vec.push(func)
         }
+
         vec
     }
 
-    fn gen_events(func: &mut String, events: &Vec<EventListener>) {
-        for event in events {
-            let event_code = format!(
-                "  el.addEventListener('{:}', function (event) {{
-    let data = event.detail;
-    console.log(data);
-  }});\n\n",
-                event.event_name
-            );
-            func.push_str(event_code.as_str())
-        }
-    }
-
-    fn gen_data_attribute(flow: &&Flow, func: &mut String, params: String) {
-        let data = format!("  let data = {:}({:});\n", &flow.name, params);
-        func.push_str(data.as_str());
-        func.push_str("  el.setAttribute('data', JSON.stringify(data));\n\n");
-    }
-
+    /// generate transform
     pub fn gen_transform(trans: &Transflow) -> Vec<String> {
         let mut vec = vec![];
         for flow in &trans.flows {
@@ -96,6 +79,25 @@ impl JsFlowCodegen {
         }
 
         vec
+    }
+
+    fn gen_events(func: &mut String, events: &Vec<EventListener>) {
+        for event in events {
+            let event_code = format!(
+                "  el.addEventListener('{:}', function (event) {{
+    let data = event.detail;
+    console.log(data);
+  }});\n\n",
+                event.event_name
+            );
+            func.push_str(event_code.as_str())
+        }
+    }
+
+    fn gen_data_attribute(flow: &&Flow, func: &mut String, params: String) {
+        let data = format!("  let data = {:}({:});\n", &flow.name, params);
+        func.push_str(data.as_str());
+        func.push_str("  el.setAttribute('data', JSON.stringify(data));\n\n");
     }
 
     fn gen_params(flow: &Flow) -> String {
@@ -214,7 +216,7 @@ mod tests {
     #[cfg(not(windows))]
     #[test]
     fn from_transflow_string() {
-        let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
+        let define = "transflow show_calendar { from('todo','blog').to(<quake-calendar>); }";
         let node = QuakeTransflowNode::from_text(define).unwrap();
         let flow = Transflow::from(entry_defines(), node);
         let code = JsFlowCodegen::gen_transform(&flow);
@@ -235,7 +237,7 @@ mod tests {
     #[test]
     fn multiple_transform() {
         let define =
-            "transflow { from('todo','blog').to('record'), from('record').to(<quake-calendar>); }";
+            "transflow show_calendar { from('todo','blog').to('record'), from('record').to(<quake-calendar>); }";
         let flow = QuakeTransflowNode::from_text(define).unwrap();
 
         let flow = Transflow::from(entry_defines(), flow);
@@ -267,15 +269,14 @@ mod tests {
     #[cfg(not(windows))]
     #[test]
     fn gen_element() {
-        let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
+        let define = "transflow show_calendar { from('todo','blog').to(<quake-calendar>); }";
         let node = QuakeTransflowNode::from_text(define).unwrap();
-        let mut flow = Transflow::from(entry_defines(), node);
-        flow.name = "show_timeline".to_string();
+        let flow = Transflow::from(entry_defines(), node);
         let code = JsFlowCodegen::gen_element(&flow, None);
 
         let except_path = PathBuf::from("_fixtures")
             .join("transflow")
-            .join("show_calendar_timeline.code");
+            .join("show_calendar.code");
 
         let except = fs::read_to_string(except_path).unwrap();
 
@@ -285,10 +286,9 @@ mod tests {
     #[cfg(not(windows))]
     #[test]
     fn gen_element_with_wc() {
-        let define = "transflow { from('todo','blog').to(<quake-calendar>); }";
+        let define = "transflow show_calendar { from('todo','blog').to(<quake-calendar>); }";
         let node = QuakeTransflowNode::from_text(define).unwrap();
-        let mut flow = Transflow::from(entry_defines(), node);
-        flow.name = "show_timeline".to_string();
+        let flow = Transflow::from(entry_defines(), node);
 
         let mut element = WebComponentElement::default();
         element.add_event("onSave");
@@ -298,7 +298,7 @@ mod tests {
 
         let except_path = PathBuf::from("_fixtures")
             .join("transflow")
-            .join("event_with_calendar_timeline.code");
+            .join("event_with_calendar.code");
 
         let except = fs::read_to_string(except_path).unwrap();
 

@@ -9,12 +9,16 @@ pub enum SourceUnitPart {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct TransflowDecl {
+    pub(crate) name: String,
     pub(crate) flows: Vec<TransflowEnum>,
 }
 
 impl Default for TransflowDecl {
     fn default() -> Self {
-        TransflowDecl { flows: vec![] }
+        TransflowDecl {
+            name: "".to_string(),
+            flows: vec![],
+        }
     }
 }
 
