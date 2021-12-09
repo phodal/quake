@@ -12,15 +12,19 @@ transflow_decl = {
 }
 
 transflow_expr = {
-    midway | endway
+    (midway | endway) ~ ("." ~ left_bracket ~ filter_expr ~ right_bracket)?
 }
 
 midway = {
-    from ~ parameters ~ "." ~ to ~ s_quote ~ parameter ~ e_quote
+    from ~ parameters ~ "." ~ to ~ left_bracket ~ parameter ~ right_bracket
 }
 
 endway = {
-    from ~ parameters ~ "." ~ to ~ s_quote ~ component_decl ~ e_quote
+    from ~ parameters ~ "." ~ to ~ left_bracket ~ component_decl ~ right_bracket
+}
+
+filter_expr = {
+    single_quoted_string
 }
 
 component_decl = {
@@ -35,14 +39,14 @@ from = { "from" }
 to = { "to" }
 
 parameters = {
-    s_quote ~ parameter ~ ("," ~ parameter)* ~ e_quote
+    left_bracket ~ parameter ~ ("," ~ parameter)* ~ right_bracket
 }
 
-s_quote = {
+left_bracket = {
     "(" | "（"
 }
 
-e_quote = {
+right_bracket = {
     ")" | "）"
 }
 

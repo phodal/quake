@@ -86,7 +86,7 @@ fn midway(decl: Pair<Rule>) -> Midway {
             Rule::parameter => {
                 midway.end = value(pair);
             }
-            Rule::from | Rule::to | Rule::s_quote | Rule::e_quote => {}
+            Rule::from | Rule::to | Rule::left_bracket | Rule::right_bracket => {}
             _ => {
                 println!("{}", pair);
             }
@@ -112,7 +112,7 @@ fn endway(decl: Pair<Rule>) -> Endway {
                     }
                 }
             }
-            Rule::from | Rule::to | Rule::s_quote | Rule::e_quote => {}
+            Rule::from | Rule::to | Rule::left_bracket | Rule::right_bracket => {}
             _ => {
                 println!("{}", pair);
             }
@@ -157,8 +157,8 @@ fn parameters(decl: Pair<Rule>) -> Vec<Parameter> {
 
                 params.push(param)
             }
-            Rule::s_quote => {}
-            Rule::e_quote => {}
+            Rule::left_bracket => {}
+            Rule::right_bracket => {}
             _ => {
                 println!("{}", pair);
             }

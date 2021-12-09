@@ -6,7 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::entry::EntryDefines;
 use crate::helper::quake_time;
-use crate::meta::EntryDefineFields;
+use crate::meta::{EntryDefineFields, MetaField};
 
 /// Define a new entry:
 /// - `entry_type`: the entry_type for operation in system, should be in letter or `_` use in `dir`, `storage` such as
@@ -53,7 +53,8 @@ impl Default for EntryDefine {
 }
 
 impl EntryDefine {
-    pub fn to_type(&self) -> EntryDefineFields {
+    // todo: directly Deserialize to meta field
+    pub fn to_field_type(&self) -> IndexMap<String, MetaField> {
         let mut fields: IndexMap<String, String> = IndexMap::new();
         for map in &self.fields {
             for (key, value) in map {
@@ -160,8 +161,8 @@ mod tests {
         let todo = &custom_entry_from_yaml()[0];
         assert_eq!(3, todo.fields.len());
 
-        let custom_type = todo.to_type();
-        let option = custom_type.field("title").unwrap();
+        let custom_type = todo.to_field_type();
+        let option = custom_type.get("title").unwrap();
         assert_eq!(&MetaField::Title(String::from("Title")), option)
     }
 

@@ -1,13 +1,22 @@
 use indexmap::IndexMap;
 
-pub mod meta_field;
-
 pub use meta_field::MetaField;
+
+pub mod meta_field;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Author {
     name: String,
     email: String,
+}
+
+impl Author {
+    pub fn new(str: String) -> Author {
+        Author {
+            name: str.to_string(),
+            email: "".to_string(),
+        }
+    }
 }
 
 impl Default for Author {
@@ -20,38 +29,27 @@ impl Default for Author {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct EntryDefineFields {
-    pub fields: IndexMap<String, MetaField>,
-}
+pub struct EntryDefineFields {}
 
 impl EntryDefineFields {
-    pub fn from(map: IndexMap<String, String>) -> EntryDefineFields {
+    pub fn from(map: IndexMap<String, String>) -> IndexMap<String, MetaField> {
         let mut fields = IndexMap::new();
         for (key, value) in map {
             fields.insert(key, Self::parse_field_type(value));
         }
 
-        EntryDefineFields { fields }
-    }
-
-    pub fn field(&self, text: &str) -> Option<&MetaField> {
-        self.fields.get(text)
+        fields
     }
 
     fn parse_field_type(value: String) -> MetaField {
-        let field = match value.as_str() {
-            "Text" => MetaField::Text(value),
-            "Title" => MetaField::Title(value),
-            "Flow" => MetaField::Flow(value),
-            "Tagged" => {
-                let tags = vec![];
-                MetaField::Tagged(tags)
-            }
-            "Author" => {
-                let author = Author::default();
-                MetaField::Author(author)
-            }
-            "Date" => MetaField::Date(value),
+        let field = match value.to_lowercase().as_str() {
+            "text" => MetaField::Text(value),
+            "title" => MetaField::Title(value),
+            "flow" => MetaField::Flow(value),
+            "string" => MetaField::Text(value),
+            "searchable" => MetaField::Searchable("string".to_string()),
+            "filterable" => MetaField::Filterable("string".to_string()),
+            "date" => MetaField::Date(value),
             _ => MetaField::Unknown(value),
         };
         field
@@ -60,17 +58,18 @@ impl EntryDefineFields {
 
 #[cfg(test)]
 mod tests {
-    use crate::meta::{EntryDefineFields, MetaField};
     use indexmap::IndexMap;
+
+    use crate::meta::{EntryDefineFields, MetaField};
 
     #[test]
     fn custom_type() {
         let mut map = IndexMap::new();
         map.insert("title".to_string(), "Title".to_string());
 
-        let custom_type = EntryDefineFields::from(map);
+        let fields = EntryDefineFields::from(map);
 
-        let option = custom_type.fields.get("title").unwrap();
+        let option = fields.get("title").unwrap();
         assert_eq!(&MetaField::Title(String::from("Title")), option)
     }
 }
