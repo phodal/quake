@@ -14,7 +14,7 @@ updated_date: 2021-12-08 10:01:36
 samples 1
 
 ```bash
-curl -XGET https://api.data-axle.com/v1/people/search -d '{
+curl -X GET https://api.data-axle.com/v1/people/search -d '{
   "filter": {
     "relation": "equals",
     "attribute": "state",
@@ -27,7 +27,7 @@ curl -XGET https://api.data-axle.com/v1/people/search -d '{
 samples 2
 
 ```bash
-curl -XGET https://api.data-axle.com/v1/people/search -d '{
+curl -X GET https://api.data-axle.com/v1/people/search -d '{
   "filter": {
     "relation": "in",
     "attribute": "state",
