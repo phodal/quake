@@ -115,16 +115,22 @@ impl Entrysets {
             let string = fs::read_to_string(&file)?;
 
             let mut entry_file = EntryFile::from(&*string, index)?;
-            entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
+            entry_file.name = format!("{}", &file.file_name().unwrap().to_str().unwrap());
 
             for (k, v) in &entry_file.fields {
                 // convert for time
                 if let Some(field_type) = type_maps.get(k) {
                     if let MetaField::Date(_date) = field_type {
                         let value = quake_time::replace_to_unix(v);
-                        let time: usize = value.parse().expect("cannot convert time");
-                        element[k.clone()] = time.into();
-                        continue;
+                        match value.parse::<usize>() {
+                            Ok(time) => {
+                                element[k.clone()] = time.into();
+                                continue;
+                            }
+                            Err(err) => {
+                                println!("parse {:?} error:{:?}", file, err);
+                            }
+                        }
                     }
                 }
 

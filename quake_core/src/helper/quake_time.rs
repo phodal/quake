@@ -82,6 +82,9 @@ mod tests {
 
         let filter4 = "created_date > 2021.12.09";
         assert_eq!(replace_to_unix(filter4), "created_date > 1639008000");
+        //
+        // let filter2 = "created_date > 2021-08-20 06:32:28.537346";
+        // assert_eq!(replace_to_unix(filter2), "created_date > 1586729457");
     }
 
     #[test]

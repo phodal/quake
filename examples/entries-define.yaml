@@ -99,7 +99,7 @@ entries:
     display: "Onenote"
     fields:
       - title: Title
-      - created_date: String
+      - created_date: Date
       - updated_date: Date
       - category: String
       - notebook: String
