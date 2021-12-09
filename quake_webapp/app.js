@@ -2,6 +2,28 @@ const Router = Vaadin.Router;
 const outlet = document.getElementById('outlet');
 const router = new Router(outlet);
 
+const Quake = {
+  client: new MeiliSearch({
+    host: 'http://127.0.0.1:7700'
+  }),
+  router: router,
+  query: function (entry, query, filter) {
+    let index = Quake.client.index(entry);
+    let options = {
+      limit: 40,
+      attributesToHighlight: ['overview']
+    };
+
+    // check filter
+    Object.assign(options, filter);
+
+    return index.search(query, options).then((result) => {
+      return result.hits
+    })
+  }
+}
+
+
 const home = (context, commands) => {
   const dashboard = document.createElement('quake-dashboard');
   dashboard.addEventListener("dispatchAction", function (e) {
@@ -89,25 +111,5 @@ router.setRoutes([
   {path: '/edit/:type/:id', action: edit_entry},
 ]);
 
-const Quake = {
-  client: new MeiliSearch({
-    host: 'http://127.0.0.1:7700'
-  }),
-  router: router,
-  query: function (entry, query, filter) {
-    let index = Quake.client.index(entry);
-    let options = {
-      limit: 40,
-      attributesToHighlight: ['overview']
-    };
-
-    // check filter
-    Object.assign(options, filter);
-
-    return index.search(query, options).then((result) => {
-      return result.hits
-    })
-  }
-}
-
+// move to auto generate in transflow
 Quake.router.addRoutes({path: '/transflow/show_calendar', action: tl_timeline},)

@@ -1,27 +1,5 @@
 # Quake Web
 
-
-## Setup
-
-install:
-
-```bash
-npm install -g pnpm
-pnpm recursive install
-```
-
-dev:
-
-```
-pnpm recursive run start
-```
-
-build: 
-
-```bash
-pnpm recursive run build
-```
-
 ## Docs
 
 Framework Spikes
@@ -38,10 +16,11 @@ Todo:
 - [x] Stencil.js Router
   - [x] [https://github.com/ionic-team/stencil-router](https://github.com/ionic-team/stencil-router)
   - [x] edit to editor view
-- [ ] Web Components
+- [x] Web Components Setup
   - [https://reactjs.org/docs/web-components.html](https://reactjs.org/docs/web-components.html)
   - [https://levelup.gitconnected.com/convert-existing-react-components-intowebcomponents-2b33b842ff9a](https://levelup.gitconnected.com/convert-existing-react-components-intowebcomponents-2b33b842ff9a) 
-- [ ] Dashboard
-- [ ] ChartView
-- [ ] Ledge Render
+- [ ] Components 
+  - [ ] Dashboard
+  - [ ] ChartView
+  - [ ] Ledge Render
 
