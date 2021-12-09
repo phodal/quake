@@ -33,8 +33,8 @@ impl EntryPaths {
         "entries.csv"
     }
 
-    pub fn transflows_yaml() -> &'static str {
-        "transflows.yaml"
+    pub fn quake() -> &'static str {
+        "_quake"
     }
 
     pub fn transfuncs() -> &'static str {

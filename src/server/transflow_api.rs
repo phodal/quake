@@ -3,7 +3,6 @@ use std::path::PathBuf;
 
 use rocket::fs::NamedFile;
 use rocket::response::content::JavaScript;
-use rocket::response::status::NotFound;
 use rocket::serde::json::Json;
 use rocket::State;
 use rocket::{get, post};
@@ -53,7 +52,9 @@ pub(crate) async fn translate(
 #[get("/script")]
 pub(crate) async fn transfunc_script(config: &State<QuakeConfig>) -> Option<NamedFile> {
     let path = PathBuf::from(config.workspace.clone());
-    let fs = path.join(EntryPaths::transfuncs());
+    let fs = path
+        .join(EntryPaths::quake())
+        .join(EntryPaths::transfuncs());
 
     let file = NamedFile::open(fs);
     file.await.ok()
