@@ -41,8 +41,8 @@ function QuakeCalendar(props: Props) {
         items.push({
           id: datum.id,
           title: datum.title,
-          start: new Date(datum.start),
-          end: new Date(datum.end)
+          start: new Date(datum.created_date),
+          end: new Date(datum.updated_date)
         })
       }
     }
@@ -58,7 +58,7 @@ function QuakeCalendar(props: Props) {
         events={calculateData}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: 500 }}
+        style={{ height: '100%' }}
       />
     </div>
   );

@@ -34,7 +34,8 @@ export interface SearchResult {
 enum InputType {
   Empty,
   Search = 'Search',
-  Action = 'Action'
+  Action = 'Action',
+  Transflow = 'Transflow'
 }
 
 @Component({
@@ -67,6 +68,10 @@ export class QuakeDashboard {
 
   @State() is_flow: boolean = false;
   @State() offset: object = {};
+
+  @State() flow_index: number = 1;
+  @State() generated_code: string = "";
+
 
   @Event({
     eventName: 'dispatchAction',
@@ -104,6 +109,9 @@ export class QuakeDashboard {
 
     if (this.query.startsWith("/")) {
       this.inputType = InputType.Action
+      return;
+    } else if (this.query.startsWith(":")) {
+      this.inputType = InputType.Transflow;
       return;
     }
 
@@ -201,12 +209,45 @@ export class QuakeDashboard {
     this.selected_flow_result = new Map();
   }
 
+  async createTransflow() {
+    let flow_name = `temp_${this.flow_index}`;
+    let flow = this.query.substring(1,);
+    axios.post(`/transflow/translate/${flow_name}`, {
+      flow: flow
+    }).then(response => {
+      let src = response.data;
+
+      src = src + "\n " + `Quake.router.addRoutes({path: '/transflow/show_${flow_name}', action: tl_${flow_name} },)`;
+
+      // todo: remove old id??
+      const script = document.createElement('script');
+      script.setAttribute('id', `temp-${this.flow_index}`);
+
+      this.generated_code = src;
+
+      script.innerHTML = src;
+      document.body.appendChild(script);
+
+      const nav = document.createElement('a');
+      nav.setAttribute("href", `/transflow/show_${flow_name}/`);
+      nav.innerText = flow_name;
+
+      let navNode = document.getElementById("transflow-nav");
+      navNode.appendChild(nav);
+
+      this.flow_index = this.flow_index + 1;
+    })
+  }
+
   async handleSubmit(e) {
     e.preventDefault()
 
     if (this.query.startsWith("/")) {
-      this.inputType = InputType.Action
-    } else {
+      this.inputType = InputType.Action;
+      return;
+    } else if (this.query.startsWith(":")) {
+      this.inputType = InputType.Transflow;
+      await this.createTransflow();
       return;
     }
 
@@ -276,6 +317,7 @@ export class QuakeDashboard {
         <ion-toolbar>
           <ion-item>
             {this.inputType !== InputType.Empty ? <ion-chip>
+              <ion-icon name="airplane-outline"></ion-icon>
               <ion-label>{this.inputType}</ion-label>
             </ion-chip> : null}
             <form id="search-form" onSubmit={this.handleSubmit.bind(this)}>
@@ -302,6 +344,7 @@ export class QuakeDashboard {
       <ion-content fullscreen>
         <ion-grid>
           <ion-row>
+            {this.generated_code && <pre><code class="javascript">{this.generated_code}</code></pre>}
             {this.entries_info.map((info) =>
               this.list[info.type] && this.list[info.type].length > 0 ? this.renderSearchCol(info) : null
             )}
@@ -357,7 +400,7 @@ export class QuakeDashboard {
 
   private renderCards(item: any, type: string) {
     return <div class="entry-show-list">
-      <ion-card  size-xs="3" size-md="3" onClick={() => this.clickEntry(item.id, type)}>
+      <ion-card size-xs="3" size-md="3" onClick={() => this.clickEntry(item.id, type)}>
         <ion-card-header>
           <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
           <ion-card-title>{item.title}</ion-card-title>
@@ -380,9 +423,9 @@ export class QuakeDashboard {
         <option value="last_year">Last Year</option>
       </select>
       <ion-text>Created Date</ion-text>
-      <input type="date" id="created_date" name="trip-start" />
+      <input type="date" id="created_date" name="trip-start"/>
       <ion-text>Updated Date</ion-text>
-      <input type="date" id="end_date" name="trip-start" />
+      <input type="date" id="end_date" name="trip-start"/>
     </ion-item>;
   }
 }

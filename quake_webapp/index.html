@@ -28,19 +28,32 @@
 <div id="outlet"></div>
 </body>
 
+<!--ionic for ui-->
 <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
 <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
 
+<!--vaadin rotuer-->
 <script src="https://unpkg.com/@vaadin/router/dist/vaadin-router.umd.min.js"></script>
 
-<script type="module" src="./dashboard/dist/dashboard/dashboard.esm.js"></script>
-
-<script src="/transflow/script"></script>
-
+<!--search engine-->
 <script src="https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js"></script>
 
+<!--ionic-icons-->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+<!--code highlight-->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+<!--transflow-scripts-->
+<script src="/transflow/script"></script>
+
+<!--other componnets-->
 <script src="./quake-editor/build/static/quake-editor.min.js"></script>
-<script src="packages/calendar/build/static/quake-calendar-timeline.min.js"></script>
+<script type="module" src="./dashboard/dist/dashboard/dashboard.esm.js"></script>
+<script src="packages/calendar/build/static/quake-calendar.min.js"></script>
 
 <script src="app.js"></script>
 
