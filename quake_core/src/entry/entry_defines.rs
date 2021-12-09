@@ -19,8 +19,24 @@ impl EntryDefines {
         EntryDefines { entries }
     }
 
-    pub fn from_path(path: &PathBuf) -> Vec<EntryDefine> {
-        entries_define_from_path(path)
+    pub fn from_path(path: &PathBuf) -> EntryDefines {
+        let entries_str = fs::read_to_string(path).expect("cannot read entries-define.yaml");
+        serde_yaml::from_str(&*entries_str).expect("cannot serde entries-define.yaml")
+    }
+
+    pub fn find(&self, target_entry: &String) -> Option<EntryDefine> {
+        let entries: Vec<EntryDefine> = self
+            .entries
+            .iter()
+            .filter(|define| define.entry_type.eq(target_entry))
+            .map(|def| def.clone())
+            .collect();
+
+        return if entries.len() == 0 {
+            None
+        } else {
+            Some(entries[0].clone())
+        };
     }
 }
 

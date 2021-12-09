@@ -48,7 +48,7 @@ fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&conf.workspace);
     let temp_file = "dump.json";
 
-    let _entry_defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
+    let defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
 
     for entry in walk_in_path(path) {
         let entry = entry.unwrap();
@@ -64,8 +64,9 @@ fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
         let entry_type = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
 
         let paths = EntryPaths::init(&conf.workspace, &entry_type);
+        let define = defines.find(&entry_type);
 
-        let map = Entrysets::jsonify(&paths.base)?;
+        let map = Entrysets::jsonify_with_format_date(&paths.base, define)?;
         fs::write(temp_file, map)?;
 
         meili_exec::feed_command(&entry_type, &conf.search_url)?;

@@ -97,6 +97,29 @@ impl Entrysets {
         Ok(serde_json::to_string(&entry_sets)?)
     }
 
+    /// format json from define
+    pub fn jsonify_with_format_date(
+        path: &PathBuf,
+        _define: Option<EntryDefine>,
+    ) -> Result<String, Box<dyn Error>> {
+        let files = Self::scan_files(path);
+        let mut index = 1;
+
+        let mut entry_sets: Vec<EntryFile> = vec![];
+        for file in files {
+            let string = fs::read_to_string(&file)?;
+
+            let mut entry_file = EntryFile::from(&*string, index)?;
+            entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
+
+            entry_sets.push(entry_file);
+
+            index = index + 1;
+        }
+
+        Ok(serde_json::to_string(&entry_sets)?)
+    }
+
     /// scan all entries files, and rebuild indexes
     pub fn rebuild(path: &PathBuf) -> Result<(Vec<String>, Vec<Vec<String>>), Box<dyn Error>> {
         let files = Self::scan_files(path);
