@@ -40,7 +40,7 @@ pub fn tui_main_loop() -> Result<(), Box<dyn Error>> {
 
 fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<()> {
     // TODO: refactor
-    loop {
+    while app.running() {
         terminal.draw(|f| {
             draw(f, &mut app);
         })?;
@@ -56,8 +56,8 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<(
                     KeyCode::Enter => {
                         let command: String = app.command.drain(..).collect();
                         match command.as_str() {
-                            "quit" => return Ok(()),
-                            "listAll" => app.main_widget = MainWidget::Dirs,
+                            "quit" => app.shutdown(),
+                            "listAll" => app.main_widget = MainWidget::EntryTypes,
                             _ => {}
                         }
                     }
@@ -75,4 +75,6 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<(
             }
         }
     }
+
+    Ok(())
 }
