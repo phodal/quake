@@ -41,8 +41,8 @@ function QuakeCalendar(props: Props) {
         items.push({
           id: datum.id,
           title: datum.title,
-          start: new Date(datum.created_date),
-          end: new Date(datum.updated_date)
+          start: new Date(datum.created_date * 1000),
+          end: new Date(datum.updated_date * 1000)
         })
       }
     }
