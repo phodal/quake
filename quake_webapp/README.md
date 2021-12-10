@@ -23,3 +23,19 @@ Todo:
   - [ ] Dashboard
   - [ ] ChartView
   - [ ] Ledge Render
+
+## Chart
+
+Compare: [https://medium.com/react-courses/react-charts-built-on-d3-what-should-you-pick-rechart-visx-niv-react-vi-or-victory-adc64406caa1](https://medium.com/react-courses/react-charts-built-on-d3-what-should-you-pick-rechart-visx-niv-react-vi-or-victory-adc64406caa1)
+
+## Normal
+
+https://github.com/uber/react-vis
+https://recharts.org/en-US/api/SankeyChart
+
+
+## Graph
+
+https://airbnb.io/visx/linktypes
+
+

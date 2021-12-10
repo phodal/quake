@@ -36,3 +36,6 @@ curl -X GET https://api.data-axle.com/v1/people/search -d '{
 }'
 ```
 
+map {
+  created_date -> start_time
+}

@@ -7,10 +7,17 @@ created_date: 2021-12-03 13:02:05
 updated_date: 2021-12-03 13:02:05
 ---
 
-- pdf with quake
-- pdf to text
+
+## Rust
+
+read pdf: https://github.com/pdf-rs/pdf
+
+pdf information: https://github.com/jrmuizel/pdf-extract
 
 ## pdf to text
+
+- pdf with quake
+- pdf to text
 
 ### pdfminer.six
 
@@ -27,4 +34,3 @@ updated_date: 2021-12-03 13:02:05
 - A tool and library that can extract various areas of text from a PDF, especially a scholarly article PDF. It performs structural
 - analysis to determine column bounds, headers, footers, sections, titles and so on. It can analyse and categorise sections into
 - reference and non-reference sections and can split reference sections into individual references.
-
