@@ -103,7 +103,7 @@ impl Entrysets {
     /// format json from define
     pub fn jsonify_with_format_date(
         path: &PathBuf,
-        define: EntryDefine,
+        define: &EntryDefine,
     ) -> Result<String, Box<dyn Error>> {
         let files = Self::scan_files(path);
         let mut index = 1;
@@ -348,7 +348,7 @@ mod tests {
     #[test]
     fn jsonify_todo_with_date() {
         let buf = PathBuf::from("..").join("examples").join("todo");
-        let json = Entrysets::jsonify_with_format_date(&buf, todo_define()).unwrap();
+        let json = Entrysets::jsonify_with_format_date(&buf, &todo_define()).unwrap();
 
         #[cfg(not(windows))]
         assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\\n\\nahaha\\n\",\"created_date\":1637781250,\"updated_date\":1637781250,\"id\":1}]");
@@ -358,6 +358,6 @@ mod tests {
     #[test]
     fn jsonify_todo_with_date_test() {
         let buf = PathBuf::from("..").join("examples").join("onenote");
-        let _json = Entrysets::jsonify_with_format_date(&buf, todo_define()).unwrap();
+        let _json = Entrysets::jsonify_with_format_date(&buf, &todo_define()).unwrap();
     }
 }

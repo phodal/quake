@@ -68,11 +68,11 @@ fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
             .find(&entry_type)
             .expect(format!("lost entry define for: {:?}", &entry_type).as_str());
 
-        let map = Entrysets::jsonify_with_format_date(&paths.base, define)?;
+        let map = Entrysets::jsonify_with_format_date(&paths.base, &define)?;
         fs::write(temp_file, map)?;
 
         meili_exec::feed_command(&entry_type, &conf.search_url)?;
-        meili_exec::feed_settings(&entry_type, &conf.search_url)?;
+        meili_exec::feed_settings(&conf.search_url, &define)?;
 
         info!("done '{:}' feed", &entry_type);
     }
