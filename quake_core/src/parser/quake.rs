@@ -272,12 +272,12 @@ mod tests {
     #[test]
     fn should_parse_filter() {
         let define = "transflow show_calendar {
-         from('todo','blog').to(<quake-calendar>).filter('created_date > 2021.01.01 and created_date < 2021.12.31') 
+         from('todo','blog').to(<quake-calendar>).filter('created_date > 2021.01.01 AND created_date < 2021.12.31') 
 }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!(
             expr.routes[0].filter,
-            "created_date > 1609459200 and created_date < 1640908800"
+            "created_date > 1609459200 AND created_date < 1640908800"
         );
     }
 }
