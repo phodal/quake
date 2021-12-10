@@ -137,8 +137,9 @@ fn config_quake(cmd: &Command) -> Result<QuakeConfig, Box<dyn Error>> {
 }
 
 fn load_config(path: &String) -> Result<QuakeConfig, Box<dyn Error>> {
-    let content = fs::read_to_string(path)?;
-    let conf: QuakeConfig = serde_yaml::from_str(content.as_str())?;
+    let content =
+        fs::read_to_string(path).expect("lost .quake.yaml config, please run `quake init`");
+    let conf: QuakeConfig = serde_yaml::from_str(content.as_str()).expect("serde .quake.yml error");
 
     Ok(conf)
 }

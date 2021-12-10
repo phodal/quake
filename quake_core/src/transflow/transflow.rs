@@ -74,6 +74,7 @@ pub struct Flow {
     pub name: String,
     pub from: Vec<String>,
     pub to: String,
+    #[serde(rename = "map")]
     pub mappings: Option<Vec<Mapping>>,
     pub filter: String,
 }

@@ -108,7 +108,7 @@ pub fn update_entry_fields(
 
     for (key, value) in update_map {
         if key != "content" {
-            entry_file.update_field(key, value);
+            entry_file.update_field(key, &format!("{:?}", value));
         }
     }
 
