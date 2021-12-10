@@ -135,3 +135,12 @@ entries:
       - field: priority
         items: ['Low', 'Medium', 'High']
     actions: ~
+  - type: quake_book
+    display: ""
+    fields:
+      - title: Title
+      - created_date: Date
+      - updated_date: Date
+      - order: Order
+      - author: String
+    actions: ~
