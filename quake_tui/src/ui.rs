@@ -69,7 +69,7 @@ where
                 area,
             )
         }
-        MainWidget::Dirs => {
+        MainWidget::EntryTypes => {
             let entry_types: Vec<ListItem> = list_entry_types().unwrap_or_default();
             let entry_types_list = List::new(entry_types)
                 .block(Block::default().borders(Borders::ALL).title("List"))

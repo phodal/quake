@@ -57,7 +57,7 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<(
                         let command: String = app.command.drain(..).collect();
                         match command.as_str() {
                             "quit" => app.shutdown(),
-                            "listAll" => app.main_widget = MainWidget::Dirs,
+                            "listAll" => app.main_widget = MainWidget::EntryTypes,
                             _ => {}
                         }
                     }

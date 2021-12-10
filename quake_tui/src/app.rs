@@ -37,7 +37,7 @@ pub enum Mode {
 
 pub enum MainWidget {
     Home,
-    Dirs,
+    EntryTypes,
 }
 
 pub struct AppState {
