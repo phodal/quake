@@ -117,6 +117,8 @@ impl Entrysets {
             let mut entry_file = EntryFile::from(&*string, index)?;
             entry_file.name = format!("{}", &file.file_name().unwrap().to_str().unwrap());
 
+            let mut convert_msg = "".to_string();
+            let mut is_convert_date_issue = false;
             for (k, v) in &entry_file.fields {
                 // convert for time
                 if let Some(field_type) = type_maps.get(k) {
@@ -128,7 +130,8 @@ impl Entrysets {
                                 continue;
                             }
                             Err(err) => {
-                                println!("parse {:?} error:{:?}", file, err);
+                                is_convert_date_issue = true;
+                                convert_msg = format!("parse {:?} error:{:?}", file, err);
                             }
                         }
                     }
@@ -136,6 +139,8 @@ impl Entrysets {
 
                 element[k.clone()] = v.clone().into();
             }
+
+            println!("{:?}", convert_msg);
 
             element["id".to_string()] = entry_file.id.into();
             element["content".to_string()] = entry_file.content.into();
