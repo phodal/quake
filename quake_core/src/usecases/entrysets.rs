@@ -130,8 +130,10 @@ impl Entrysets {
                                 continue;
                             }
                             Err(err) => {
+                                if is_convert_date_issue == false {
+                                    convert_msg = format!("parse {:?} error:{:?}", file, err);
+                                }
                                 is_convert_date_issue = true;
-                                convert_msg = format!("parse {:?} error:{:?}", file, err);
                             }
                         }
                     }
