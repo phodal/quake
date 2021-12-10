@@ -353,4 +353,11 @@ mod tests {
         #[cfg(not(windows))]
         assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\\n\\nahaha\\n\",\"created_date\":1637781250,\"updated_date\":1637781250,\"id\":1}]");
     }
+
+    #[ignore]
+    #[test]
+    fn jsonify_todo_with_date_test() {
+        let buf = PathBuf::from("..").join("examples").join("onenote");
+        let _json = Entrysets::jsonify_with_format_date(&buf, todo_define()).unwrap();
+    }
 }

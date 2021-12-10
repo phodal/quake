@@ -5,6 +5,7 @@ use regex::Regex;
 const DATETIME_ZONE_FORMAT: &'static str = "%Y-%m-%d %H:%M:%S %z";
 const DATETIME_NANO_FORMAT: &'static str = "%Y-%m-%d %H:%M:%S.%f";
 const UTC_FORMAT: &'static str = "%Y-%m-%dT%H:%M:%SZ";
+const UTC_MS_FORMAT: &'static str = "%Y-%m-%dT%H:%M:%S.%fZ";
 const DATETIME_FORMAT: &'static str = "%Y-%m-%d %H:%M:%S";
 const DATE_FORMAT: &'static str = "%Y-%m-%d";
 const SIMPLE_DATE_FORMAT: &'static str = "%Y.%m.%d";
@@ -15,9 +16,11 @@ lazy_static! {
     static ref ISO8601_DATE_TIME_REGEX: Regex =
         Regex::new(r"(?P<time>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})").unwrap();
     static ref RFC3339_NANO_REGEX: Regex =
-        Regex::new(r"(?P<time>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{2,8})").unwrap();
+        Regex::new(r"(?P<time>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{1,8})").unwrap();
     static ref UTC_TIME_REGEX: Regex =
         Regex::new(r"(?P<time>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)").unwrap();
+    static ref UTC_TIME_MS_REGEX: Regex =
+        Regex::new(r"(?P<time>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{1,8}Z)").unwrap();
     static ref ISO8601_DATE_TIME_ZONE_REGEX: Regex =
         Regex::new(r"(?P<time>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\s\+\d{2}:\d{2})").unwrap();
 }
@@ -42,7 +45,14 @@ pub fn date_now() -> String {
 /// long time should be in first
 pub fn replace_to_unix(text: &str) -> String {
     let mut result = text.to_string();
-    // first for: 2021-08-20T06:32:28Z
+    // for: 2021-08-20T06:32:28.214Z
+    for caps in UTC_TIME_MS_REGEX.captures_iter(text) {
+        let time = &caps["time"];
+        let naive_date_time = NaiveDateTime::parse_from_str(time, UTC_MS_FORMAT).unwrap();
+        result = result.replace(time, naive_date_time.timestamp().to_string().as_str());
+    }
+
+    // for: 2021-08-20T06:32:28Z
     for caps in UTC_TIME_REGEX.captures_iter(text) {
         let time = &caps["time"];
         let naive_date_time = NaiveDateTime::parse_from_str(time, UTC_FORMAT).unwrap();
@@ -111,8 +121,11 @@ mod tests {
         let filter5 = "created_date > 2021-08-20 06:32:28.537346";
         assert_eq!(replace_to_unix(filter5), "created_date > 1629441148");
 
-        let filter5 = "created_date > 2021-11-08T07:25:26Z";
-        assert_eq!(replace_to_unix(filter5), "created_date > 1636356326");
+        let filter6 = "created_date > 2021-11-08T07:25:26Z";
+        assert_eq!(replace_to_unix(filter6), "created_date > 1636356326");
+
+        let filter7 = "created_date > 2021-11-08T07:25:26.125Z";
+        assert_eq!(replace_to_unix(filter7), "created_date > 1636356326");
     }
 
     #[test]
