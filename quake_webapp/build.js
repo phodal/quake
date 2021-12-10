@@ -34,7 +34,7 @@ fse.copySync(srcDir, destDir, { overwrite: true }, function (err) {
 
 $('body > script').map((i, script) => {
   let attribs = script.attribs;
-  if (!attribs.src.startsWith('http')) {
+  if (!!attribs.src && (!attribs.src.startsWith('http') && !attribs.src.startsWith('//'))) {
     let split = attribs.src.split("/");
     let file_name = split[split.length - 1];
 

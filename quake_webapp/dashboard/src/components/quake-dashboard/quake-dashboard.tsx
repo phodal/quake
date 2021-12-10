@@ -242,12 +242,15 @@ export class QuakeDashboard {
   async handleSubmit(e) {
     e.preventDefault()
 
-    if (this.query.startsWith("/")) {
-      this.inputType = InputType.Action;
-      return;
-    } else if (this.query.startsWith(":")) {
+    console.log(this.query, e.target);
+    if (this.query.startsWith(":")) {
       this.inputType = InputType.Transflow;
       await this.createTransflow();
+      return;
+    }
+
+    if (!this.query.startsWith("/")) {
+      this.inputType = InputType.Search;
       return;
     }
 
@@ -297,7 +300,8 @@ export class QuakeDashboard {
     let type = this.selected_entry.type;
     this.queryItems(this.offset[type]).then((result) => {
       this.offset[type] = this.offset[type] + 40;
-      this.infiniteScroll.complete().then(_r => {});
+      this.infiniteScroll.complete().then(_r => {
+      });
 
       let parsed = result.hits;
       if (parsed.length == 0) {
