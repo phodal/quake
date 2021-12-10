@@ -39,6 +39,21 @@ pub fn feed_settings(search_url: &String, define: &EntryDefine) -> Result<(), Bo
     Ok(())
 }
 
+// pub fn feed_settings(search_url: &String, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
+//     let value = &define_to_settings(define);
+//     let url = format!("{:}/indexes/{:}/settings", search_url, &define.entry_type);
+//
+//     task::block_on(async {
+//         let client = reqwest::Client::new();
+//         let req = client.post(url).json(&value).send();
+//         let response = req.await.unwrap().text().await.unwrap();
+//
+//         info!("{:?}", response);
+//     });
+//
+//     Ok(())
+// }
+
 #[allow(dead_code)]
 pub fn feed_settings_reqwest(
     search_url: &String,
