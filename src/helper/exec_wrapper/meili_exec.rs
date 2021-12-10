@@ -105,6 +105,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn test_feed_settings() {
         let define = &get_define();
         let _ = feed_settings_reqwest(&"http://127.0.0.1:7700".to_string(), define);
