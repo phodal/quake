@@ -3,6 +3,7 @@ use lazy_static::lazy_static;
 use regex::Regex;
 
 const DATETIME_ZONE_FORMAT: &'static str = "%Y-%m-%d %H:%M:%S %z";
+const DATETIME_NANO_FORMAT: &'static str = "%Y-%m-%d %H:%M:%S.%f";
 const DATETIME_FORMAT: &'static str = "%Y-%m-%d %H:%M:%S";
 const DATE_FORMAT: &'static str = "%Y-%m-%d";
 const SIMPLE_DATE_FORMAT: &'static str = "%Y.%m.%d";
@@ -12,6 +13,8 @@ lazy_static! {
     static ref ISO8601_DATE_REGEX: Regex = Regex::new(r"(?P<time>\d{4}-\d{2}-\d{2})").unwrap();
     static ref ISO8601_DATE_TIME_REGEX: Regex =
         Regex::new(r"(?P<time>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})").unwrap();
+    static ref RFC3339_NANO_REGEX: Regex =
+        Regex::new(r"(?P<time>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{2,8})").unwrap();
     static ref ISO8601_DATE_TIME_ZONE_REGEX: Regex =
         Regex::new(r"(?P<time>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\s\+\d{2}:\d{2})").unwrap();
 }
@@ -34,6 +37,14 @@ pub fn date_now() -> String {
 /// Date
 pub fn replace_to_unix(text: &str) -> String {
     let mut result = text.to_string();
+    // first for: 2021-08-20 06:32:28.537346
+    for caps in RFC3339_NANO_REGEX.captures_iter(text) {
+        let time = &caps["time"];
+        let naive_date_time = NaiveDateTime::parse_from_str(time, DATETIME_NANO_FORMAT).unwrap();
+        let timestamp = naive_date_time.timestamp();
+        result = result.replace(time, timestamp.to_string().as_str());
+    }
+
     for caps in ISO8601_DATE_TIME_ZONE_REGEX.captures_iter(text) {
         let time = &caps["time"];
         let naive_date_time = DateTime::parse_from_str(time, DATETIME_ZONE_FORMAT).unwrap();
@@ -82,9 +93,9 @@ mod tests {
 
         let filter4 = "created_date > 2021.12.09";
         assert_eq!(replace_to_unix(filter4), "created_date > 1639008000");
-        //
-        // let filter2 = "created_date > 2021-08-20 06:32:28.537346";
-        // assert_eq!(replace_to_unix(filter2), "created_date > 1586729457");
+
+        let filter5 = "created_date > 2021-08-20 06:32:28.537346";
+        assert_eq!(replace_to_unix(filter5), "created_date > 1629441148");
     }
 
     #[test]

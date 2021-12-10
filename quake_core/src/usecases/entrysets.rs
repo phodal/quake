@@ -140,7 +140,9 @@ impl Entrysets {
                 element[k.clone()] = v.clone().into();
             }
 
-            println!("{:?}", convert_msg);
+            if is_convert_date_issue {
+                println!("{:?}", convert_msg);
+            }
 
             element["id".to_string()] = entry_file.id.into();
             element["content".to_string()] = entry_file.content.into();
