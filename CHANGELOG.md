@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.2.0] - 2021-12-10
 
 ### Bug Fixes
 
@@ -11,6 +11,21 @@ All notable changes to this project will be documented in this file.
 - Fix tests
 - Fix tests
 - Read entry types from defines file
+- Default server port
+- Fix toolchain typo
+- Fix transflow path issue
+- Fix test
+- Fix date issue msg issue
+- Fix duplidate time issue
+- Add more time match
+- Fix time issue for lazi onenote :triumph::triumph:
+- Fix expr issue
+- Fix unit time issue
+- Fix import time issue
+- Fix build issues
+- Fix test ignore issues
+- Fix tests
+- Typos
 
 ### Documentation
 
@@ -28,6 +43,25 @@ All notable changes to this project will be documented in this file.
 - Add some docs
 - Add more story
 - Update todo
+- Update changelog
+- Updat dev.md
+- Add fe setup guide
+- Add some content
+- Add suggest story
+- Split markdown
+- Update README config
+- Modify web location
+- Update file status
+- Update links
+- Add log fo error fields
+- Try to use feed settings
+- Update config
+- Setup quake book
+- Add lost RADME
+
+### Feat
+
+- Make pass filter for struct
 
 ### Features
 
@@ -48,6 +82,21 @@ All notable changes to this project will be documented in this file.
 - Init time search ui
 - Add show command
 - Migration core to quake.js t ofetch data
+- Add transflow to js api
+- Make flow to code works
+- Make currect translate api
+- Add basic time support
+- Add simple date time
+- Make replace time text to unix time
+- Make filter works in parse
+- Make filter works in gen code
+- Add format for RFC3339_NANO
+- Add app state
+- Try pdf read file module
+
+### Miscellaneous Tasks
+
+- Release 0.2.0
 
 ### Refactor
 
@@ -82,18 +131,42 @@ All notable changes to this project will be documented in this file.
 - Migration dashboard
 - Change calendar component
 - Clean some deps
+- Split duplicated action
+- Change to different cmd mode for Windows
+- Move route code to last
+- Add define name for dsl
+- Rename api
+- Change filter process logic
+- Change time format
+- Foramt code
+- Refactor: entry set logic
+- Refactor: entry set logic
+- Split define usecases
+- Split format api
+- Use new format for json
+- Reconfig for data values
+- Add some error handle for process data to json
+- Rename main widget virant
+- Rename mappings to map
+- Change feed settings to json file
+- Extract main render logic to `MainWidget`
 
 ### Testing
 
 - Add test for load from csv
 - Add test for create entry
 - Try to set test server in ci
+- Add testing for time
 
 ### Build
 
 - Add some logs examples
 - Try to add md render
 - Set vesion to 2021
+- Remove unused config for packages
+- Specific version for develop (#12)
+- Add basic web api config
+- Update links
 
 ### Ci
 
