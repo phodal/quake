@@ -6,18 +6,31 @@
 
 > A meta knowledge management tool for geek.
 
-Quake 是面向极客的知识管理元框架，它可以：
+Quake is a knowledge management meta-framework for geeks. It can:
 
-- 自由的文本内容管理。Todo 清单、文章管理、书评、笔记等。
-- 构建知识网络体系。定制化 markdown 链接
-- 抓住稍纵即逝的灵感。支持快速启动（CLI、TUI）与全局搜索
-- 自由的呈现画布。DSL 与自由画板
+- freedom text content management.todo lists, article management, book reviews, notes, etc.
+- construct a knowledge network system. customized markdown link
+- grab the fleeting inspiration.support quick start (CLI, TUI) and global search
+- freely present the canvas. DSL and Free Sketchpad
 
 Examples：
 
 1. [examples](./examples)
+2. ...
 
-## Introduction
+Setup:
+
+1. download from release or `cargo install quake`
+2. download web from release
+3. init with `quake init`
+4. use `quake cmd -i "todo.add: hello, world"` to add new todo
+5. use `quake server` to start server
+
+more see in [Setup](examples/quake_book/0002-setup.md);
+
+## Docs
+
+DEVELOPMENT: see in [DEVELOPMENT.md](examples/quake_book/004-development.md)
 
 Architecture:
 
@@ -30,14 +43,6 @@ Screenshots:
 欢迎入群讨论：
 
 ![Wechat Code](http://quake-demo.inherd.org/qrcode.jpg)
-
-
-## Docs
-
-Usage see in [Setup](examples/quake_book/0002-setup.md);
-
-DEVELOPMENT: see in [DEVELOPMENT.md](examples/quake_book/004-development.md)
-
 
 License
 ---
