@@ -25,8 +25,11 @@ pub fn dump_microsoft_todo(todos_lists: Vec<OutputList>, path: &PathBuf) {
             let title = todo.title;
             file.add_field("category", format!("{:?}", list.display_name));
             file.add_field("title", format!("{:?}", simple_escape(title.clone())));
-            file.add_field("created_date", todo.created_date_time);
-            file.add_field("updated_date", todo.last_modified_date_time);
+            file.add_field("created_date", format!("{:?}", todo.created_date_time));
+            file.add_field(
+                "updated_date",
+                format!("{:?}", todo.last_modified_date_time),
+            );
 
             let time = match todo.reminder_date_time {
                 None => "".to_string(),
