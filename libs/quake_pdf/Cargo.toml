@@ -1,0 +1,10 @@
+[package]
+name = "quake_pdf"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+pdf-extract = "0.6.3"
+lopdf = "0.26"
