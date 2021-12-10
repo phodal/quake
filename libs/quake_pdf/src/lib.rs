@@ -10,6 +10,7 @@ mod tests {
     use std::path;
     use std::path::PathBuf;
 
+    #[ignore]
     #[test]
     fn it_works() {
         let file = PathBuf::from("_fixtures").join("samples.pdf");
@@ -40,6 +41,6 @@ mod tests {
             _ => panic!(),
         };
 
-        output_doc(&doc, output.as_mut());
+        let _ = output_doc(&doc, output.as_mut());
     }
 }
