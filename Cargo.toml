@@ -2,7 +2,7 @@
 name = "quake"
 version = "0.2.0"
 edition = "2018"
-authors = ["Phodal HUANG <h@phodal.com>"]
+authors = ["Inherd Group <quake@inherd.org>"]
 description = """
 Simple knowledge management tool for geek.
 """
