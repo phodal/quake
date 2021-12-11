@@ -99,8 +99,11 @@ sample
           <div class='admonition-body'>{item.body}</div>
         </div>
         break;
+      case 'page_link':
+        out = <a href="#">{item.raw}</a>
+        break;
       default:
-        console.log(item);
+        // console.log(item);
         out = <span />;
     }
 

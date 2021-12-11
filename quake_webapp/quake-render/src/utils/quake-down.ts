@@ -1,33 +1,19 @@
 import { marked, Slugger } from 'marked';
-import Token = marked.Token;
 import TokensList = marked.TokensList;
 
 class QuakeDown {
   content = '';
-  token = null;
   tokens: TokensList | any = [];
   markdownData: any[] = [];
   slugger = new Slugger();
 
   headingIndex = 0;
-  headingMap = {};
-  indexHeadingMap = {};
 
   renderer: marked.Renderer;
 
   constructor(content: string, renderer: marked.Renderer) {
     this.renderer = renderer;
     this.content = content;
-  }
-
-  private next(): Token {
-    this.token = this.tokens.pop();
-    return this.token;
-  }
-
-  // @ts-ignore
-  private peek() {
-    return this.tokens[this.token.length - 1] || 0;
   }
 
   extensions(): any {
@@ -47,9 +33,12 @@ class QuakeDown {
             type: 'admonition',
             raw: match[0],
             title: match[2].trim(),
-            body: match[3].trim()
+            body: match[3].trim(),
           };
         }
+      },
+      renderer(token) {
+        return `<a>${token}</a>`;
       },
     };
     const page_link = {
@@ -64,26 +53,25 @@ class QuakeDown {
             raw: match[0],
           };
         }
-      }
+      },
+      renderer(token) {
+        return `<a>${token}</a>`;
+      },
     };
 
     return [page_link, admonition];
   }
 
   gen() {
+    const that = this;
     marked.use({
       extensions: this.extensions(),
-      walkTokens: (token) => {
-        console.log('walktokens: ' + token);
-      }
+      walkTokens: function(token) {
+        that.tok(token);
+      },
     });
-    const tokens = marked.lexer(this.content);
-    this.tokens = tokens.reverse();
-
-    while (this.next()) {
-      const token: Token = this.token;
-      this.tok(token);
-    }
+    this.renderer = new marked.Renderer();
+    marked.parse(this.content);
 
     return this.markdownData;
   }
@@ -135,22 +123,30 @@ class QuakeDown {
         });
         break;
       default:
-        // @ts-ignore
         let custom_type = token as any;
-        if(custom_type.type == 'admonition') {
-          this.markdownData.push({
-            type: 'admonition',
-            title: custom_type.title,
-            body: custom_type.body
-          })
+        switch (custom_type.type) {
+          case 'admonition':
+            this.markdownData.push({
+              type: 'admonition',
+              title: custom_type.title,
+              body: custom_type.body,
+              raw: custom_type.raw,
+            });
+            break;
+          case 'page_link':
+            this.markdownData.push({
+              type: 'page_link',
+              raw: custom_type.raw
+            });
+            break;
+          default:
+            console.log(token);
         }
-        console.log(token);
     }
   }
 
   private renderInline(tokens: any) {
-    let renderer = new marked.Renderer();
-    return this.parseInline(tokens, renderer);
+    return this.parseInline(tokens, this.renderer);
   }
 
   private buildTableHeader(cells: marked.Tokens.TableCell[]) {
