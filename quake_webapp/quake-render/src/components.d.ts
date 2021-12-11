@@ -6,10 +6,18 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
+    interface QuakeGraph {
+    }
     interface QuakeRender {
     }
 }
 declare global {
+    interface HTMLQuakeGraphElement extends Components.QuakeGraph, HTMLStencilElement {
+    }
+    var HTMLQuakeGraphElement: {
+        prototype: HTMLQuakeGraphElement;
+        new (): HTMLQuakeGraphElement;
+    };
     interface HTMLQuakeRenderElement extends Components.QuakeRender, HTMLStencilElement {
     }
     var HTMLQuakeRenderElement: {
@@ -17,13 +25,17 @@ declare global {
         new (): HTMLQuakeRenderElement;
     };
     interface HTMLElementTagNameMap {
+        "quake-graph": HTMLQuakeGraphElement;
         "quake-render": HTMLQuakeRenderElement;
     }
 }
 declare namespace LocalJSX {
+    interface QuakeGraph {
+    }
     interface QuakeRender {
     }
     interface IntrinsicElements {
+        "quake-graph": QuakeGraph;
         "quake-render": QuakeRender;
     }
 }
@@ -31,6 +43,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "quake-graph": LocalJSX.QuakeGraph & JSXBase.HTMLAttributes<HTMLQuakeGraphElement>;
             "quake-render": LocalJSX.QuakeRender & JSXBase.HTMLAttributes<HTMLQuakeRenderElement>;
         }
     }
