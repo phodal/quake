@@ -1,5 +1,6 @@
 import { marked, Slugger } from 'marked';
 import TokensList = marked.TokensList;
+import { h } from '@stencil/core';
 
 class QuakeDown {
   content = '';
@@ -99,7 +100,7 @@ class QuakeDown {
       case 'paragraph':
         this.markdownData.push({
           type: 'paragraph',
-          data: this.renderInline(token),
+          text: this.renderInline(token.tokens),
         });
         break;
       case 'list':
@@ -235,6 +236,10 @@ class QuakeDown {
         }
         case 'text': {
           out += renderer.text(token.text);
+          break;
+        }
+        case 'page_link': {
+          out += `<a href="#">${token.raw}</a>`;
           break;
         }
         default: {

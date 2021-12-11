@@ -83,7 +83,7 @@ sample
         out = <hr />;
         break;
       case 'paragraph':
-        out = <p innerHTML={item.data} />;
+        out = <p innerHTML={item.text} />;
         break;
       case 'space':
         break;
@@ -98,9 +98,6 @@ sample
           <div class='admonition-title'>{item.title}</div>
           <div class='admonition-body'>{item.body}</div>
         </div>
-        break;
-      case 'page_link':
-        out = <a href="#">{item.raw}</a>
         break;
       default:
         // console.log(item);
