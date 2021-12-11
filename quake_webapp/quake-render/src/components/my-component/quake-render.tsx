@@ -31,24 +31,12 @@ export class QuakeRender {
 | wrk           | [https://github.com/wg/wrk](https://github.com/wg/wrk)     |
 | Apache JMeter | [https://jmeter.apache.org/](https://jmeter.apache.org/)   |
 
-list 1
-
-- [ ] demos
-- [ ] demos
-- [ ] demo2
-
 list 2
 
 1. hello
 2. world
-  - dsa
-  - dsaf
-
-
-list 3
-
-- fa
-- do
+   - dsa
+   - dsaf
 
 some_link [[note:0001-demo]] fdas
 
@@ -158,7 +146,6 @@ sample
   }
 
   private render_list(list: any) {
-    console.log(list);
     if (list.ordered) {
       return <ol start={list.start}>
         { list.items.map((item) =>

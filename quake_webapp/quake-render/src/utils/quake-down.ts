@@ -1,5 +1,6 @@
 import { marked, Slugger } from 'marked';
 import TokensList = marked.TokensList;
+import Token = marked.Token;
 
 class QuakeDown {
   content = '';
@@ -12,6 +13,7 @@ class QuakeDown {
   headingIndex = 0;
 
   renderer: marked.Renderer;
+  token: Token;
 
   constructor(content: string, parseInline: (tokens, renderer) => string) {
     this.parseInline = parseInline;
@@ -65,86 +67,125 @@ class QuakeDown {
   }
 
   gen() {
-    const that = this;
     marked.use({
-      extensions: this.extensions(),
-      walkTokens: function(token) {
-        that.tok(token);
-      },
+      extensions: this.extensions()
     });
+    const tokens = marked.lexer(this.content);
     this.renderer = new marked.Renderer();
-    marked.parse(this.content);
+    this.tokens = tokens.reverse();
 
+    while (this.next()) {
+      const token: Token = this.token;
+      this.markdownData.push(this.tok(token));
+    }
     return this.markdownData;
   }
 
+  private next(): Token {
+    this.token = this.tokens.pop();
+    return this.token;
+  }
+
+  // private peek() {
+  //   return this.tokens[this.tokens.length - 1] || 0;
+  // }
+
+  private parseList(items: marked.Tokens.ListItem[]) {
+    let result = [];
+    for (let item of items) {
+      console.log(item);
+      let list_item = {
+        type: 'list_item',
+        text: item.text,
+        checked: item.checked,
+        task: item.task,
+        loose: item.loose,
+        children: []
+      };
+
+      result.push(list_item)
+    }
+
+    return result;
+  }
+
   private tok(token: marked.Token) {
+    let data: any;
     switch (token.type) {
       case 'heading':
-        this.markdownData.push({
+        data = {
           type: 'heading',
           depth: token.depth,
           text: this.renderInline(token.tokens),
           headingIndex: this.headingIndex,
           anchor: this.slugger.slug(this.unescape(this.renderInline(token.tokens))),
-        });
+        }
         break;
       case 'blockquote':
-        this.markdownData.push({ type: 'blockquote', text: token.text, raw: token.raw });
+        data = { type: 'blockquote', text: token.text, raw: token.raw }
         break;
       case 'hr':
-        this.markdownData.push({ type: 'hr', raw: token.raw });
+        data = { type: 'hr', raw: token.raw }
         break;
       case 'space':
-        this.markdownData.push({ type: 'space', raw: token.raw });
+        data = { type: 'space', raw: token.raw }
         break;
       case 'paragraph':
-        this.markdownData.push({
+        data = {
           type: 'paragraph',
           text: this.renderInline(token.tokens),
-        });
+        }
         break;
       case 'list':
-        this.markdownData.push({
+        let children = this.parseList(token.items);
+
+        data = {
           type: 'list',
+          children: children,
           start: token.start,
           ordered: token.ordered,
           loose: token.loose,
           items: token.items,
-        });
+        }
+
+        break;
+      case 'list_item':
+        //
         break;
       case 'table':
         let align = token.align;
         let header = this.buildTableHeader(token.header);
         let rows = this.buildTableRows(token.rows);
-        this.markdownData.push({
+        data = {
           type: 'table',
           align,
           rows,
           header,
-        });
+        }
         break;
       default:
         let custom_type = token as any;
         switch (custom_type.type) {
           case 'admonition':
-            this.markdownData.push({
+            data = {
               type: 'admonition',
               title: custom_type.title,
               body: custom_type.body,
               raw: custom_type.raw,
-            });
+            }
             break;
           case 'page_link':
-            this.markdownData.push({
+            data = {
               type: 'page_link',
               raw: custom_type.raw
-            });
+            }
             break;
           default:
-            console.log(token);
+            // console.log(token);
         }
     }
+
+    return data
   }
 
   private renderInline(tokens: any) {
