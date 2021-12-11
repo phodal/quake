@@ -1,4 +1,4 @@
-import QuakeGen from './utils';
+import QuakeGen from './quake-gen';
 
 describe('render', () => {
   it('render heading', () => {
@@ -6,7 +6,7 @@ describe('render', () => {
     expect(data.length).toEqual(1);
   });
 
-  it('render with links', () => {
+  it('render heading with links', () => {
     let data = new QuakeGen('# [heading+](https://quake.inherd.org)').gen();
     expect(data.length).toEqual(1);
   });

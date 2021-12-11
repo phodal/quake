@@ -42,7 +42,6 @@ class QuakeGen {
     const token: Token = this.token;
     switch (token.type) {
       case 'heading':
-        // let inline = renderInline(token.text;
         const inline = this.renderInline(token.text);
         console.log(inline);
         this.markdownData.push({
@@ -53,6 +52,12 @@ class QuakeGen {
           anchor: this.slugger.slug(this.unescape(inline)),
         });
         break;
+      case 'blockquote':
+        console.log(token.tokens);
+        this.markdownData.push({type: 'blockquote', text: token.text, raw: token.raw});
+        break;
+      case 'hr':
+        this.markdownData.push({type: 'hr', raw: token.raw});
       default:
         console.log(token);
     }

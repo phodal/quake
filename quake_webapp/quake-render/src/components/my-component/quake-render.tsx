@@ -1,5 +1,5 @@
 import { Component, h, State } from '@stencil/core';
-import QuakeGen from '../../utils/utils';
+import QuakeGen from '../../utils/quake-gen';
 
 @Component({
   tag: 'quake-render',
@@ -10,7 +10,12 @@ export class QuakeRender {
   @State() markdownData: any[] = [];
 
   componentWillLoad() {
-    let content = '# [heading+](https://quake.inherd.org)';
+    let content = `# [heading+](https://quake.inherd.org)
+> blockquote
+
+---
+
+`;
     this.markdownData = new QuakeGen(content).gen();
   }
 
@@ -23,10 +28,16 @@ export class QuakeRender {
   }
 
   private static conditionRender(item: any) {
-    let temp = '';
+    let temp: string;
     switch (item.type) {
       case 'heading':
         temp = <h1 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
+        break;
+      case 'blockquote':
+        temp = <blockquote innerHTML={item.text} />;
+        break;
+      case 'hr':
+        temp = <hr />;
         break;
       default:
         temp = <div>233</div>;
