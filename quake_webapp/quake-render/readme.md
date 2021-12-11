@@ -9,7 +9,7 @@
 - [ ] Code
 - [x] List
   - [x] Flat List
-  - [ ] recursion List
+  - [x] recursion List
 - [ ] Admonition
 - [x] Page Link
 - [ ] Normal Chart

@@ -37,6 +37,15 @@ list 2
 2. world
    - dsa
    - dsaf
+3. demo
+   - level 2
+       - level 3
+   - level 2.1
+
+pll:
+
+4. zero
+5. demo
 
 some_link [[note:0001-demo]] fdas
 
@@ -86,7 +95,7 @@ sample
         out = <div>
           <div class='admonition-title'>{item.title}</div>
           <div class='admonition-body'>{item.body}</div>
-        </div>
+        </div>;
         break;
       default:
         // console.log(item);
@@ -146,22 +155,29 @@ sample
   }
 
   private render_list(list: any) {
+    console.log(list);
     if (list.ordered) {
       return <ol start={list.start}>
-        { list.items.map((item) =>
+        {list.children.map((item) =>
           <li>
-            { item.task && <input type="checkbox" checked={item.checked}></input>}
-            { item.text }
-          </li>
+            {item.task && <input type='checkbox' checked={item.checked}></input>}
+            {item.text}
+            {item.children.length > 0 && item.children[0].type == 'list' &&
+              this.render_list(item.children[0])
+            }
+          </li>,
         )}
       </ol>;
     } else {
       return <ul>
-        { list.items.map((item) =>
+        {list.children.map((item) =>
           <li>
-            { item.task && <input type="checkbox" checked={item.checked}></input>}
-            { item.text }
-          </li>
+            {item.task && <input type='checkbox' checked={item.checked}></input>}
+            {item.text}
+            {item.children.length > 0 && item.children[0].type == 'list' &&
+              this.render_list(item.children[0])
+            }
+          </li>,
         )}
       </ul>;
     }
@@ -218,7 +234,7 @@ sample
           break;
         }
         case 'page_link': {
-          out += `<a href="#">${token.raw}</a>`;
+          out += `<a href='#'>${token.raw}</a>`;
           break;
         }
         default: {

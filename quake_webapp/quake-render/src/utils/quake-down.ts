@@ -86,29 +86,6 @@ class QuakeDown {
     return this.token;
   }
 
-  // private peek() {
-  //   return this.tokens[this.tokens.length - 1] || 0;
-  // }
-
-  private parseList(items: marked.Tokens.ListItem[]) {
-    let result = [];
-    for (let item of items) {
-      console.log(item);
-      let list_item = {
-        type: 'list_item',
-        text: item.text,
-        checked: item.checked,
-        task: item.task,
-        loose: item.loose,
-        children: []
-      };
-
-      result.push(list_item)
-    }
-
-    return result;
-  }
-
   private tok(token: marked.Token) {
     let data: any;
     switch (token.type) {
@@ -137,7 +114,10 @@ class QuakeDown {
         }
         break;
       case 'list':
-        let children = this.parseList(token.items);
+        let children = [];
+        for (let item of token.items) {
+          children.push(this.tok(item));
+        }
 
         data = {
           type: 'list',
@@ -150,7 +130,21 @@ class QuakeDown {
 
         break;
       case 'list_item':
-        //
+        let child = [];
+        for (let item of token.tokens) {
+          if(item.type == 'list') {
+            child.push(this.tok(item));
+          }
+        }
+
+        data = {
+          type: 'list_item',
+          children: child,
+          text: (token.tokens[0] as marked.Tokens.Text).text,
+          loose: token.loose,
+          checked: token.checked,
+          task: token.task,
+        }
         break;
       case 'table':
         let align = token.align;
