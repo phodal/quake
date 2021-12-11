@@ -1,11 +1,6 @@
-import { Lexer, marked, Slugger } from 'marked';
+import { marked, Slugger } from 'marked';
 import Token = marked.Token;
 import TokensList = marked.TokensList;
-
-// // @ts-ignore
-// const QuakeRenderer: marked.Renderer = {
-//   options: undefined,
-// };
 
 class QuakeGen {
   content = '';
