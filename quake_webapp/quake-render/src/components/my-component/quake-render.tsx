@@ -39,7 +39,7 @@ list 2
    - dsaf
 3. demo
    - level 2
-       - ~~level 3~~
+       - **level 3**
    - level 2.1
 
 pll:
@@ -98,7 +98,9 @@ sample
       case 'admonition':
         out = <div>
           <div class='admonition-title'>{item.title}</div>
-          <div class='admonition-body'>{item.body}</div>
+          <div class='admonition-body'>{item.data.map((sub) =>
+            this.conditionRender(sub)
+          )}</div>
         </div>;
         break;
       case 'code':
@@ -162,13 +164,12 @@ sample
   }
 
   private render_list(list: any) {
-    console.log(list);
     if (list.ordered) {
       return <ol start={list.start}>
         {list.children.map((item) =>
           <li>
             {item.task && <input type='checkbox' checked={item.checked}></input>}
-            {item.text}
+            <span innerHTML={item.text}/>
             {item.children.length > 0 && item.children[0].type == 'list' &&
               this.render_list(item.children[0])
             }
@@ -180,7 +181,7 @@ sample
         {list.children.map((item) =>
           <li>
             {item.task && <input type='checkbox' checked={item.checked}></input>}
-            {item.text}
+            <span innerHTML={item.text}/>
             {item.children.length > 0 && item.children[0].type == 'list' &&
               this.render_list(item.children[0])
             }

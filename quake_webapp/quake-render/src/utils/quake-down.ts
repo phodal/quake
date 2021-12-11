@@ -1,11 +1,9 @@
 import { marked, Slugger } from 'marked';
 import Prism from 'prismjs';
-import TokensList = marked.TokensList;
 import Token = marked.Token;
 
 class QuakeDown {
   content = '';
-  tokens: TokensList | any = [];
   markdownData: any[] = [];
   slugger = new Slugger();
 
@@ -69,22 +67,22 @@ class QuakeDown {
 
   gen() {
     marked.use({
-      extensions: this.extensions()
+      extensions: this.extensions(),
     });
-    const tokens = marked.lexer(this.content);
     this.renderer = new marked.Renderer();
-    this.tokens = tokens.reverse();
 
-    while (this.next()) {
-      const token: Token = this.token;
-      this.markdownData.push(this.tok(token));
-    }
-    return this.markdownData;
+    return this.build_data(this.content);
   }
 
-  private next(): Token {
-    this.token = this.tokens.pop();
-    return this.token;
+  private build_data(src: string) {
+    let output = [];
+    const tokens = marked.lexer(src);
+
+    for (let token of tokens) {
+      output.push(this.tok(token));
+    }
+
+    return output;
   }
 
   private tok(token: marked.Token) {
@@ -97,22 +95,22 @@ class QuakeDown {
           text: this.renderInline(token.tokens),
           headingIndex: this.headingIndex,
           anchor: this.slugger.slug(this.unescape(this.renderInline(token.tokens))),
-        }
+        };
         break;
       case 'blockquote':
-        data = { type: 'blockquote', text: token.text, raw: token.raw }
+        data = { type: 'blockquote', text: token.text, raw: token.raw };
         break;
       case 'hr':
-        data = { type: 'hr', raw: token.raw }
+        data = { type: 'hr', raw: token.raw };
         break;
       case 'space':
-        data = { type: 'space', raw: token.raw }
+        data = { type: 'space', raw: token.raw };
         break;
       case 'paragraph':
         data = {
           type: 'paragraph',
           text: this.renderInline(token.tokens),
-        }
+        };
         break;
       case 'list':
         let children = [];
@@ -127,13 +125,13 @@ class QuakeDown {
           ordered: token.ordered,
           loose: token.loose,
           items: token.items,
-        }
+        };
 
         break;
       case 'list_item':
         let child = [];
         for (let item of token.tokens) {
-          if(item.type == 'list') {
+          if (item.type == 'list') {
             child.push(this.tok(item));
           }
         }
@@ -141,11 +139,11 @@ class QuakeDown {
         data = {
           type: 'list_item',
           children: child,
-          text: (token.tokens[0] as marked.Tokens.Text).text,
+          text: this.renderInline((token.tokens[0] as marked.Tokens.Text).tokens),
           loose: token.loose,
           checked: token.checked,
           task: token.task,
-        }
+        };
         break;
       case 'table':
         let align = token.align;
@@ -156,42 +154,43 @@ class QuakeDown {
           align,
           rows,
           header,
-        }
+        };
         break;
       case 'code':
         let text = token.text;
         if (Prism.languages[token.lang]) {
           text = Prism.highlight(token.text, Prism.languages[token.lang], token.lang);
         }
-        data =  {
+        data = {
           type: 'code',
           lang: token.lang,
           text: text,
-        }
+        };
         break;
       default:
         let custom_type = token as any;
         switch (custom_type.type) {
           case 'admonition':
+            let content = this.build_data(custom_type.body);
             data = {
               type: 'admonition',
               title: custom_type.title,
-              body: custom_type.body,
+              data: content,
               raw: custom_type.raw,
-            }
+            };
             break;
           case 'page_link':
             data = {
               type: 'page_link',
-              raw: custom_type.raw
-            }
+              raw: custom_type.raw,
+            };
             break;
           default:
-            // console.log(token);
+          // console.log(token);
         }
     }
 
-    return data
+    return data;
   }
 
   private renderInline(tokens: any) {
