@@ -1,10 +1,8 @@
 import { marked, Slugger } from 'marked';
 import Prism from 'prismjs';
-import Token = marked.Token;
 
 class QuakeDown {
   content = '';
-  markdownData: any[] = [];
   slugger = new Slugger();
 
   parseInline: (tokens, renderer) => string;
@@ -12,7 +10,6 @@ class QuakeDown {
   headingIndex = 0;
 
   renderer: marked.Renderer;
-  token: Token;
 
   constructor(content: string, parseInline: (tokens, renderer) => string) {
     this.parseInline = parseInline;

@@ -168,7 +168,7 @@ sample
       return <ol start={list.start}>
         {list.children.map((item) =>
           <li>
-            {item.task && <input type='checkbox' checked={item.checked}></input>}
+            {item.task && <input type='checkbox' checked={item.checked}/>}
             <span innerHTML={item.text}/>
             {item.children.length > 0 && item.children[0].type == 'list' &&
               this.render_list(item.children[0])
@@ -180,7 +180,7 @@ sample
       return <ul>
         {list.children.map((item) =>
           <li>
-            {item.task && <input type='checkbox' checked={item.checked}></input>}
+            {item.task && <input type='checkbox' checked={item.checked}/>}
             <span innerHTML={item.text}/>
             {item.children.length > 0 && item.children[0].type == 'list' &&
               this.render_list(item.children[0])
