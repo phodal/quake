@@ -31,6 +31,22 @@ export class QuakeRender {
 | wrk           | [https://github.com/wg/wrk](https://github.com/wg/wrk)     |
 | Apache JMeter | [https://jmeter.apache.org/](https://jmeter.apache.org/)   |
 
+list 1
+
+- [ ] demos
+- [ ] demos
+- [ ] demo2
+
+list 2
+
+1. hello
+2. world
+
+list 3
+
+- fa
+- do
+
 `;
     this.markdownData = new QuakeDown(content).gen();
   }
@@ -62,6 +78,9 @@ export class QuakeRender {
         break;
       case 'table':
         temp = this.create_table(item);
+        break;
+      case 'list':
+        console.log(item);
         break;
       default:
         console.log(item);
@@ -109,7 +128,6 @@ export class QuakeRender {
       </tr>
       </thead>
       <tbody>
-
       {item.rows.map((row) =>
         <tr>
           {row.map((cell) =>

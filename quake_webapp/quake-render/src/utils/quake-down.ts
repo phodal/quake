@@ -1,4 +1,4 @@
-import { marked, Slugger } from 'marked';
+import { marked, Renderer, Slugger } from 'marked';
 import Token = marked.Token;
 import TokensList = marked.TokensList;
 
@@ -45,9 +45,9 @@ class QuakeDown {
         this.markdownData.push({
           type: 'heading',
           depth: token.depth,
-          text: this.renderInline(token.text),
+          text: this.renderInline(token.tokens),
           headingIndex: this.headingIndex,
-          anchor: this.slugger.slug(this.unescape(this.renderInline(token.text))),
+          anchor: this.slugger.slug(this.unescape(this.renderInline(token.tokens))),
         });
         break;
       case 'blockquote':
@@ -62,8 +62,17 @@ class QuakeDown {
       case 'paragraph':
         this.markdownData.push({
           type: 'paragraph',
-          data: this.renderInline(token.text),
+          data: this.renderInline(token),
         });
+        break;
+      case 'list':
+        this.markdownData.push({
+          type: 'list',
+          start: token.start,
+          ordered: token.ordered,
+          loose: token.loose,
+          items: token.items
+        })
         break;
       case 'table':
         let align = token.align;
@@ -81,21 +90,15 @@ class QuakeDown {
     }
   }
 
-  private renderInline(tokenText: string) {
-    const renderer = new marked.Renderer();
-    const linkRenderer = renderer.link;
-    renderer.link = (href, title, text) => {
-      const html = linkRenderer.call(renderer, href, title, text);
-      return html.replace(/^<a /, '<a target="_blank" ');
-    };
-
-    return marked.parseInline(tokenText, { renderer });
+  private renderInline(tokens: any) {
+    let renderer = new marked.Renderer();
+    return this.parseInline(tokens, renderer);
   }
 
   private buildTableHeader(cells: marked.Tokens.TableCell[]) {
     const results = [];
     for (const cell of cells) {
-      results.push(this.renderInline(cell.text));
+      results.push(this.renderInline(cell.tokens));
     }
     return results;
   }
@@ -105,7 +108,7 @@ class QuakeDown {
     for (const column of cells) {
       const newCol = [];
       for (const cell of column) {
-        newCol.push(this.renderInline(cell.text));
+        newCol.push(this.renderInline(cell.tokens));
       }
 
       results.push(newCol);
@@ -129,6 +132,65 @@ class QuakeDown {
     });
   }
 
+  // todo: parse inline
+  parseInline(tokens, renderer) {
+    let out = '',
+      i,
+      token;
+
+    const l = tokens.length;
+    for (i = 0; i < l; i++) {
+      token = tokens[i];
+
+      switch (token.type) {
+        case 'escape': {
+          out += renderer.text(token.text);
+          break;
+        }
+        case 'html': {
+          out += renderer.html(token.text);
+          break;
+        }
+        case 'link': {
+          out += renderer.link(token.href, token.title, this.parseInline(token.tokens, renderer));
+          break;
+        }
+        case 'image': {
+          out += renderer.image(token.href, token.title, token.text);
+          break;
+        }
+        case 'strong': {
+          out += renderer.strong(this.parseInline(token.tokens, renderer));
+          break;
+        }
+        case 'em': {
+          out += renderer.em(this.parseInline(token.tokens, renderer));
+          break;
+        }
+        case 'codespan': {
+          out += renderer.codespan(token.text);
+          break;
+        }
+        case 'br': {
+          out += renderer.br();
+          break;
+        }
+        case 'del': {
+          out += renderer.del(this.parseInline(token.tokens, renderer));
+          break;
+        }
+        case 'text': {
+          out += renderer.text(token.text);
+          break;
+        }
+        default: {
+          const errMsg = 'Token with "' + token.type + '" type was not found.';
+          console.error(errMsg);
+        }
+      }
+    }
+    return out;
+  }
 }
 
 export default QuakeDown;
