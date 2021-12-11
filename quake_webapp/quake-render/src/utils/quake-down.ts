@@ -30,7 +30,55 @@ class QuakeDown {
     return this.tokens[this.token.length - 1] || 0;
   }
 
+  extensions(): any {
+    const admonition = {
+      name: 'admonition',
+      level: 'block',
+      start(src) {
+        return src.match(/!!!/)?.index;
+      },
+      tokenizer(src) {
+        /// modified from https://github.com/haishanh/hs-marked-extra/blob/master/lib/marked_extra.js
+        /// LICENSE MIT
+        const rule = /^!!! ([\w\-]+)(?: "([^\n]*?)")?(?:\s*\n|\s*$)((?:(?:\t| {4})[^\n]+(?:\n|$)|\s*(\n|$))*)?/;
+        const match = rule.exec(src);
+        if (match) {
+          console.log(match);
+          return {
+            type: 'admonition',
+            raw: match[0],
+            title: match[2].trim(),
+            content: match[2].trim()
+          };
+        }
+      },
+    };
+    const page_link = {
+      name: 'page_link',
+      level: 'inline',
+      tokenizer(src, _tokens) {
+        const rule = /^\[\[(.*)\]\]/;
+        const match = rule.exec(src);
+        if (match) {
+          console.log(match);
+          return {
+            type: 'page_link',
+            raw: match[0],
+          };
+        }
+      }
+    };
+
+    return [page_link, admonition];
+  }
+
   gen() {
+    marked.use({
+      extensions: this.extensions(),
+      walkTokens: (token) => {
+        console.log('walktokens: ' + token);
+      }
+    });
     const tokens = marked.lexer(this.content);
     this.tokens = tokens.reverse();
 
@@ -74,8 +122,8 @@ class QuakeDown {
           start: token.start,
           ordered: token.ordered,
           loose: token.loose,
-          items: token.items
-        })
+          items: token.items,
+        });
         break;
       case 'table':
         let align = token.align;

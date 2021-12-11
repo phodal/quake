@@ -48,6 +48,14 @@ list 3
 - fa
 - do
 
+some_link [[note:0001-demo]] fdas
+
+!!! note "title"
+    something
+
+:Test:
+
+sample
 `;
 
     let renderer = new marked.Renderer();
