@@ -6,11 +6,11 @@
 - [x] HR
 - [x] BR
 - [x] Table
-- [ ] Code
+- [x] Code
 - [x] List
   - [x] Flat List
   - [x] recursion List
-- [ ] Admonition
+- [x] Admonition
 - [x] Page Link
 - [ ] Normal Chart
   - [ ] Bar Chart

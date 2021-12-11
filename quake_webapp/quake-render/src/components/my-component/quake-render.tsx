@@ -39,7 +39,7 @@ list 2
    - dsaf
 3. demo
    - level 2
-       - level 3
+       - ~~level 3~~
    - level 2.1
 
 pll:
@@ -50,9 +50,13 @@ pll:
 some_link [[note:0001-demo]] fdas
 
 !!! note "title"
-    something
+    **something**
 
 :Test:
+
+\`\`\`javascript
+console.log('hello, world');
+\`\`\`
 
 sample
 `;
@@ -96,6 +100,9 @@ sample
           <div class='admonition-title'>{item.title}</div>
           <div class='admonition-body'>{item.body}</div>
         </div>;
+        break;
+      case 'code':
+        out = <pre class={'language-' + item.lang}><code class={'language-' + item.lang} innerHTML={item.text} /></pre>
         break;
       default:
         // console.log(item);

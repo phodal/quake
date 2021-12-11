@@ -1,4 +1,5 @@
 import { marked, Slugger } from 'marked';
+import Prism from 'prismjs';
 import TokensList = marked.TokensList;
 import Token = marked.Token;
 
@@ -155,6 +156,17 @@ class QuakeDown {
           align,
           rows,
           header,
+        }
+        break;
+      case 'code':
+        let text = token.text;
+        if (Prism.languages[token.lang]) {
+          text = Prism.highlight(token.text, Prism.languages[token.lang], token.lang);
+        }
+        data =  {
+          type: 'code',
+          lang: token.lang,
+          text: text,
         }
         break;
       default:
