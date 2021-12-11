@@ -60,6 +60,7 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<(
                             "listAll" => app.main_widget = MainWidget::EntryTypes,
                             _ => {}
                         }
+                        app.mode = Mode::Normal;
                     }
                     KeyCode::Char(c) => {
                         app.command.push(c);
