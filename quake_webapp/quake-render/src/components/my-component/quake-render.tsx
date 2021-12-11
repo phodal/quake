@@ -1,6 +1,5 @@
 import { Component, h, State } from '@stencil/core';
 import QuakeDown from '../../utils/quake-down';
-import { marked } from 'marked';
 
 @Component({
   tag: 'quake-render',
@@ -58,8 +57,7 @@ some_link [[note:0001-demo]] fdas
 sample
 `;
 
-    let renderer = new marked.Renderer();
-    this.markdownData = new QuakeDown(content, renderer).gen();
+    this.markdownData = new QuakeDown(content, this.parseInline).gen();
   }
 
   render() {
@@ -167,5 +165,68 @@ sample
 
       </ul>;
     }
+  }
+
+  parseInline(tokens, renderer) {
+    let out = '',
+      i,
+      token;
+
+    const l = tokens.length;
+    for (i = 0; i < l; i++) {
+      token = tokens[i];
+
+      switch (token.type) {
+        case 'escape': {
+          out += renderer.text(token.text);
+          break;
+        }
+        case 'html': {
+          out += renderer.html(token.text);
+          break;
+        }
+        case 'link': {
+          out += renderer.link(token.href, token.title, this.parseInline(token.tokens, renderer));
+          break;
+        }
+        case 'image': {
+          out += renderer.image(token.href, token.title, token.text);
+          break;
+        }
+        case 'strong': {
+          out += renderer.strong(this.parseInline(token.tokens, renderer));
+          break;
+        }
+        case 'em': {
+          out += renderer.em(this.parseInline(token.tokens, renderer));
+          break;
+        }
+        case 'codespan': {
+          out += renderer.codespan(token.text);
+          break;
+        }
+        case 'br': {
+          out += renderer.br();
+          break;
+        }
+        case 'del': {
+          out += renderer.del(this.parseInline(token.tokens, renderer));
+          break;
+        }
+        case 'text': {
+          out += renderer.text(token.text);
+          break;
+        }
+        case 'page_link': {
+          out += `<a href="#">${token.raw}</a>`;
+          break;
+        }
+        default: {
+          const errMsg = 'Token with "' + token.type + '" type was not found.';
+          console.error(errMsg);
+        }
+      }
+    }
+    return out;
   }
 }

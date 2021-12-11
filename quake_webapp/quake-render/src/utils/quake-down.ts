@@ -1,6 +1,5 @@
 import { marked, Slugger } from 'marked';
 import TokensList = marked.TokensList;
-import { h } from '@stencil/core';
 
 class QuakeDown {
   content = '';
@@ -8,12 +7,14 @@ class QuakeDown {
   markdownData: any[] = [];
   slugger = new Slugger();
 
+  parseInline: (tokens, renderer) => string;
+
   headingIndex = 0;
 
   renderer: marked.Renderer;
 
-  constructor(content: string, renderer: marked.Renderer) {
-    this.renderer = renderer;
+  constructor(content: string, parseInline: (tokens, renderer) => string) {
+    this.parseInline = parseInline;
     this.content = content;
   }
 
@@ -185,70 +186,6 @@ class QuakeDown {
       }
       return '';
     });
-  }
-
-  // todo: parse inline
-  parseInline(tokens, renderer) {
-    let out = '',
-      i,
-      token;
-
-    const l = tokens.length;
-    for (i = 0; i < l; i++) {
-      token = tokens[i];
-
-      switch (token.type) {
-        case 'escape': {
-          out += renderer.text(token.text);
-          break;
-        }
-        case 'html': {
-          out += renderer.html(token.text);
-          break;
-        }
-        case 'link': {
-          out += renderer.link(token.href, token.title, this.parseInline(token.tokens, renderer));
-          break;
-        }
-        case 'image': {
-          out += renderer.image(token.href, token.title, token.text);
-          break;
-        }
-        case 'strong': {
-          out += renderer.strong(this.parseInline(token.tokens, renderer));
-          break;
-        }
-        case 'em': {
-          out += renderer.em(this.parseInline(token.tokens, renderer));
-          break;
-        }
-        case 'codespan': {
-          out += renderer.codespan(token.text);
-          break;
-        }
-        case 'br': {
-          out += renderer.br();
-          break;
-        }
-        case 'del': {
-          out += renderer.del(this.parseInline(token.tokens, renderer));
-          break;
-        }
-        case 'text': {
-          out += renderer.text(token.text);
-          break;
-        }
-        case 'page_link': {
-          out += `<a href="#">${token.raw}</a>`;
-          break;
-        }
-        default: {
-          const errMsg = 'Token with "' + token.type + '" type was not found.';
-          console.error(errMsg);
-        }
-      }
-    }
-    return out;
   }
 }
 
