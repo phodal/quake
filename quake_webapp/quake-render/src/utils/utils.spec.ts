@@ -1,9 +1,13 @@
-import QuakeRenderer from './utils';
-import { marked } from 'marked';
+import QuakeGen from './utils';
 
 describe('render', () => {
-  it('render', () => {
-    marked.use({ renderer: new QuakeRenderer() });
-    console.log(marked.parse('# heading+'));
+  it('render heading', () => {
+    let data = new QuakeGen('# heading+').gen();
+    expect(data.length).toEqual(1);
+  });
+
+  it('render with links', () => {
+    let data = new QuakeGen('# [heading+](https://quake.inherd.org)').gen();
+    expect(data.length).toEqual(1);
   });
 });

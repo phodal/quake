@@ -6,32 +6,32 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-    interface MyComponent {
+    interface QuakeRender {
     }
 }
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    interface HTMLQuakeRenderElement extends Components.QuakeRender, HTMLStencilElement {
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
+    var HTMLQuakeRenderElement: {
+        prototype: HTMLQuakeRenderElement;
+        new (): HTMLQuakeRenderElement;
     };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
+        "quake-render": HTMLQuakeRenderElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
+    interface QuakeRender {
     }
     interface IntrinsicElements {
-        "my-component": MyComponent;
+        "quake-render": QuakeRender;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "quake-render": LocalJSX.QuakeRender & JSXBase.HTMLAttributes<HTMLQuakeRenderElement>;
         }
     }
 }
