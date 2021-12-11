@@ -2,7 +2,7 @@ import { marked, Slugger } from 'marked';
 import Token = marked.Token;
 import TokensList = marked.TokensList;
 
-class QuakeGen {
+class QuakeDown {
   content = '';
   token = null;
   tokens: TokensList | any = [];
@@ -32,14 +32,14 @@ class QuakeGen {
     this.tokens = tokens.reverse();
 
     while (this.next()) {
-      this.tok();
+      const token: Token = this.token;
+      this.tok(token);
     }
 
     return this.markdownData;
   }
 
-  private tok() {
-    const token: Token = this.token;
+  private tok(token: marked.Token) {
     switch (token.type) {
       case 'heading':
         this.markdownData.push({
@@ -65,6 +65,17 @@ class QuakeGen {
           data: this.renderInline(token.text),
         });
         break;
+      case 'table':
+        let align = token.align;
+        let header = this.buildTableHeader(token.header);
+        let rows = this.buildTableRows(token.rows);
+        this.markdownData.push({
+          type: 'table',
+          align,
+          rows,
+          header,
+        });
+        break;
       default:
         console.log(token);
     }
@@ -81,6 +92,26 @@ class QuakeGen {
     return marked.parseInline(tokenText, { renderer });
   }
 
+  private buildTableHeader(cells: marked.Tokens.TableCell[]) {
+    const results = [];
+    for (const cell of cells) {
+      results.push(this.renderInline(cell.text));
+    }
+    return results;
+  }
+
+  private buildTableRows(cells: marked.Tokens.TableCell[][]) {
+    const results = [];
+    for (const column of cells) {
+      const newCol = [];
+      for (const cell of column) {
+        newCol.push(this.renderInline(cell.text));
+      }
+
+      results.push(newCol);
+    }
+    return results;
+  }
 
   private unescape(html) {
     const unescapeTest = /&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/gi;
@@ -100,4 +131,4 @@ class QuakeGen {
 
 }
 
-export default QuakeGen;
+export default QuakeDown;

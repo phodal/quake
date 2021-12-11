@@ -1,5 +1,5 @@
 import { Component, h, State } from '@stencil/core';
-import QuakeGen from '../../utils/quake-gen';
+import QuakeDown from '../../utils/quake-down';
 
 @Component({
   tag: 'quake-render',
@@ -26,8 +26,13 @@ export class QuakeRender {
 
 456
 
+| 工具          | 项目地址                          |
+| ------------- | ------------------------------- |
+| wrk           | [https://github.com/wg/wrk](https://github.com/wg/wrk)     |
+| Apache JMeter | [https://jmeter.apache.org/](https://jmeter.apache.org/)   |
+
 `;
-    this.markdownData = new QuakeGen(content).gen();
+    this.markdownData = new QuakeDown(content).gen();
   }
 
   render() {
@@ -42,7 +47,6 @@ export class QuakeRender {
     let temp: string;
     switch (item.type) {
       case 'heading':
-        console.log(item);
         temp = this.create_heading(item);
         break;
       case 'blockquote':
@@ -56,9 +60,12 @@ export class QuakeRender {
         break;
       case 'space':
         break;
+      case 'table':
+        temp = this.create_table(item);
+        break;
       default:
         console.log(item);
-        temp = <span/>;
+        temp = <span />;
     }
 
     return temp;
@@ -68,27 +75,49 @@ export class QuakeRender {
     let heading: string;
     switch (item.depth) {
       case 1:
-        heading = <h1 innerHTML={item.text} class='quake-heading' id={item.anchor} />
+        heading = <h1 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
         break;
       case 2:
-        heading = <h2 innerHTML={item.text} class='quake-heading' id={item.anchor} />
+        heading = <h2 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
         break;
       case 3:
-        heading = <h3 innerHTML={item.text} class='quake-heading' id={item.anchor} />
+        heading = <h3 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
         break;
       case 4:
-        heading = <h4 innerHTML={item.text} class='quake-heading' id={item.anchor} />
+        heading = <h4 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
         break;
       case 5:
-        heading = <h5 innerHTML={item.text} class='quake-heading' id={item.anchor} />
+        heading = <h5 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
         break;
       case 6:
-        heading = <h6 innerHTML={item.text} class='quake-heading' id={item.anchor} />
+        heading = <h6 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
         break;
       default:
         console.log(item);
     }
 
-    return heading
+    return heading;
+  }
+
+  private static create_table(item: any) {
+    return <table>
+      <thead>
+      <tr>
+        {item.header.map((head) =>
+          <th innerHTML={head} />,
+        )}
+      </tr>
+      </thead>
+      <tbody>
+
+      {item.rows.map((row) =>
+        <tr>
+          {row.map((cell) =>
+            <td innerHTML={cell} />,
+          )}
+        </tr>,
+      )}
+      </tbody>
+    </table>;
   }
 }
