@@ -9,6 +9,7 @@ export namespace Components {
     interface QuakeGraph {
     }
     interface QuakeRender {
+        "content": string;
     }
 }
 declare global {
@@ -33,6 +34,7 @@ declare namespace LocalJSX {
     interface QuakeGraph {
     }
     interface QuakeRender {
+        "content"?: string;
     }
     interface IntrinsicElements {
         "quake-graph": QuakeGraph;

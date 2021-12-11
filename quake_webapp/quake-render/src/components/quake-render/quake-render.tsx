@@ -1,4 +1,4 @@
-import { Component, h, State } from '@stencil/core';
+import { Component, h, Prop, State } from '@stencil/core';
 import QuakeDown from '../../utils/quake-down';
 
 @Component({
@@ -7,61 +7,11 @@ import QuakeDown from '../../utils/quake-down';
   shadow: true,
 })
 export class QuakeRender {
+  @Prop() content: string = '';
   @State() markdownData: any[] = [];
 
   componentWillLoad() {
-    let content = `# [heading+](https://quake.inherd.org)
-> blockquote
-
-# h1
-## h2
-### h3
-#### h4
-##### h5
-###### h6
-
----
-
-123
-
-456
-
-| 工具          | 项目地址                          |
-| ------------- | ------------------------------- |
-| wrk           | [https://github.com/wg/wrk](https://github.com/wg/wrk)     |
-| Apache JMeter | [https://jmeter.apache.org/](https://jmeter.apache.org/)   |
-
-list 2
-
-1. hello
-2. world
-   - dsa
-   - dsaf
-3. demo
-   - level 2
-       - **level 3**
-   - level 2.1
-
-pll:
-
-4. zero
-5. demo
-
-some_link [[note:0001-demo]] fdas
-
-!!! note "title"
-    **something**
-
-:Test:
-
-\`\`\`javascript
-console.log('hello, world');
-\`\`\`
-
-sample
-`;
-
-    this.markdownData = new QuakeDown(content, this.parseInline).gen();
+    this.markdownData = new QuakeDown(this.content, this.parseInline).gen();
   }
 
   render() {
