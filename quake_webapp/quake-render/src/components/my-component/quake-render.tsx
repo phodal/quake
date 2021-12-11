@@ -41,6 +41,9 @@ list 2
 
 1. hello
 2. world
+  - dsa
+  - dsaf
+
 
 list 3
 
@@ -63,12 +66,12 @@ sample
   render() {
     return <div>
       {this.markdownData.map((item: any) =>
-        QuakeRender.conditionRender(item),
+        this.conditionRender(item),
       )}
     </div>;
   }
 
-  private static conditionRender(item: any) {
+  private conditionRender(item: any) {
     let out: string;
     switch (item.type) {
       case 'heading':
@@ -105,7 +108,7 @@ sample
     return out;
   }
 
-  private static render_heading(item: any) {
+  private render_heading(item: any) {
     let heading: string;
     switch (item.depth) {
       case 1:
@@ -133,7 +136,7 @@ sample
     return heading;
   }
 
-  private static render_table(item: any) {
+  private render_table(item: any) {
     return <table>
       <thead>
       <tr>
@@ -154,15 +157,25 @@ sample
     </table>;
   }
 
-  private static render_list(item: any) {
-    console.log(item);
-    if (item.ordered) {
-      return <ol start={item.start}>
-
+  private render_list(list: any) {
+    console.log(list);
+    if (list.ordered) {
+      return <ol start={list.start}>
+        { list.items.map((item) =>
+          <li>
+            { item.task && <input type="checkbox" checked={item.checked}></input>}
+            { item.text }
+          </li>
+        )}
       </ol>;
     } else {
       return <ul>
-
+        { list.items.map((item) =>
+          <li>
+            { item.task && <input type="checkbox" checked={item.checked}></input>}
+            { item.text }
+          </li>
+        )}
       </ul>;
     }
   }
