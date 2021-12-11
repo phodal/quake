@@ -10,6 +10,7 @@ export class QuakeGraph {
   render() {
     return (
       <Host>
+        <div>Quake Graph</div>
         <slot></slot>
       </Host>
     );
