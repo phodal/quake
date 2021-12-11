@@ -1,5 +1,6 @@
 import { Component, h, State } from '@stencil/core';
 import QuakeDown from '../../utils/quake-down';
+import { marked } from 'marked';
 
 @Component({
   tag: 'quake-render',
@@ -48,7 +49,9 @@ list 3
 - do
 
 `;
-    this.markdownData = new QuakeDown(content).gen();
+
+    let renderer = new marked.Renderer();
+    this.markdownData = new QuakeDown(content, renderer).gen();
   }
 
   render() {
@@ -60,37 +63,37 @@ list 3
   }
 
   private static conditionRender(item: any) {
-    let temp: string;
+    let out: string;
     switch (item.type) {
       case 'heading':
-        temp = this.create_heading(item);
+        out = this.render_heading(item);
         break;
       case 'blockquote':
-        temp = <blockquote innerHTML={item.text} />;
+        out = <blockquote innerHTML={item.text} />;
         break;
       case 'hr':
-        temp = <hr />;
+        out = <hr />;
         break;
       case 'paragraph':
-        temp = <p innerHTML={item.data} />;
+        out = <p innerHTML={item.data} />;
         break;
       case 'space':
         break;
       case 'table':
-        temp = this.create_table(item);
+        out = this.render_table(item);
         break;
       case 'list':
-        console.log(item);
+        out = this.render_list(item);
         break;
       default:
         console.log(item);
-        temp = <span />;
+        out = <span />;
     }
 
-    return temp;
+    return out;
   }
 
-  private static create_heading(item: any) {
+  private static render_heading(item: any) {
     let heading: string;
     switch (item.depth) {
       case 1:
@@ -118,7 +121,7 @@ list 3
     return heading;
   }
 
-  private static create_table(item: any) {
+  private static render_table(item: any) {
     return <table>
       <thead>
       <tr>
@@ -137,5 +140,18 @@ list 3
       )}
       </tbody>
     </table>;
+  }
+
+  private static render_list(item: any) {
+    console.log(item);
+    if (item.ordered) {
+      return <ol start={item.start}>
+
+      </ol>;
+    } else {
+      return <ul>
+
+      </ul>;
+    }
   }
 }

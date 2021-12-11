@@ -1,4 +1,4 @@
-import { marked, Renderer, Slugger } from 'marked';
+import { marked, Slugger } from 'marked';
 import Token = marked.Token;
 import TokensList = marked.TokensList;
 
@@ -13,7 +13,10 @@ class QuakeDown {
   headingMap = {};
   indexHeadingMap = {};
 
-  constructor(content: string) {
+  renderer: marked.Renderer;
+
+  constructor(content: string, renderer: marked.Renderer) {
+    this.renderer = renderer;
     this.content = content;
   }
 
