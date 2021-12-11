@@ -3,7 +3,7 @@ import { marked } from 'marked';
 
 describe('render', () => {
   it('render', () => {
-    marked.use({ renderer: QuakeRenderer});
+    marked.use({ renderer: new QuakeRenderer() });
     console.log(marked.parse('# heading+'));
   });
 });

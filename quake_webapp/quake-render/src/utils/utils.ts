@@ -1,12 +1,12 @@
 import * as marked from 'marked';
 
-// @ts-ignore
-const QuakeRenderer: marked.Renderer = {
-  options: undefined,
-};
+// // @ts-ignore
+// const QuakeRenderer: marked.Renderer = {
+//   options: undefined,
+// };
 
-// @ts-ignore
-class Sample extends marked.Renderer {
+class QuakeRenderer extends marked.Renderer {
+  markdownData: any[] = [];
 
 }
 
