@@ -58,7 +58,6 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<(), B
                     KeyCode::Enter => {
                         let command: String = app.command.drain(..).collect();
                         execute_command(&command, &mut app)?;
-                        app.mode = Mode::Normal;
                     }
                     KeyCode::Char(c) => {
                         app.command.push(c);
@@ -66,6 +65,12 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<(), B
                     KeyCode::Backspace => {
                         app.command.pop();
                     }
+                    KeyCode::Esc => {
+                        app.mode = Mode::Normal;
+                    }
+                    _ => {}
+                },
+                Mode::Insert => match key.code {
                     KeyCode::Esc => {
                         app.mode = Mode::Normal;
                     }

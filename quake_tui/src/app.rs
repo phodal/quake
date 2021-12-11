@@ -1,4 +1,5 @@
 use quake_core::entry::EntryDefines;
+use quake_core::quake::QuakeActionNode;
 use quake_core::QuakeConfig;
 use serde_yaml;
 use std::error::Error;
@@ -45,12 +46,14 @@ impl Default for App {
 pub enum Mode {
     Command,
     Normal,
+    Insert,
 }
 
 #[derive(Clone, Debug)]
 pub enum MainWidget {
     Home,
     EntryTypes,
+    Editor(QuakeActionNode),
 }
 
 impl Widget for MainWidget {
@@ -88,6 +91,10 @@ impl Widget for MainWidget {
                     .start_corner(Corner::TopLeft);
 
                 entry_types_list.render(area, buf);
+            }
+            MainWidget::Editor(_action) => {
+                let editor = Block::default().borders(Borders::ALL).title("Editor");
+                editor.render(area, buf);
             }
         }
     }

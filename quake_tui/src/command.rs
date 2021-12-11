@@ -1,12 +1,23 @@
-use crate::app::{App, MainWidget};
+use crate::app::{App, MainWidget, Mode};
+use quake_core::parser::quake::QuakeActionNode;
 
 pub fn execute_command(command: &str, app: &mut App) -> Result<(), String> {
     match command {
         "quit" => app.shutdown(),
         "listAll" => app.main_widget = MainWidget::EntryTypes,
-        _ => return Err(format!("Unknown command: {}", command)),
+        other => execute_action_command(other, app)?,
     }
     Ok(())
+}
+
+pub fn execute_action_command(command: &str, app: &mut App) -> Result<(), String> {
+    if let Ok(action) = QuakeActionNode::action_from_text(command) {
+        app.mode = Mode::Insert;
+        app.main_widget = MainWidget::Editor(action);
+        Ok(())
+    } else {
+        Err(format!("Unknown command: {}", command))
+    }
 }
 
 #[cfg(test)]
