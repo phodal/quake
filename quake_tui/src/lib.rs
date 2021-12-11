@@ -1,7 +1,9 @@
 mod app;
+mod command;
 mod ui;
 
-use crate::app::{App, MainWidget, Mode};
+use crate::app::{App, Mode};
+use crate::command::execute_command;
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
@@ -38,7 +40,7 @@ pub fn tui_main_loop() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<()> {
+fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<(), Box<dyn Error>> {
     // TODO: refactor
     while app.running() {
         terminal.draw(|f| {
@@ -55,11 +57,7 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<(
                 Mode::Command => match key.code {
                     KeyCode::Enter => {
                         let command: String = app.command.drain(..).collect();
-                        match command.as_str() {
-                            "quit" => app.shutdown(),
-                            "listAll" => app.main_widget = MainWidget::EntryTypes,
-                            _ => {}
-                        }
+                        execute_command(&command, &mut app)?;
                     }
                     KeyCode::Char(c) => {
                         app.command.push(c);
@@ -67,6 +65,12 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<(
                     KeyCode::Backspace => {
                         app.command.pop();
                     }
+                    KeyCode::Esc => {
+                        app.mode = Mode::Normal;
+                    }
+                    _ => {}
+                },
+                Mode::Insert => match key.code {
                     KeyCode::Esc => {
                         app.mode = Mode::Normal;
                     }

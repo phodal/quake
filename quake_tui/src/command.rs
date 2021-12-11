@@ -1,0 +1,44 @@
+use crate::app::{App, MainWidget, Mode};
+use quake_core::parser::quake::QuakeActionNode;
+
+pub fn execute_command(command: &str, app: &mut App) -> Result<(), String> {
+    match command {
+        "quit" => app.shutdown(),
+        "listAll" => app.main_widget = MainWidget::EntryTypes,
+        other => execute_action_command(other, app)?,
+    }
+    Ok(())
+}
+
+pub fn execute_action_command(command: &str, app: &mut App) -> Result<(), String> {
+    if let Ok(action) = QuakeActionNode::action_from_text(command) {
+        app.mode = Mode::Insert;
+        app.main_widget = MainWidget::Editor(action);
+        Ok(())
+    } else {
+        Err(format!("Unknown command: {}", command))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::execute_command;
+    use crate::app::App;
+
+    #[test]
+    fn test_command_quit() {
+        let mut app = App::new();
+
+        assert!(app.running());
+        execute_command("quit", &mut app).unwrap();
+        assert!(!app.running());
+    }
+
+    #[test]
+    fn test_unknown_command() {
+        let mut app = App::new();
+
+        let result = execute_command("nonexistent", &mut app);
+        assert_eq!(result, Err("Unknown command: nonexistent".to_string()));
+    }
+}
