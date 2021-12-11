@@ -39,14 +39,18 @@ Tech stacks:
 
 ## Setup
 
-提前准备：安装 Rust 环境
+提前准备：[安装 Rust 环境](https://www.rust-lang.org/learn/get-started)
 
 
 1. clone 代码 `git clone https://github.com/phodal/quake`
-2. 安装 serach engine
+2. 安装 search engine 并运行
 
 ```bash
 brew install meilisearch
+```
+
+```bash
+meilisearch
 ```
 
 插入测试数据
