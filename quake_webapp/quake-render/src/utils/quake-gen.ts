@@ -35,29 +35,36 @@ class QuakeGen {
       this.tok();
     }
 
-    return this.markdownData
+    return this.markdownData;
   }
 
   private tok() {
     const token: Token = this.token;
     switch (token.type) {
       case 'heading':
-        const inline = this.renderInline(token.text);
-        console.log(inline);
         this.markdownData.push({
           type: 'heading',
           depth: token.depth,
-          text: inline,
+          text: this.renderInline(token.text),
           headingIndex: this.headingIndex,
-          anchor: this.slugger.slug(this.unescape(inline)),
+          anchor: this.slugger.slug(this.unescape(this.renderInline(token.text))),
         });
         break;
       case 'blockquote':
-        console.log(token.tokens);
-        this.markdownData.push({type: 'blockquote', text: token.text, raw: token.raw});
+        this.markdownData.push({ type: 'blockquote', text: token.text, raw: token.raw });
         break;
       case 'hr':
-        this.markdownData.push({type: 'hr', raw: token.raw});
+        this.markdownData.push({ type: 'hr', raw: token.raw });
+        break;
+      case 'space':
+        this.markdownData.push({ type: 'space', raw: token.raw });
+        break;
+      case 'paragraph':
+        this.markdownData.push({
+          type: 'paragraph',
+          data: this.renderInline(token.text),
+        });
+        break;
       default:
         console.log(token);
     }
