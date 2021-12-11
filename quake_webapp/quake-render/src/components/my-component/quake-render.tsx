@@ -93,6 +93,12 @@ sample
       case 'list':
         out = this.render_list(item);
         break;
+      case 'admonition':
+        out = <div>
+          <div class='admonition-title'>{item.title}</div>
+          <div class='admonition-body'>{item.body}</div>
+        </div>
+        break;
       default:
         console.log(item);
         out = <span />;

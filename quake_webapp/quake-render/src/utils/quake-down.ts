@@ -43,12 +43,11 @@ class QuakeDown {
         const rule = /^!!! ([\w\-]+)(?: "([^\n]*?)")?(?:\s*\n|\s*$)((?:(?:\t| {4})[^\n]+(?:\n|$)|\s*(\n|$))*)?/;
         const match = rule.exec(src);
         if (match) {
-          console.log(match);
           return {
             type: 'admonition',
             raw: match[0],
             title: match[2].trim(),
-            content: match[2].trim()
+            body: match[3].trim()
           };
         }
       },
@@ -60,7 +59,6 @@ class QuakeDown {
         const rule = /^\[\[(.*)\]\]/;
         const match = rule.exec(src);
         if (match) {
-          console.log(match);
           return {
             type: 'page_link',
             raw: match[0],
@@ -137,6 +135,15 @@ class QuakeDown {
         });
         break;
       default:
+        // @ts-ignore
+        let custom_type = token as any;
+        if(custom_type.type == 'admonition') {
+          this.markdownData.push({
+            type: 'admonition',
+            title: custom_type.title,
+            body: custom_type.body
+          })
+        }
         console.log(token);
     }
   }
