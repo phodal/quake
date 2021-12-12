@@ -151,6 +151,7 @@ impl Entrysets {
 
             element["id".to_string()] = entry_file.id.into();
             element["content".to_string()] = entry_file.content.into();
+            element["type".to_string()] = define.entry_type.clone().into();
 
             json.push(element)?;
 
@@ -354,7 +355,7 @@ mod tests {
         let json = Entrysets::jsonify_with_format_date(&buf, &todo_define()).unwrap();
 
         #[cfg(not(windows))]
-        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\\n\\nahaha\\n\",\"created_date\":1637781250,\"updated_date\":1637781250,\"id\":1}]");
+        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\\n\\nahaha\\n\",\"created_date\":1637781250,\"updated_date\":1637781250,\"id\":1,\"type\":\"todo\"}]");
     }
 
     #[ignore]
