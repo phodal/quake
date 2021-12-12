@@ -55,7 +55,10 @@ pub(crate) async fn translate(
     Ok(JavaScript(scripts))
 }
 
-/// saved transflow scripts
+/// todo: load transflow from yaml files
+/// 1. load yaml file with define
+/// 2. generate js scripts
+/// 3. create router
 #[get("/script")]
 pub(crate) async fn transfunc_script(config: &State<QuakeConfig>) -> Option<NamedFile> {
     let path = PathBuf::from(config.workspace.clone());
