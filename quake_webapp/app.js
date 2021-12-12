@@ -23,19 +23,11 @@ const Quake = {
   }
 }
 
-
 const home = (context, commands) => {
   const dashboard = document.createElement('quake-dashboard');
   dashboard.addEventListener("dispatchAction", function (e) {
     let define = e.detail;
-
-    if (define.action === 'add') {
-      Router.go(`/entry/${define.object}/new?text=${define.text}`)
-    } else if (define.parameters.length > 0) {
-      Router.go(`/edit/${define.object}/${define.parameters[0]}`);
-    } else {
-      console.log("some action");
-    }
+    handleAction(define);
   });
 
   return dashboard
@@ -105,10 +97,34 @@ const update_entry = async (entry_type, id, fields) => {
   console.log(data);
 }
 
+const show_entry = async (context, commands) => {
+  let params = context.params;
+  let response = await fetch(`/entry/${params.type}/${params.id}`)
+  const entry = await response.json();
+
+  const editor = document.createElement('quake-render');
+  editor.setAttribute('content', entry.content);
+
+  return editor
+}
+
+function handleAction(define) {
+  if (define.action === 'add') {
+    Router.go(`/entry/${define.object}/new?text=${define.text}`)
+  } else if(define.action === 'show') {
+    Router.go(`/show/${define.object}/${define.parameters[0]}`);
+  } else if (define.parameters.length > 0) {
+    Router.go(`/edit/${define.object}/${define.parameters[0]}`);
+  } else {
+    console.log("some action");
+  }
+}
+
 router.setRoutes([
   {path: '/', action: home},
   {path: '/entry/:type/new', action: create_entry},
   {path: '/edit/:type/:id', action: edit_entry},
+  {path: '/show/:type/:id', action: show_entry},
 ]);
 
 // move to auto generate in transflow

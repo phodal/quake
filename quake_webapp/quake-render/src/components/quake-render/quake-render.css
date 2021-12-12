@@ -298,63 +298,48 @@ a:hover {
   color: #23b7f3
 }
 
-dl,
-ol,
-ul {
-  list-style: none;
-  margin-top: 0;
-  padding-left: 0
-}
-
-dl dl,
-dl ol,
-dl ul,
-ol dl,
-ol ol,
-ol ul,
-ul dl,
-ul ol,
-ul ul {
-  font-size: 90%;
-  margin: 1rem 0 1.5rem 1rem
-}
 
 ol {
-  list-style: decimal inside
+  list-style-position: outside;
+  margin-left: 2em;
+  margin-top: 1em;
+}
+
+ol:not([type]) {
+  list-style-type: decimal;
+}
+
+ol:not([type]).is-lower-alpha {
+  list-style-type: lower-alpha;
+}
+
+ol:not([type]).is-lower-roman {
+  list-style-type: lower-roman;
+}
+
+ol:not([type]).is-upper-alpha {
+  list-style-type: upper-alpha;
+}
+
+ol:not([type]).is-upper-roman {
+  list-style-type: upper-roman;
 }
 
 ul {
-  list-style: disc
+  list-style: disc outside;
+  margin-left: 2em;
+  margin-top: 1em;
 }
 
-li {
-  font-size: 1rem;
-  color: #384452
+ul ul {
+  list-style-type: circle;
+  margin-top: 0.5em;
 }
 
-.button,
-button,
-dd,
-dt,
-li {
-  margin-bottom: 1rem
+ul ul ul {
+  list-style-type: square;
 }
 
-blockquote,
-dl,
-fieldset,
-figure,
-form,
-input,
-ol,
-p,
-pre,
-select,
-table,
-textarea,
-ul {
-  margin-bottom: 1.5rem
-}
 
 table {
   border-spacing: 0;
@@ -416,22 +401,17 @@ h4,
 h5,
 h6 {
   font-weight: 300;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
   line-height: 1.5
 }
 
 h1 {
   font-size: 2.4rem;
   font-weight: 700;
-  margin-top: 4rem;
-  margin-bottom: 2rem
 }
 
 h2 {
   font-size: 1.8rem;
   font-weight: 500;
-  margin-top: 3rem;
 }
 
 h3 {

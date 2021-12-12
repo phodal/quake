@@ -274,10 +274,18 @@ export class QuakeDashboard {
     });
   }
 
-  clickEntry(id: string, object: string) {
+  editEntry(id: string, object: string) {
     this.dispatchAction.emit({
       parameters: [id],
       action: 'update',
+      object: object,
+    } as any);
+  }
+
+  showEntry(id: string, object: string) {
+    this.dispatchAction.emit({
+      parameters: [id],
+      action: 'show',
       object: object,
     } as any);
   }
@@ -377,7 +385,7 @@ export class QuakeDashboard {
       <ion-text color="secondary">{key}</ion-text>
       <ion-list>
         {this.selected_flow_result.get(key).map((item: any) =>
-          <ion-card onClick={() => this.clickEntry(item.id, this.selected_entry.type)}>
+          <ion-card onClick={() => this.showEntry(item.id, this.selected_entry.type)}>
             <ion-card-header>
               <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
               <ion-card-title>{item.title}</ion-card-title>
@@ -404,9 +412,11 @@ export class QuakeDashboard {
 
   private renderCards(item: any, type: string) {
     return <div class="entry-show-list">
-      <ion-card size-xs="3" size-md="3" onClick={() => this.clickEntry(item.id, type)}>
+      <ion-card size-xs="3" size-md="3" onClick={() => this.showEntry(item.id, type)}>
         <ion-card-header>
-          <ion-card-subtitle># {this.padLeft(item.id, 4, '')}</ion-card-subtitle>
+          <ion-card-subtitle># {this.padLeft(item.id, 4, '')}
+              <ion-icon name="create-outline" onClick={() => this.editEntry(item.id, type)}/>
+          </ion-card-subtitle>
           <ion-card-title>{item.title}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
