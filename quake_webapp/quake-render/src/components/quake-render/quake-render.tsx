@@ -46,8 +46,8 @@ export class QuakeRender {
         out = this.render_list(item);
         break;
       case 'admonition':
-        out = <div>
-          <div class='admonition-title'>{item.title}</div>
+        out = <div class={'admonition is-' + item.display_type}>
+          <div class='admonition-header'>{item.title}</div>
           <div class='admonition-body'>{item.data.map((sub) =>
             this.conditionRender(sub)
           )}</div>

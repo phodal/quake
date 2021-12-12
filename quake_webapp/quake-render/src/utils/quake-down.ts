@@ -32,8 +32,9 @@ class QuakeDown {
           return {
             type: 'admonition',
             raw: match[0],
-            title: match[2].trim(),
-            body: match[3].trim(),
+            display_type: match[1]?.trim(),
+            title: match[2]?.trim(),
+            body: match[3]?.trim(),
           };
         }
       },
@@ -172,6 +173,7 @@ class QuakeDown {
             data = {
               type: 'admonition',
               title: custom_type.title,
+              display_type: custom_type.display_type,
               data: content,
               raw: custom_type.raw,
             };
