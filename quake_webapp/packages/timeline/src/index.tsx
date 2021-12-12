@@ -63,6 +63,9 @@ class ReactElement extends HTMLElement {
       value = +attrValue;
     else if ((/^{.*}/.exec(attrValue)) || (/^\[.*]/.exec(attrValue)) )
       value = JSON.parse(attrValue);
+
+    console.log(/^\[.*]/.exec(attrValue))
+    console.log(typeof value);
     return {
       name: attrName,
       value: value
