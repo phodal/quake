@@ -473,7 +473,7 @@ pre {
 
 pre code {
   padding: 16px 0;
-  font-size: .9em;
+  font-size: 0.875em !important;
   line-height: 1.5
 }
 

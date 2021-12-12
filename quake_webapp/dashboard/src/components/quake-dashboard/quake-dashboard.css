@@ -18,5 +18,11 @@
 }
 
 ion-icon {
-  font-size: 20px;
+  font-size: 24px;
+  padding: 4px;
+  float: right;
+}
+
+ion-icon:hover {
+  cursor: pointer;
 }
