@@ -1,7 +1,408 @@
+/*
+todo: add custom admonition styles
+current based on: https://github.com/JuliaDocs/Documenter.jl with MIT License
+*/
 @import "../../../node_modules/prismjs/themes/prism.css";
 
 :host {
   display: block;
+}
+
+blockquote {
+  border-left: .3rem solid #1abc9c;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 1rem 1.5rem;
+  font-size: 1rem
+}
+
+blockquote :last-child {
+  margin-bottom: 0
+}
+
+q:before {
+  color: #1abc9c;
+  content: open-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-right: .25em;
+  vertical-align: -.4em
+}
+
+q:after {
+  content: none
+}
+
+.button,
+button,
+input[type=button],
+input[type=reset],
+input[type=submit] {
+  background-color: #384452;
+  border: .1rem solid #384452;
+  border-radius: .4rem;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  height: 3.8rem;
+  letter-spacing: .1rem;
+  line-height: 3.8rem;
+  padding: 0 3rem;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap
+}
+
+.button:focus,
+.button:hover,
+button:focus,
+button:hover,
+input[type=button]:focus,
+input[type=button]:hover,
+input[type=reset]:focus,
+input[type=reset]:hover,
+input[type=submit]:focus,
+input[type=submit]:hover {
+  background-color: #1abc9c;
+  border-color: #1abc9c;
+  color: #fff;
+  outline: 0
+}
+
+.button[disabled],
+button[disabled],
+input[type=button][disabled],
+input[type=reset][disabled],
+input[type=submit][disabled] {
+  cursor: default;
+  opacity: .5
+}
+
+.button[disabled]:focus,
+.button[disabled]:hover,
+button[disabled]:focus,
+button[disabled]:hover,
+input[type=button][disabled]:focus,
+input[type=button][disabled]:hover,
+input[type=reset][disabled]:focus,
+input[type=reset][disabled]:hover,
+input[type=submit][disabled]:focus,
+input[type=submit][disabled]:hover {
+  background-color: #384452;
+  border-color: #384452
+}
+
+.button.button-outline,
+button.button-outline,
+input[type=button].button-outline,
+input[type=reset].button-outline,
+input[type=submit].button-outline {
+  background-color: transparent;
+  color: #384452
+}
+
+.button.button-outline:focus,
+.button.button-outline:hover,
+button.button-outline:focus,
+button.button-outline:hover,
+input[type=button].button-outline:focus,
+input[type=button].button-outline:hover,
+input[type=reset].button-outline:focus,
+input[type=reset].button-outline:hover,
+input[type=submit].button-outline:focus,
+input[type=submit].button-outline:hover {
+  background-color: transparent;
+  border-color: #1abc9c;
+  color: #1abc9c
+}
+
+.button.button-outline[disabled]:focus,
+.button.button-outline[disabled]:hover,
+button.button-outline[disabled]:focus,
+button.button-outline[disabled]:hover,
+input[type=button].button-outline[disabled]:focus,
+input[type=button].button-outline[disabled]:hover,
+input[type=reset].button-outline[disabled]:focus,
+input[type=reset].button-outline[disabled]:hover,
+input[type=submit].button-outline[disabled]:focus,
+input[type=submit].button-outline[disabled]:hover {
+  border-color: inherit;
+  color: #384452
+}
+
+.button.button-clear,
+button.button-clear,
+input[type=button].button-clear,
+input[type=reset].button-clear,
+input[type=submit].button-clear {
+  background-color: transparent;
+  border-color: transparent;
+  color: #384452
+}
+
+.button.button-clear:focus,
+.button.button-clear:hover,
+button.button-clear:focus,
+button.button-clear:hover,
+input[type=button].button-clear:focus,
+input[type=button].button-clear:hover,
+input[type=reset].button-clear:focus,
+input[type=reset].button-clear:hover,
+input[type=submit].button-clear:focus,
+input[type=submit].button-clear:hover {
+  background-color: transparent;
+  border-color: transparent;
+  color: #1abc9c
+}
+
+.button.button-clear[disabled]:focus,
+.button.button-clear[disabled]:hover,
+button.button-clear[disabled]:focus,
+button.button-clear[disabled]:hover,
+input[type=button].button-clear[disabled]:focus,
+input[type=button].button-clear[disabled]:hover,
+input[type=reset].button-clear[disabled]:focus,
+input[type=reset].button-clear[disabled]:hover,
+input[type=submit].button-clear[disabled]:focus,
+input[type=submit].button-clear[disabled]:hover {
+  color: #384452
+}
+
+code {
+  background: #eef1f5;
+  border-radius: .4rem;
+  font-size: 86%;
+  margin: 0 .2rem;
+  padding: .2rem .5rem;
+  white-space: nowrap
+}
+
+pre {
+  background: #eef1f5;
+  border-left: .3rem solid #1abc9c;
+  overflow-y: hidden
+}
+
+pre > code {
+  border-radius: 0;
+  display: block;
+  padding: 1rem 1.5rem;
+  white-space: pre
+}
+
+hr {
+  border: 0;
+  border-top: .1rem solid #384452;
+  margin: 3rem 0
+}
+
+input:not([type]),
+input[type=email],
+input[type=number],
+input[type=password],
+input[type=search],
+input[type=tel],
+input[type=text],
+input[type=url],
+select,
+textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: .1rem solid #d1d8df;
+  border-radius: .4rem;
+  box-shadow: none;
+  box-sizing: inherit;
+  height: 3.8rem;
+  padding: .6rem 1rem;
+  width: 100%
+}
+
+input:not([type]):focus,
+input[type=email]:focus,
+input[type=number]:focus,
+input[type=password]:focus,
+input[type=search]:focus,
+input[type=tel]:focus,
+input[type=text]:focus,
+input[type=url]:focus,
+select:focus,
+textarea:focus {
+  border-color: #1abc9c;
+  outline: 0
+}
+
+select {
+  background: url('data:image/svg+xml;utf8,<svg width="28" height="15" viewBox="0 0 28 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><polygon fill="%235e6772" id="Shape" points="14.3216327 0 7.99510204 5.87878267 1.67836735 0.00773727648 0 1.56757221 7.99510204 9 16 1.55983494"></polygon></svg>') 100% no-repeat;
+  padding-right: 3rem
+}
+
+select:focus {
+  background-image: url('data:image/svg+xml;utf8,<svg width="28" height="15" viewBox="0 0 28 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><polygon fill="%231abc9c" id="Shape" points="14.3216327 0 7.99510204 5.87878267 1.67836735 0.00773727648 0 1.56757221 7.99510204 9 16 1.55983494"></polygon></svg>')
+}
+
+textarea {
+  min-height: 6.5rem
+}
+
+label,
+legend {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: .5rem
+}
+
+fieldset {
+  border-width: 0;
+  padding: 0
+}
+
+input[type=checkbox],
+input[type=radio] {
+  display: inline
+}
+
+.label-inline {
+  display: inline-block;
+  font-weight: 400;
+  margin-left: .5rem
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  margin: 1em auto
+}
+
+figcaption {
+  text-align: center;
+  padding: 8px;
+  color: #666
+}
+
+a {
+  color: #1abc9c
+}
+
+a:focus,
+a:hover {
+  color: #23b7f3
+}
+
+dl,
+ol,
+ul {
+  list-style: none;
+  margin-top: 0;
+  padding-left: 0
+}
+
+dl dl,
+dl ol,
+dl ul,
+ol dl,
+ol ol,
+ol ul,
+ul dl,
+ul ol,
+ul ul {
+  font-size: 90%;
+  margin: 1rem 0 1.5rem 1rem
+}
+
+ol {
+  list-style: decimal inside
+}
+
+ul {
+  list-style: disc
+}
+
+li {
+  font-size: 1rem;
+  color: #384452
+}
+
+.button,
+button,
+dd,
+dt,
+li {
+  margin-bottom: 1rem
+}
+
+blockquote,
+dl,
+fieldset,
+figure,
+form,
+input,
+ol,
+p,
+pre,
+select,
+table,
+textarea,
+ul {
+  margin-bottom: 1.5rem
+}
+
+table {
+  border-spacing: 0;
+  width: 100%
+}
+
+table thead th,
+thead th {
+  border-top: .1rem solid #d1d8df;
+  background: #fdfdfd
+}
+
+table td {
+  min-width: 7rem
+}
+
+tbody tr:nth-child(2n) {
+  background: #fdfdfd
+}
+
+tbody tr:nth-child(odd) {
+  background: #eef1f5
+}
+
+td,
+th {
+  border-bottom: .1rem solid #d1d8df;
+  padding: 1.2rem 1.5rem;
+  text-align: left
+}
+
+u {
+  border-bottom: 1px dashed
+}
+
+a,
+u {
+  text-decoration: none
+}
+
+u {
+  background: #ffff3a
+}
+
+b,
+strong {
+  font-weight: 700
+}
+
+p {
+  font-weight: 200;
+  padding: .5em
 }
 
 h1,
@@ -10,174 +411,86 @@ h3,
 h4,
 h5,
 h6 {
-  color: #222222;
-  font-weight: 600;
-  line-height: 1.125;
+  font-weight: 300;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.5
 }
 
 h1 {
-  font-size: 2em;
-  margin-bottom: 0.5em;
-}
-
-h1:not(:first-child) {
-  margin-top: 1em;
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-top: 4rem;
+  margin-bottom: 2rem
 }
 
 h2 {
-  font-size: 1.75em;
-  margin-bottom: 0.5714em;
-}
-
-h2:not(:first-child) {
-  margin-top: 1.1428em;
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-top: 3rem;
 }
 
 h3 {
-  font-size: 1.5em;
-  margin-bottom: 0.6666em;
-}
-
-h3:not(:first-child) {
-  margin-top: 1.3333em;
+  font-size: 1.5rem;
+  font-weight: 400
 }
 
 h4 {
-  font-size: 1.25em;
-  margin-bottom: 0.8em;
+  font-size: 1.3rem
 }
 
 h5 {
-  font-size: 1.125em;
-  margin-bottom: 0.8888em;
+  font-size: 1.2rem
 }
 
 h6 {
-  font-size: 1em;
-  margin-bottom: 1em;
+  font-size: 1.1rem;
+  letter-spacing: 0
 }
 
-blockquote {
-  background-color: whitesmoke;
-  border-left: 5px solid #dbdbdb;
-  padding: 1.25em 1.5em;
+p {
+  font-size: 1rem;
+  letter-spacing: .05em
 }
 
-ol {
-  list-style-position: outside;
-  margin-left: 2em;
-  margin-top: 1em;
+pre[class*=language-] {
+  margin: 1em 0
 }
 
-ol:not([type]) {
-  list-style-type: decimal;
+p {
+  line-height: 1.5em;
+  margin-bottom: 0
 }
 
-ol:not([type]).is-lower-alpha {
-  list-style-type: lower-alpha;
-}
-
-ol:not([type]).is-lower-roman {
-  list-style-type: lower-roman;
-}
-
-ol:not([type]).is-upper-alpha {
-  list-style-type: upper-alpha;
-}
-
-ol:not([type]).is-upper-roman {
-  list-style-type: upper-roman;
-}
-
+ol,
 ul {
-  list-style: disc outside;
-  margin-left: 2em;
-  margin-top: 1em;
+  margin-top: .8em;
+  font-weight: 300
 }
 
-ul ul {
-  list-style-type: circle;
-  margin-top: 0.5em;
-}
-
-ul ul ul {
-  list-style-type: square;
-}
-
-dd {
-  margin-left: 2em;
-}
-
-figure {
-  margin-left: 2em;
-  margin-right: 2em;
-  text-align: center;
-}
-
-figure:not(:first-child) {
-  margin-top: 2em;
-}
-
-figure:not(:last-child) {
-  margin-bottom: 2em;
-}
-
-figure img {
-  display: inline-block;
-}
-
-figure figcaption {
-  font-style: italic;
-}
-
-pre {
-  -webkit-overflow-scrolling: touch;
-  overflow-x: auto;
-  padding: 0.7rem 0.5rem;
-  white-space: pre;
-  word-wrap: normal;
-}
-
-sup,
-sub {
-  font-size: 75%;
+ol li,
+ul li {
+  color: #262626;
+  line-height: 1.5em
 }
 
 table {
-  width: 100%;
+  margin-top: 1em
 }
 
-table td,
-table th {
-  border: 1px solid #dbdbdb;
-  border-width: 0 0 1px;
-  padding: 0.5em 0.75em;
-  vertical-align: top;
+td {
+  padding: 1rem
 }
 
-table th {
-  color: #222222;
+pre {
+  margin: 1em 0 !important;
+  padding: 0 4px !important
 }
 
-table th:not([align]) {
-  text-align: left;
-}
-
-table thead td,
-table thead th {
-  border-width: 0 0 2px;
-  color: #222222;
-}
-
-table tfoot td,
-table tfoot th {
-  border-width: 2px 0 0;
-  color: #222222;
-}
-
-table tbody tr:last-child td,
-table tbody tr:last-child th {
-  border-bottom-width: 0;
+pre code {
+  padding: 16px 0;
+  font-size: .9em;
+  line-height: 1.5
 }
 
 .admonition {
