@@ -192,7 +192,10 @@ export class QuakeRender {
           break;
         }
         case 'page_link': {
-          out += `<a href='#'>${token.raw}</a>`;
+          out += `<span class='page-link'>
+  <span id=${'page-link-' + token.entry_type + '-' + token.entry_id}>${token.entry_title}</span>
+</span>
+`;
           break;
         }
         default: {

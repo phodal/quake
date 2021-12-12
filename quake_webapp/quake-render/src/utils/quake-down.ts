@@ -46,12 +46,15 @@ class QuakeDown {
       name: 'page_link',
       level: 'inline',
       tokenizer(src, _tokens) {
-        const rule = /^\[\[(.*)\]\]/;
+        const rule = /^\[\[([a-zA-Z_-]{1,}):(\d{1,4})-(.+?(?=\]\]))\]\]/;
         const match = rule.exec(src);
         if (match) {
           return {
             type: 'page_link',
             raw: match[0],
+            entry_type: match[1].trim(),
+            entry_id: match[2].trim(),
+            entry_title: match[3].trim()
           };
         }
       },
