@@ -7,6 +7,8 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface QuakeGraph {
+        "config": any;
+        "data": any;
     }
     interface QuakeRender {
         "content": string;
@@ -32,6 +34,8 @@ declare global {
 }
 declare namespace LocalJSX {
     interface QuakeGraph {
+        "config"?: any;
+        "data"?: any;
     }
     interface QuakeRender {
         "content"?: string;
