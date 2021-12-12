@@ -10,7 +10,7 @@ export class QuakeRender {
   @Prop() content: string = '';
   @State() markdownData: any[] = [];
 
-  componentWillLoad() {
+  componentWillRender() {
     this.markdownData = new QuakeDown(this.content, this.parseInline).gen();
   }
 
