@@ -8,7 +8,7 @@ module.exports = {
 
     config.output = {
       ...config.output,
-      filename: `static/quake-calendar.min.js`,
+      filename: `static/quake-timeline.min.js`,
     };
 
     config.optimization.runtimeChunk = false;
