@@ -111,23 +111,19 @@ impl Entrysets {
             let mut error = "".to_string();
             let mut has_convert_date_issue = false;
             for (k, v) in &entry_file.fields {
-                if let Some(field_type) = type_maps.get(k) {
-                    if let MetaField::Date(_date) = field_type {
-                        let value = quake_time::replace_to_unix(v);
-                        match value.parse::<usize>() {
-                            Ok(time) => {
-                                element[k.clone()] = time.into();
-                                continue;
+                if let Some(MetaField::Date(_date)) = type_maps.get(k) {
+                    let value = quake_time::replace_to_unix(v);
+                    match value.parse::<usize>() {
+                        Ok(time) => {
+                            element[k.clone()] = time.into();
+                            continue;
+                        }
+                        Err(err) => {
+                            if !has_convert_date_issue {
+                                error =
+                                    format!("parse {:?} field: {:?},  error:{:?}", file, k, err);
                             }
-                            Err(err) => {
-                                if !has_convert_date_issue {
-                                    error = format!(
-                                        "parse {:?} field: {:?},  error:{:?}",
-                                        file, k, err
-                                    );
-                                }
-                                has_convert_date_issue = true;
-                            }
+                            has_convert_date_issue = true;
                         }
                     }
                 }

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct WebComponentElement {
     /// element id, such as `<quake-dashboard>`
     pub id: String,
@@ -9,16 +9,6 @@ pub struct WebComponentElement {
     pub attributes: Vec<Attribute>,
     /// output events
     pub events: Vec<EventListener>,
-}
-
-impl Default for WebComponentElement {
-    fn default() -> Self {
-        WebComponentElement {
-            id: "".to_string(),
-            attributes: vec![],
-            events: vec![],
-        }
-    }
 }
 
 impl WebComponentElement {

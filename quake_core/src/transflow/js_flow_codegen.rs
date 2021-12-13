@@ -31,11 +31,11 @@ impl JsFlowCodegen {
                 format!("  const el = document.createElement('{:}');\n", flow.to).as_str(),
             );
 
-            func.push_str("\n");
+            func.push('\n');
 
             for item in &flow.from {
                 let mut filter = "".to_string();
-                if flow.filter.len() > 0 {
+                if !flow.filter.is_empty() {
                     filter = format!(", '', {{\n    filter: '{:}'\n  }}", &flow.filter).to_string();
                 }
 
@@ -44,10 +44,10 @@ impl JsFlowCodegen {
                     item, item, filter
                 );
                 func.push_str(fetch.as_str());
-                func.push_str("\n");
+                func.push('\n');
             }
 
-            let params = Self::gen_params(&flow);
+            let params = Self::gen_params(flow);
             Self::gen_data_attribute(&flow, &mut func, params);
 
             if let Some(el) = &element {
@@ -68,13 +68,13 @@ impl JsFlowCodegen {
         for flow in &trans.flows {
             let mut func = String::new();
 
-            let params = Self::gen_params(&flow);
+            let params = Self::gen_params(flow);
 
             func.push_str(format!("function {:}({:}) {{\n", &flow.name, params).as_str());
             func.push_str("  let results = [];\n");
 
             if flow.mappings.is_some() {
-                let mappings = JsFlowCodegen::gen_obj_mapping(&flow.mappings.as_ref().unwrap());
+                let mappings = JsFlowCodegen::gen_obj_mapping(flow.mappings.as_ref().unwrap());
                 func.push_str(mappings.join("\n").as_str());
             } else {
                 let results = JsFlowCodegen::gen_obj_concat(&flow.from);
@@ -89,7 +89,7 @@ impl JsFlowCodegen {
         vec
     }
 
-    fn gen_events(func: &mut String, events: &Vec<EventListener>) {
+    fn gen_events(func: &mut String, events: &[EventListener]) {
         for event in events {
             let event_code = format!(
                 "  el.addEventListener('{:}', function (event) {{
@@ -118,7 +118,7 @@ impl JsFlowCodegen {
         params
     }
 
-    fn gen_obj_concat(entries: &Vec<String>) -> Vec<String> {
+    fn gen_obj_concat(entries: &[String]) -> Vec<String> {
         let mut vec = vec![];
         for entry in entries {
             let string = format!("  results = results.concat({:}s);\n", &entry);
