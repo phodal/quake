@@ -18,8 +18,11 @@ pub struct EntryDefine {
     pub entry_type: String,
     pub display: String,
     pub fields: Vec<IndexMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub flows: Option<Vec<FlowField>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub states: Option<Vec<EntryState>>,
 }
 
