@@ -14,19 +14,10 @@ use crate::entry::EntryDefine;
 use crate::helper::quake_time;
 use crate::meta::MetaField;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct CsvTable {
     pub header: Vec<String>,
     pub body: Vec<Vec<String>>,
-}
-
-impl Default for CsvTable {
-    fn default() -> Self {
-        Self {
-            header: vec![],
-            body: vec![],
-        }
-    }
 }
 
 pub struct Entrysets {
@@ -39,7 +30,7 @@ impl Entrysets {
         let mut rdr = csv::ReaderBuilder::new().from_reader(file);
 
         let mut table = CsvTable::default();
-        for record in rdr.headers() {
+        if let Ok(record) = rdr.headers() {
             for str in record {
                 table.header.push(String::from(str))
             }
@@ -120,7 +111,6 @@ impl Entrysets {
             let mut error = "".to_string();
             let mut has_convert_date_issue = false;
             for (k, v) in &entry_file.fields {
-                // convert for time
                 if let Some(field_type) = type_maps.get(k) {
                     if let MetaField::Date(_date) = field_type {
                         let value = quake_time::replace_to_unix(v);
@@ -191,7 +181,7 @@ impl Entrysets {
             }
 
             body.push(column);
-            index = index + 1;
+            index += 1;
         }
 
         Ok(CsvTable { header, body })
@@ -277,9 +267,7 @@ mod tests {
                 assert_eq!("id".to_string(), table.header[0]);
                 assert_eq!("1".to_string(), table.body[0][0]);
             }
-            Err(_err) => {
-                assert!(false);
-            }
+            Err(_err) => assert!(false),
         }
     }
 

@@ -35,7 +35,7 @@ impl Serialize for EntryFile {
         map.serialize_entry("id", &self.id)?;
         map.serialize_entry("content", &self.content)?;
 
-        if self.changes.len() > 0 {
+        if !self.changes.is_empty() {
             let mut vec: Sequence = vec![];
             for change in &self.changes {
                 vec.push(Value::from(format!("{:}", change)));
@@ -77,7 +77,7 @@ impl ToString for EntryFile {
             }
         }
 
-        if self.changes.len() > 0 {
+        if !self.changes.is_empty() {
             output.push_str("quake_change:\n");
             for change in &self.changes {
                 output.push_str(format!("  - {:}\n", change).as_str());
@@ -146,7 +146,7 @@ impl EntryFile {
             path: Default::default(),
             name: "".to_string(),
             fields,
-            content: String::from(content),
+            content,
             changes,
         })
     }
@@ -182,8 +182,7 @@ impl EntryFile {
 
     pub fn header_column(self, index: usize) -> (Vec<String>, Vec<String>) {
         let mut header: Vec<String> = vec![];
-        let mut column: Vec<String> = vec![];
-        column.push(index.to_string());
+        let mut column: Vec<String> = vec![index.to_string()];
 
         for (key, value) in self.fields {
             if !key.eq("content") {
@@ -200,10 +199,7 @@ impl EntryFile {
     }
 
     pub fn field(&self, field: &str) -> Option<String> {
-        match self.fields.get(field) {
-            None => None,
-            Some(err) => return Some(err.to_string()),
-        }
+        self.fields.get(field).map(|err| err.to_string())
     }
 
     pub fn add_field(&mut self, key: &str, value: String) {
@@ -223,8 +219,8 @@ impl EntryFile {
         };
     }
 
-    pub fn update_content(&mut self, content: &String) {
-        if content.starts_with("\n") || content.starts_with("\r\n") {
+    pub fn update_content(&mut self, content: &str) {
+        if content.starts_with('\n') || content.starts_with("\r\n") {
             self.content = content.to_string();
             return;
         }
@@ -258,7 +254,7 @@ impl ValueConverter {
             }
         };
 
-        return vec;
+        vec
     }
 
     pub fn string(value: Value) -> String {
@@ -270,7 +266,7 @@ impl ValueConverter {
             Value::Sequence(seq) => {
                 let seq = seq
                     .into_iter()
-                    .map(|value| ValueConverter::string(value))
+                    .map(ValueConverter::string)
                     .collect::<Vec<String>>();
 
                 seq.join(",")
