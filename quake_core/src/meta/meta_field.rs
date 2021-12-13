@@ -3,6 +3,7 @@ use std::fmt::{Display, Formatter};
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub enum MetaField {
+    Array(Vec<String>),
     /// title of content, will be default
     Title(String),
     /// body of content, will skill by rules
@@ -48,6 +49,7 @@ impl Display for MetaField {
             MetaField::Priority(priority) => write!(f, "{}", priority),
             MetaField::Attachment(attachment) => write!(f, "{}", attachment),
             MetaField::Flow(flow) => write!(f, "{}", flow),
+            MetaField::Array(array) => write!(f, "{:?}", array),
         }
     }
 }

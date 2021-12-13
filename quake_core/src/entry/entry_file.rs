@@ -90,6 +90,7 @@ impl EntryFile {
         let (front_matter, content) = Self::split_markdown(text);
 
         let mut fields: IndexMap<String, String> = IndexMap::new();
+        let mut changes = vec![];
         for document in serde_yaml::Deserializer::from_str(&front_matter) {
             let value = match Value::deserialize(document) {
                 Ok(value) => Ok(value),
@@ -101,6 +102,11 @@ impl EntryFile {
             }?;
             if let Value::Mapping(mapping) = value {
                 for (v_key, v_value) in mapping {
+                    if v_key == "quake_changing" {
+                        changes = ValueConverter::changing(v_value);
+                        continue;
+                    }
+
                     let key = ValueConverter::string(v_key);
                     let value = ValueConverter::string(v_value);
                     fields.insert(key, value);
@@ -108,6 +114,7 @@ impl EntryFile {
             }
         }
 
+        println!("{:?}", changes);
         Ok(EntryFile {
             id: index_id,
             path: Default::default(),
@@ -203,6 +210,17 @@ impl EntryFile {
 pub struct ValueConverter {}
 
 impl ValueConverter {
+    // (?P<time>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})\s"(?P<start>.*)"\s->\s"(?P<end>.*)"
+    //
+    pub fn changing(value: Value) -> Vec<String> {
+        match value {
+            Value::Sequence(seq) => seq
+                .into_iter()
+                .map(|value| ValueConverter::string(value))
+                .collect::<Vec<String>>(),
+            _ => vec![],
+        }
+    }
     pub fn string(value: Value) -> String {
         match value {
             Value::Null => "".to_string(),
@@ -325,5 +343,27 @@ sample
         let index = 1111;
         let text = "world";
         assert_eq!("1111-world.md", EntryFile::file_name(index, text));
+    }
+
+    #[test]
+    fn show_logging() {
+        let text = "---
+updated_date: 2021.11.21
+quake_changing:
+  - 2021-12-09 09:32:28 \"Todo\"
+  - 2021-12-09 09:40:28 \"Spike\" -> \"Todo\"
+  - 2021-12-10 12:12:28 \"Todo\" -> \"Doing\"
+  - 2021-12-10 12:12:28 \"Doing\" -> \"Done\"
+---
+
+| sample | fdaf |
+|---------|-----|
+|   fad  |      |
+
+sample
+";
+        let result = EntryFile::from(text, 1).unwrap();
+        println!("{:?}", result);
+        // assert_eq!(text, result.to_string());
     }
 }

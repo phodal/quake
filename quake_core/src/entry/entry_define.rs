@@ -19,12 +19,12 @@ pub struct EntryDefine {
     pub display: String,
     pub fields: Vec<IndexMap<String, String>>,
     pub actions: Option<Vec<String>>,
-    pub flows: Option<Vec<EntryFlow>>,
+    pub flows: Option<Vec<FlowField>>,
     pub states: Option<Vec<EntryState>>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub struct EntryFlow {
+pub struct FlowField {
     pub field: String,
     pub items: Vec<String>,
 }

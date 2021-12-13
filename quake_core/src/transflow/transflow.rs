@@ -151,8 +151,11 @@ mod tests {
 
         let flow = Transflow::from(entry_defines(), flow);
 
+        println!("{:}", serde_yaml::to_string(&flow).unwrap());
+
         assert_eq!(2, flow.defines_map.unwrap().len());
         assert_eq!(1, flow.flows.len());
+        assert_eq!("quake-calendar", flow.flows[0].to);
         assert_eq!("quake-calendar", flow.target);
     }
 }

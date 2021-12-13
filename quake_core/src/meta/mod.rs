@@ -3,6 +3,7 @@ use indexmap::IndexMap;
 pub use meta_field::MetaField;
 
 pub mod meta_field;
+pub mod quake_changing;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Author {
