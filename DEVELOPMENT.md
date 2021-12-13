@@ -25,7 +25,7 @@ Tech stacks:
 
 对应的操作有：
 
-- action，每一个操作称为 action
+- action，每一个操作称为 action，比如 add/show/edit
 - entry, 对应于不同类型内容的操作
 - quake，系统相关的操作，如同步等
 - transflow，提供自定义的数据到组件的流
@@ -34,52 +34,50 @@ Tech stacks:
 
 - src/server/*_api.rs，提供对应的 HTTP API
 - src/cli/*_action.rs，提供 CLI 的操作
-- quake_tui，TUI 对应的代码。
+- quake_tui，TUI 对应的代码
+- quake_webapp，Web 对应的代码
 
+## 整体结构
+项目后端语言是 Rust，使用 Rocket 框架，`.quake.yaml` 是配置文件，在 `mod.rs` 文件中会读取相应信息并将 `quake_webapp` 目录下的 `index.html` 以 FileServer 的形式作为项目 Web 的入口。 
+
+该 html 入口将直接引用前端构建好的 js，具体细节可以看 `quake_webapp` 目录内的打包代码和 html 文件。
+
+从整体看，项目前端(GUI/TUI/Web)响应用户操作，调取后端接口，后端调取 MeiliSearch 对本地文件目录进行增删改查，从而实现以 git 为核心的 storage。
+
+需要注意的是，后端 server 其实是很薄的一层，可以看做前端的 adapter，Rust 原生的核心在 `quake_core` 中。
+
+由于需要自定义类型，目前 MeiliSearch 还没完全接入到 rocket.rs 里，，所以 web 现在会直接调用 MeiliSearch。
 
 ## Setup
 
 提前准备：[安装 Rust 环境](https://www.rust-lang.org/learn/get-started)
 
-
 1. clone 代码 `git clone https://github.com/phodal/quake`
-2. 安装 search engine 并运行
-
-```bash
-brew install meilisearch
-```
-
-```bash
-meilisearch
-```
-
-插入测试数据
-
-```
-cargo run -- cmd -i "quake.feed"
-```
-
-3. 运行 Web API 服务
-
-```
-cargo run --  server -w
-```
-
-4. visit: [http://localhost:9999/](http://localhost:9999/) （需要构建前端部份）
-
-
-### 前端部分
-
-代码位于：`quake_webapp`
-
-#### 搭建
-
-项目使用 pnpm，需要先安装 `npm install -g pnpm`
-
-1. install，在 `quake_webapp` 目录下执行 `pnpm recursive install`
-2. build，在 `quake_webapp` 目录下执行 `yarn dist`
-    - 构建每个前端应用，生成对应的 WebComponents 组件
-    - 复制组件到 `dist` 目录
+1. 安装 search engine 并运行
+    ```bash
+    brew install meilisearch
+    ```
+    ```bash
+    meilisearch
+    ```
+1. 插入测试数据
+    ```bash
+    cargo run -- cmd -i "quake.feed"
+    ```
+1. 运行 Web API 服务
+    ```bash
+    cargo run --  server -w
+    ```
+1. 安装前端依赖
+    ```bash
+    # 项目使用 pnpm，需要先安装 `npm install -g pnpm`
+    cd quake_webapp && pnpm recursive install
+    ```
+1. 构建前端代码
+    ```bash
+    yarn dist
+    ```
+1. visit: [http://localhost:9999/](http://localhost:9999/)
     
 # Quake Web 开发指南
 
