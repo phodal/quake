@@ -73,7 +73,17 @@ pub(crate) async fn transflow_script(
         let trans = JsFlowCodegen::gen_transform(&flow);
         let elements = JsFlowCodegen::gen_element(&flow, None);
 
-        let script = format!("{:} \n{:}", trans.join("\n"), elements.join("\n"));
+        let route = format!(
+            "Quake.router.addRoutes({{path: '/transflow/custom/{:}', action: tl_{:} }},)",
+            &flow.name, &flow.name
+        );
+
+        let script = format!(
+            "{:}\n{:}\n{:}",
+            trans.join("\n"),
+            elements.join("\n"),
+            route
+        );
         scripts.push(script);
     }
 
@@ -101,7 +111,6 @@ mod test {
         let body = format!("{{ \"flow\": {:?} }}", flow);
         let response = client.post(url).body(body).dispatch();
 
-        println!("{:?}", response.body());
         assert_eq!(response.status(), Status::Ok);
     }
 
