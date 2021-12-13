@@ -210,7 +210,7 @@ impl EntryFile {
         self.fields = fields;
     }
 
-    pub fn update_field(&mut self, field: &String, value: &String) {
+    pub fn update_field(&mut self, field: &str, value: &str) {
         match self.fields.get_mut(field) {
             None => {}
             Some(val) => {
@@ -349,7 +349,7 @@ sample
         let text = demo_text();
         let mut entry_file = EntryFile::from(text.as_str(), 1).unwrap();
 
-        entry_file.update_field(&"title".to_string(), &"Hello, World".to_string());
+        entry_file.update_field("title", "Hello, World");
 
         let value = entry_file.fields.get(&"title".to_string()).unwrap();
         assert_eq!(value, &"Hello, World".to_string());

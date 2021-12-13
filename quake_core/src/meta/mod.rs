@@ -5,7 +5,7 @@ pub use meta_field::MetaField;
 pub mod meta_field;
 pub mod quake_change;
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Default)]
 pub struct Author {
     name: String,
     email: String,
@@ -14,16 +14,7 @@ pub struct Author {
 impl Author {
     pub fn new(str: String) -> Author {
         Author {
-            name: str.to_string(),
-            email: "".to_string(),
-        }
-    }
-}
-
-impl Default for Author {
-    fn default() -> Self {
-        Author {
-            name: "".to_string(),
+            name: str,
             email: "".to_string(),
         }
     }

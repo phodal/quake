@@ -34,13 +34,8 @@ use crate::markdown::references::{NoteReference, RefParser, RefParserState, RefT
 
 pub type MarkdownEvents<'a> = Vec<Event<'a>>;
 
+#[derive(Debug, Default)]
 pub struct MdProcessor {}
-
-impl Default for MdProcessor {
-    fn default() -> Self {
-        MdProcessor {}
-    }
-}
 
 impl MdProcessor {
     pub fn transform(content: &str) -> Result<String, Box<dyn Error>> {
@@ -194,6 +189,7 @@ impl MdProcessor {
         let path = path.unwrap();
         let no_ext = OsString::new();
 
+        #[allow(clippy::all)]
         let events = match path.extension().unwrap_or(&no_ext).to_str() {
             _ => self.make_link_to_file(note_ref),
         };

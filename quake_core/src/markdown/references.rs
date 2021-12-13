@@ -23,7 +23,6 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 // IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::fmt;
@@ -76,6 +75,7 @@ pub struct RefParser {
 }
 
 impl RefParser {
+    #[allow(clippy::all)]
     pub fn new() -> RefParser {
         RefParser {
             state: RefParserState::NoState,
@@ -96,6 +96,7 @@ impl RefParser {
 }
 
 impl<'a> NoteReference<'a> {
+    #[allow(clippy::all)]
     pub fn from_str(text: &str) -> NoteReference {
         let captures = NOTE_LINK_RE
             .captures(text)

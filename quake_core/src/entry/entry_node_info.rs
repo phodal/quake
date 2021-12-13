@@ -2,20 +2,14 @@ use serde_derive::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct EntryNodeInfo {
     pub index: usize,
 }
 
-impl Default for EntryNodeInfo {
-    fn default() -> Self {
-        EntryNodeInfo { index: 0 }
-    }
-}
-
 impl EntryNodeInfo {
     pub fn inc(&mut self) {
-        self.index = self.index + 1
+        self.index += 1
     }
 }
 
@@ -32,6 +26,5 @@ pub fn entry_info_from_path(entry_info_path: &PathBuf) -> EntryNodeInfo {
     }
 
     let text = fs::read_to_string(&entry_info_path).expect("cannot read entry-info.yaml");
-    let entry_info = serde_yaml::from_str(&*text).unwrap();
-    entry_info
+    serde_yaml::from_str(&*text).unwrap()
 }
