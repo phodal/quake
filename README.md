@@ -3,6 +3,8 @@
 [![Build](https://github.com/phodal/quake/actions/workflows/build.yml/badge.svg)](https://github.com/phodal/quake/actions/workflows/build.yml)
 [![Coverage Status](https://coveralls.io/repos/github/phodal/quake/badge.svg?branch=master)](https://coveralls.io/github/phodal/quake?branch=master)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/phodal/quake)
+[![Lint](https://github.com/phodal/quake/actions/workflows/lint.yml/badge.svg)](https://github.com/phodal/quake/actions/workflows/lint.yml)
+[![web](https://github.com/phodal/quake/actions/workflows/web.yml/badge.svg)](https://github.com/phodal/quake/actions/workflows/web.yml)
 
 > A meta knowledge management tool for geek.
 
