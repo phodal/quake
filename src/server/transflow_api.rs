@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
+use rocket::fs::NamedFile;
 use rocket::response::content::JavaScript;
 use rocket::serde::json::Json;
 use rocket::serde::{Deserialize, Serialize};
@@ -58,8 +59,9 @@ pub(crate) async fn translate(
 /// 1. load yaml file with define
 /// 2. generate js scripts
 /// 3. create router
-#[get("/script")]
-pub(crate) async fn transflow_script(
+/// as: not code
+#[get("/script/gen_code")]
+pub(crate) async fn transflow_gen_code(
     config: &State<QuakeConfig>,
 ) -> Result<JavaScript<String>, Json<ApiError>> {
     let path = PathBuf::from(config.workspace.clone());
@@ -86,6 +88,18 @@ pub(crate) async fn transflow_script(
     let scripts = format!("{:}", scripts.join("\n"));
 
     Ok(JavaScript(scripts))
+}
+
+/// todo: load transflow from yaml files
+#[get("/script/load_code")]
+pub(crate) async fn transflow_load_code(config: &State<QuakeConfig>) -> Option<NamedFile> {
+    let path = PathBuf::from(config.workspace.clone());
+    let fs = path
+        .join(EntryPaths::quake())
+        .join(EntryPaths::transfuncs());
+
+    let file = NamedFile::open(fs);
+    file.await.ok()
 }
 
 #[cfg(test)]
