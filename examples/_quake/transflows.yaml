@@ -18,9 +18,12 @@
 - name: "show_timeline"
   target: "quake-timeline"
   flows:
-    - name: "from_notes_microsoft_todo_to_quake_timeline"
+    - name: "from_microsoft_todo_to_quake_timeline"
       from:
-        - notes
         - microsoft_todo
       to: "quake-timeline"
+      map:
+        - entry: "microsoft_todo"
+          source: ["title", "importance", "content", "created_date"]
+          target: ["title", "importance", "content", "date"]
       filter: "created_date > 1609257600 AND updated_date < 1640793600"
