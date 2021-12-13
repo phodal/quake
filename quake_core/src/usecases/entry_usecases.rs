@@ -36,9 +36,9 @@ pub fn update_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryNodeIn
 /// 3. update entry node info index
 ///
 pub fn create_entry(
-    quake_path: &String,
-    entry_type: &String,
-    entry_text: &String,
+    quake_path: &str,
+    entry_type: &str,
+    entry_text: &str,
 ) -> Result<(PathBuf, EntryFile), Box<dyn Error>> {
     let paths = EntryPaths::init(quake_path, entry_type);
     let entries_define =
@@ -47,7 +47,7 @@ pub fn create_entry(
 
     let new_index = entry_info.index + 1;
     let index = new_index;
-    let text = entry_text.as_str();
+    let text = entry_text;
     let new_md_file = EntryFile::file_name(index, text);
     let mut target_path = paths.base.join(new_md_file);
     File::create(&target_path)?;
@@ -76,7 +76,7 @@ pub fn create_entry_file(
 
 pub fn find_entry_path(
     entry_path: PathBuf,
-    entry_type: &String,
+    entry_type: &str,
     index: usize,
 ) -> Result<PathBuf, Box<QuakeError>> {
     #[allow(unused_assignments)]
@@ -84,7 +84,7 @@ pub fn find_entry_path(
 
     let prefix = EntryFile::file_prefix(index);
     let vec = file_filter::filter_by_prefix(entry_path, prefix);
-    if vec.len() > 0 {
+    if !vec.is_empty() {
         target_file = vec[0].clone();
     } else {
         return Err(Box::new(QuakeError(format!(

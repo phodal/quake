@@ -10,7 +10,7 @@ pub struct EntryPaths {
 }
 
 impl EntryPaths {
-    pub fn init(path: &String, object: &String) -> EntryPaths {
+    pub fn init(path: &str, object: &str) -> EntryPaths {
         let path = PathBuf::from(path);
 
         let obj_dir = &path.join(object);

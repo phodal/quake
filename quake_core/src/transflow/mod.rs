@@ -1,5 +1,5 @@
-pub mod js_flow_codegen;
-pub mod transflow;
-mod web_component_element;
+pub use flow::Transflow;
 
-pub use transflow::Transflow;
+pub mod flow;
+pub mod js_flow_codegen;
+mod web_component_element;

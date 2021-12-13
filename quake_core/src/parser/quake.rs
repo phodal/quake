@@ -36,6 +36,13 @@ impl QuakeTransflowNode {
 
         Ok(it.transflows[0].clone())
     }
+
+    pub fn new(name: String) -> QuakeTransflowNode {
+        Self {
+            name,
+            routes: vec![],
+        }
+    }
 }
 
 impl Default for QuakeTransflowNode {
@@ -150,8 +157,7 @@ pub fn quake(text: &str) -> Result<QuakeIt, Box<dyn Error>> {
 }
 
 fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
-    let mut transflow = QuakeTransflowNode::default();
-    transflow.name = decl.name;
+    let mut transflow = QuakeTransflowNode::new(decl.name);
     transflow.routes = decl
         .flows
         .iter()
@@ -185,6 +191,7 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
             route
         })
         .collect::<Vec<Route>>();
+
     transflow
 }
 

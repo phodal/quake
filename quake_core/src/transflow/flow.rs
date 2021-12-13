@@ -104,7 +104,7 @@ impl Default for Transflow {
 mod tests {
     use crate::entry::EntryDefine;
     use crate::quake::QuakeTransflowNode;
-    use crate::transflow::transflow::Transflow;
+    use crate::transflow::flow::Transflow;
     use std::fs;
     use std::path::PathBuf;
 

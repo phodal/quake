@@ -1,4 +1,4 @@
-use crate::transflow::transflow::{Flow, Mapping};
+use crate::transflow::flow::{Flow, Mapping};
 use crate::transflow::web_component_element::{EventListener, WebComponentElement};
 use crate::transflow::Transflow;
 
@@ -128,7 +128,7 @@ impl JsFlowCodegen {
         vec
     }
 
-    fn gen_obj_mapping(mappings: &Vec<Mapping>) -> Vec<String> {
+    fn gen_obj_mapping(mappings: &[Mapping]) -> Vec<String> {
         let mut vec = vec![];
         for mapping in mappings {
             let mut loop_expr = String::new();
