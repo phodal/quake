@@ -132,3 +132,13 @@ Range
 
 2011-03-04 04
 ```
+
+Atlas Sample:
+
+- https://atlas.apache.org/#/SearchAdvance
+
+Antlr DSL: [AtlasDSLParser.g4](https://github.com/apache/atlas/blob/master/repository/src/main/java/org/apache/atlas/query/antlr4/AtlasDSLParser.g4)
+
+```sql
+from Table select owner as Owner, name as Name, qualifiedName as FullName
+```

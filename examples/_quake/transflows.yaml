@@ -1,10 +1,11 @@
 - name: "show_timeline"
-  target: "quake-calendar-timeline"
-  defines_map: ~
+  target: "quake-calendar"
   flows:
-    - name: "from_todo_blog_to_quake_calendar_timeline"
-      from: [ "todo", "blog" ]
-      to: "<quake-calendar-timeline>"
+    - name: "from_todo_blog_to_quake_calendar"
+      from:
+        - todo
+        - blog
+      to: "quake-calendar"
       map:
         - entry: "todo"
           source: ["title", "content", "created_date", "updated_date"]
@@ -12,4 +13,4 @@
         - entry: "blog"
           source: ["title", "content", "created_date", "updated_date"]
           target: ["title", "content", "created_date", "updated_date"]
-      filter: "created_date > 2020.12.30 AND updated_date < 2022.01.01"
+      filter: "created_date > 1609257600 AND updated_date < 1640793600"

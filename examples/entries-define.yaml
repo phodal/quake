@@ -127,7 +127,7 @@ entries:
       - created_by: Author
       - status: State
       - description: String
-      - attachements: StringList
+      - attachment: StringList
       - link: EntryList
       - created_date: Date
       - updated_date: Date
