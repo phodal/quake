@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::fs;
 use std::fs::File;
-use std::path::PathBuf;
+use std::path::Path;
 
 use tracing::info;
 
@@ -25,7 +25,7 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
         "add" => {
             let target_file =
                 entry_usecases::create_entry(&conf.workspace, &expr.object, &expr.text)?.0;
-            if conf.editor != "" {
+            if !conf.editor.is_empty() {
                 editor_exec::edit_file(conf.editor, format!("{:}", target_file.display()))?;
             }
 
@@ -33,7 +33,7 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
         }
         "edit" => {
             let file = find_entry_path(paths.base, &expr.object, expr.index_from_parameter())?;
-            if conf.editor != "" {
+            if !conf.editor.is_empty() {
                 editor_exec::edit_file(conf.editor, format!("{:}", file.display()))?;
             } else {
                 return Err(Box::new(QuakeError("editor is empty".to_string())));
@@ -41,7 +41,7 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
         }
         "sync" => entry_usecases::sync_in_path(&paths)?,
         "dump" => dump_by_path(&paths)?,
-        "show" => show_entry_detail(&expr, &paths)?,
+        "show" => show_entry_detail(expr, &paths)?,
         "list" => show_entrysets(&paths.base.join("entries.csv")),
         _ => {
             return Err(Box::new(QuakeError(format!(
@@ -87,7 +87,7 @@ fn highlight_content(string: &str, lang: &str) {
     }
 }
 
-fn show_entrysets(path: &PathBuf) {
+fn show_entrysets(path: &Path) {
     let mut rdr = csv::Reader::from_reader(File::open(path).expect("cannot open file"));
     let table = table_process::csv_to_terminal_table(&mut rdr);
 
@@ -111,9 +111,13 @@ mod tests {
     #[test]
     fn throw_editor_empty() {
         let expr = QuakeActionNode::action_from_text("todo.edit(1)").unwrap();
-        let mut config = QuakeConfig::default();
-        config.workspace = "examples".to_string();
-        config.editor = "".to_string();
+        let config = QuakeConfig {
+            editor: "".to_string(),
+            workspace: "examples".to_string(),
+            search_url: "".to_string(),
+            server_location: "".to_string(),
+            port: 0,
+        };
 
         let expected = action(expr, config).expect_err("cannot process");
         assert_eq!(format!("{:?}", expected), "QuakeError(\"editor is empty\")");

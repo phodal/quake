@@ -9,7 +9,7 @@ pub fn csv_to_json(rdr: &mut Reader<File>) -> Result<JsonValue, Box<dyn Error>> 
     let mut json: JsonValue = array![];
 
     let mut header = vec![];
-    for record in rdr.headers() {
+    if let Ok(record) = rdr.headers() {
         for str in record {
             header.push(String::from(str))
         }

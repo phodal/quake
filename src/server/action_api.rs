@@ -14,19 +14,10 @@ use quake_core::QuakeConfig;
 
 use crate::server::ApiError;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct ActionSuggest {
     pub entries: Vec<EntryDefine>,
     pub actions: Vec<String>,
-}
-
-impl Default for ActionSuggest {
-    fn default() -> Self {
-        ActionSuggest {
-            entries: vec![],
-            actions: vec![],
-        }
-    }
 }
 
 #[get("/query?<input>")]

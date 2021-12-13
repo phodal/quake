@@ -71,7 +71,7 @@ pub(crate) async fn get_entry(
     let index = id;
     let prefix = EntryFile::file_prefix(index);
     let vec = file_filter::filter_by_prefix(base_path, prefix);
-    if vec.len() == 0 {
+    if vec.is_empty() {
         return Err(NotFound(Json(ApiError {
             msg: "file not found".to_string(),
         })));
@@ -81,7 +81,7 @@ pub(crate) async fn get_entry(
     let str = fs::read_to_string(file_path).expect("cannot read entry type");
     let file = EntryFile::from(str.as_str(), id).unwrap();
 
-    return Ok(Json(file));
+    Ok(Json(file))
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -154,7 +154,6 @@ mod test {
         fields.insert("created_date".to_string(), time.to_string());
         fields.insert("updated_date".to_string(), time.to_string());
 
-        let update = EntryUpdate { fields };
-        update
+        EntryUpdate { fields }
     }
 }

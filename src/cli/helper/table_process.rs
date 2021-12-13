@@ -7,7 +7,7 @@ pub fn csv_to_terminal_table(rdr: &mut Reader<File>) -> Table {
     let mut table = Table::new();
 
     let mut header = vec![];
-    for record in rdr.headers() {
+    if let Ok(record) = rdr.headers() {
         for str in record {
             header.push(String::from(str))
         }

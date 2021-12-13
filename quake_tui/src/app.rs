@@ -4,7 +4,6 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use quake_core::entry::entry_paths::EntryPaths;
-use serde_yaml;
 use tui::buffer::Buffer;
 use tui::layout::{Alignment, Corner, Rect};
 use tui::style::{Color, Modifier, Style};
@@ -26,9 +25,13 @@ pub struct App {
 
 impl App {
     pub fn new(config: QuakeConfig) -> App {
-        let mut app = App::default();
-        app.config = config;
-        app
+        App {
+            mode: Mode::Command,
+            command: "".to_string(),
+            main_widget: MainWidget::Home,
+            state: Default::default(),
+            config,
+        }
     }
 
     pub fn running(&self) -> bool {
@@ -49,18 +52,6 @@ impl App {
                     entry_usecases::update_entry_fields(type_path, &action.object, file.id, &fields)
                 })
                 .unwrap();
-        }
-    }
-}
-
-impl Default for App {
-    fn default() -> Self {
-        App {
-            mode: Mode::Normal,
-            command: "".to_string(),
-            main_widget: MainWidget::Home,
-            state: AppState::default(),
-            config: QuakeConfig::default(),
         }
     }
 }
@@ -126,7 +117,7 @@ impl Widget for MainWidget {
 impl MainWidget {
     pub fn get_input(&self) -> &str {
         match self {
-            Self::Editor(_, string) => &string,
+            Self::Editor(_, string) => string,
             _ => "",
         }
     }

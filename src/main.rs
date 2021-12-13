@@ -3,6 +3,7 @@ use std::fs;
 use std::path::PathBuf;
 
 use clap::Parser;
+use futures::executor::block_on;
 use futures::future;
 use helper::entry_watcher;
 use tracing::{debug, error};
@@ -85,7 +86,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
         SubCommand::Init(init) => init_projects(init)?,
         SubCommand::Cmd(cmd) => {
             let conf = config_quake(&cmd)?;
-            if cmd.input.len() > 0 {
+            if !cmd.input.is_empty() {
                 let expr = QuakeActionNode::action_from_text(cmd.input.as_str())?;
                 cli::action(expr, conf)?
             }
@@ -96,7 +97,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
             let search_url = config.search_url;
 
             if server.watch {
-                futures::executor::block_on(async {
+                block_on(async {
                     let (_s, _g) = future::join(
                         quake_rocket().launch(),
                         entry_watcher::async_watch(path, search_url),
@@ -104,7 +105,8 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
                     .await;
                 });
             } else {
-                let _ = futures::executor::block_on(async { quake_rocket().launch() }).await;
+                #[allow(clippy::async_yields_async)]
+                let _ = block_on(async { quake_rocket().launch() }).await;
             }
         }
         SubCommand::Tui(_) => {
@@ -151,7 +153,7 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     let define = PathBuf::from(&config.path).join("entries-define.yaml");
 
     let config = QuakeConfig {
-        workspace: config.path.clone(),
+        workspace: config.path,
         editor: "".to_string(),
         search_url: "http://127.0.0.1:7700".to_string(),
         server_location: "web".to_string(),
@@ -253,10 +255,9 @@ mod tests {
     }
 
     fn config_dir() -> PathBuf {
-        let conf_dir = PathBuf::from("_fixtures")
+        PathBuf::from("_fixtures")
             .join("configs")
-            .join(".quake.yaml");
-        conf_dir
+            .join(".quake.yaml")
     }
 
     #[ignore]

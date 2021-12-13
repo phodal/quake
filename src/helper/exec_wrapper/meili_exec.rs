@@ -108,8 +108,7 @@ mod tests {
     - updated_date: Date
 ";
         let entries: Vec<EntryDefine> = serde_yaml::from_str(yaml).unwrap();
-        let define = entries[0].clone();
-        define
+        entries[0].clone()
     }
 
     #[test]

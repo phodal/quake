@@ -85,7 +85,7 @@ pub(crate) async fn transflow_gen_code(
         scripts.push(script);
     }
 
-    let scripts = format!("{:}", scripts.join("\n"));
+    let scripts = scripts.join("\n");
 
     Ok(JavaScript(scripts))
 }

@@ -1,11 +1,10 @@
 use std::error::Error;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::time::Duration;
 
 use futures::channel::mpsc::{channel, Receiver};
 use futures::{SinkExt, StreamExt};
-use notify::event::{DataChange, ModifyKind};
 use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use tracing::{debug, error};
 
@@ -79,14 +78,14 @@ fn feed_by_event(event: Event, search_url: &str) -> Result<(), Box<dyn Error>> {
 
         let (typ, file) = entry_file_by_path(&path)?;
         let string = serde_json::to_string(&file)?;
-        feed_entry(&typ, &string, &search_url)?;
+        feed_entry(&typ, &string, search_url)?;
     }
 
     Ok(())
 }
 
-pub fn entry_file_by_path(path: &PathBuf) -> Result<(String, EntryFile), Box<dyn Error>> {
-    let typ = type_from_md_path(&path).ok_or("")?;
+pub fn entry_file_by_path(path: &Path) -> Result<(String, EntryFile), Box<dyn Error>> {
+    let typ = type_from_md_path(path).ok_or("")?;
     let file_name = path.file_name().ok_or("")?;
 
     if file_name.is_empty() || typ.is_empty() {
@@ -96,7 +95,7 @@ pub fn entry_file_by_path(path: &PathBuf) -> Result<(String, EntryFile), Box<dyn
         ))));
     }
 
-    let id = EntryFile::id_from_name(format!("{:}", file_name.to_str().unwrap()).as_str())?;
+    let id = EntryFile::id_from_name(file_name.to_str().unwrap().to_string().as_str())?;
     let content = fs::read_to_string(&path)?;
     let file = EntryFile::from(content.as_str(), id)?;
     Ok((typ, file))

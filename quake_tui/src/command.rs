@@ -25,10 +25,11 @@ pub fn execute_action_command(command: &str, app: &mut App) -> Result<(), String
 mod tests {
     use super::execute_command;
     use crate::app::App;
+    use quake_core::QuakeConfig;
 
     #[test]
     fn test_command_quit() {
-        let mut app = App::default();
+        let mut app = App::new(QuakeConfig::default());
 
         assert!(app.running());
         execute_command("quit", &mut app).unwrap();
@@ -37,7 +38,7 @@ mod tests {
 
     #[test]
     fn test_unknown_command() {
-        let mut app = App::default();
+        let mut app = App::new(QuakeConfig::default());
 
         let result = execute_command("nonexistent", &mut app);
         assert_eq!(result, Err("Unknown command: nonexistent".to_string()));

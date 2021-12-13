@@ -40,7 +40,7 @@ pub fn is_hidden(entry: &DirEntry) -> bool {
     entry
         .file_name()
         .to_str()
-        .map(|s| s.starts_with("."))
+        .map(|s| s.starts_with('.'))
         .unwrap_or(false)
 }
 
@@ -61,7 +61,7 @@ fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
             continue;
         }
 
-        #[warn(clippy::useless_format)]
+        #[allow(clippy::useless_format)]
         let entry_type = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
 
         let paths = EntryPaths::init(&conf.workspace, &entry_type);
