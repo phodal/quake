@@ -86,11 +86,8 @@ fn component_use_decl(decl: Pair<Rule>) -> LayoutComponent {
                 component.is_empty = true;
                 component.name = "Empty".to_string();
                 for inner in pair.into_inner() {
-                    match inner.as_rule() {
-                        Rule::digits => {
-                            component.size = inner.as_str().parse().unwrap();
-                        }
-                        _ => {}
+                    if inner.as_rule() == Rule::digits {
+                        component.size = inner.as_str().parse().unwrap();
                     }
                 }
             }
@@ -206,7 +203,7 @@ fn endway(decl: Pair<Rule>) -> Endway {
 }
 
 fn action_decl(decl: Pair<Rule>) -> ActionDecl {
-    let mut action = ActionDecl::new();
+    let mut action = ActionDecl::default();
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::parameters => {
@@ -290,13 +287,10 @@ mod tests {
         let unit = parse("todo.add: 添加 todo 的支持").unwrap();
         assert_eq!(1, unit.0.len());
 
-        match &unit.0[0] {
-            SourceUnitPart::Action(action) => {
-                assert_eq!("add", action.action);
-                assert_eq!("todo", action.object);
-                assert_eq!("添加 todo 的支持", action.text);
-            }
-            _ => {}
+        if let SourceUnitPart::Action(action) = &unit.0[0] {
+            assert_eq!("add", action.action);
+            assert_eq!("todo", action.object);
+            assert_eq!("添加 todo 的支持", action.text);
         }
     }
 
@@ -305,14 +299,11 @@ mod tests {
         let unit = parse("todo.update(1)").unwrap();
         assert_eq!(1, unit.0.len());
 
-        match &unit.0[0] {
-            SourceUnitPart::Action(action) => {
-                assert_eq!("todo", action.object);
-                assert_eq!("update", action.action);
-                assert_eq!(1, action.parameters.len());
-                assert_eq!("1", action.parameters[0].value);
-            }
-            _ => {}
+        if let SourceUnitPart::Action(action) = &unit.0[0] {
+            assert_eq!("todo", action.object);
+            assert_eq!("update", action.action);
+            assert_eq!(1, action.parameters.len());
+            assert_eq!("1", action.parameters[0].value);
         }
     }
 
@@ -331,9 +322,7 @@ mod tests {
             SourceUnitPart::Transflow(decl) => {
                 let flow = decl.flows[0].clone();
                 match flow {
-                    TransflowEnum::Midway(_) => {
-                        assert!(false);
-                    }
+                    TransflowEnum::Midway(_) => assert!(false),
                     TransflowEnum::Endway(end) => {
                         assert_eq!(2, end.from.len());
                         assert_eq!("todo", end.from[0].value);
@@ -342,9 +331,7 @@ mod tests {
                     }
                 }
             }
-            _ => {
-                assert!(false);
-            }
+            _ => panic!(),
         }
     }
 
