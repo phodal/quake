@@ -103,14 +103,12 @@ pub(crate) async fn transflow_load_code(config: &State<QuakeConfig>) -> Option<N
 }
 
 #[cfg(test)]
-#[allow(unused_imports)]
 mod test {
     use rocket::http::Status;
     use rocket::local::blocking::Client;
     use std::io::Read;
 
     use crate::quake_rocket;
-    use crate::server::transflow_api::FlowRequest;
 
     #[test]
     fn transflow_translate_script() {
@@ -130,7 +128,7 @@ mod test {
 
         let mut res = "".to_string();
         let _ = response.read_to_string(&mut res);
-        println!("{:}", res);
+
         assert_eq!(response.status(), Status::Ok);
     }
 }

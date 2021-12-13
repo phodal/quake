@@ -66,3 +66,38 @@ pub async fn suggest(config: &State<QuakeConfig>) -> Json<ActionSuggest> {
 
     Json(suggest)
 }
+
+#[cfg(test)]
+mod test {
+    use rocket::http::Status;
+    use rocket::local::blocking::Client;
+    use std::io::Read;
+
+    use crate::quake_rocket;
+
+    #[test]
+    fn todo_show_should_return_json() {
+        let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
+        let mut response = client.get("/action/query?input=todo.show").dispatch();
+
+        let mut res = "".to_string();
+        let _ = response.read_to_string(&mut res);
+
+        assert_eq!(response.status(), Status::Ok);
+        assert_eq!(
+            "{\"object\":\"todo\",\"action\":\"show\",\"text\":\"\",\"parameters\":[]}",
+            res
+        );
+    }
+
+    #[test]
+    fn suggest_should_works() {
+        let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
+        let mut response = client.get("/action/suggest").dispatch();
+
+        let mut res = "".to_string();
+        let _ = response.read_to_string(&mut res);
+
+        assert_eq!(response.status(), Status::Ok);
+    }
+}
