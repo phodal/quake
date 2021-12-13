@@ -27,7 +27,7 @@ pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Er
         }
         _ => {
             return Err(Box::new(QuakeError(format!(
-                "unknow quake action: {:?}",
+                "unknown quake action: {:?}",
                 action
             ))))
         }
@@ -61,12 +61,13 @@ fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
             continue;
         }
 
+        #[warn(clippy::useless_format)]
         let entry_type = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
 
         let paths = EntryPaths::init(&conf.workspace, &entry_type);
         let define = defines
             .find(&entry_type)
-            .expect(format!("lost entry define for: {:?}", &entry_type).as_str());
+            .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
 
         let map = Entrysets::jsonify_with_format_date(&paths.base, &define)?;
         fs::write(temp_file, map)?;
@@ -100,7 +101,13 @@ fn sync_defines(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
             continue;
         }
 
-        let path_name = format!("{:}", entry.path().file_name().unwrap().to_str().unwrap());
+        let path_name = entry
+            .path()
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_string();
         if path_name.eq(&conf.server_location) {
             continue;
         }

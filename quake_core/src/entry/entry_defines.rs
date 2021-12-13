@@ -2,15 +2,9 @@ use crate::entry::EntryDefine;
 use std::fs;
 use std::path::PathBuf;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct EntryDefines {
     pub entries: Vec<EntryDefine>,
-}
-
-impl Default for EntryDefines {
-    fn default() -> Self {
-        EntryDefines { entries: vec![] }
-    }
 }
 
 impl EntryDefines {
@@ -24,19 +18,20 @@ impl EntryDefines {
         serde_yaml::from_str(&*entries_str).expect("cannot serde entries-define.yaml")
     }
 
-    pub fn find(&self, target_entry: &String) -> Option<EntryDefine> {
-        let entries: Vec<EntryDefine> = self
-            .entries
-            .iter()
-            .filter(|define| define.entry_type.eq(target_entry))
-            .map(|def| def.clone())
-            .collect();
+    pub fn find(&self, target_entry: &str) -> Option<EntryDefine> {
+        let mut entries: Vec<EntryDefine> = vec![];
 
-        return if entries.len() == 0 {
+        for define in &self.entries {
+            if define.entry_type.eq(target_entry) {
+                entries.push(define.clone());
+            }
+        }
+
+        if entries.len() == 0 {
             None
         } else {
             Some(entries[0].clone())
-        };
+        }
     }
 }
 

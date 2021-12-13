@@ -88,7 +88,7 @@ impl EntryDefine {
         let date = quake_time::date_now();
 
         let mut map = IndexMap::new();
-        map.insert("title".to_string(), title.to_string());
+        map.insert("title".to_string(), title);
         map.insert("created_date".to_string(), date.clone());
         map.insert("updated_date".to_string(), date);
 
