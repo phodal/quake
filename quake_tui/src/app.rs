@@ -1,10 +1,12 @@
 use quake_core::entry::EntryDefines;
 use quake_core::quake::QuakeActionNode;
+use quake_core::usecases::entry_usecases;
 use quake_core::QuakeConfig;
 use serde_yaml;
+use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use tui::buffer::Buffer;
 use tui::layout::{Alignment, Corner, Rect};
 use tui::style::{Color, Modifier, Style};
@@ -16,11 +18,14 @@ pub struct App {
     pub command: String,
     pub main_widget: MainWidget,
     pub state: AppState,
+    pub config: QuakeConfig,
 }
 
 impl App {
-    pub fn new() -> App {
-        App::default()
+    pub fn new(config: QuakeConfig) -> App {
+        let mut app = App::default();
+        app.config = config;
+        app
     }
 
     pub fn running(&self) -> bool {
@@ -29,6 +34,19 @@ impl App {
 
     pub fn shutdown(&mut self) {
         self.state.running = false;
+    }
+
+    pub fn save_entry(&mut self) {
+        if let MainWidget::Editor(ref action, ref string) = self.main_widget {
+            entry_usecases::create_entry(&self.config.workspace, &action.object, &action.text)
+                .and_then(|(_, file)| {
+                    let type_path = PathBuf::from(&self.config.workspace).join(&action.object);
+                    let mut fields = HashMap::new();
+                    fields.insert("content".to_string(), string.clone());
+                    entry_usecases::update_entry_fields(type_path, &action.object, file.id, &fields)
+                })
+                .unwrap();
+        }
     }
 }
 
@@ -39,6 +57,7 @@ impl Default for App {
             command: "".to_string(),
             main_widget: MainWidget::Home,
             state: AppState::default(),
+            config: QuakeConfig::default(),
         }
     }
 }
@@ -53,7 +72,7 @@ pub enum Mode {
 pub enum MainWidget {
     Home,
     EntryTypes,
-    Editor(QuakeActionNode),
+    Editor(QuakeActionNode, String),
 }
 
 impl Widget for MainWidget {
@@ -92,10 +111,26 @@ impl Widget for MainWidget {
 
                 entry_types_list.render(area, buf);
             }
-            MainWidget::Editor(_action) => {
-                let editor = Block::default().borders(Borders::ALL).title("Editor");
+            MainWidget::Editor(_, string) => {
+                let editor = Paragraph::new(string.as_ref())
+                    .block(Block::default().borders(Borders::ALL).title("Editro"));
                 editor.render(area, buf);
             }
+        }
+    }
+}
+
+impl MainWidget {
+    pub fn get_input(&self) -> &str {
+        match self {
+            Self::Editor(_, string) => &string,
+            _ => "",
+        }
+    }
+
+    pub fn collect_input(&mut self, c: char) {
+        if let Self::Editor(_, ref mut string) = self {
+            string.push(c);
         }
     }
 }
