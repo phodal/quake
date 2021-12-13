@@ -1,6 +1,7 @@
 import React from 'react';
-import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
+import {VerticalTimeline, VerticalTimelineElement} from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
+import { format } from 'date-fns'
 
 export type Props = {
   entries: any,
@@ -19,7 +20,7 @@ function QuakeTimeline(props: Props) {
       <VerticalTimeline>
         { data && data.map((item) =>
           <VerticalTimelineElement
-            date={item.date}
+            date={format(new Date(item.date * 1000), 'yyyy-MM-dd')}
             key={item.id}
             iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
           >
