@@ -5,22 +5,13 @@ use crate::parser::ast::{SourceUnitPart, TransflowDecl, TransflowEnum};
 use crate::parser::errors::QuakeParserError;
 use crate::parser::parser::parse;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct QuakeIt {
     pub actions: Vec<QuakeActionNode>,
     pub transflows: Vec<QuakeTransflowNode>,
 }
 
-impl Default for QuakeIt {
-    fn default() -> Self {
-        QuakeIt {
-            actions: vec![],
-            transflows: vec![],
-        }
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct QuakeTransflowNode {
     pub name: String,
     pub routes: Vec<Route>,
@@ -45,16 +36,7 @@ impl QuakeTransflowNode {
     }
 }
 
-impl Default for QuakeTransflowNode {
-    fn default() -> Self {
-        QuakeTransflowNode {
-            name: "".to_string(),
-            routes: vec![],
-        }
-    }
-}
-
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct Route {
     pub name: String,
     pub from: Vec<String>,
@@ -62,18 +44,6 @@ pub struct Route {
     pub filter: String,
     #[serde(skip_serializing)]
     pub is_end_way: bool,
-}
-
-impl Default for Route {
-    fn default() -> Self {
-        Route {
-            name: "".to_string(),
-            from: vec![],
-            to: "".to_string(),
-            filter: "".to_string(),
-            is_end_way: false,
-        }
-    }
 }
 
 impl Route {
@@ -86,23 +56,12 @@ impl Route {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct QuakeActionNode {
     pub object: String,
     pub action: String,
     pub text: String,
     pub parameters: Vec<String>,
-}
-
-impl Default for QuakeActionNode {
-    fn default() -> Self {
-        QuakeActionNode {
-            object: "".to_string(),
-            action: "".to_string(),
-            text: "".to_string(),
-            parameters: vec![],
-        }
-    }
 }
 
 impl QuakeActionNode {

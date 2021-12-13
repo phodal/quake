@@ -27,7 +27,7 @@ impl EntryDefines {
             }
         }
 
-        if entries.len() == 0 {
+        if entries.is_empty() {
             None
         } else {
             Some(entries[0].clone())
