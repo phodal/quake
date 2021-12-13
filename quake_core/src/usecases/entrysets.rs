@@ -17,14 +17,14 @@ use crate::meta::MetaField;
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct CsvTable {
     pub header: Vec<String>,
-    pub rows: Vec<Vec<String>>,
+    pub body: Vec<Vec<String>>,
 }
 
 impl Default for CsvTable {
     fn default() -> Self {
-        CsvTable {
+        Self {
             header: vec![],
-            rows: vec![],
+            body: vec![],
         }
     }
 }
@@ -51,7 +51,7 @@ impl Entrysets {
             for str in &record {
                 row.push(String::from(str));
             }
-            table.rows.push(row);
+            table.body.push(row);
         }
 
         Ok(table)
@@ -155,18 +155,17 @@ impl Entrysets {
 
             json.push(element)?;
 
-            index = index + 1;
+            index += 1;
         }
 
         Ok(json.to_string())
     }
 
     /// scan all entries files, and rebuild indexes
-    pub fn rebuild(path: &PathBuf) -> Result<(Vec<String>, Vec<Vec<String>>), Box<dyn Error>> {
+    pub fn rebuild(path: &PathBuf) -> Result<CsvTable, Box<dyn Error>> {
         let files = Self::scan_files(path);
 
-        let mut header: Vec<String> = vec![];
-        header.push("id".to_string());
+        let mut header: Vec<String> = vec!["id".to_string()];
 
         let mut body: Vec<Vec<String>> = vec![];
         let mut has_first = false;
@@ -195,7 +194,7 @@ impl Entrysets {
             index = index + 1;
         }
 
-        Ok((header, body))
+        Ok(CsvTable { header, body })
     }
 
     fn scan_files(path: &PathBuf) -> Vec<PathBuf> {
@@ -219,14 +218,14 @@ impl Entrysets {
 
     pub fn generate(path: &PathBuf) -> Result<(usize, String), Box<dyn Error>> {
         let map = match Entrysets::rebuild(&path) {
-            Ok((header, body)) => (header, body),
+            Ok(table) => table,
             Err(err) => {
                 println!("path: {:?}, {:?}", path.display(), err);
                 return Err(err);
             }
         };
-        let table_len = map.1.len();
-        let string = Entrysets::content_by_table(map.0, map.1)?;
+        let table_len = map.body.len();
+        let string = Entrysets::content_by_table(map.header, map.body)?;
 
         Ok((table_len, string))
     }
@@ -276,7 +275,7 @@ mod tests {
         match Entrysets::read(buf) {
             Ok(table) => {
                 assert_eq!("id".to_string(), table.header[0]);
-                assert_eq!("1".to_string(), table.rows[0][0]);
+                assert_eq!("1".to_string(), table.body[0][0]);
             }
             Err(_err) => {
                 assert!(false);
@@ -315,7 +314,7 @@ mod tests {
     fn rebuild() {
         let buf = PathBuf::from("..").join("examples").join("todo");
         let map = Entrysets::rebuild(&buf).unwrap();
-        match Entrysets::content_by_table(map.0, map.1) {
+        match Entrysets::content_by_table(map.header, map.body) {
             Ok(some) => {
                 println!("{}", some);
             }
