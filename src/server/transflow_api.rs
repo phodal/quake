@@ -60,7 +60,7 @@ pub(crate) async fn translate(
 /// 2. generate js scripts
 /// 3. create router
 #[get("/script")]
-pub(crate) async fn transfunc_script(config: &State<QuakeConfig>) -> Option<NamedFile> {
+pub(crate) async fn transflow_script(config: &State<QuakeConfig>) -> Option<NamedFile> {
     let path = PathBuf::from(config.workspace.clone());
     let fs = path
         .join(EntryPaths::quake())
