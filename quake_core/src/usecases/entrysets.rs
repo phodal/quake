@@ -91,10 +91,10 @@ impl Entrysets {
             let string = fs::read_to_string(&file)?;
 
             let mut entry_file = EntryFile::from(&*string, index)?;
-            entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
+            entry_file.name = file.file_name().unwrap().to_str().unwrap().to_string();
 
             entry_sets.push(entry_file);
-            index = index + 1;
+            index += 1;
         }
 
         Ok(serde_json::to_string(&entry_sets)?)
@@ -115,10 +115,10 @@ impl Entrysets {
             let string = fs::read_to_string(&file)?;
 
             let mut entry_file = EntryFile::from(&*string, index)?;
-            entry_file.name = format!("{}", &file.file_name().unwrap().to_str().unwrap());
+            entry_file.name = (&file.file_name().unwrap().to_str().unwrap()).to_string();
 
             let mut error = "".to_string();
-            let mut is_convert_date_issue = false;
+            let mut has_convert_date_issue = false;
             for (k, v) in &entry_file.fields {
                 // convert for time
                 if let Some(field_type) = type_maps.get(k) {
@@ -130,13 +130,13 @@ impl Entrysets {
                                 continue;
                             }
                             Err(err) => {
-                                if is_convert_date_issue == false {
+                                if !has_convert_date_issue {
                                     error = format!(
                                         "parse {:?} field: {:?},  error:{:?}",
                                         file, k, err
                                     );
                                 }
-                                is_convert_date_issue = true;
+                                has_convert_date_issue = true;
                             }
                         }
                     }
@@ -145,7 +145,7 @@ impl Entrysets {
                 element[k.clone()] = v.clone().into();
             }
 
-            if is_convert_date_issue {
+            if has_convert_date_issue {
                 println!("{:?}", error);
             }
 
@@ -181,7 +181,7 @@ impl Entrysets {
                     return Err(err);
                 }
             };
-            entry_file.name = format!("{}", file.file_name().unwrap().to_str().unwrap());
+            entry_file.name = file.file_name().unwrap().to_str().unwrap().to_string();
 
             let (mut first_header, column) = entry_file.header_column(index);
 
