@@ -1,7 +1,6 @@
 use std::fs;
 use std::path::PathBuf;
 
-use rocket::fs::NamedFile;
 use rocket::response::content::JavaScript;
 use rocket::serde::json::Json;
 use rocket::serde::{Deserialize, Serialize};
@@ -60,14 +59,27 @@ pub(crate) async fn translate(
 /// 2. generate js scripts
 /// 3. create router
 #[get("/script")]
-pub(crate) async fn transflow_script(config: &State<QuakeConfig>) -> Option<NamedFile> {
+pub(crate) async fn transflow_script(
+    config: &State<QuakeConfig>,
+) -> Result<JavaScript<String>, Json<ApiError>> {
     let path = PathBuf::from(config.workspace.clone());
-    let fs = path
-        .join(EntryPaths::quake())
-        .join(EntryPaths::transfuncs());
 
-    let file = NamedFile::open(fs);
-    file.await.ok()
+    let flow_path = path.join(EntryPaths::quake()).join(EntryPaths::transflow());
+    let content = fs::read_to_string(flow_path).unwrap();
+    let flows: Vec<Transflow> = serde_yaml::from_str(&*content).unwrap();
+
+    let mut scripts = vec![];
+    for flow in flows {
+        let trans = JsFlowCodegen::gen_transform(&flow);
+        let elements = JsFlowCodegen::gen_element(&flow, None);
+
+        let script = format!("{:} \n{:}", trans.join("\n"), elements.join("\n"));
+        scripts.push(script);
+    }
+
+    let scripts = format!("{:}", scripts.join("\n"));
+
+    Ok(JavaScript(scripts))
 }
 
 #[cfg(test)]
@@ -75,13 +87,14 @@ pub(crate) async fn transflow_script(config: &State<QuakeConfig>) -> Option<Name
 mod test {
     use rocket::http::Status;
     use rocket::local::blocking::Client;
+    use std::io::Read;
 
     use crate::quake_rocket;
     use crate::server::transflow_api::FlowRequest;
 
     #[cfg(feature = "webserver")]
     #[test]
-    fn transflow_script() {
+    fn transflow_translate_script() {
         let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
         let url = format!("/transflow/translate/{:}", "show_timeline");
         let flow = "from('todo','blog').to(<quake-calendar>)";
@@ -89,6 +102,17 @@ mod test {
         let response = client.post(url).body(body).dispatch();
 
         println!("{:?}", response.body());
+        assert_eq!(response.status(), Status::Ok);
+    }
+
+    #[test]
+    fn transflow_script() {
+        let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
+        let mut response = client.get("/transflow/script").dispatch();
+
+        let mut res = "".to_string();
+        let _ = response.read_to_string(&mut res);
+        println!("{:}", res);
         assert_eq!(response.status(), Status::Ok);
     }
 }
