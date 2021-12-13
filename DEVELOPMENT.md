@@ -81,6 +81,12 @@ Tech stacks:
     
 # Quake Web 开发指南
 
+## build
+
+前端项目基于 `pnpm` 来管理并减少依赖体积，使用 [nx](https://nx.dev/#getting-started) 来管理整个项目，nx cloud可以有效减少每一次构建/测试的时长。
+
+## 开发
+
 Quake 的组件都由 Web Component 构成，通过 Web Component Router 将它们组合在一起，即 [app.js](quake_webapp/app.js)。 如下一个简单的 Web Component 创建过程，基于纯原生的 JavaScript：
 
 ```javascript

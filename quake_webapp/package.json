@@ -6,7 +6,7 @@
   "scripts": {
     "rinstall": "pnpm recursive install",
     "rstart": "pnpm recursive run start",
-    "dist": "pnpm recursive run build && node build.js",
+    "dist": "nx run-many --target=build --all && node build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -16,6 +16,14 @@
     "fs-extra": "^10.0.0"
   },
   "devDependencies": {
-    "uglifyjs-webpack-plugin": "^2.2.0"
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "@nrwl/workspace": "latest",
+    "@nrwl/cli": "latest",
+    "@nrwl/tao": "latest",
+    "typescript": "4.2.4",
+    "@nrwl/nx-cloud": "latest"
+  },
+  "resolutions": {
+    "eslint": "^7.11.0"
   }
 }
