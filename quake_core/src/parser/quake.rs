@@ -2,8 +2,8 @@ use crate::helper::quake_time::replace_to_unix;
 use std::error::Error;
 
 use crate::parser::ast::{SourceUnitPart, TransflowDecl, TransflowEnum};
+use crate::parser::dsl_parser::parse;
 use crate::parser::errors::QuakeParserError;
-use crate::parser::parser::parse;
 
 #[derive(Debug, Serialize, Deserialize, Default)]
 pub struct QuakeIt {

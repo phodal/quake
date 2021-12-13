@@ -14,6 +14,14 @@ pub struct Transflow {
 }
 
 impl Transflow {
+    pub fn new(name: String) -> Self {
+        Self {
+            name,
+            defines_map: None,
+            flows: vec![],
+            target: "".to_string(),
+        }
+    }
     /// parse from transflow DSL which is [QuakeTransflowNode]
     ///
     /// # Examples
@@ -28,8 +36,7 @@ impl Transflow {
     /// - `flows` with have informations of `from('todo','blog').to(<quake-calendar>`
     ///
     pub fn from(defines: Vec<EntryDefine>, node: QuakeTransflowNode) -> Transflow {
-        let mut transflow = Transflow::default();
-        transflow.name = node.name;
+        let mut transflow = Transflow::new(node.name);
 
         let mut entries_map: HashMap<String, &EntryDefine> = HashMap::new();
         for define in &defines {

@@ -40,7 +40,7 @@ pub struct MdProcessor {}
 impl MdProcessor {
     pub fn transform(content: &str) -> Result<String, Box<dyn Error>> {
         let mut down = MdProcessor::default();
-        let events = down.add_custom_syntax(&content)?;
+        let events = down.add_custom_syntax(content)?;
 
         let mapping = events.into_iter().map(event_to_owned).collect();
 
@@ -63,7 +63,7 @@ impl MdProcessor {
         let mut ref_parser = RefParser::new();
         let mut buffer = Vec::with_capacity(5);
 
-        for event in Parser::new_ext(&content, parser_options) {
+        for event in Parser::new_ext(content, parser_options) {
             if ref_parser.state == RefParserState::Resetting {
                 events.append(&mut buffer);
                 buffer.clear();

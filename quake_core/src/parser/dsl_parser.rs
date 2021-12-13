@@ -231,12 +231,7 @@ fn parameters(decl: Pair<Rule>) -> Vec<Parameter> {
     let mut params = vec![];
     for pair in decl.into_inner() {
         match pair.as_rule() {
-            Rule::parameter => {
-                let mut param = Parameter::default();
-                param.value = value(pair);
-
-                params.push(param)
-            }
+            Rule::parameter => params.push(Parameter { value: value(pair) }),
             Rule::lbracket => {}
             Rule::rbracket => {}
             _ => {
@@ -280,7 +275,7 @@ pub fn replace_string_markers(input: &str) -> String {
 #[cfg(test)]
 mod tests {
     use crate::parser::ast::{SourceUnitPart, TransflowEnum};
-    use crate::parser::parser::parse;
+    use crate::parser::dsl_parser::parse;
 
     #[test]
     fn should_parse_add_todo() {

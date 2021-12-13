@@ -1,4 +1,4 @@
 pub mod ast;
+pub mod dsl_parser;
 pub mod errors;
-pub mod parser;
 pub mod quake;

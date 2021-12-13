@@ -12,13 +12,20 @@ pub struct WebComponentElement {
 }
 
 impl WebComponentElement {
+    pub fn new(id: String) -> Self {
+        Self {
+            id,
+            attributes: vec![],
+            events: vec![],
+        }
+    }
+
     pub fn from_js(
         element: &str,
         attributes: Vec<String>,
         events: Vec<String>,
     ) -> WebComponentElement {
-        let mut wce = Self::default();
-        wce.id = element.to_string();
+        let mut wce = Self::new(element.to_string());
 
         for attr in attributes {
             wce.attributes.push(Attribute {
