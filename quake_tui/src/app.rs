@@ -1,17 +1,20 @@
-use quake_core::entry::EntryDefines;
-use quake_core::quake::QuakeActionNode;
-use quake_core::usecases::entry_usecases;
-use quake_core::QuakeConfig;
-use serde_yaml;
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
+
+use quake_core::entry::entry_paths::EntryPaths;
+use serde_yaml;
 use tui::buffer::Buffer;
 use tui::layout::{Alignment, Corner, Rect};
 use tui::style::{Color, Modifier, Style};
 use tui::text::{Span, Spans};
 use tui::widgets::{Block, Borders, List, ListItem, Paragraph, Widget};
+
+use quake_core::entry::EntryDefines;
+use quake_core::quake::QuakeActionNode;
+use quake_core::usecases::entry_usecases;
+use quake_core::QuakeConfig;
 
 pub struct App {
     pub mode: Mode,
@@ -137,7 +140,7 @@ impl MainWidget {
 
 fn list_entry_types() -> Result<Vec<ListItem<'static>>, Box<dyn Error>> {
     let config: QuakeConfig = serde_yaml::from_str(fs::read_to_string(".quake.yaml")?.as_str())?;
-    let entry_defines_path = Path::new(&config.workspace).join("entries-define.yaml");
+    let entry_defines_path = Path::new(&config.workspace).join(EntryPaths::entries_define());
     let entry_defines: EntryDefines =
         serde_yaml::from_str(&fs::read_to_string(entry_defines_path)?)?;
 
