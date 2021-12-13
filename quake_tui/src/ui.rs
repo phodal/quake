@@ -28,7 +28,10 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &mut App) {
             chunks[0].y + 1,
         ),
         Mode::Insert => {
-            f.set_cursor(chunks[1].x + 1, chunks[1].y + 1);
+            f.set_cursor(
+                chunks[1].x + app.main_widget.get_input().width() as u16 + 1,
+                chunks[1].y + 1,
+            );
         }
     }
 }

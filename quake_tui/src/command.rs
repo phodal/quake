@@ -5,6 +5,7 @@ pub fn execute_command(command: &str, app: &mut App) -> Result<(), String> {
     match command {
         "quit" => app.shutdown(),
         "listAll" => app.main_widget = MainWidget::EntryTypes,
+        "save" => app.save_entry(),
         other => execute_action_command(other, app)?,
     }
     Ok(())
@@ -13,7 +14,7 @@ pub fn execute_command(command: &str, app: &mut App) -> Result<(), String> {
 pub fn execute_action_command(command: &str, app: &mut App) -> Result<(), String> {
     if let Ok(action) = QuakeActionNode::action_from_text(command) {
         app.mode = Mode::Insert;
-        app.main_widget = MainWidget::Editor(action);
+        app.main_widget = MainWidget::Editor(action, "".to_string());
         Ok(())
     } else {
         Err(format!("Unknown command: {}", command))
@@ -27,7 +28,7 @@ mod tests {
 
     #[test]
     fn test_command_quit() {
-        let mut app = App::new();
+        let mut app = App::default();
 
         assert!(app.running());
         execute_command("quit", &mut app).unwrap();
@@ -36,7 +37,7 @@ mod tests {
 
     #[test]
     fn test_unknown_command() {
-        let mut app = App::new();
+        let mut app = App::default();
 
         let result = execute_command("nonexistent", &mut app);
         assert_eq!(result, Err("Unknown command: nonexistent".to_string()));

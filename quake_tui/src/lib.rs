@@ -9,7 +9,9 @@ use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
+use quake_core::QuakeConfig;
 use std::error::Error;
+use std::fs;
 use std::io;
 use tui::backend::{Backend, CrosstermBackend};
 use tui::Terminal;
@@ -22,7 +24,8 @@ pub fn tui_main_loop() -> Result<(), Box<dyn Error>> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    let app = App::new();
+    let config: QuakeConfig = serde_yaml::from_str(fs::read_to_string(".quake.yaml")?.as_str())?;
+    let app = App::new(config);
     let res = run_app(&mut terminal, app);
 
     disable_raw_mode()?;
@@ -73,6 +76,9 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<(), B
                 Mode::Insert => match key.code {
                     KeyCode::Esc => {
                         app.mode = Mode::Normal;
+                    }
+                    KeyCode::Char(c) => {
+                        app.main_widget.collect_input(c);
                     }
                     _ => {}
                 },
