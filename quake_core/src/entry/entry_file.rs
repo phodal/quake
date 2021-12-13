@@ -210,8 +210,6 @@ impl EntryFile {
 pub struct ValueConverter {}
 
 impl ValueConverter {
-    // (?P<time>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})\s"(?P<start>.*)"\s->\s"(?P<end>.*)"
-    //
     pub fn changing(value: Value) -> Vec<String> {
         match value {
             Value::Sequence(seq) => seq
