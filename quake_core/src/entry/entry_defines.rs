@@ -1,6 +1,7 @@
-use crate::entry::EntryDefine;
 use std::fs;
-use std::path::PathBuf;
+use std::path::Path;
+
+use crate::entry::EntryDefine;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct EntryDefines {
@@ -13,7 +14,7 @@ impl EntryDefines {
         EntryDefines { entries }
     }
 
-    pub fn from_path(path: &PathBuf) -> EntryDefines {
+    pub fn from_path(path: &Path) -> EntryDefines {
         let entries_str = fs::read_to_string(path).expect("cannot read entries-define.yaml");
         serde_yaml::from_str(&*entries_str).expect("cannot serde entries-define.yaml")
     }
@@ -35,7 +36,7 @@ impl EntryDefines {
     }
 }
 
-pub fn entries_define_from_path(config_path: &PathBuf) -> Vec<EntryDefine> {
+pub fn entries_define_from_path(config_path: &Path) -> Vec<EntryDefine> {
     let entries_str = fs::read_to_string(config_path).expect("cannot read entries-define.yaml");
     let entries: EntryDefines = serde_yaml::from_str(&*entries_str).unwrap();
 

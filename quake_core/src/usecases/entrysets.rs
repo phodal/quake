@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::fs;
 use std::fs::File;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use indexmap::IndexMap;
 use json::{array, object, JsonValue};
@@ -73,7 +73,7 @@ impl Entrysets {
     }
 
     /// scan all entries files, and rebuild indexes
-    pub fn jsonify(path: &PathBuf) -> Result<String, Box<dyn Error>> {
+    pub fn jsonify(path: &Path) -> Result<String, Box<dyn Error>> {
         let files = Self::scan_files(path);
         let mut index = 1;
 
@@ -93,7 +93,7 @@ impl Entrysets {
 
     /// format json from define
     pub fn jsonify_with_format_date(
-        path: &PathBuf,
+        path: &Path,
         define: &EntryDefine,
     ) -> Result<String, Box<dyn Error>> {
         let files = Self::scan_files(path);
@@ -148,7 +148,7 @@ impl Entrysets {
     }
 
     /// scan all entries files, and rebuild indexes
-    pub fn rebuild(path: &PathBuf) -> Result<CsvTable, Box<dyn Error>> {
+    pub fn rebuild(path: &Path) -> Result<CsvTable, Box<dyn Error>> {
         let files = Self::scan_files(path);
 
         let mut header: Vec<String> = vec!["id".to_string()];
@@ -183,7 +183,7 @@ impl Entrysets {
         Ok(CsvTable { header, body })
     }
 
-    fn scan_files(path: &PathBuf) -> Vec<PathBuf> {
+    fn scan_files(path: &Path) -> Vec<PathBuf> {
         fn is_markdown(entry: &DirEntry) -> bool {
             entry
                 .file_name()
@@ -202,8 +202,8 @@ impl Entrysets {
         files
     }
 
-    pub fn generate(path: &PathBuf) -> Result<(usize, String), Box<dyn Error>> {
-        let map = match Entrysets::rebuild(&path) {
+    pub fn generate(path: &Path) -> Result<(usize, String), Box<dyn Error>> {
+        let map = match Entrysets::rebuild(path) {
             Ok(table) => table,
             Err(err) => {
                 println!("path: {:?}, {:?}", path.display(), err);
@@ -263,7 +263,7 @@ mod tests {
                 assert_eq!("id".to_string(), table.header[0]);
                 assert_eq!("1".to_string(), table.body[0][0]);
             }
-            Err(_err) => assert!(false),
+            Err(_err) => panic!(),
         }
     }
 

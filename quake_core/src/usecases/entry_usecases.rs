@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 use std::fs::File;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crate::entry::entry_file::EntryFile;
 use crate::entry::entry_paths::EntryPaths;
@@ -24,7 +24,7 @@ pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn update_entry_info(entry_info_path: &PathBuf, entry_info: &mut EntryNodeInfo) {
+pub fn update_entry_info(entry_info_path: &Path, entry_info: &mut EntryNodeInfo) {
     let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
     fs::write(&entry_info_path, result).expect("cannot write to file");
 }

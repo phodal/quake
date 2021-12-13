@@ -1,6 +1,7 @@
-use serde_derive::{Deserialize, Serialize};
 use std::fs;
-use std::path::PathBuf;
+use std::path::Path;
+
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct EntryNodeInfo {
@@ -13,7 +14,7 @@ impl EntryNodeInfo {
     }
 }
 
-pub fn entry_info_from_path(entry_info_path: &PathBuf) -> EntryNodeInfo {
+pub fn entry_info_from_path(entry_info_path: &Path) -> EntryNodeInfo {
     if !entry_info_path.exists() {
         let info = EntryNodeInfo::default();
         fs::write(

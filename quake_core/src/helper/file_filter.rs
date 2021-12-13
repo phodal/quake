@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use walkdir::{DirEntry, WalkDir};
 
@@ -20,7 +20,7 @@ pub fn filter_by_prefix(path: PathBuf, prefix: String) -> Vec<PathBuf> {
     files
 }
 
-pub fn type_from_md_path(buf: &PathBuf) -> Option<String> {
+pub fn type_from_md_path(buf: &Path) -> Option<String> {
     let mut ancestors = buf.ancestors();
     ancestors.next()?;
     let typ = ancestors.next()?.file_name()?;

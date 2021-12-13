@@ -5,6 +5,7 @@ use std::time::Duration;
 
 use futures::channel::mpsc::{channel, Receiver};
 use futures::{SinkExt, StreamExt};
+use notify::event::{DataChange, ModifyKind};
 use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use tracing::{debug, error};
 
@@ -54,7 +55,9 @@ fn feed_by_event(event: Event, search_url: &str) -> Result<(), Box<dyn Error>> {
     // only for data modify
     // todo: looking for better way
     match &event.kind {
-        EventKind::Modify(modify) => {
+        EventKind::Modify(modify) =>
+        {
+            #[allow(irrefutable_let_patterns)]
             if let _ = modify {
                 return Ok(());
             }
