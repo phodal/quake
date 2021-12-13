@@ -29,7 +29,7 @@ const Quake = {
   query: function (entry, query, filter) {
     let index = Quake.client.index(entry);
     let options = {
-      limit: 40,
+      limit: 99,
       attributesToHighlight: ['overview']
     };
 

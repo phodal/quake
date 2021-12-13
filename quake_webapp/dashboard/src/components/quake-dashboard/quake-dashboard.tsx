@@ -139,7 +139,7 @@ export class QuakeDashboard {
   }
 
   formatDate(str) {
-    return dayjs(str).format('YYYY-MM-DD');
+    return dayjs(str * 1000).format('YYYY-MM-DD');
   }
 
   padLeft(nr, n, str) {
