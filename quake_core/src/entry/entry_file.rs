@@ -4,10 +4,12 @@ use std::path::PathBuf;
 use indexmap::IndexMap;
 use serde::ser::SerializeMap;
 use serde::{Deserialize, Serialize, Serializer};
-use serde_yaml::Value;
+use serde_yaml::{Sequence, Value};
 
 use crate::entry::slug::slugify;
 use crate::errors::QuakeError;
+use crate::helper::date_now;
+use crate::meta::quake_change::QuakeChange;
 
 #[derive(Deserialize, PartialEq, Debug)]
 pub struct EntryFile {
@@ -16,6 +18,7 @@ pub struct EntryFile {
     pub name: String,
     pub fields: IndexMap<String, String>,
     pub content: String,
+    pub changes: Vec<QuakeChange>,
 }
 
 impl Serialize for EntryFile {
@@ -30,6 +33,16 @@ impl Serialize for EntryFile {
 
         map.serialize_entry("id", &self.id)?;
         map.serialize_entry("content", &self.content)?;
+
+        if self.changes.len() > 0 {
+            let mut vec: Sequence = vec![];
+            for change in &self.changes {
+                vec.push(Value::from(format!("{:}", change)));
+            }
+
+            map.serialize_entry("quake_change", &vec)?;
+        }
+
         map.end()
     }
 }
@@ -42,25 +55,38 @@ impl Default for EntryFile {
             name: "".to_string(),
             fields: IndexMap::default(),
             content: "".to_string(),
+            changes: vec![],
         }
     }
 }
 
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+pub struct EntryFileChange {
+    pub quake_change: Vec<QuakeChange>,
+}
+
 impl ToString for EntryFile {
     fn to_string(&self) -> String {
-        let mut output = vec![];
-        output.push("---".to_string());
+        let mut output = String::new();
+        output.push_str("---\n");
+
         for (key, value) in &self.fields {
             if !key.eq("content") {
-                output.push(format!("{}: {}", key, value));
+                output.push_str(format!("{}: {}\n", key, value).as_str());
             }
         }
-        output.push("---".to_string());
 
-        let mut str = output.join("\n");
-        str.push_str(&*self.content);
+        if self.changes.len() > 0 {
+            output.push_str("quake_change:\n");
+            for change in &self.changes {
+                output.push_str(format!("  - {:}\n", change).as_str());
+            }
+        }
 
-        str
+        output.push_str("---");
+        output.push_str(&*self.content);
+
+        output
     }
 }
 
@@ -102,7 +128,7 @@ impl EntryFile {
             }?;
             if let Value::Mapping(mapping) = value {
                 for (v_key, v_value) in mapping {
-                    if v_key == "quake_changing" {
+                    if v_key == "quake_change" {
                         changes = ValueConverter::changing(v_value);
                         continue;
                     }
@@ -114,13 +140,13 @@ impl EntryFile {
             }
         }
 
-        println!("{:?}", changes);
         Ok(EntryFile {
             id: index_id,
             path: Default::default(),
             name: "".to_string(),
-            fields: fields,
+            fields,
             content: String::from(content),
+            changes,
         })
     }
 
@@ -205,20 +231,35 @@ impl EntryFile {
         self.content = "\n\n".to_string();
         self.content.push_str(content);
     }
+
+    /// add status change to quake_change
+    pub fn change(&mut self, from: &str, to: &str) {
+        self.changes.push(QuakeChange {
+            from: from.to_string(),
+            to: to.to_string(),
+            changed_date: date_now(),
+        })
+    }
 }
 
 pub struct ValueConverter {}
 
 impl ValueConverter {
-    pub fn changing(value: Value) -> Vec<String> {
-        match value {
-            Value::Sequence(seq) => seq
-                .into_iter()
-                .map(|value| ValueConverter::string(value))
-                .collect::<Vec<String>>(),
-            _ => vec![],
-        }
+    pub fn changing(value: Value) -> Vec<QuakeChange> {
+        let mut vec = vec![];
+
+        if let Value::Sequence(seq) = value {
+            for value in seq {
+                let string = ValueConverter::string(value);
+                if let Some(change) = QuakeChange::from(string.as_str()) {
+                    vec.push(change);
+                }
+            }
+        };
+
+        return vec;
     }
+
     pub fn string(value: Value) -> String {
         match value {
             Value::Null => "".to_string(),
@@ -344,11 +385,11 @@ sample
     }
 
     #[test]
-    fn show_logging() {
+    fn show_change_logging() {
         let text = "---
 updated_date: 2021.11.21
-quake_changing:
-  - 2021-12-09 09:32:28 \"Todo\"
+quake_change:
+  - 2021-12-09 09:32:28 \"\" -> \"Todo\"
   - 2021-12-09 09:40:28 \"Spike\" -> \"Todo\"
   - 2021-12-10 12:12:28 \"Todo\" -> \"Doing\"
   - 2021-12-10 12:12:28 \"Doing\" -> \"Done\"
@@ -360,8 +401,34 @@ quake_changing:
 
 sample
 ";
-        let result = EntryFile::from(text, 1).unwrap();
-        println!("{:?}", result);
-        // assert_eq!(text, result.to_string());
+        let entry_file = EntryFile::from(text, 1).unwrap();
+
+        assert_eq!(4, entry_file.changes.len());
+        assert_eq!(text, entry_file.to_string());
+    }
+
+    #[test]
+    fn add_change_logging() {
+        let text = "---
+updated_date: 2021.11.21
+quake_change:
+  - 2021-12-09 09:32:28 \"\" -> \"Todo\"
+  - 2021-12-09 09:40:28 \"Spike\" -> \"Todo\"
+  - 2021-12-10 12:12:28 \"Todo\" -> \"Doing\"
+---
+
+| sample | fdaf |
+|---------|-----|
+|   fad  |      |
+
+sample
+";
+        let mut entry_file = EntryFile::from(text, 1).unwrap();
+        assert_eq!(3, entry_file.changes.len());
+
+        assert_eq!(text, entry_file.to_string());
+        entry_file.change("Doing", "Done");
+
+        assert_eq!(4, entry_file.changes.len());
     }
 }

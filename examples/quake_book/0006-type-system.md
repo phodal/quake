@@ -50,7 +50,7 @@ Examples:
 a changing example:
 
 ```yaml
-quake_changing:
+quake_change:
   - 2021-12-09 09:32:28 "Todo"
   - 2021-12-09 09:40:28 "Spike" -> "Todo"
   - 2021-12-10 12:12:28 "Todo" -> "Doing"
