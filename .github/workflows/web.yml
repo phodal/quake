@@ -1,0 +1,38 @@
+name: web
+
+on: [ push, pull_request ]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: go to web app folder
+        shell: bash
+        run: cd quake_webapp
+
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+
+      - name: setup pnpm and install all dependencies
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.0.2
+          run_install: |
+            - recursive: true
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+
+      - run: yarn run nx affected -- --target=build --base=origin/master --parallel --max-parallel=3
+#      - run: yarn run nx affected -- --target=test --base=origin/master --parallel --max-parallel=2
