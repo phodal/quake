@@ -7,6 +7,25 @@ const Quake = {
     host: 'http://127.0.0.1:7700'
   }),
   router: router,
+  transflow: {
+    mapping: {},
+    add: function (route) {
+      let conf = {
+        path: `/transflow/custom/${route.name}`,
+        action: route.action
+      };
+
+      console.log(conf);
+      Quake.router.addRoutes(conf);
+
+      const nav = document.createElement('a');
+      nav.setAttribute("href", conf.path);
+      nav.innerText = route.name;
+
+      let navNode = document.getElementById("transflow-nav");
+      navNode.appendChild(nav);
+    }
+  },
   query: function (entry, query, filter) {
     let index = Quake.client.index(entry);
     let options = {
@@ -75,18 +94,6 @@ const create_entry = async (context, commands) => {
   return create_editor_element(entry, params);
 }
 
-const tl_timeline = async (context, commands) => {
-  const el = document.createElement('quake-calendar');
-
-  let todos = await Quake.query('todo');
-  let blogs = await Quake.query('blog');
-  let data = from_todo_blog_to_quake_calendar(todos, blogs);
-
-  el.setAttribute('data', JSON.stringify(data));
-
-  return el;
-}
-
 const update_entry = async (entry_type, id, fields) => {
   let response = await fetch(`/entry/${entry_type}/${id}`, {
     method: 'POST',
@@ -126,6 +133,3 @@ router.setRoutes([
   {path: '/edit/:type/:id', action: edit_entry},
   {path: '/show/:type/:id', action: show_entry},
 ]);
-
-// move to auto generate in transflow
-Quake.router.addRoutes({path: '/transflow/show_calendar', action: tl_timeline},)

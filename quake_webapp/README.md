@@ -15,7 +15,7 @@ Todo:
   - [x] Quake Action
 - [x] Stencil.js Router
   - [x] [https://github.com/ionic-team/stencil-router](https://github.com/ionic-team/stencil-router)
-  - [x] edit to editor view
+  - [x] edit to  image editor view
 - [x] Web Components Setup
   - [https://reactjs.org/docs/web-components.html](https://reactjs.org/docs/web-components.html)
   - [https://levelup.gitconnected.com/convert-existing-react-components-intowebcomponents-2b33b842ff9a](https://levelup.gitconnected.com/convert-existing-react-components-intowebcomponents-2b33b842ff9a) 
@@ -31,6 +31,7 @@ Compare: [https://medium.com/react-courses/react-charts-built-on-d3-what-should-
 ## Normal
 
 https://github.com/uber/react-vis
+
 https://recharts.org/en-US/api/SankeyChart
 
 
@@ -38,4 +39,9 @@ https://recharts.org/en-US/api/SankeyChart
 
 https://airbnb.io/visx/linktypes
 
+## Flow editor
+
+link: [https://github.com/projectstorm/react-diagrams](https://github.com/projectstorm/react-diagrams) is  a super simple, no-nonsense diagramming library written in react that just works
+
+screenshot:  [Example](https://github.com/projectstorm/react-diagrams/raw/master/.gitbook/assets/example1.jpg)
 
