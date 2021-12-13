@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use walkdir::{DirEntry, WalkDir};
 
-fn is_with_prefix(entry: &DirEntry, prefix: &String) -> bool {
+fn is_with_prefix(entry: &DirEntry, prefix: &str) -> bool {
     entry
         .file_name()
         .to_str()

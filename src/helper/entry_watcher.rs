@@ -51,14 +51,15 @@ pub async fn async_watch<P: AsRef<Path>>(path: P, search_url: String) -> notify:
     Ok(())
 }
 
-fn feed_by_event(event: Event, search_url: &String) -> Result<(), Box<dyn Error>> {
+fn feed_by_event(event: Event, search_url: &str) -> Result<(), Box<dyn Error>> {
     // only for data modify
     // todo: looking for better way
     match &event.kind {
-        EventKind::Modify(modify) => match modify {
-            ModifyKind::Data(_data) => {}
-            _ => return Ok(()),
-        },
+        EventKind::Modify(modify) => {
+            if let _ = modify {
+                return Ok(());
+            }
+        }
         _ => return Ok(()),
     }
 
@@ -86,7 +87,7 @@ pub fn entry_file_by_path(path: &PathBuf) -> Result<(String, EntryFile), Box<dyn
     let typ = type_from_md_path(&path).ok_or("")?;
     let file_name = path.file_name().ok_or("")?;
 
-    if file_name == "" || typ == "" {
+    if file_name.is_empty() || typ.is_empty() {
         return Err(Box::new(QuakeError(format!(
             "emtpy typ {:?} or file_name {:?}",
             typ, file_name

@@ -8,7 +8,7 @@ use quake_core::entry::EntryDefine;
 use crate::helper::exec_wrapper::exec_runner;
 use crate::helper::search_config::define_to_settings;
 
-pub fn feed_command(index_name: &String, search_url: &String) -> Result<(), Box<dyn Error>> {
+pub fn feed_command(index_name: &str, search_url: &str) -> Result<(), Box<dyn Error>> {
     let url = format!("{:}/indexes/{:}/documents", search_url, index_name);
     let cmd_line = format!(
         "curl -i -X POST '{:}' \
@@ -23,7 +23,7 @@ pub fn feed_command(index_name: &String, search_url: &String) -> Result<(), Box<
     Ok(())
 }
 
-pub fn feed_settings(search_url: &String, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
+pub fn feed_settings(search_url: &str, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
     let config = serde_json::to_string(&define_to_settings(define)).unwrap();
     let url = format!("{:}/indexes/{:}/settings", search_url, &define.entry_type);
     let cmd_line = format!(
@@ -39,7 +39,7 @@ pub fn feed_settings(search_url: &String, define: &EntryDefine) -> Result<(), Bo
     Ok(())
 }
 
-// pub fn feed_settings(search_url: &String, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
+// pub fn feed_settings(search_url: &str, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
 //     let value = &define_to_settings(define);
 //     let url = format!("{:}/indexes/{:}/settings", search_url, &define.entry_type);
 //
@@ -55,10 +55,7 @@ pub fn feed_settings(search_url: &String, define: &EntryDefine) -> Result<(), Bo
 // }
 
 #[allow(dead_code)]
-pub fn feed_settings_reqwest(
-    search_url: &String,
-    define: &EntryDefine,
-) -> Result<(), Box<dyn Error>> {
+pub fn feed_settings_reqwest(search_url: &str, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
     let config = serde_json::to_string(&define_to_settings(define)).unwrap();
     let url = format!("{:}/indexes/{:}/settings", search_url, &define.entry_type);
 
@@ -73,11 +70,7 @@ pub fn feed_settings_reqwest(
     Ok(())
 }
 
-pub fn feed_entry(
-    index_name: &String,
-    content: &String,
-    search_url: &String,
-) -> Result<(), Box<dyn Error>> {
+pub fn feed_entry(index_name: &str, content: &str, search_url: &str) -> Result<(), Box<dyn Error>> {
     let url = format!("{:}/indexes/{:}/documents", search_url, index_name);
     let cmd_line = format!(
         "curl -i -X POST '{:}' \
