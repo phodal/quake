@@ -64,7 +64,11 @@ flex_child = {
 
 component_use_decl =  {
     sized_empty_comp
-  | use_name ~ lbracket ~ call_flow ~  rbracket
+  | component_flow
+}
+
+component_flow = {
+    use_name ~ lbracket ~ call_flow ~  rbracket
 }
 
 sized_empty_comp = {

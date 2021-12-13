@@ -20,10 +20,16 @@ pub struct SimpleLayoutDecl {
     pub(crate) rows: Vec<LayoutColumn>,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct LayoutColumn {
-    pub(crate) components: Vec<LayoutComponent>,
+impl Default for SimpleLayoutDecl {
+    fn default() -> Self {
+        Self {
+            name: "".to_string(),
+            rows: vec![],
+        }
+    }
 }
+
+pub type LayoutColumn = Vec<LayoutComponent>;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct LayoutComponent {
@@ -31,6 +37,17 @@ pub struct LayoutComponent {
     pub(crate) is_empty: bool,
     pub(crate) flow: Option<String>,
     pub(crate) size: i32,
+}
+
+impl Default for LayoutComponent {
+    fn default() -> Self {
+        Self {
+            name: "".to_string(),
+            is_empty: false,
+            flow: None,
+            size: 0,
+        }
+    }
 }
 
 impl Default for TransflowDecl {

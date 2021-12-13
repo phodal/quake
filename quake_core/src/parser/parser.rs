@@ -1,5 +1,6 @@
 use crate::parser::ast::{
-    ActionDecl, Endway, Midway, Parameter, SourceUnit, SourceUnitPart, TransflowDecl, TransflowEnum,
+    ActionDecl, Endway, LayoutComponent, Midway, Parameter, SimpleLayoutDecl, SourceUnit,
+    SourceUnitPart, TransflowDecl, TransflowEnum,
 };
 use crate::parser::errors::QuakeParserError;
 use pest::iterators::Pair;
@@ -33,12 +34,74 @@ pub fn parse(text: &str) -> Result<SourceUnit, Box<dyn Error>> {
                 Rule::transflow_decl => {
                     parts.push(SourceUnitPart::Transflow(transflow_decl(inner_pair)));
                 }
+                Rule::layout_decl => {
+                    parts.push(SourceUnitPart::SimpleLayout(layout_decl(inner_pair)));
+                }
                 _ => println!("rule: {}", inner_pair),
             };
         }
     }
 
     Ok(SourceUnit(parts))
+}
+
+fn layout_decl(decl: Pair<Rule>) -> SimpleLayoutDecl {
+    let mut layout = SimpleLayoutDecl::default();
+    for pair in decl.into_inner() {
+        let mut row = vec![];
+        match pair.as_rule() {
+            Rule::flex_child => {
+                row.append(&mut parse_flex_child(pair));
+            }
+            Rule::ident => {
+                layout.name = String::from(pair.as_str());
+            }
+            _ => {
+                println!("{}", pair);
+            }
+        }
+
+        layout.rows.push(row);
+    }
+
+    layout
+}
+
+fn parse_flex_child(decl: Pair<Rule>) -> Vec<LayoutComponent> {
+    let mut components = vec![];
+    for pair in decl.into_inner() {
+        if let Rule::component_use_decl = pair.as_rule() {
+            components.push(component_use_decl(pair));
+        }
+    }
+
+    components
+}
+
+fn component_use_decl(decl: Pair<Rule>) -> LayoutComponent {
+    let mut component = LayoutComponent::default();
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::sized_empty_comp => {
+                component.is_empty = true;
+                component.name = "Empty".to_string();
+                for inner in pair.into_inner() {
+                    match inner.as_rule() {
+                        Rule::digits => {
+                            component.size = inner.as_str().parse().unwrap();
+                        }
+                        _ => {}
+                    }
+                }
+            }
+            Rule::component_flow => {}
+            _ => {
+                println!("{}", pair);
+            }
+        }
+    }
+
+    component
 }
 
 fn transflow_decl(decl: Pair<Rule>) -> TransflowDecl {
@@ -298,6 +361,6 @@ mod tests {
         )
         .unwrap();
 
-        println!("{:?}", unit);
+        assert_eq!(1, unit.0.len());
     }
 }
