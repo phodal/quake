@@ -2,13 +2,13 @@ use chrono::{DateTime, Local, NaiveDate, NaiveDateTime};
 use lazy_static::lazy_static;
 use regex::Regex;
 
-const DATETIME_ZONE_FORMAT: &'static str = "%Y-%m-%d %H:%M:%S %z";
-const DATETIME_NANO_FORMAT: &'static str = "%Y-%m-%d %H:%M:%S.%f";
-const UTC_FORMAT: &'static str = "%Y-%m-%dT%H:%M:%SZ";
-const UTC_MS_FORMAT: &'static str = "%Y-%m-%dT%H:%M:%S.%fZ";
-const DATETIME_FORMAT: &'static str = "%Y-%m-%d %H:%M:%S";
-const DATE_FORMAT: &'static str = "%Y-%m-%d";
-const SIMPLE_DATE_FORMAT: &'static str = "%Y.%m.%d";
+const DATETIME_ZONE_FORMAT: &str = "%Y-%m-%d %H:%M:%S %z";
+const DATETIME_NANO_FORMAT: &str = "%Y-%m-%d %H:%M:%S.%f";
+const UTC_FORMAT: &str = "%Y-%m-%dT%H:%M:%SZ";
+const UTC_MS_FORMAT: &str = "%Y-%m-%dT%H:%M:%S.%fZ";
+const DATETIME_FORMAT: &str = "%Y-%m-%d %H:%M:%S";
+const DATE_FORMAT: &str = "%Y-%m-%d";
+const SIMPLE_DATE_FORMAT: &str = "%Y.%m.%d";
 
 lazy_static! {
     static ref SIMPLE_DATE_REGEX: Regex = Regex::new(r"(?P<time>\d{4}\.\d{2}\.\d{2})").unwrap();

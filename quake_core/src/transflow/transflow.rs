@@ -40,10 +40,8 @@ impl Transflow {
         for route in &node.routes {
             if route.is_end_way {
                 transflow.target = route.to.clone();
-            } else {
-                if let Some(some) = entries_map.get(route.to.as_str()) {
-                    map.insert(route.to.clone(), (*some).clone());
-                }
+            } else if let Some(some) = entries_map.get(route.to.as_str()) {
+                map.insert(route.to.clone(), (*some).clone());
             }
 
             for from in &route.from {
