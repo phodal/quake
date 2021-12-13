@@ -142,6 +142,7 @@ pub fn quake(text: &str) -> Result<QuakeIt, Box<dyn Error>> {
                 let transflow = build_transflow(decl);
                 quakes.transflows.push(transflow);
             }
+            SourceUnitPart::SimpleLayout(_) => {}
         }
     }
 

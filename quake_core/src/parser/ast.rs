@@ -5,12 +5,32 @@ pub struct SourceUnit(pub Vec<SourceUnitPart>);
 pub enum SourceUnitPart {
     Action(ActionDecl),
     Transflow(TransflowDecl),
+    SimpleLayout(SimpleLayoutDecl),
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct TransflowDecl {
     pub(crate) name: String,
     pub(crate) flows: Vec<TransflowEnum>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct SimpleLayoutDecl {
+    pub(crate) name: String,
+    pub(crate) rows: Vec<LayoutColumn>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct LayoutColumn {
+    pub(crate) components: Vec<LayoutComponent>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct LayoutComponent {
+    pub(crate) name: String,
+    pub(crate) is_empty: bool,
+    pub(crate) flow: Option<String>,
+    pub(crate) size: i32,
 }
 
 impl Default for TransflowDecl {

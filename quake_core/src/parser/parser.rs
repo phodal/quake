@@ -18,7 +18,7 @@ pub fn parse(text: &str) -> Result<SourceUnit, Box<dyn Error>> {
     let pairs = match QuakeParser::parse(Rule::earth, text) {
         Ok(pairs) => pairs,
         Err(e) => {
-            let string = format!("{:?}", e);
+            let string = format!("{:}", e);
             return Err(Box::new(QuakeParserError::new(&*string)));
         }
     };
@@ -86,7 +86,7 @@ fn midway(decl: Pair<Rule>) -> Midway {
             Rule::parameter => {
                 midway.end = value(pair);
             }
-            Rule::from | Rule::to | Rule::left_bracket | Rule::right_bracket => {}
+            Rule::from | Rule::to | Rule::lbracket | Rule::rbracket => {}
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
                     match inner.as_rule() {
@@ -122,7 +122,7 @@ fn endway(decl: Pair<Rule>) -> Endway {
                     }
                 }
             }
-            Rule::from | Rule::to | Rule::left_bracket | Rule::right_bracket => {}
+            Rule::from | Rule::to | Rule::lbracket | Rule::rbracket => {}
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
                     match inner.as_rule() {
@@ -177,8 +177,8 @@ fn parameters(decl: Pair<Rule>) -> Vec<Parameter> {
 
                 params.push(param)
             }
-            Rule::left_bracket => {}
-            Rule::right_bracket => {}
+            Rule::lbracket => {}
+            Rule::rbracket => {}
             _ => {
                 println!("{}", pair);
             }
@@ -283,5 +283,21 @@ mod tests {
                 assert!(false);
             }
         }
+    }
+
+    #[test]
+    fn should_parse_simple_layout() {
+        let unit = parse(
+            "layout Dashboard {
+--------------------------
+|      Calendar(flow(\"show_calendar\"), 12x)  |
+--------------------------
+| Empty(2x) | Timeline(flow(\"show_timeline\"), 8x) | Empty(2x) |
+--------------------------
+}",
+        )
+        .unwrap();
+
+        println!("{:?}", unit);
     }
 }

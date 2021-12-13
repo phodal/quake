@@ -1,6 +1,7 @@
 earth = {
     action_decl
     | transflow_decl
+    | layout_decl
 }
 
 action_decl = {
@@ -16,15 +17,15 @@ transflow_expr = {
 }
 
 midway = {
-    from ~ parameters ~ "." ~ to ~ left_bracket ~ parameter ~ right_bracket ~ filter_expr?
+    from ~ parameters ~ "." ~ to ~ lbracket ~ parameter ~ rbracket ~ filter_expr?
 }
 
 endway = {
-    from ~ parameters ~ "." ~ to ~ left_bracket ~ component_decl ~ right_bracket ~ filter_expr?
+    from ~ parameters ~ "." ~ to ~ lbracket ~ component_decl ~ rbracket ~ filter_expr?
 }
 
 filter_expr = {
-    "." ~ filter_str ~ left_bracket ~ (double_quoted_string |single_quoted_string) ~ right_bracket
+    "." ~ filter_str ~ lbracket ~ (double_quoted_string |single_quoted_string) ~ rbracket
 }
 
 filter_str = { "filter" | "FILTER" }
@@ -41,16 +42,40 @@ from = { "from" }
 to = { "to" }
 
 parameters = {
-    left_bracket ~ parameter ~ ("," ~ parameter)* ~ right_bracket
+    lbracket ~ parameter ~ ("," ~ parameter)* ~ rbracket
 }
 
-left_bracket = {
+lbracket = {
     "(" | "（"
 }
 
-right_bracket = {
+rbracket = {
     ")" | "）"
 }
+
+layout_decl = {
+    "layout" ~ ident ~ "{" ~ flex_child* ~ "}"
+}
+
+flex_child = {
+    "-" ~ "-"*
+    | ("|" ~ component_use_decl)  ~  ("|"  ~  component_use_decl)*  ~  "|"
+}
+
+component_use_decl =  {
+    sized_empty_comp
+  | use_name ~ lbracket ~ call_flow ~  rbracket
+}
+
+sized_empty_comp = {
+    ("EMPTY" | "empty" | "Empty") ~ lbracket ~ digits ~  ("x" | "X") ~ rbracket
+}
+
+call_flow = {
+    "flow" ~ lbracket ~ string ~ rbracket ~ ("," ~ digits ~ ("x" | "X"))?
+}
+
+use_name = { ident }
 
 parameter = {
     digits | single_quoted_string | double_quoted_string
