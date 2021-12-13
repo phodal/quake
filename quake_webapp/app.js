@@ -83,7 +83,7 @@ const create_entry = async (context, commands) => {
   let url_params = new URLSearchParams(context.search);
   let text = url_params.get('text');
 
-  let url = `/entry/${params.type}/new?text=${text}`
+  let url = `/entry/${params.type}?text=${text}`
   const response = await fetch(url, {
     method: 'POST'
   });

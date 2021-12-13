@@ -14,7 +14,8 @@ use crate::meta::quake_change::QuakeChange;
 #[derive(Deserialize, PartialEq, Debug)]
 pub struct EntryFile {
     pub id: usize,
-    pub path: PathBuf,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub path: Option<PathBuf>,
     pub name: String,
     pub fields: IndexMap<String, String>,
     pub content: String,
@@ -51,7 +52,7 @@ impl Default for EntryFile {
     fn default() -> Self {
         EntryFile {
             id: 1,
-            path: Default::default(),
+            path: None,
             name: "".to_string(),
             fields: IndexMap::default(),
             content: "".to_string(),

@@ -3,9 +3,7 @@ use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 
-use rocket::fs::NamedFile;
 use rocket::response::status::NotFound;
-use rocket::response::Redirect;
 use rocket::serde::json::Json;
 use rocket::serde::{Deserialize, Serialize};
 use rocket::tokio::task::spawn_blocking;
@@ -20,12 +18,6 @@ use quake_core::QuakeConfig;
 
 use crate::server::helper::csv_to_json::csv_to_json;
 use crate::server::ApiError;
-
-#[get("/<entry_type>")]
-pub(crate) async fn get_entries(entry_type: &str, config: &State<QuakeConfig>) -> Redirect {
-    let request_url = format!("{:}/indexes/{:}/search", &config.search_url, entry_type);
-    Redirect::to(request_url)
-}
 
 #[get("/<entry_type>/from_csv")]
 pub(crate) async fn get_entries_from_csv(
@@ -48,23 +40,13 @@ pub(crate) async fn get_entries_from_csv(
     Ok(Json(content))
 }
 
-#[get("/<entry_type>/csv")]
-pub(crate) async fn get_entries_csv(
-    entry_type: &str,
-    config: &State<QuakeConfig>,
-) -> Option<NamedFile> {
-    let paths = EntryPaths::init(&config.workspace, &entry_type.to_string());
-    let file = NamedFile::open(paths.entries_csv);
-    file.await.ok()
-}
-
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 struct EntryResponse {
     content: String,
 }
 
-#[post("/<entry_type>/new?<text>")]
+#[post("/<entry_type>?<text>")]
 pub(crate) async fn create_entry(
     entry_type: String,
     text: String,
@@ -122,4 +104,57 @@ pub(crate) async fn update_entry(
             msg: err.to_string(),
         }))),
     };
+}
+
+#[cfg(test)]
+mod test {
+    use std::collections::HashMap;
+    use std::fs;
+    use std::io::Read;
+
+    use rocket::form::validate::Contains;
+    use rocket::http::Status;
+    use rocket::local::blocking::Client;
+
+    use quake_core::entry::entry_paths::EntryPaths;
+
+    use crate::quake_rocket;
+    use crate::server::entry_api::EntryUpdate;
+
+    #[test]
+    fn crud_for_entry() {
+        // create entry
+        let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
+        let response = client.post("/entry/test_quake?text=demo").dispatch();
+        assert_eq!(response.status(), Status::Ok);
+
+        // update entry date
+        let created_time = "2021-12-13 20:45:51";
+        let req = create_update_req(created_time);
+        let string = serde_json::to_string(&req).unwrap();
+        let response = client.post("/entry/test_quake/1").body(string).dispatch();
+        assert_eq!(response.status(), Status::Ok);
+
+        // assert for entry time is update
+        let mut response = client.get("/entry/test_quake/1").dispatch();
+        let mut res = "".to_string();
+        let _ = response.read_to_string(&mut res);
+
+        assert_eq!(response.status(), Status::Ok);
+        assert!(res.contains(created_time));
+        assert!(res.contains("\"id\":1"));
+        assert!(res.contains("\"title\":\"demo\""));
+
+        let paths = EntryPaths::init(&"examples".to_string(), &"test_quake".to_string());
+        fs::remove_dir_all(paths.base).unwrap();
+    }
+
+    fn create_update_req(time: &str) -> EntryUpdate {
+        let mut fields: HashMap<String, String> = HashMap::new();
+        fields.insert("created_date".to_string(), time.to_string());
+        fields.insert("updated_date".to_string(), time.to_string());
+
+        let update = EntryUpdate { fields };
+        update
+    }
 }
