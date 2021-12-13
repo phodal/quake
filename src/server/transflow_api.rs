@@ -112,7 +112,6 @@ mod test {
     use crate::quake_rocket;
     use crate::server::transflow_api::FlowRequest;
 
-    #[cfg(feature = "webserver")]
     #[test]
     fn transflow_translate_script() {
         let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
@@ -127,7 +126,7 @@ mod test {
     #[test]
     fn transflow_script() {
         let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
-        let mut response = client.get("/transflow/script").dispatch();
+        let mut response = client.get("/transflow/script/gen_code").dispatch();
 
         let mut res = "".to_string();
         let _ = response.read_to_string(&mut res);

@@ -73,7 +73,6 @@ mod test {
 
     use super::quake_rocket;
 
-    #[cfg(feature = "webserver")]
     #[test]
     fn hello_world() {
         let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
@@ -82,7 +81,6 @@ mod test {
         assert_eq!(response.status(), Status::Ok);
     }
 
-    #[cfg(feature = "webserver")]
     #[test]
     fn get_todo_entry() {
         let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
