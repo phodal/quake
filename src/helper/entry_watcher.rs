@@ -5,6 +5,7 @@ use std::time::Duration;
 
 use futures::channel::mpsc::{channel, Receiver};
 use futures::{SinkExt, StreamExt};
+use notify::event::ModifyKind;
 use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use tracing::{debug, error};
 
@@ -36,11 +37,8 @@ pub async fn async_watch<P: AsRef<Path>>(path: P, search_url: String) -> notify:
     while let Some(res) = rx.next().await {
         match res {
             Ok(event) => {
-                match feed_by_event(event, &search_url) {
-                    Ok(_) => {}
-                    Err(err) => {
-                        error!("watch error: {:?}", err)
-                    }
+                if let Err(err) = feed_by_event(event, &search_url) {
+                    error!("watch error: {:?}", err)
                 };
             }
             Err(e) => error!("watch error: {:?}", e),
@@ -54,12 +52,8 @@ fn feed_by_event(event: Event, search_url: &str) -> Result<(), Box<dyn Error>> {
     // only for data modify
     // todo: looking for better way
     match &event.kind {
-        EventKind::Modify(modify) =>
-        {
-            #[allow(irrefutable_let_patterns)]
-            if let _ = modify {
-                return Ok(());
-            }
+        EventKind::Modify(ModifyKind::Data(_data)) => {
+            // do something
         }
         _ => return Ok(()),
     }
