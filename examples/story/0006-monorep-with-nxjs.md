@@ -1,7 +1,7 @@
 ---
 title: monorep with nxjs
 author: 
-status: Todo
+status: Doing
 priority: Low
 created_date: 2021-12-02 21:50:45
 updated_date: 2021-12-02 21:50:45

@@ -1,7 +1,7 @@
 ---
 title: search rule 'filterableAttributes' by entry type
 author: 
-status: Spike
+status: Done
 priority: Low
 created_date: 2021-12-08 10:46:31
 updated_date: 2021-12-08 10:46:31
