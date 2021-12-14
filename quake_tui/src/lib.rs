@@ -1,6 +1,7 @@
 mod app;
 mod command;
 mod ui;
+mod widgets;
 
 use crate::app::{App, Mode};
 use crate::command::execute_command;
