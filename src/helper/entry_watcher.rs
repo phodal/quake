@@ -83,7 +83,7 @@ pub fn entry_file_by_path(path: &Path) -> Result<(String, EntryFile), Box<dyn Er
 
     if file_name.is_empty() || typ.is_empty() {
         return Err(Box::new(QuakeError(format!(
-            "emtpy typ {:?} or file_name {:?}",
+            "emtpy type {:?} or file_name {:?}",
             typ, file_name
         ))));
     }

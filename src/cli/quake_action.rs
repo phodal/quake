@@ -56,7 +56,7 @@ fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
             continue;
         }
 
-        let table = entry.path().join("entries.csv");
+        let table = entry.path().join(EntryPaths::entries_csv());
         if !table.exists() {
             continue;
         }
@@ -83,14 +83,6 @@ fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn walk_in_path(path: PathBuf) -> FilterEntry<IntoIter, fn(&DirEntry) -> bool> {
-    WalkDir::new(path)
-        .min_depth(1)
-        .max_depth(1)
-        .into_iter()
-        .filter_entry(|e| !is_hidden(e))
-}
-
 fn sync_defines(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&conf.workspace);
 
@@ -115,7 +107,7 @@ fn sync_defines(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
         let paths = EntryPaths::init(&conf.workspace, &path_name);
         entry_usecases::sync_in_path(&paths)?;
 
-        let csv = entry.path().join("entries.csv");
+        let csv = entry.path().join(EntryPaths::entries_csv());
         if csv.exists() {
             define_file
                 .entries
@@ -130,4 +122,12 @@ fn sync_defines(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
     )?;
 
     Ok(())
+}
+
+fn walk_in_path(path: PathBuf) -> FilterEntry<IntoIter, fn(&DirEntry) -> bool> {
+    WalkDir::new(path)
+        .min_depth(1)
+        .max_depth(1)
+        .into_iter()
+        .filter_entry(|e| !is_hidden(e))
 }
