@@ -289,6 +289,11 @@ a {
   color: #1abc9c;
 }
 
+.quake-page-link {
+  cursor: pointer;
+  color: #1abc9c;
+}
+
 span.page-link > span {
   color: #1abc9c;
 }

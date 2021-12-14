@@ -112,9 +112,10 @@ const show_entry = async (context, commands) => {
   const editor = document.createElement('quake-render');
   editor.setAttribute('content', entry.content);
 
-  editor.addEventListener("onSave", function (event) {
+  editor.addEventListener("clickPageLink", function (event) {
     let data = event.detail;
     console.log(data);
+    Router.go(`/show/${data.type}/${data.id}`);
   });
 
   return editor
