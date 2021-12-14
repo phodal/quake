@@ -95,7 +95,7 @@ impl Entrysets {
     pub fn jsonify_with_format_date(
         path: &Path,
         define: &EntryDefine,
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<JsonValue, Box<dyn Error>> {
         let files = Self::scan_files(path);
         let mut index = 1;
 
@@ -144,7 +144,7 @@ impl Entrysets {
             index += 1;
         }
 
-        Ok(json.to_string())
+        Ok(json)
     }
 
     /// scan all entries files, and rebuild indexes
@@ -338,13 +338,15 @@ mod tests {
         let json = Entrysets::jsonify_with_format_date(&buf, &todo_define()).unwrap();
 
         #[cfg(not(windows))]
-        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\\n\\nahaha\\n\",\"created_date\":1637781250,\"updated_date\":1637781250,\"id\":1,\"type\":\"todo\"}]");
+        assert_eq!(json.to_string(), "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\\n\\nahaha\\n\",\"created_date\":1637781250,\"updated_date\":1637781250,\"id\":1,\"type\":\"todo\"}]");
     }
 
     #[ignore]
     #[test]
     fn jsonify_todo_with_date_test() {
         let buf = PathBuf::from("..").join("examples").join("onenote");
-        let _json = Entrysets::jsonify_with_format_date(&buf, &todo_define()).unwrap();
+        let _json = Entrysets::jsonify_with_format_date(&buf, &todo_define())
+            .unwrap()
+            .to_string();
     }
 }

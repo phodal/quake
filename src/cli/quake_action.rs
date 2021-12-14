@@ -69,7 +69,7 @@ fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
             .find(&entry_type)
             .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
 
-        let map = Entrysets::jsonify_with_format_date(&paths.base, &define)?;
+        let map = Entrysets::jsonify_with_format_date(&paths.base, &define)?.to_string();
         fs::write(temp_file, map)?;
 
         meili_exec::feed_command(&entry_type, &conf.search_url)?;
