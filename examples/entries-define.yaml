@@ -144,3 +144,10 @@ entries:
       - order: Order
       - author: String
     actions: ~
+  - type: testcases
+    display: ""
+    fields:
+      - title: Title
+      - created_date: Date
+      - updated_date: Date
+    actions: ~

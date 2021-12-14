@@ -5,6 +5,8 @@ updated_date: 2021-12-07 21:18:03
 category: search engine
 ---
 
+![[story:0001 "demo"]]
+
 # Quake Search
 
 ## Setup diesel

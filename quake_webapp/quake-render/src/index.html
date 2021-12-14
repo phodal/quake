@@ -9,8 +9,22 @@
   <script nomodule src='/build/quake-render.js'></script>
 </head>
 <body>
-  <quake-graph></quake-graph>
-  <quake-render content = "# [heading+](https://quake.inherd.org)
+  <quake-render content = "
+page link [[note:0001 &quot;demo&quot;]]
+
+embed link ![[note:0001 &quot;demo&quot;]]
+
+!!! info &quot;title&quot;
+    **something**
+
+:Test:
+
+```javascript
+console.log('hello, world');
+```
+sample
+
+# [heading+](https://quake.inherd.org)
 > blockquote
 
 # h1
@@ -46,18 +60,6 @@ pll:
 
 4. zero
 5. demo
-
-some_link [[note:0001-demo]] fdas
-
-!!! info &quot;title&quot;
-    **something**
-
-:Test:
-
-```javascript
-console.log('hello, world');
-```
-sample
 
 ">
 

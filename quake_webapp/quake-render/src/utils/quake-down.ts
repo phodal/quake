@@ -4,12 +4,9 @@ import Prism from 'prismjs';
 class QuakeDown {
   content = '';
   slugger = new Slugger();
+  renderer: marked.Renderer;
 
   parseInline: (tokens, renderer) => string;
-
-  headingIndex = 0;
-
-  renderer: marked.Renderer;
 
   constructor(content: string, parseInline: (tokens, renderer) => string) {
     this.parseInline = parseInline;
@@ -37,16 +34,13 @@ class QuakeDown {
             body: match[3]?.trim(),
           };
         }
-      },
-      renderer(token) {
-        return `<a>${token}</a>`;
-      },
+      }
     };
     const page_link = {
       name: 'page_link',
       level: 'inline',
       tokenizer(src, _tokens) {
-        const rule = /^\[\[([a-zA-Z_-]{1,}):(\d{1,4})-(.+?(?=\]\]))\]\]/;
+        const rule = /^\[\[([a-zA-Z_-]+):(\d{1,4}) "(.+?(?="]]))"]]/;
         const match = rule.exec(src);
         if (match) {
           return {
@@ -57,13 +51,28 @@ class QuakeDown {
             entry_title: match[3].trim()
           };
         }
-      },
-      renderer(token) {
-        return `<a>${token}</a>`;
-      },
+      }
+    };
+    const embed_link = {
+      name: 'embed_link',
+      level: 'inline',
+      tokenizer(src, _tokens) {
+        const rule = /^\!\[\[([a-zA-Z_-]+):(\d{1,4}) "(.+?(?="]]))"]]/;
+        const match = rule.exec(src);
+
+        if (match) {
+          return {
+            type: 'embed_link',
+            raw: match[0],
+            entry_type: match[1].trim(),
+            entry_id: match[2].trim(),
+            entry_title: match[3].trim()
+          };
+        }
+      }
     };
 
-    return [page_link, admonition];
+    return [embed_link, page_link, admonition];
   }
 
   gen() {
@@ -94,7 +103,6 @@ class QuakeDown {
           type: 'heading',
           depth: token.depth,
           text: this.renderInline(token.tokens),
-          headingIndex: this.headingIndex,
           anchor: this.slugger.slug(this.unescape(this.renderInline(token.tokens))),
         };
         break;
@@ -170,26 +178,33 @@ class QuakeDown {
         break;
       default:
         let custom_type = token as any;
-        switch (custom_type.type) {
-          case 'admonition':
-            let content = this.build_data(custom_type.body);
-            data = {
-              type: 'admonition',
-              title: custom_type.title,
-              display_type: custom_type.display_type,
-              data: content,
-              raw: custom_type.raw,
-            };
-            break;
-          case 'page_link':
-            data = {
-              type: 'page_link',
-              raw: custom_type.raw,
-            };
-            break;
-          default:
-          // console.log(token);
-        }
+        data = this.handleCustomBlock(custom_type);
+    }
+
+    return data;
+  }
+
+  private handleCustomBlock(token) {
+    let data;
+    switch (token.type) {
+      case 'admonition':
+        let content = this.build_data(token.body);
+        data = {
+          type: 'admonition',
+          title: token.title,
+          display_type: token.display_type,
+          data: content,
+          raw: token.raw,
+        };
+        break;
+      case 'page_link':
+        data = {
+          type: 'page_link',
+          raw: token.raw,
+        };
+        break;
+      default:
+        console.log(token);
     }
 
     return data;

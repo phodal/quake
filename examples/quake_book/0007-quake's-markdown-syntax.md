@@ -14,7 +14,9 @@ ambiguous link
 
 [["title"]]
 
-page link
+### Embed  link
+
+![[todo:0001 "page-title"]]
 
 ### Admonition
 

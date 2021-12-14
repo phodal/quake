@@ -20,7 +20,7 @@ export class QuakeGraph {
     name: 'Demo',
     checked: true,
   }];
-  // @State() value: number = 0;
+
   private value: number = 0;
   private holder: any;
 

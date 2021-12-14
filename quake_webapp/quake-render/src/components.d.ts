@@ -5,17 +5,28 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { PageLink } from "./components/quake-render/quake-render";
+import { Link } from "./components/quake-render/quake-render";
 export namespace Components {
+    interface EmbedLink {
+        "entryId": number;
+        "entryType": string;
+    }
     interface QuakeGraph {
         "config": any;
         "data": any;
     }
     interface QuakeRender {
         "content": string;
+        "hasEmbed": boolean;
     }
 }
 declare global {
+    interface HTMLEmbedLinkElement extends Components.EmbedLink, HTMLStencilElement {
+    }
+    var HTMLEmbedLinkElement: {
+        prototype: HTMLEmbedLinkElement;
+        new (): HTMLEmbedLinkElement;
+    };
     interface HTMLQuakeGraphElement extends Components.QuakeGraph, HTMLStencilElement {
     }
     var HTMLQuakeGraphElement: {
@@ -29,20 +40,28 @@ declare global {
         new (): HTMLQuakeRenderElement;
     };
     interface HTMLElementTagNameMap {
+        "embed-link": HTMLEmbedLinkElement;
         "quake-graph": HTMLQuakeGraphElement;
         "quake-render": HTMLQuakeRenderElement;
     }
 }
 declare namespace LocalJSX {
+    interface EmbedLink {
+        "entryId"?: number;
+        "entryType"?: string;
+    }
     interface QuakeGraph {
         "config"?: any;
         "data"?: any;
     }
     interface QuakeRender {
         "content"?: string;
-        "onClickPageLink"?: (event: CustomEvent<PageLink>) => void;
+        "hasEmbed"?: boolean;
+        "onClickEmbedLink"?: (event: CustomEvent<Link>) => void;
+        "onClickPageLink"?: (event: CustomEvent<Link>) => void;
     }
     interface IntrinsicElements {
+        "embed-link": EmbedLink;
         "quake-graph": QuakeGraph;
         "quake-render": QuakeRender;
     }
@@ -51,6 +70,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "embed-link": LocalJSX.EmbedLink & JSXBase.HTMLAttributes<HTMLEmbedLinkElement>;
             "quake-graph": LocalJSX.QuakeGraph & JSXBase.HTMLAttributes<HTMLQuakeGraphElement>;
             "quake-render": LocalJSX.QuakeRender & JSXBase.HTMLAttributes<HTMLQuakeRenderElement>;
         }

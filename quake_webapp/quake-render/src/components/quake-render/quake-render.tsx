@@ -1,7 +1,8 @@
 import {Component, Event, EventEmitter, h, Prop, State} from '@stencil/core';
 import QuakeDown from '../../utils/quake-down';
 
-export interface PageLink {
+export interface Link {
+  entry_type: String,
   type: String,
   id: number
 }
@@ -13,6 +14,8 @@ export interface PageLink {
 })
 export class QuakeRender {
   @Prop() content: string = '';
+  @Prop() hasEmbed: boolean = false;
+
   @State() markdownData: any[] = [];
   el: HTMLElement;
 
@@ -21,25 +24,46 @@ export class QuakeRender {
     composed: true,
     cancelable: true,
     bubbles: true,
-  }) clickPageLink: EventEmitter<PageLink>;
+  }) clickPageLink: EventEmitter<Link>;
+
+  @Event({
+    eventName: 'clickEmbedLink',
+    composed: true,
+    cancelable: true,
+    bubbles: true,
+  }) clickEmbedLink: EventEmitter<Link>;
 
   componentWillRender() {
     this.markdownData = new QuakeDown(this.content, this.parseInline).gen();
   }
 
   componentDidRender() {
-    let elems = this.el.querySelectorAll('.quake-page-link');
+    let pageLinks = this.el.querySelectorAll('.quake-page-link');
     // @ts-ignore
-    for (let elem of elems) {
+    for (let elem of pageLinks) {
       elem.addEventListener('click', _e => {
-        let data: PageLink = {
-          type: elem.dataset.type,
+        let data: Link = {
+          type: 'page-link',
+          entry_type: elem.dataset.type,
           id: Number(elem.dataset.id)
         };
-        console.log(data);
         this.clickPageLink.emit(data)
       });
     }
+
+    // let embedLinks = this.el.querySelectorAll('.quake-embed-link');
+    // // @ts-ignore
+    // for (let elem of embedLinks) {
+    //   elem.addEventListener('click', _e => {
+    //     let data: Link = {
+    //       type: 'embed-link',
+    //       entry_type: elem.dataset.type,
+    //       id: Number(elem.dataset.id)
+    //     };
+    //
+    //     this.clickEmbedLink.emit(data)
+    //   });
+    // }
   }
 
   render() {
@@ -57,13 +81,13 @@ export class QuakeRender {
         out = this.renderHeading(item);
         break;
       case 'blockquote':
-        out = <blockquote innerHTML={item.text} />;
+        out = <blockquote innerHTML={item.text}/>;
         break;
       case 'hr':
-        out = <hr />;
+        out = <hr/>;
         break;
       case 'paragraph':
-        out = <p innerHTML={item.text} />;
+        out = <p innerHTML={item.text}/>;
         break;
       case 'space':
         break;
@@ -82,11 +106,11 @@ export class QuakeRender {
         </div>;
         break;
       case 'code':
-        out = <pre class={'language-' + item.lang}><code class={'language-' + item.lang} innerHTML={item.text} /></pre>
+        out = <pre class={'language-' + item.lang}><code class={'language-' + item.lang} innerHTML={item.text}/></pre>
         break;
       default:
         // console.log(item);
-        out = <span />;
+        out = <span/>;
     }
 
     return out;
@@ -96,22 +120,22 @@ export class QuakeRender {
     let heading: string;
     switch (item.depth) {
       case 1:
-        heading = <h1 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
+        heading = <h1 innerHTML={item.text} class='quake-heading' id={item.anchor}/>;
         break;
       case 2:
-        heading = <h2 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
+        heading = <h2 innerHTML={item.text} class='quake-heading' id={item.anchor}/>;
         break;
       case 3:
-        heading = <h3 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
+        heading = <h3 innerHTML={item.text} class='quake-heading' id={item.anchor}/>;
         break;
       case 4:
-        heading = <h4 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
+        heading = <h4 innerHTML={item.text} class='quake-heading' id={item.anchor}/>;
         break;
       case 5:
-        heading = <h5 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
+        heading = <h5 innerHTML={item.text} class='quake-heading' id={item.anchor}/>;
         break;
       case 6:
-        heading = <h6 innerHTML={item.text} class='quake-heading' id={item.anchor} />;
+        heading = <h6 innerHTML={item.text} class='quake-heading' id={item.anchor}/>;
         break;
       default:
         console.log(item);
@@ -125,7 +149,7 @@ export class QuakeRender {
       <thead>
       <tr>
         {item.header.map((head) =>
-          <th innerHTML={head} />,
+          <th innerHTML={head}/>,
         )}
       </tr>
       </thead>
@@ -133,7 +157,7 @@ export class QuakeRender {
       {item.rows.map((row) =>
         <tr>
           {row.map((cell) =>
-            <td innerHTML={cell} />,
+            <td innerHTML={cell}/>,
           )}
         </tr>,
       )}
@@ -221,6 +245,12 @@ export class QuakeRender {
         }
         case 'page_link': {
           out += `<span class='quake-page-link' data-type=${token.entry_type} data-id=${token.entry_id}>${token.entry_title}</span>`;
+          break;
+        }
+        case 'embed_link': {
+          out += `<div class='quake-embed-link' data-type='${token.entry_type}' data-id='${token.entry_id}'>
+    <embed-link entry-type='${token.entry_type}' entry-id='${token.entry_id}'></embed-link>
+</div>`;
           break;
         }
         default: {
