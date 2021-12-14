@@ -232,6 +232,7 @@ mod tests {
             process_cmd(Opts {
                 cmd: SubCommand::Init(Init {
                     path: test_dir.to_string(),
+                    download: false,
                 }),
             })
             .await
