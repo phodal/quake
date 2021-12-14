@@ -1,5 +1,10 @@
-import { Component, h, Prop, State } from '@stencil/core';
+import {Component, Event, EventEmitter, h, Prop, State} from '@stencil/core';
 import QuakeDown from '../../utils/quake-down';
+
+export interface PageLink {
+  type: String,
+  id: number
+}
 
 @Component({
   tag: 'quake-render',
@@ -11,6 +16,13 @@ export class QuakeRender {
   @State() markdownData: any[] = [];
   el: HTMLElement;
 
+  @Event({
+    eventName: 'linkToPage',
+    composed: true,
+    cancelable: true,
+    bubbles: true,
+  }) linkToPage: EventEmitter<PageLink>;
+
   componentWillRender() {
     this.markdownData = new QuakeDown(this.content, this.parseInline).gen();
   }
@@ -19,8 +31,13 @@ export class QuakeRender {
     let elems = this.el.querySelectorAll('.quake-page-link');
     // @ts-ignore
     for (let elem of elems) {
-      elem.addEventListener('click', function(e) {
-        console.log(e.target);
+      elem.addEventListener('click', _e => {
+        let data: PageLink = {
+          type: elem.dataset.type,
+          id: Number(elem.dataset.id)
+        };
+        console.log(data);
+        this.linkToPage.emit(data)
       });
     }
   }
@@ -37,7 +54,7 @@ export class QuakeRender {
     let out: string;
     switch (item.type) {
       case 'heading':
-        out = this.render_heading(item);
+        out = this.renderHeading(item);
         break;
       case 'blockquote':
         out = <blockquote innerHTML={item.text} />;
@@ -75,7 +92,7 @@ export class QuakeRender {
     return out;
   }
 
-  private render_heading(item: any) {
+  private renderHeading(item: any) {
     let heading: string;
     switch (item.depth) {
       case 1:

@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { PageLink } from "./components/quake-render/quake-render";
 export namespace Components {
     interface QuakeGraph {
         "config": any;
@@ -39,6 +40,7 @@ declare namespace LocalJSX {
     }
     interface QuakeRender {
         "content"?: string;
+        "onLinkToPage"?: (event: CustomEvent<PageLink>) => void;
     }
     interface IntrinsicElements {
         "quake-graph": QuakeGraph;
