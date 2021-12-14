@@ -1,9 +1,9 @@
-use async_std::task;
 use std::error::Error;
 
-use quake_core::entry::entry_file::EntryFile;
+use async_std::task;
 use tracing::info;
 
+use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::EntryDefine;
 
 use crate::helper::exec_wrapper::exec_runner;
@@ -57,7 +57,7 @@ pub fn feed_entry(index_name: &str, file: &EntryFile, server: &str) -> Result<()
 mod tests {
     use quake_core::entry::EntryDefine;
 
-    use crate::helper::exec_wrapper::meili_exec::feed_settings_reqwest;
+    use crate::helper::exec_wrapper::meili_exec::feed_settings;
 
     fn get_define() -> EntryDefine {
         let yaml = "
@@ -81,6 +81,6 @@ mod tests {
     #[ignore]
     fn test_feed_settings() {
         let define = &get_define();
-        let _ = feed_settings_reqwest(&"http://127.0.0.1:7700".to_string(), define);
+        let _ = feed_settings(&"http://127.0.0.1:7700".to_string(), define);
     }
 }
