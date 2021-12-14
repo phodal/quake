@@ -1,5 +1,6 @@
 import { marked, Slugger } from 'marked';
 import Prism from 'prismjs';
+import getExtensions from "./extensions";
 
 class QuakeDown {
   content = '';
@@ -13,75 +14,18 @@ class QuakeDown {
     this.content = content;
   }
 
-  extensions(): any {
-    const admonition = {
-      name: 'admonition',
-      level: 'block',
-      start(src) {
-        return src.match(/!!!/)?.index;
-      },
-      tokenizer(src) {
-        /// modified from https://github.com/haishanh/hs-marked-extra/blob/master/lib/marked_extra.js
-        /// LICENSE MIT
-        const rule = /^!!! ([\w\-]+)(?: "([^\n]*?)")?(?:\s*\n|\s*$)((?:(?:\t| {4})[^\n]+(?:\n|$)|\s*(\n|$))*)?/;
-        const match = rule.exec(src);
-        if (match) {
-          return {
-            type: 'admonition',
-            raw: match[0],
-            display_type: match[1]?.trim(),
-            title: match[2]?.trim(),
-            body: match[3]?.trim(),
-          };
-        }
-      }
-    };
-    const page_link = {
-      name: 'page_link',
-      level: 'inline',
-      tokenizer(src, _tokens) {
-        const rule = /^\[\[([a-zA-Z_-]+):(\d{1,4}) "(.+?(?="]]))"]]/;
-        const match = rule.exec(src);
-        if (match) {
-          return {
-            type: 'page_link',
-            raw: match[0],
-            entry_type: match[1].trim(),
-            entry_id: match[2].trim(),
-            entry_title: match[3].trim()
-          };
-        }
-      }
-    };
-    const embed_link = {
-      name: 'embed_link',
-      level: 'inline',
-      tokenizer(src, _tokens) {
-        const rule = /^\!\[\[([a-zA-Z_-]+):(\d{1,4}) "(.+?(?="]]))"]]/;
-        const match = rule.exec(src);
-
-        if (match) {
-          return {
-            type: 'embed_link',
-            raw: match[0],
-            entry_type: match[1].trim(),
-            entry_id: match[2].trim(),
-            entry_title: match[3].trim()
-          };
-        }
-      }
-    };
-
-    return [embed_link, page_link, admonition];
-  }
-
-  gen() {
+  build() {
     marked.use({
-      extensions: this.extensions(),
+      extensions: QuakeDown.extensions(),
     });
     this.renderer = new marked.Renderer();
 
     return this.build_data(this.content);
+  }
+
+  // add extensions in extension.ts file for split
+  private static extensions() {
+    return getExtensions();
   }
 
   private build_data(src: string) {

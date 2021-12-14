@@ -95,8 +95,6 @@ mod tests {
     fn search_config_for_search() {
         let settings = define_to_settings(&get_define());
 
-        println!("{:}", serde_json::to_string(&settings).unwrap());
-
         assert_eq!(3, settings.searchable_attributes.unwrap().len());
         assert_eq!(5, settings.filterable_attributes.unwrap().len());
     }

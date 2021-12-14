@@ -20,8 +20,12 @@ export class EmbedLink {
   }
 
   async componentWillLoad() {
-    let response = await fetch(`/entry/${this.entryType}/${this.entryId}`)
-    this.entry = await response.json();
+    try {
+      let response = await fetch(`/entry/${this.entryType}/${this.entryId}`)
+      this.entry = await response.json();
+    } catch (error) {
+
+    }
   }
 
   render() {

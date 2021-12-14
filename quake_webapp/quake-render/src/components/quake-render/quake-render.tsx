@@ -34,7 +34,7 @@ export class QuakeRender {
   }) clickEmbedLink: EventEmitter<Link>;
 
   componentWillRender() {
-    this.markdownData = new QuakeDown(this.content, this.parseInline).gen();
+    this.markdownData = new QuakeDown(this.content, this.parseInline).build();
   }
 
   componentDidRender() {
