@@ -56,6 +56,10 @@ pub struct Init {
     /// init by path
     #[clap(short, long, default_value = ".")]
     path: String,
+
+    #[clap(short, long)]
+    /// download web.zip from GitHub
+    download: bool,
 }
 
 #[derive(Parser, Debug)]
