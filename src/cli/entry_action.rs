@@ -7,6 +7,7 @@ use tracing::info;
 
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
+use quake_core::entry::EntryDefines;
 use quake_core::errors::QuakeError;
 use quake_core::parser::quake::QuakeActionNode;
 use quake_core::quake_config::QuakeConfig;
@@ -15,7 +16,7 @@ use quake_core::usecases::entry_usecases::find_entry_path;
 use quake_core::usecases::entrysets::Entrysets;
 
 use crate::cli::helper::table_process;
-use crate::helper::exec_wrapper::editor_exec;
+use crate::helper::exec_wrapper::{editor_exec, meili_exec};
 
 pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.workspace, &expr.object);
@@ -40,6 +41,7 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
             }
         }
         "sync" => entry_usecases::sync_in_path(&paths)?,
+        "feed" => feed_by_path(&paths, &expr.object, &conf)?,
         "dump" => dump_by_path(&paths)?,
         "show" => show_entry_detail(expr, &paths)?,
         "list" => show_entrysets(&paths.base.join("entries.csv")),
@@ -50,6 +52,29 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
             ))))
         }
     }
+
+    Ok(())
+}
+
+fn feed_by_path(
+    paths: &EntryPaths,
+    entry_type: &str,
+    conf: &QuakeConfig,
+) -> Result<(), Box<dyn Error>> {
+    let temp_file = "dump.json";
+
+    let defines = EntryDefines::from_path(&paths.entries_define);
+    let define = defines
+        .find(entry_type)
+        .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
+
+    let map = Entrysets::jsonify_with_format_date(&paths.base, &define)?.to_string();
+    fs::write(temp_file, map)?;
+
+    meili_exec::feed_documents(&conf.search_url, entry_type)?;
+    meili_exec::feed_settings(&conf.search_url, &define)?;
+
+    fs::remove_file(temp_file)?;
 
     Ok(())
 }
