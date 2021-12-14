@@ -9,7 +9,7 @@ use quake_core::entry::EntryDefine;
 use crate::helper::exec_wrapper::exec_runner;
 use crate::helper::search_config::define_to_settings;
 
-pub fn feed_command(index_name: &str, server: &str) -> Result<(), Box<dyn Error>> {
+pub fn feed_documents(server: &str, index_name: &str) -> Result<(), Box<dyn Error>> {
     let url = format!("{:}/indexes/{:}/documents", server, index_name);
     let cmd_line = format!(
         "curl -i -X POST '{:}' \
@@ -39,7 +39,11 @@ pub fn feed_settings(server: &str, define: &EntryDefine) -> Result<(), Box<dyn E
     Ok(())
 }
 
-pub fn feed_entry(index_name: &str, file: &EntryFile, server: &str) -> Result<(), Box<dyn Error>> {
+pub fn feed_document(
+    server: &str,
+    index_name: &str,
+    file: &EntryFile,
+) -> Result<(), Box<dyn Error>> {
     let format_url = format!("{:}/indexes/{:}/documents", server, index_name);
 
     task::block_on(async {

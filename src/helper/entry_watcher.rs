@@ -13,7 +13,7 @@ use quake_core::entry::entry_file::EntryFile;
 use quake_core::errors::QuakeError;
 use quake_core::helper::file_filter::type_from_md_path;
 
-use crate::helper::exec_wrapper::meili_exec::feed_entry;
+use crate::helper::exec_wrapper::meili_exec::feed_document;
 
 fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
     let (mut tx, rx) = channel(1);
@@ -71,7 +71,7 @@ fn feed_by_event(event: Event, search_url: &str) -> Result<(), Box<dyn Error>> {
         }
 
         let (typ, file) = entry_file_by_path(&path)?;
-        feed_entry(&typ, &file, search_url)?;
+        feed_document(search_url, &typ, &file)?;
     }
 
     Ok(())
