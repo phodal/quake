@@ -1,4 +1,5 @@
-use crate::app::{App, MainWidget, Mode};
+use crate::app::{App, Mode};
+use crate::widgets::MainWidget;
 use quake_core::parser::quake::QuakeActionNode;
 
 pub fn execute_command(command: &str, app: &mut App) -> Result<(), String> {
