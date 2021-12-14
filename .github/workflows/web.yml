@@ -34,5 +34,4 @@ jobs:
         with:
           node-version: '16'
 
-      - run: cd quake_webapp && ls && yarn run nx affected --target=build --parallel --max-parallel=3
-#      - run: yarn run nx affected --target=test --parallel --max-parallel=2
+      - run: cd quake_webapp && yarn run nx affected --target=build --parallel
