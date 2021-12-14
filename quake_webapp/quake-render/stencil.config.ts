@@ -2,6 +2,9 @@ import { Config } from '@stencil/core';
 
 export const config: Config = {
   namespace: 'quake-render',
+  testing: {
+
+  },
   outputTargets: [
     {
       type: 'dist',

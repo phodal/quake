@@ -9,13 +9,24 @@ import QuakeDown from '../../utils/quake-down';
 export class QuakeRender {
   @Prop() content: string = '';
   @State() markdownData: any[] = [];
+  el: HTMLElement;
 
   componentWillRender() {
     this.markdownData = new QuakeDown(this.content, this.parseInline).gen();
   }
 
+  componentDidRender() {
+    let elems = this.el.querySelectorAll('.quake-page-link');
+    // @ts-ignore
+    for (let elem of elems) {
+      elem.addEventListener('click', function(e) {
+        console.log(e.target);
+      });
+    }
+  }
+
   render() {
-    return <div>
+    return <div ref={(el) => this.el = el as HTMLElement}>
       {this.markdownData.map((item: any) =>
         this.conditionRender(item),
       )}
@@ -40,10 +51,10 @@ export class QuakeRender {
       case 'space':
         break;
       case 'table':
-        out = this.render_table(item);
+        out = this.renderTable(item);
         break;
       case 'list':
-        out = this.render_list(item);
+        out = this.renderList(item);
         break;
       case 'admonition':
         out = <div class={'admonition is-' + item.display_type}>
@@ -92,7 +103,7 @@ export class QuakeRender {
     return heading;
   }
 
-  private render_table(item: any) {
+  private renderTable(item: any) {
     return <table>
       <thead>
       <tr>
@@ -113,7 +124,7 @@ export class QuakeRender {
     </table>;
   }
 
-  private render_list(list: any) {
+  private renderList(list: any) {
     if (list.ordered) {
       return <ol start={list.start}>
         {list.children.map((item) =>
@@ -121,7 +132,7 @@ export class QuakeRender {
             {item.task && <input type='checkbox' checked={item.checked}/>}
             <span innerHTML={item.text}/>
             {item.children.length > 0 && item.children[0].type == 'list' &&
-              this.render_list(item.children[0])
+              this.renderList(item.children[0])
             }
           </li>,
         )}
@@ -133,7 +144,7 @@ export class QuakeRender {
             {item.task && <input type='checkbox' checked={item.checked}/>}
             <span innerHTML={item.text}/>
             {item.children.length > 0 && item.children[0].type == 'list' &&
-              this.render_list(item.children[0])
+              this.renderList(item.children[0])
             }
           </li>,
         )}
@@ -192,10 +203,7 @@ export class QuakeRender {
           break;
         }
         case 'page_link': {
-          out += `<span class='page-link'>
-  <span id=${'page-link-' + token.entry_type + '-' + token.entry_id}>${token.entry_title}</span>
-</span>
-`;
+          out += `<span class='quake-page-link' data-type=${token.entry_type} data-id=${token.entry_id}>${token.entry_title}</span>`;
           break;
         }
         default: {
