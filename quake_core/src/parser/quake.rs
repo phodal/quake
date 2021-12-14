@@ -1,7 +1,7 @@
 use crate::helper::quake_time::replace_to_unix;
 use std::error::Error;
 
-use crate::parser::ast::{SourceUnitPart, TransflowDecl, TransflowEnum};
+use crate::parser::ast::{SimpleLayoutDecl, SourceUnitPart, TransflowDecl, TransflowEnum};
 use crate::parser::dsl_parser::parse;
 use crate::parser::errors::QuakeParserError;
 
@@ -9,6 +9,7 @@ use crate::parser::errors::QuakeParserError;
 pub struct QuakeIt {
     pub actions: Vec<QuakeActionNode>,
     pub transflows: Vec<QuakeTransflowNode>,
+    pub simple_layout: Vec<SimpleLayout>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
@@ -82,6 +83,39 @@ impl QuakeActionNode {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct SimpleLayout {
+    pub name: String,
+    pub rows: Vec<LayoutRow>,
+}
+
+impl SimpleLayout {
+    pub fn new(name: String) -> Self {
+        Self { name, rows: vec![] }
+    }
+    pub fn from_text(text: &str) -> Result<SimpleLayout, Box<dyn Error>> {
+        let it = quake(text)?;
+        if it.simple_layout.is_empty() {
+            return Err(Box::new(QuakeParserError::new("not match action")));
+        }
+
+        Ok(it.simple_layout[0].clone())
+    }
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, Default)]
+pub struct LayoutRow {
+    pub columns: Vec<LayoutComponent>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, Default)]
+pub struct LayoutComponent {
+    pub(crate) name: String,
+    pub(crate) is_empty: bool,
+    pub(crate) flow: String,
+    pub(crate) size: i32,
+}
+
 /// parse pure text to `QuakeIt` collections which include all
 /// - QuakeAction        , the action for handle data in Quake
 /// - QuakeTransflowNode , the data transform in Quake
@@ -108,11 +142,36 @@ pub fn quake(text: &str) -> Result<QuakeIt, Box<dyn Error>> {
                 let transflow = build_transflow(decl);
                 quakes.transflows.push(transflow);
             }
-            SourceUnitPart::SimpleLayout(_) => {}
+            SourceUnitPart::SimpleLayout(decl) => {
+                let layout = build_simple_layout(decl);
+                quakes.simple_layout.push(layout);
+            }
         }
     }
 
     Ok(quakes)
+}
+
+fn build_simple_layout(decl: SimpleLayoutDecl) -> SimpleLayout {
+    let mut layout = SimpleLayout::new(decl.name);
+
+    for column_node in decl.rows {
+        let mut row = LayoutRow::default();
+        for component_node in column_node {
+            let component = LayoutComponent {
+                name: component_node.name.to_string(),
+                is_empty: component_node.is_empty,
+                flow: component_node.flow.unwrap_or_else(|| "".to_string()),
+                size: component_node.size,
+            };
+
+            row.columns.push(component);
+        }
+
+        layout.rows.push(row);
+    }
+
+    layout
 }
 
 fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
@@ -157,7 +216,7 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
 #[cfg(test)]
 mod tests {
     use crate::parser::quake::QuakeActionNode;
-    use crate::quake::QuakeTransflowNode;
+    use crate::quake::{QuakeTransflowNode, SimpleLayout};
 
     #[test]
     fn should_parse_expression() {
@@ -246,5 +305,19 @@ mod tests {
             expr.routes[0].filter,
             "created_date > 1609459200 AND created_date < 1640908800"
         );
+    }
+
+    #[test]
+    fn should_parse_layout() {
+        let define = "layout Dashboard {
+--------------------------
+|      Calendar(flow(\"show_calendar\"), 12x)  |
+--------------------------
+| Empty(2x) | Timeline(flow(\"show_timeline\"), 8x) | Empty(2x) |
+--------------------------
+}";
+        let layout = SimpleLayout::from_text(define).unwrap();
+        let str = format!("{:?}", layout);
+        assert_eq!(str, "SimpleLayout { name: \"Dashboard\", rows: [LayoutRow { columns: [LayoutComponent { name: \"Calendar\", is_empty: false, flow: \"show_calendar\", size: 12 }] }, LayoutRow { columns: [LayoutComponent { name: \"Empty\", is_empty: true, flow: \"\", size: 2 }, LayoutComponent { name: \"Timeline\", is_empty: false, flow: \"show_timeline\", size: 8 }, LayoutComponent { name: \"Empty\", is_empty: true, flow: \"\", size: 2 }] }] }");
     }
 }

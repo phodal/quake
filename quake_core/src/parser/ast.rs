@@ -17,13 +17,13 @@ pub struct TransflowDecl {
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct SimpleLayoutDecl {
     pub(crate) name: String,
-    pub(crate) rows: Vec<LayoutColumn>,
+    pub(crate) rows: Vec<LayoutColumnNode>,
 }
 
-pub type LayoutColumn = Vec<LayoutComponent>;
+pub type LayoutColumnNode = Vec<LayoutComponentNode>;
 
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
-pub struct LayoutComponent {
+pub struct LayoutComponentNode {
     pub(crate) name: String,
     pub(crate) is_empty: bool,
     pub(crate) flow: Option<String>,

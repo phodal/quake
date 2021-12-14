@@ -1,5 +1,5 @@
 use crate::parser::ast::{
-    ActionDecl, Endway, LayoutComponent, Midway, Parameter, SimpleLayoutDecl, SourceUnit,
+    ActionDecl, Endway, LayoutComponentNode, Midway, Parameter, SimpleLayoutDecl, SourceUnit,
     SourceUnitPart, TransflowDecl, TransflowEnum,
 };
 use crate::parser::errors::QuakeParserError;
@@ -61,13 +61,15 @@ fn layout_decl(decl: Pair<Rule>) -> SimpleLayoutDecl {
             }
         }
 
-        layout.rows.push(row);
+        if !row.is_empty() {
+            layout.rows.push(row);
+        }
     }
 
     layout
 }
 
-fn parse_flex_child(decl: Pair<Rule>) -> Vec<LayoutComponent> {
+fn parse_flex_child(decl: Pair<Rule>) -> Vec<LayoutComponentNode> {
     let mut components = vec![];
     for pair in decl.into_inner() {
         if let Rule::component_use_decl = pair.as_rule() {
@@ -78,8 +80,8 @@ fn parse_flex_child(decl: Pair<Rule>) -> Vec<LayoutComponent> {
     components
 }
 
-fn component_use_decl(decl: Pair<Rule>) -> LayoutComponent {
-    let mut component = LayoutComponent::default();
+fn component_use_decl(decl: Pair<Rule>) -> LayoutComponentNode {
+    let mut component = LayoutComponentNode::default();
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::sized_empty_comp => {
@@ -91,7 +93,32 @@ fn component_use_decl(decl: Pair<Rule>) -> LayoutComponent {
                     }
                 }
             }
-            Rule::component_flow => {}
+            Rule::component_flow => {
+                for inner in pair.into_inner() {
+                    match inner.as_rule() {
+                        Rule::use_name => {
+                            component.name = String::from(inner.as_str());
+                        }
+                        Rule::call_flow => {
+                            for flow_pair in inner.into_inner() {
+                                match flow_pair.as_rule() {
+                                    Rule::string => {
+                                        component.flow = Some(string_from_pair(flow_pair));
+                                    }
+                                    Rule::digits => {
+                                        component.size = flow_pair.as_str().parse().unwrap();
+                                    }
+                                    _ => {}
+                                }
+                            }
+                        }
+                        Rule::lbracket | Rule::rbracket => {}
+                        _ => {
+                            println!("{:}", inner);
+                        }
+                    }
+                }
+            }
             _ => {
                 println!("{}", pair);
             }
@@ -312,7 +339,7 @@ mod tests {
     fn should_parse_flow() {
         let unit =
             parse("transflow show_calendar { from('todo','blog').to(<quake-calendar>); }").unwrap();
-        println!("{:?}", unit);
+
         match &unit.0[0] {
             SourceUnitPart::Transflow(decl) => {
                 let flow = decl.flows[0].clone();
@@ -344,5 +371,20 @@ mod tests {
         .unwrap();
 
         assert_eq!(1, unit.0.len());
+        if let SourceUnitPart::SimpleLayout(layout) = &unit.0[0] {
+            assert_eq!(layout.name, "Dashboard");
+            assert_eq!(2, layout.rows.len());
+
+            assert_eq!(1, layout.rows[0].len());
+            assert_eq!("Calendar", &layout.rows[0][0].name);
+            assert_eq!("show_calendar", layout.rows[0][0].flow.as_ref().unwrap());
+            assert_eq!(12, layout.rows[0][0].size);
+            assert_eq!(false, layout.rows[0][0].is_empty);
+
+            assert_eq!(3, layout.rows[1].len());
+            assert_eq!("Empty", &layout.rows[1][0].name);
+            assert_eq!(true, layout.rows[1][0].is_empty);
+            assert_eq!(2, layout.rows[1][0].size);
+        }
     }
 }
