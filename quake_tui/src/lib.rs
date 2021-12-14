@@ -60,17 +60,18 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<(), B
                 }
                 Mode::Command => match key.code {
                     KeyCode::Enter => {
-                        let command: String = app.command.drain(..).collect();
+                        let command: String = app.cmd_line.message.drain(..).collect();
                         execute_command(&command, &mut app)?;
                     }
                     KeyCode::Char(c) => {
-                        app.command.push(c);
+                        app.message_push(c);
                     }
                     KeyCode::Backspace => {
-                        app.command.pop();
+                        app.message_pop();
                     }
                     KeyCode::Esc => {
                         app.mode = Mode::Normal;
+                        app.message_clear();
                     }
                     _ => {}
                 },

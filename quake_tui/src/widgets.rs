@@ -80,6 +80,19 @@ impl MainWidget {
     }
 }
 
+#[derive(Default, Clone)]
+pub struct CmdLine {
+    pub(crate) message: String,
+}
+
+impl Widget for CmdLine {
+    fn render(self, area: Rect, buf: &mut Buffer) {
+        let message = Paragraph::new(self.message.as_ref())
+            .block(Block::default().borders(Borders::ALL).title("Command"));
+        message.render(area, buf);
+    }
+}
+
 fn list_entry_types() -> Result<Vec<ListItem<'static>>, Box<dyn Error>> {
     let config: QuakeConfig = serde_yaml::from_str(fs::read_to_string(".quake.yaml")?.as_str())?;
     let entry_defines_path = Path::new(&config.workspace).join(EntryPaths::entries_define());
