@@ -40,7 +40,7 @@ declare namespace LocalJSX {
     }
     interface QuakeRender {
         "content"?: string;
-        "onLinkToPage"?: (event: CustomEvent<PageLink>) => void;
+        "onClickPageLink"?: (event: CustomEvent<PageLink>) => void;
     }
     interface IntrinsicElements {
         "quake-graph": QuakeGraph;

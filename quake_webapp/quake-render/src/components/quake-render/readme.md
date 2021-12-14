@@ -12,6 +12,13 @@
 | `content` | `content` |             | `string` | `''`    |
 
 
+## Events
+
+| Event           | Description | Type                    |
+| --------------- | ----------- | ----------------------- |
+| `clickPageLink` |             | `CustomEvent<PageLink>` |
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

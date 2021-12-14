@@ -17,11 +17,11 @@ export class QuakeRender {
   el: HTMLElement;
 
   @Event({
-    eventName: 'linkToPage',
+    eventName: 'clickPageLink',
     composed: true,
     cancelable: true,
     bubbles: true,
-  }) linkToPage: EventEmitter<PageLink>;
+  }) clickPageLink: EventEmitter<PageLink>;
 
   componentWillRender() {
     this.markdownData = new QuakeDown(this.content, this.parseInline).gen();
@@ -37,7 +37,7 @@ export class QuakeRender {
           id: Number(elem.dataset.id)
         };
         console.log(data);
-        this.linkToPage.emit(data)
+        this.clickPageLink.emit(data)
       });
     }
   }

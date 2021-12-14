@@ -112,6 +112,11 @@ const show_entry = async (context, commands) => {
   const editor = document.createElement('quake-render');
   editor.setAttribute('content', entry.content);
 
+  editor.addEventListener("onSave", function (event) {
+    let data = event.detail;
+    console.log(data);
+  });
+
   return editor
 }
 
