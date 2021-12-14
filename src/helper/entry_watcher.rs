@@ -71,8 +71,7 @@ fn feed_by_event(event: Event, search_url: &str) -> Result<(), Box<dyn Error>> {
         }
 
         let (typ, file) = entry_file_by_path(&path)?;
-        let string = serde_json::to_string(&file)?;
-        feed_entry(&typ, &string, search_url)?;
+        feed_entry(&typ, &file, search_url)?;
     }
 
     Ok(())

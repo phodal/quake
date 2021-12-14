@@ -1,6 +1,7 @@
 use async_std::task;
 use std::error::Error;
 
+use quake_core::entry::entry_file::EntryFile;
 use tracing::info;
 
 use quake_core::entry::EntryDefine;
@@ -8,8 +9,8 @@ use quake_core::entry::EntryDefine;
 use crate::helper::exec_wrapper::exec_runner;
 use crate::helper::search_config::define_to_settings;
 
-pub fn feed_command(index_name: &str, search_url: &str) -> Result<(), Box<dyn Error>> {
-    let url = format!("{:}/indexes/{:}/documents", search_url, index_name);
+pub fn feed_command(index_name: &str, server: &str) -> Result<(), Box<dyn Error>> {
+    let url = format!("{:}/indexes/{:}/documents", server, index_name);
     let cmd_line = format!(
         "curl -i -X POST '{:}' \
   --header 'content-type: application/json' \
@@ -23,9 +24,9 @@ pub fn feed_command(index_name: &str, search_url: &str) -> Result<(), Box<dyn Er
     Ok(())
 }
 
-pub fn feed_settings(search_url: &str, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
+pub fn feed_settings(server: &str, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
     let value = &define_to_settings(define);
-    let url = format!("{:}/indexes/{:}/settings", search_url, &define.entry_type);
+    let url = format!("{:}/indexes/{:}/settings", server, &define.entry_type);
 
     task::block_on(async {
         let client = reqwest::Client::new();
@@ -38,22 +39,19 @@ pub fn feed_settings(search_url: &str, define: &EntryDefine) -> Result<(), Box<d
     Ok(())
 }
 
-pub fn feed_entry(index_name: &str, content: &str, search_url: &str) -> Result<(), Box<dyn Error>> {
-    let url = format!("{:}/indexes/{:}/documents", search_url, index_name);
-    let cmd_line = format!(
-        "curl -i -X POST '{:}' \
-  --header 'content-type: application/json' \
-  --data-binary {:?}",
-        url, content
-    );
+pub fn feed_entry(index_name: &str, file: &EntryFile, server: &str) -> Result<(), Box<dyn Error>> {
+    let format_url = format!("{:}/indexes/{:}/documents", server, index_name);
 
-    info!("{:?}", cmd_line);
-    exec_runner::cmd_runner(cmd_line)?;
+    task::block_on(async {
+        let client = reqwest::Client::new();
+        let req = client.post(format_url).json(&file).send();
+        let response = req.await.unwrap().text().await.unwrap();
+
+        info!("{:?}", response);
+    });
 
     Ok(())
 }
-
-// todo: add sort by date
 
 #[cfg(test)]
 mod tests {
