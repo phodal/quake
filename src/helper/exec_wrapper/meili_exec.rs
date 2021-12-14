@@ -1,5 +1,5 @@
+use async_std::task;
 use std::error::Error;
-use std::io::Read;
 
 use tracing::info;
 
@@ -24,48 +24,16 @@ pub fn feed_command(index_name: &str, search_url: &str) -> Result<(), Box<dyn Er
 }
 
 pub fn feed_settings(search_url: &str, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
-    let config = serde_json::to_string(&define_to_settings(define)).unwrap();
-    let url = format!("{:}/indexes/{:}/settings", search_url, &define.entry_type);
-    let cmd_line = format!(
-        "curl -i -X POST '{:}' \
-  --header 'content-type: application/json' \
-  -d {:?}",
-        url, config
-    );
-
-    info!("{:?}", cmd_line);
-    exec_runner::cmd_runner(cmd_line)?;
-
-    Ok(())
-}
-
-// pub fn feed_settings(search_url: &str, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
-//     let value = &define_to_settings(define);
-//     let url = format!("{:}/indexes/{:}/settings", search_url, &define.entry_type);
-//
-//     task::block_on(async {
-//         let client = reqwest::Client::new();
-//         let req = client.post(url).json(&value).send();
-//         let response = req.await.unwrap().text().await.unwrap();
-//
-//         info!("{:?}", response);
-//     });
-//
-//     Ok(())
-// }
-
-#[allow(dead_code)]
-pub fn feed_settings_reqwest(search_url: &str, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
-    let config = serde_json::to_string(&define_to_settings(define)).unwrap();
+    let value = &define_to_settings(define);
     let url = format!("{:}/indexes/{:}/settings", search_url, &define.entry_type);
 
-    let client = reqwest::blocking::Client::new();
-    let mut response = client.post(url).body(config).send().expect("");
+    task::block_on(async {
+        let client = reqwest::Client::new();
+        let req = client.post(url).json(&value).send();
+        let response = req.await.unwrap().text().await.unwrap();
 
-    let mut buf: Vec<u8> = vec![];
-    response.read_to_end(&mut buf).expect("");
-
-    info!("{:?}", response);
+        info!("{:?}", response);
+    });
 
     Ok(())
 }
