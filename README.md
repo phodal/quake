@@ -84,9 +84,9 @@ Simple Layout Engine:
 
 ```
 ----------------------------------------------------------------
-|      Calendar(flow(\"show_calendar\"), 12x)                   |
+|      Calendar(flow("show_calendar"), 12x)                   |
 ----------------------------------------------------------------
-| Empty(2x) | Timeline(flow(\"show_timeline\"), 8x) | Empty(2x) |
+| Empty(2x) | Timeline(flow("show_timeline"), 8x) | Empty(2x) |
 ----------------------------------------------------------------
 ```
 
@@ -122,14 +122,14 @@ from('todo','blog').to(<quake-network>);
 
 Graph and chart in markdown
 
+````@graph('bar')
 ```@graph('bar')
-\'\'\'@graph('bar')
 |-----------|--------------|
 | 1         |   12.0       |
 | 2         |   2.0        |
 | 3         |   4.0        |
-\'\'\'
 ```
+````
 
 ## Docs
 
