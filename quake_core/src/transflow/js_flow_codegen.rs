@@ -35,8 +35,9 @@ impl JsFlowCodegen {
 
             for item in &flow.from {
                 let mut filter = "".to_string();
-                if !flow.filter.is_empty() {
-                    filter = format!(", '', {{\n    filter: '{:}'\n  }}", &flow.filter).to_string();
+                if flow.filter.is_some() {
+                    let filter_str = flow.filter.as_ref().unwrap();
+                    filter = format!(", '', {{\n    filter: '{:}'\n  }}", &filter_str).to_string();
                 }
 
                 let fetch = format!(

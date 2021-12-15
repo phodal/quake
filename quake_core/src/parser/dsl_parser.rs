@@ -93,32 +93,7 @@ fn component_use_decl(decl: Pair<Rule>) -> LayoutComponentNode {
                     }
                 }
             }
-            Rule::component_flow => {
-                for inner in pair.into_inner() {
-                    match inner.as_rule() {
-                        Rule::use_name => {
-                            component.name = String::from(inner.as_str());
-                        }
-                        Rule::call_flow => {
-                            for flow_pair in inner.into_inner() {
-                                match flow_pair.as_rule() {
-                                    Rule::string => {
-                                        component.flow = Some(string_from_pair(flow_pair));
-                                    }
-                                    Rule::digits => {
-                                        component.size = flow_pair.as_str().parse().unwrap();
-                                    }
-                                    _ => {}
-                                }
-                            }
-                        }
-                        Rule::lbracket | Rule::rbracket => {}
-                        _ => {
-                            println!("{:}", inner);
-                        }
-                    }
-                }
-            }
+            Rule::component_flow => component_flow(&mut component, pair),
             _ => {
                 println!("{}", pair);
             }
@@ -126,6 +101,46 @@ fn component_use_decl(decl: Pair<Rule>) -> LayoutComponentNode {
     }
 
     component
+}
+
+fn component_flow(component: &mut LayoutComponentNode, pair: Pair<Rule>) {
+    for inner in pair.into_inner() {
+        match inner.as_rule() {
+            Rule::use_name => {
+                component.name = String::from(inner.as_str());
+            }
+            Rule::call_flow => {
+                for flow_pair in inner.into_inner() {
+                    match flow_pair.as_rule() {
+                        Rule::string => {
+                            component.flow = Some(string_from_pair(flow_pair));
+                        }
+                        Rule::digits => {
+                            component.size = flow_pair.as_str().parse().unwrap();
+                        }
+                        Rule::component_decl => {
+                            for name in flow_pair.into_inner() {
+                                match name.as_rule() {
+                                    Rule::component_name => {
+                                        component.is_pure_component = true;
+                                        component.flow = Some(String::from(name.as_str()))
+                                    }
+                                    _ => {
+                                        println!("{}", name);
+                                    }
+                                }
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            }
+            Rule::lbracket | Rule::rbracket => {}
+            _ => {
+                println!("{:}", inner);
+            }
+        }
+    }
 }
 
 fn transflow_decl(decl: Pair<Rule>) -> TransflowDecl {
@@ -366,14 +381,17 @@ mod tests {
 --------------------------
 | Empty(2x) | Timeline(flow(\"show_timeline\"), 8x) | Empty(2x) |
 --------------------------
+| Graph(<graph-network>, 12x)          |
+--------------------------
 }",
         )
         .unwrap();
 
         assert_eq!(1, unit.0.len());
+        println!("{:?}", unit);
         if let SourceUnitPart::SimpleLayout(layout) = &unit.0[0] {
             assert_eq!(layout.name, "Dashboard");
-            assert_eq!(2, layout.rows.len());
+            assert_eq!(3, layout.rows.len());
 
             assert_eq!(1, layout.rows[0].len());
             assert_eq!("Calendar", &layout.rows[0][0].name);

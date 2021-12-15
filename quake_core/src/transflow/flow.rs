@@ -79,9 +79,10 @@ pub struct Flow {
     pub name: String,
     pub from: Vec<String>,
     pub to: String,
-    #[serde(rename = "map")]
+    #[serde(rename = "map", skip_serializing_if = "Option::is_none")]
     pub mappings: Option<Vec<Mapping>>,
-    pub filter: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filter: Option<String>,
 }
 
 impl Flow {
@@ -91,7 +92,7 @@ impl Flow {
             from: route.from.clone(),
             to: route.to.clone(),
             mappings: None,
-            filter: route.filter,
+            filter: Some(route.filter),
         }
     }
 }

@@ -114,6 +114,7 @@ pub struct LayoutComponent {
     pub(crate) is_empty: bool,
     pub(crate) flow: String,
     pub(crate) size: i32,
+    pub is_pure_component: bool,
 }
 
 /// parse pure text to `QuakeIt` collections which include all
@@ -157,15 +158,14 @@ fn build_simple_layout(decl: SimpleLayoutDecl) -> SimpleLayout {
 
     for column_node in decl.rows {
         let mut row = LayoutRow::default();
-        for component_node in column_node {
-            let component = LayoutComponent {
-                name: component_node.name.to_string(),
-                is_empty: component_node.is_empty,
-                flow: component_node.flow.unwrap_or_else(|| "".to_string()),
-                size: component_node.size,
-            };
-
-            row.columns.push(component);
+        for node in column_node {
+            row.columns.push(LayoutComponent {
+                name: node.name.to_string(),
+                is_empty: node.is_empty,
+                is_pure_component: node.is_pure_component,
+                flow: node.flow.unwrap_or_else(|| "".to_string()),
+                size: node.size,
+            });
         }
 
         layout.rows.push(row);
