@@ -71,6 +71,7 @@ export class QuakeDashboard {
 
   @State() flow_index: number = 1;
   @State() generated_code: string = "";
+  @State() layout: any = {};
 
 
   @Event({
@@ -90,6 +91,10 @@ export class QuakeDashboard {
       .then((response: any) => {
         that.entries_info = response.data.entries;
         that.actions_list = response.data.actions;
+      });
+    axios.get('/layout/dashboard')
+      .then((response: any) => {
+        that.layout = response.data;
       });
   }
 
@@ -354,6 +359,7 @@ export class QuakeDashboard {
         </ion-toolbar>
       </ion-header>
       <ion-content fullscreen>
+        { this.layout && <simple-layout layout={this.layout}></simple-layout>  }
         <ion-grid>
           <ion-row>
             {this.generated_code && <pre><code class="javascript">{this.generated_code}</code></pre>}

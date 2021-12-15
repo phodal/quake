@@ -41,6 +41,10 @@ impl EntryPaths {
         "transfuncs.js"
     }
 
+    pub fn dashboard_layout() -> &'static str {
+        "dashboard.layout"
+    }
+
     pub fn transflow() -> &'static str {
         "transflows.yaml"
     }

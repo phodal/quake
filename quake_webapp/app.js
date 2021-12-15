@@ -3,6 +3,8 @@ const outlet = document.getElementById('outlet');
 const router = new Router(outlet);
 
 const Quake = {
+  // init flow map
+  flows: {},
   client: new MeiliSearch({
     host: 'http://127.0.0.1:7700'
   }),
@@ -41,6 +43,8 @@ const Quake = {
     })
   }
 }
+
+window.Quake = Quake;
 
 const home = (context, commands) => {
   const dashboard = document.createElement('quake-dashboard');

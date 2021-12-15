@@ -6,11 +6,15 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ActionDefine } from "./components/quake-dashboard/quake-dashboard";
+import { Layout } from "./components/simple-layout/simple-layout";
 export namespace Components {
     interface FlowView {
     }
     interface QuakeDashboard {
         "indexName": string;
+    }
+    interface SimpleLayout {
+        "layout": Layout;
     }
 }
 declare global {
@@ -26,9 +30,16 @@ declare global {
         prototype: HTMLQuakeDashboardElement;
         new (): HTMLQuakeDashboardElement;
     };
+    interface HTMLSimpleLayoutElement extends Components.SimpleLayout, HTMLStencilElement {
+    }
+    var HTMLSimpleLayoutElement: {
+        prototype: HTMLSimpleLayoutElement;
+        new (): HTMLSimpleLayoutElement;
+    };
     interface HTMLElementTagNameMap {
         "flow-view": HTMLFlowViewElement;
         "quake-dashboard": HTMLQuakeDashboardElement;
+        "simple-layout": HTMLSimpleLayoutElement;
     }
 }
 declare namespace LocalJSX {
@@ -38,9 +49,13 @@ declare namespace LocalJSX {
         "indexName"?: string;
         "onDispatchAction"?: (event: CustomEvent<ActionDefine>) => void;
     }
+    interface SimpleLayout {
+        "layout"?: Layout;
+    }
     interface IntrinsicElements {
         "flow-view": FlowView;
         "quake-dashboard": QuakeDashboard;
+        "simple-layout": SimpleLayout;
     }
 }
 export { LocalJSX as JSX };
@@ -49,6 +64,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "flow-view": LocalJSX.FlowView & JSXBase.HTMLAttributes<HTMLFlowViewElement>;
             "quake-dashboard": LocalJSX.QuakeDashboard & JSXBase.HTMLAttributes<HTMLQuakeDashboardElement>;
+            "simple-layout": LocalJSX.SimpleLayout & JSXBase.HTMLAttributes<HTMLSimpleLayoutElement>;
         }
     }
 }
