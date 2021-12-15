@@ -1,6 +1,7 @@
 import { marked, Slugger } from 'marked';
 import Prism from 'prismjs';
 import getExtensions from "./extensions";
+import {CodeType, CodeTypeFromStr} from "./quake-down.type";
 
 class QuakeDown {
   content = '';
@@ -111,14 +112,25 @@ class QuakeDown {
         break;
       case 'code':
         let text = token.text;
-        if (Prism.languages[token.lang]) {
+        let code_type = CodeType.Normal;
+        let code_param = '';
+        let execArray = /@([a-zA-Z]+)\(['"]([a-zA-Z_-]+)['"]\)/.exec(token.lang);
+        if(!!execArray && execArray.length === 3) {
+          code_type = CodeTypeFromStr(execArray[1]);
+          code_param = execArray[2];
+        } else if (Prism.languages[token.lang]) {
           text = Prism.highlight(token.text, Prism.languages[token.lang], token.lang);
         }
+
         data = {
           type: 'code',
+          code_type: code_type,
+          code_param: code_param,
           lang: token.lang,
           text: text,
         };
+
+        console.log(data);
         break;
       default:
         let custom_type = token as any;

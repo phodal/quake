@@ -59,19 +59,17 @@ describe('quake-render', () => {
       components: [QuakeRender],
       html: '<quake-render content="embed link ![[note:0001 &quot;demo&quot;]]"></quake-render>',
     });
-    expect(root).toEqualHtml(`
-      <quake-render content="embed link ![[note:0001 &quot;demo&quot;]]">
-        <mock:shadow-root>
-          <div>
-            <p>
-              embed link
-              <span class="quake-embed-link" data-id="0001" data-type="note">
-                demo
-              </span>
-            </p>
-          </div>
-        </mock:shadow-root>
-      </quake-render>
-    `);
+    expect(root).toEqualHtml(`<quake-render content="embed link ![[note:0001 &quot;demo&quot;]]">
+      <mock:shadow-root>
+        <div>
+          <p>
+            embed link
+            <div class="quake-embed-link" data-id="0001" data-type="note">
+              <embed-link entry-id="0001" entry-type="note"></embed-link>
+            </div>
+          </p>
+        </div>
+      </mock:shadow-root>
+    </quake-render>`);
   });
 });

@@ -23,7 +23,6 @@ export class GraphNetwork {
 
   componentDidRender() {
     this.myChart = echarts.init(this.element);
-    console.log(this.data);
     if(!this.data) {
       console.info("cannot find data, will use default data: " + JSON.stringify(defaultData));
       this.data = defaultData;

@@ -10,7 +10,8 @@ describe('embed-link', () => {
     expect(page.root).toEqualHtml(`
       <embed-link>
         <mock:shadow-root>
-          <slot></slot>
+          #
+          <quake-render has-embed="true"></quake-render>
         </mock:shadow-root>
       </embed-link>
     `);
