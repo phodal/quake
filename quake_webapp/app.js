@@ -17,7 +17,6 @@ const Quake = {
         action: route.action
       };
 
-      console.log(conf);
       Quake.router.addRoutes(conf);
 
       const nav = document.createElement('a');

@@ -1,6 +1,15 @@
 import {Component, h, Host, Prop, State} from '@stencil/core';
 import * as echarts from 'echarts';
 
+let defaultData = {
+  nodes: [
+    {id: 0, name: 'hello', category: 0},
+    {id: 1, name: 'world', category: 1}
+  ],
+  links: [{source: "1", target: "0"}],
+  categories: [{name: 'A'}, {name: 'B'}]
+};
+
 @Component({
   tag: 'graph-network',
   styleUrl: 'graph-network.css',
@@ -10,17 +19,16 @@ export class GraphNetwork {
   @State() myChart: any;
   element!: HTMLElement;
   @Prop() config: any = {};
-  @Prop() data: any = {
-    nodes: [
-      {id: 0, name: 'hello', category: 0},
-      {id: 1, name: 'world', category: 1}
-    ],
-    links: [{source: "1", target: "0"}],
-    categories: [{name: 'A'}, {name: 'B'}]
-  };
+  @Prop() data: any = defaultData;
 
   componentDidRender() {
     this.myChart = echarts.init(this.element);
+    console.log(this.data);
+    if(!this.data) {
+      console.info("cannot find data, will use default data: " + JSON.stringify(defaultData));
+      this.data = defaultData;
+    }
+
     this.renderGraph();
   }
 

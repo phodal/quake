@@ -2,6 +2,6 @@ layout Dashboard {
 ---------------------------------------------------------------
 |      Calendar(flow("show_calendar"), 12x)                   |
 ---------------------------------------------------------------
-| Empty(2x) | Timeline(flow("show_timeline"), 8x) | Empty(2x) |
+ | Network(<graph-network>, 4x) | Timeline(flow("show_timeline"), 8x) |
 ---------------------------------------------------------------
 }

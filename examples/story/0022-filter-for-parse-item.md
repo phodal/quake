@@ -7,7 +7,6 @@ created_date: 2021-12-09 09:32:28
 updated_date: 2021-12-09 09:32:28
 ---
 
-
 ## MeiliSearch Query Parser
 
 MeiliSearch Core: [https://github.com/meilisearch/milli](https://github.com/meilisearch/milli)

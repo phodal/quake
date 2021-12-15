@@ -12,6 +12,7 @@ export interface LayoutRow {
 export interface LayoutComponent {
   name: string,
   is_empty: boolean,
+  is_pure_component: boolean,
   flow: string,
   size: number
 }
@@ -25,7 +26,7 @@ export class SimpleLayout {
   @Prop() layout: Layout;
   hostEl: HTMLElement;
 
-  @State() flowMap: any =  {};
+  @State() flowMap: any = {};
   @State() slots: any[] = [];
 
   componentWillRender() {
@@ -42,24 +43,46 @@ export class SimpleLayout {
     for (let row of this.layout.rows) {
       let colId = 0;
       for (let component of row.columns) {
-        let flow = component.flow;
-        let func_name = "tl_" + flow;
-        try {
-          let flow_func = (window as any).Quake.flows[func_name];
-          if (flow_func) {
-            console.log("calling: " + func_name);
-            let id = that.layoutId(rowId, colId);
+        let id = that.layoutId(rowId, colId);
 
-            flow_func({}, {}).then((flow) => {
-              (that.flowMap[id].hostEl as HTMLElement).appendChild(flow);
-            });
-          }
-        } catch (err) {
-          console.error(err);
+        if (component.is_pure_component) {
+          this.createPureComponent(component, that, id);
+        } else {
+          this.createFlowComponent(component, that, id);
         }
         colId = colId + 1;
       }
       rowId = rowId + 1;
+    }
+  }
+
+  private createPureComponent(component: LayoutComponent, that: this, id: string) {
+    let element = document.createElement(component.flow);
+    // todo: refactor flow map to add by field;
+    if (!that.flowMap[id]) {
+      that.flowMap[id] = {};
+    }
+
+    // make render after element create
+    setTimeout(() => {
+      (that.flowMap[id].hostEl as HTMLElement).appendChild(element);
+    }, 0);
+  }
+
+  private createFlowComponent(component: LayoutComponent, that: this, id: string) {
+    let flow = component.flow;
+    let func_name = "tl_" + flow;
+    try {
+      let flow_func = (window as any).Quake.flows[func_name];
+      if (flow_func) {
+        console.log("calling: " + func_name);
+        // todo: remove unused parameters
+        flow_func({}, {}).then((flow) => {
+          (that.flowMap[id].hostEl as HTMLElement).appendChild(flow);
+        });
+      }
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -68,13 +91,15 @@ export class SimpleLayout {
   }
 
   private addElementToMap(hostEl, id: string) {
-    this.flowMap[id] = {
-      hostEl: hostEl,
-      id
+    if (!this.flowMap[id]) {
+      this.flowMap[id] = {};
     }
+    this.flowMap[id].hostEl = hostEl;
+    this.flowMap[id].id = id;
   }
 
   render() {
+    console.log(this.layout);
     console.log(this.flowMap);
     return (
       <Host ref={(el) => this.hostEl = el}>
@@ -85,7 +110,7 @@ export class SimpleLayout {
                 {row.columns.map((col, colId) =>
                   <ion-col class="quake-component" size={col.size.toString()}
                            ref={(el) => (this.addElementToMap(el, this.layoutId(rowId, colId)))}>
-                    <p slot={this.layoutId(rowId, colId)}/>
+                    {col.name}
                   </ion-col>
                 )}
               </ion-row>
