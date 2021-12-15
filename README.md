@@ -80,6 +80,16 @@ updated_date: 2021-12-10 20:24:25
 
 Quake will load `web` directory code, and start a web server.Everyone can build then pages with Quake.
 
+Simple Layout Engine:
+
+```
+----------------------------------------------------------------
+|      Calendar(flow(\"show_calendar\"), 12x)                   |
+----------------------------------------------------------------
+| Empty(2x) | Timeline(flow(\"show_timeline\"), 8x) | Empty(2x) |
+----------------------------------------------------------------
+```
+
 ### Transflow
 
 A DSL to connect entry data and component, then auto render it.
@@ -88,7 +98,7 @@ A DSL to connect entry data and component, then auto render it.
 from('todo','blog').to(<quake-calendar>);
 ```
 
-will fetch `todo` and `blog` to `quake-calendar` web component, and create route in page
+will fetch `todo` and `blog`, render to `quake-calendar` web component, and create route in page
 
 also can filter data
 
@@ -98,7 +108,28 @@ from('todo','blog').to(<quake-calendar>).filter('created_date > 2021.01.01 AND c
 
 ### Free sketchpad
 
-To be define.
+by Web Component
+
+To be design.
+
+### Powerful markdown
+
+Flowy to chart:
+
+```
+from('todo','blog').to(<quake-network>);
+```
+
+Graph and chart in markdown
+
+```@graph('bar')
+\'\'\'@graph('bar')
+|-----------|--------------|
+| 1         |   12.0       |
+| 2         |   2.0        |
+| 3         |   4.0        |
+\'\'\'
+```
 
 ## Docs
 
