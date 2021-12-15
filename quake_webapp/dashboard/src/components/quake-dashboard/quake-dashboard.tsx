@@ -41,7 +41,7 @@ enum InputType {
 @Component({
   tag: 'quake-dashboard',
   styleUrl: 'quake-dashboard.css',
-  shadow: true,
+  shadow: false,
 })
 export class QuakeDashboard {
   ionInputElement;
@@ -359,7 +359,6 @@ export class QuakeDashboard {
         </ion-toolbar>
       </ion-header>
       <ion-content fullscreen>
-        { this.layout && <simple-layout layout={this.layout}></simple-layout>  }
         <ion-grid>
           <ion-row>
             {this.generated_code && <pre><code class="javascript">{this.generated_code}</code></pre>}
@@ -382,6 +381,7 @@ export class QuakeDashboard {
             }
           </ion-row>
         </ion-grid>
+        { this.layout && <simple-layout layout={this.layout} />  }
       </ion-content>
     </ion-app>;
   }

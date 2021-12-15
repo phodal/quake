@@ -19,7 +19,7 @@ export interface LayoutComponent {
 @Component({
   tag: 'simple-layout',
   styleUrl: 'simple-layout.css',
-  shadow: true,
+  shadow: false,
 })
 export class SimpleLayout {
   @Prop() layout: Layout;
@@ -83,7 +83,8 @@ export class SimpleLayout {
             {this.layout.rows.map((row, rowId) =>
               <ion-row>
                 {row.columns.map((col, colId) =>
-                  <ion-col size={col.size.toString()} ref={(el) => (this.addElementToMap(el, this.layoutId(rowId, colId)))}>
+                  <ion-col class="quake-component" size={col.size.toString()}
+                           ref={(el) => (this.addElementToMap(el, this.layoutId(rowId, colId)))}>
                     <p slot={this.layoutId(rowId, colId)}/>
                   </ion-col>
                 )}
