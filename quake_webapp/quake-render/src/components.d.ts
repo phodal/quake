@@ -11,7 +11,7 @@ export namespace Components {
         "entryId": number;
         "entryType": string;
     }
-    interface QuakeGraph {
+    interface GraphNetwork {
         "config": any;
         "data": any;
     }
@@ -27,11 +27,11 @@ declare global {
         prototype: HTMLEmbedLinkElement;
         new (): HTMLEmbedLinkElement;
     };
-    interface HTMLQuakeGraphElement extends Components.QuakeGraph, HTMLStencilElement {
+    interface HTMLGraphNetworkElement extends Components.GraphNetwork, HTMLStencilElement {
     }
-    var HTMLQuakeGraphElement: {
-        prototype: HTMLQuakeGraphElement;
-        new (): HTMLQuakeGraphElement;
+    var HTMLGraphNetworkElement: {
+        prototype: HTMLGraphNetworkElement;
+        new (): HTMLGraphNetworkElement;
     };
     interface HTMLQuakeRenderElement extends Components.QuakeRender, HTMLStencilElement {
     }
@@ -41,7 +41,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "embed-link": HTMLEmbedLinkElement;
-        "quake-graph": HTMLQuakeGraphElement;
+        "graph-network": HTMLGraphNetworkElement;
         "quake-render": HTMLQuakeRenderElement;
     }
 }
@@ -50,7 +50,7 @@ declare namespace LocalJSX {
         "entryId"?: number;
         "entryType"?: string;
     }
-    interface QuakeGraph {
+    interface GraphNetwork {
         "config"?: any;
         "data"?: any;
     }
@@ -62,7 +62,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "embed-link": EmbedLink;
-        "quake-graph": QuakeGraph;
+        "graph-network": GraphNetwork;
         "quake-render": QuakeRender;
     }
 }
@@ -71,7 +71,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "embed-link": LocalJSX.EmbedLink & JSXBase.HTMLAttributes<HTMLEmbedLinkElement>;
-            "quake-graph": LocalJSX.QuakeGraph & JSXBase.HTMLAttributes<HTMLQuakeGraphElement>;
+            "graph-network": LocalJSX.GraphNetwork & JSXBase.HTMLAttributes<HTMLGraphNetworkElement>;
             "quake-render": LocalJSX.QuakeRender & JSXBase.HTMLAttributes<HTMLQuakeRenderElement>;
         }
     }

@@ -1,5 +1,5 @@
 import {Component, Event, EventEmitter, h, Prop, State} from '@stencil/core';
-import QuakeDown from '../../utils/quake-down';
+import QuakeDown from '../../markdown/quake-down';
 
 export interface Link {
   entry_type: String,

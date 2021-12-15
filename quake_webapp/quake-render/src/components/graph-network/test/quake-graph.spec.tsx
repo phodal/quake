@@ -1,10 +1,10 @@
 import { newSpecPage } from '@stencil/core/testing';
-import { QuakeGraph } from '../quake-graph';
+import { GraphNetwork } from '../graph-network';
 
 describe('quake-graph', () => {
   it('renders', async () => {
     const page = await newSpecPage({
-      components: [QuakeGraph],
+      components: [GraphNetwork],
       html: `<quake-graph></quake-graph>`,
     });
     expect(page.root).toEqualHtml(`

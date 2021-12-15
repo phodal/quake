@@ -2,11 +2,11 @@ import {Component, h, Host, Prop, State} from '@stencil/core';
 import * as echarts from 'echarts';
 
 @Component({
-  tag: 'quake-graph',
-  styleUrl: 'quake-graph.css',
+  tag: 'graph-network',
+  styleUrl: 'graph-network.css',
   shadow: true,
 })
-export class QuakeGraph {
+export class GraphNetwork {
   @State() myChart: any;
   element!: HTMLElement;
   @Prop() config: any = {};
