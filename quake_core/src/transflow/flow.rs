@@ -4,7 +4,7 @@ use crate::entry::EntryDefine;
 use crate::parser::quake::{QuakeTransflowNode, Route};
 
 /// Transflow defines the data process flow
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct Transflow {
     pub name: String,
     #[serde(skip_serializing)]
@@ -92,17 +92,6 @@ impl Flow {
             to: route.to.clone(),
             mappings: None,
             filter: route.filter,
-        }
-    }
-}
-
-impl Default for Transflow {
-    fn default() -> Self {
-        Transflow {
-            name: "".to_string(),
-            defines_map: Default::default(),
-            flows: vec![],
-            target: "".to_string(),
         }
     }
 }

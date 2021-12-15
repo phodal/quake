@@ -59,7 +59,7 @@ pub(crate) async fn translate(
 /// 1. load yaml file with define
 /// 2. generate js scripts
 /// 3. create router
-/// as: not code
+/// as nocode
 #[get("/script/gen_code")]
 pub(crate) async fn transflow_gen_code(
     config: &State<QuakeConfig>,
@@ -91,6 +91,7 @@ pub(crate) async fn transflow_gen_code(
 }
 
 /// todo: load transflow from yaml files
+/// as lowcode
 #[get("/script/load_code")]
 pub(crate) async fn transflow_load_code(config: &State<QuakeConfig>) -> Option<NamedFile> {
     let path = PathBuf::from(config.workspace.clone());
@@ -104,9 +105,10 @@ pub(crate) async fn transflow_load_code(config: &State<QuakeConfig>) -> Option<N
 
 #[cfg(test)]
 mod test {
+    use std::io::Read;
+
     use rocket::http::Status;
     use rocket::local::blocking::Client;
-    use std::io::Read;
 
     use crate::quake_rocket;
 
