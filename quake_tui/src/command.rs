@@ -14,7 +14,7 @@ pub fn execute_command(command: &str, app: &mut App) -> Result<(), String> {
 
 pub fn execute_action_command(command: &str, app: &mut App) -> Result<(), String> {
     if let Ok(action) = QuakeActionNode::action_from_text(command) {
-        app.mode = Mode::Insert;
+        app.state.mode = Mode::Insert;
         app.main_widget = MainWidget::Editor(action, "".to_string());
         Ok(())
     } else {

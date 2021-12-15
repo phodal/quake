@@ -52,16 +52,17 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<(), B
         })?;
 
         if let Event::Key(key) = event::read()? {
-            match app.mode {
+            match app.state.mode {
                 Mode::Normal => {
                     if let KeyCode::Char(':') = key.code {
-                        app.mode = Mode::Command;
+                        app.state.mode = Mode::Command;
                     }
                 }
                 Mode::Command => match key.code {
                     KeyCode::Enter => {
                         let command: String = app.cmd_line.message.drain(..).collect();
                         execute_command(&command, &mut app)?;
+                        app.back_to_normal();
                     }
                     KeyCode::Char(c) => {
                         app.message_push(c);
@@ -70,14 +71,13 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<(), B
                         app.message_pop();
                     }
                     KeyCode::Esc => {
-                        app.mode = Mode::Normal;
-                        app.message_clear();
+                        app.back_to_normal();
                     }
                     _ => {}
                 },
                 Mode::Insert => match key.code {
                     KeyCode::Esc => {
-                        app.mode = Mode::Normal;
+                        app.back_to_normal();
                     }
                     KeyCode::Char(c) => {
                         app.main_widget.collect_input(c);

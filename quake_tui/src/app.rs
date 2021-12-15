@@ -7,7 +7,6 @@ use quake_core::QuakeConfig;
 use crate::widgets::{CmdLine, MainWidget};
 
 pub struct App {
-    pub mode: Mode,
     pub state: AppState,
     pub config: QuakeConfig,
     pub main_widget: MainWidget,
@@ -17,7 +16,6 @@ pub struct App {
 impl App {
     pub fn new(config: QuakeConfig) -> App {
         App {
-            mode: Mode::Normal,
             main_widget: MainWidget::Home,
             cmd_line: CmdLine::default(),
             state: Default::default(),
@@ -57,6 +55,25 @@ impl App {
     pub fn message_clear(&mut self) {
         self.cmd_line.message.clear();
     }
+
+    pub fn back_to_normal(&mut self) {
+        self.state.mode = Mode::Normal;
+        self.message_clear();
+    }
+}
+
+pub struct AppState {
+    running: bool,
+    pub mode: Mode,
+}
+
+impl Default for AppState {
+    fn default() -> AppState {
+        AppState {
+            running: true,
+            mode: Mode::Normal,
+        }
+    }
 }
 
 pub enum Mode {
@@ -65,31 +82,36 @@ pub enum Mode {
     Insert,
 }
 
-pub struct AppState {
-    running: bool,
-}
-
-impl Default for AppState {
-    fn default() -> AppState {
-        AppState { running: true }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use quake_core::QuakeConfig;
 
-    use super::App;
+    use super::{App, Mode};
 
     #[test]
     fn test_message_collect() {
         let mut app = App::new(QuakeConfig::default());
+        app.state.mode = Mode::Command;
+
         app.message_push('g');
         app.message_push('t');
         assert_eq!(app.cmd_line.message, "gt".to_string());
 
         app.message_pop();
         app.message_pop();
+        assert_eq!(app.cmd_line.message, "".to_string());
+    }
+
+    #[test]
+    fn test_clear_msg_after_back_to_normal() {
+        let mut app = App::new(QuakeConfig::default());
+        app.state.mode = Mode::Command;
+
+        app.message_push('l');
+        app.message_push('s');
+        assert_eq!(app.cmd_line.message, "ls".to_string());
+
+        app.back_to_normal();
         assert_eq!(app.cmd_line.message, "".to_string());
     }
 }
