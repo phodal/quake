@@ -318,6 +318,6 @@ mod tests {
 }";
         let layout = SimpleLayout::from_text(define).unwrap();
         let str = format!("{:?}", layout);
-        assert_eq!(str, "SimpleLayout { name: \"Dashboard\", rows: [LayoutRow { columns: [LayoutComponent { name: \"Calendar\", is_empty: false, flow: \"show_calendar\", size: 12 }] }, LayoutRow { columns: [LayoutComponent { name: \"Empty\", is_empty: true, flow: \"\", size: 2 }, LayoutComponent { name: \"Timeline\", is_empty: false, flow: \"show_timeline\", size: 8 }, LayoutComponent { name: \"Empty\", is_empty: true, flow: \"\", size: 2 }] }] }");
+        assert_eq!(str, "SimpleLayout { name: \"Dashboard\", rows: [LayoutRow { columns: [LayoutComponent { name: \"Calendar\", is_empty: false, flow: \"show_calendar\", size: 12, is_pure_component: false }] }, LayoutRow { columns: [LayoutComponent { name: \"Empty\", is_empty: true, flow: \"\", size: 2, is_pure_component: false }, LayoutComponent { name: \"Timeline\", is_empty: false, flow: \"show_timeline\", size: 8, is_pure_component: false }, LayoutComponent { name: \"Empty\", is_empty: true, flow: \"\", size: 2, is_pure_component: false }] }] }");
     }
 }
