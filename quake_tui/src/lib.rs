@@ -62,7 +62,6 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<(), B
                     KeyCode::Enter => {
                         let command: String = app.cmd_line.message.drain(..).collect();
                         execute_command(&command, &mut app)?;
-                        app.back_to_normal();
                     }
                     KeyCode::Char(c) => {
                         app.message_push(c);

@@ -33,14 +33,23 @@ impl App {
 
     pub fn save_entry(&mut self) {
         if let MainWidget::Editor(ref action, ref string) = self.main_widget {
-            entry_usecases::create_entry(&self.config.workspace, &action.object, &action.text)
-                .and_then(|(_, file)| {
-                    let type_path = PathBuf::from(&self.config.workspace).join(&action.object);
-                    let mut fields = HashMap::new();
-                    fields.insert("content".to_string(), string.clone());
-                    entry_usecases::update_entry_fields(type_path, &action.object, file.id, &fields)
-                })
-                .unwrap();
+            let result =
+                entry_usecases::create_entry(&self.config.workspace, &action.object, &action.text)
+                    .and_then(|(_, file)| {
+                        let type_path = PathBuf::from(&self.config.workspace).join(&action.object);
+                        let mut fields = HashMap::new();
+                        fields.insert("content".to_string(), string.clone());
+                        entry_usecases::update_entry_fields(
+                            type_path,
+                            &action.object,
+                            file.id,
+                            &fields,
+                        )
+                    });
+            match result {
+                Ok(_) => self.send_message("saved!"),
+                Err(_) => self.send_message("save failed!"),
+            }
         }
     }
 
@@ -54,6 +63,11 @@ impl App {
 
     pub fn message_clear(&mut self) {
         self.cmd_line.message.clear();
+    }
+
+    pub fn send_message(&mut self, message: &str) {
+        self.message_clear();
+        self.cmd_line.message.push_str(message);
     }
 
     pub fn back_to_normal(&mut self) {
@@ -100,6 +114,19 @@ mod tests {
         app.message_pop();
         app.message_pop();
         assert_eq!(app.cmd_line.message, "".to_string());
+    }
+
+    #[test]
+    fn test_send_message() {
+        let mut app = App::new(QuakeConfig::default());
+        app.state.mode = Mode::Command;
+
+        app.message_push('g');
+        app.message_push('t');
+        assert_eq!(app.cmd_line.message, "gt".to_string());
+
+        app.send_message("todo.show");
+        assert_eq!(app.cmd_line.message, "todo.show".to_string());
     }
 
     #[test]
