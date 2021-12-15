@@ -1,2 +1,3 @@
-"id","title","created","updated","tag","author"
+"id","title","created_date","updated_date","tag","author"
 1,"The Infinite Game","","","",""
+2,"Designing Data-Intensive Applications","data","","2021-12-15 19:54:55","2021-12-15 19:54:55"

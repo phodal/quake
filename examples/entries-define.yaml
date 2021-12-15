@@ -17,8 +17,8 @@ entries:
     display: ""
     fields:
       - title: Title
-      - created: String
-      - updated: Date
+      - created_date: Date
+      - updated_date: Date
       - tag: String
       - author: String
     actions: ~
