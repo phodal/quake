@@ -27,9 +27,14 @@
 
  - [embed-link](../embed-link)
 
+### Depends on
+
+- [graph-bar](../graph-bar)
+
 ### Graph
 ```mermaid
 graph TD;
+  quake-render --> graph-bar
   embed-link --> quake-render
   style quake-render fill:#f9f,stroke:#333,stroke-width:4px
 ```

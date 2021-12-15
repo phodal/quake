@@ -5,11 +5,16 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { QuakeDownType } from "./markdown/quake-down.type";
 import { Link } from "./components/quake-render/quake-render";
 export namespace Components {
     interface EmbedLink {
         "entryId": number;
         "entryType": string;
+    }
+    interface GraphBar {
+        "config": any;
+        "data": QuakeDownType.Table;
     }
     interface GraphNetwork {
         "config": any;
@@ -27,6 +32,12 @@ declare global {
         prototype: HTMLEmbedLinkElement;
         new (): HTMLEmbedLinkElement;
     };
+    interface HTMLGraphBarElement extends Components.GraphBar, HTMLStencilElement {
+    }
+    var HTMLGraphBarElement: {
+        prototype: HTMLGraphBarElement;
+        new (): HTMLGraphBarElement;
+    };
     interface HTMLGraphNetworkElement extends Components.GraphNetwork, HTMLStencilElement {
     }
     var HTMLGraphNetworkElement: {
@@ -41,6 +52,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "embed-link": HTMLEmbedLinkElement;
+        "graph-bar": HTMLGraphBarElement;
         "graph-network": HTMLGraphNetworkElement;
         "quake-render": HTMLQuakeRenderElement;
     }
@@ -49,6 +61,10 @@ declare namespace LocalJSX {
     interface EmbedLink {
         "entryId"?: number;
         "entryType"?: string;
+    }
+    interface GraphBar {
+        "config"?: any;
+        "data"?: QuakeDownType.Table;
     }
     interface GraphNetwork {
         "config"?: any;
@@ -62,6 +78,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "embed-link": EmbedLink;
+        "graph-bar": GraphBar;
         "graph-network": GraphNetwork;
         "quake-render": QuakeRender;
     }
@@ -71,6 +88,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "embed-link": LocalJSX.EmbedLink & JSXBase.HTMLAttributes<HTMLEmbedLinkElement>;
+            "graph-bar": LocalJSX.GraphBar & JSXBase.HTMLAttributes<HTMLGraphBarElement>;
             "graph-network": LocalJSX.GraphNetwork & JSXBase.HTMLAttributes<HTMLGraphNetworkElement>;
             "quake-render": LocalJSX.QuakeRender & JSXBase.HTMLAttributes<HTMLQuakeRenderElement>;
         }

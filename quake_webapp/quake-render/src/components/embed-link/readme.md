@@ -23,6 +23,7 @@
 ```mermaid
 graph TD;
   embed-link --> quake-render
+  quake-render --> graph-bar
   style embed-link fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

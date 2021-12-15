@@ -1,5 +1,6 @@
 import {Component, Event, EventEmitter, h, Prop, State} from '@stencil/core';
 import QuakeDown from '../../markdown/quake-down';
+import {CodeType, QuakeDownType} from "../../markdown/quake-down.type";
 
 export interface Link {
   entry_type: String,
@@ -32,9 +33,11 @@ export class QuakeRender {
     cancelable: true,
     bubbles: true,
   }) clickEmbedLink: EventEmitter<Link>;
+  private quakeDown: QuakeDown;
 
   componentWillRender() {
-    this.markdownData = new QuakeDown(this.content, this.parseInline).build();
+    this.quakeDown = new QuakeDown(this.content, this.parseInline);
+    this.markdownData = this.quakeDown.build();
   }
 
   componentDidRender() {
@@ -92,7 +95,22 @@ export class QuakeRender {
         </div>;
         break;
       case 'code':
-        out = <pre class={'language-' + item.lang}><code class={'language-' + item.lang} innerHTML={item.text}/></pre>
+        let code = item as QuakeDownType.Code;
+        switch (code.code_type) {
+          case CodeType.Graph:
+            switch (code.code_param) {
+              case 'bar':
+                let data = this.tableToJson(code);
+                out = <graph-bar data={data}/>
+                break;
+              default:
+                out = <p>not support graph</p>
+            }
+
+            break;
+          default:
+            out = <pre class={'language-' + code.lang}><code class={'language-' + code.lang} innerHTML={code.text}/></pre>
+        }
         break;
       default:
         // console.log(item);
@@ -100,6 +118,17 @@ export class QuakeRender {
     }
 
     return out;
+  }
+
+  private tableToJson(code: QuakeDownType.Code): QuakeDownType.Table | null {
+    let data = this.quakeDown.build_data(code.text);
+    for (let datum of data) {
+      if(datum.type == 'table') {
+        return datum;
+      }
+    }
+
+    return null;
   }
 
   private renderHeading(item: any) {

@@ -26,6 +26,12 @@ export function CodeTypeFromStr(text: String) {
 }
 
 export namespace QuakeDownType {
+  export interface Table {
+    type: 'table',
+    align: any[],
+    rows: any[],
+    header: any[][],
+  }
   export interface Code {
     type: 'code',
     code_type: CodeType,

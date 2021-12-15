@@ -29,7 +29,7 @@ class QuakeDown {
     return getExtensions();
   }
 
-  private build_data(src: string) {
+  build_data(src: string) {
     let output = [];
     const tokens = marked.lexer(src);
 
@@ -130,7 +130,6 @@ class QuakeDown {
           text: text,
         };
 
-        console.log(data);
         break;
       default:
         let custom_type = token as any;
