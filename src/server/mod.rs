@@ -11,6 +11,7 @@ use quake_core::QuakeConfig;
 mod action_api;
 mod entry_api;
 mod helper;
+mod layout_api;
 mod transflow_api;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -60,6 +61,7 @@ pub fn quake_rocket() -> Rocket<Build> {
                 transflow_api::translate
             ],
         )
+        .mount("/layout", routes![layout_api::dashboard_layout])
         .attach(AdHoc::config::<QuakeConfig>())
 }
 

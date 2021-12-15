@@ -75,13 +75,20 @@ pub(crate) async fn transflow_gen_code(
         let trans = JsFlowCodegen::gen_transform(&flow);
         let els = JsFlowCodegen::gen_element(&flow, None);
 
-        let name = &flow.name;
         let route = format!(
             "Quake.transflow.add({{name:'{:}',action:tl_{:}}})",
-            name, name
+            &flow.name, &flow.name
+        );
+        let bind = format!("Quake.flows['tl_{:}'] = tl_{:}", &flow.name, &flow.name);
+
+        let script = format!(
+            "{:}\n{:}\n{:}\n{:}\n",
+            trans.join("\n"),
+            els.join("\n"),
+            route,
+            bind
         );
 
-        let script = format!("{:}\n{:}\n{:}", trans.join("\n"), els.join("\n"), route);
         scripts.push(script);
     }
 
