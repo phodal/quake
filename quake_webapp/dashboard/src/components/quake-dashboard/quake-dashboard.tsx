@@ -72,6 +72,7 @@ export class QuakeDashboard {
   @State() flow_index: number = 1;
   @State() generated_code: string = "";
   @State() layout: any = {};
+  @State() showSimpleLayout: boolean = true;
 
 
   @Event({
@@ -102,6 +103,7 @@ export class QuakeDashboard {
     const that = this;
     this.query = event.target.value;
     this.handleQuery(that);
+    this.showSimpleLayout = false;
   }
 
   private handleQuery(that: this) {
@@ -160,6 +162,7 @@ export class QuakeDashboard {
 
   async addAction(_e: Event, action: string) {
     this.reset_input();
+    this.showSimpleLayout = false;
     if (!this.selected_entry) {
       return;
     }
@@ -381,7 +384,7 @@ export class QuakeDashboard {
             }
           </ion-row>
         </ion-grid>
-        { this.layout && <simple-layout layout={this.layout} />  }
+        { this.showSimpleLayout && this.layout && <simple-layout layout={this.layout} />  }
       </ion-content>
     </ion-app>;
   }
