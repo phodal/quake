@@ -50,20 +50,6 @@ export class QuakeRender {
         this.clickPageLink.emit(data)
       });
     }
-
-    // let embedLinks = this.el.querySelectorAll('.quake-embed-link');
-    // // @ts-ignore
-    // for (let elem of embedLinks) {
-    //   elem.addEventListener('click', _e => {
-    //     let data: Link = {
-    //       type: 'embed-link',
-    //       entry_type: elem.dataset.type,
-    //       id: Number(elem.dataset.id)
-    //     };
-    //
-    //     this.clickEmbedLink.emit(data)
-    //   });
-    // }
   }
 
   render() {
