@@ -12,7 +12,7 @@ use walkdir::{DirEntry, WalkDir};
 use crate::entry::entry_file::EntryFile;
 use crate::entry::EntryDefine;
 use crate::helper::quake_time;
-use crate::meta::MetaField;
+use crate::meta::MetaProperty;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct CsvTable {
@@ -110,8 +110,8 @@ impl Entrysets {
 
             let mut error = "".to_string();
             let mut has_convert_date_issue = false;
-            for (k, v) in &entry_file.fields {
-                if let Some(MetaField::Date(_date)) = type_maps.get(k) {
+            for (k, v) in &entry_file.properties {
+                if let Some(MetaProperty::Date(_date)) = type_maps.get(k) {
                     let value = quake_time::replace_to_unix(v);
                     match value.parse::<usize>() {
                         Ok(time) => {

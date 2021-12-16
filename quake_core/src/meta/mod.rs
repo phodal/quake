@@ -1,8 +1,8 @@
 use indexmap::IndexMap;
 
-pub use meta_field::MetaField;
+pub use meta_property::MetaProperty;
 
-pub mod meta_field;
+pub mod meta_property;
 pub mod quake_change;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Default)]
@@ -21,28 +21,28 @@ impl Author {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct EntryDefineFields {}
+pub struct EntryDefineProperties {}
 
-impl EntryDefineFields {
-    pub fn from(map: IndexMap<String, String>) -> IndexMap<String, MetaField> {
+impl EntryDefineProperties {
+    pub fn from(map: IndexMap<String, String>) -> IndexMap<String, MetaProperty> {
         let mut fields = IndexMap::new();
         for (key, value) in map {
-            fields.insert(key, Self::parse_field_type(value));
+            fields.insert(key, Self::parse_property_type(value));
         }
 
         fields
     }
 
-    fn parse_field_type(value: String) -> MetaField {
+    fn parse_property_type(value: String) -> MetaProperty {
         let field = match value.to_lowercase().as_str() {
-            "text" => MetaField::Text(value),
-            "title" => MetaField::Title(value),
-            "flow" => MetaField::Flow(value),
-            "string" => MetaField::Text(value),
-            "searchable" => MetaField::Searchable("string".to_string()),
-            "filterable" => MetaField::Filterable("string".to_string()),
-            "date" => MetaField::Date(value),
-            _ => MetaField::Unknown(value),
+            "text" => MetaProperty::Text(value),
+            "title" => MetaProperty::Title(value),
+            "flow" => MetaProperty::Flow(value),
+            "string" => MetaProperty::Text(value),
+            "searchable" => MetaProperty::Searchable("string".to_string()),
+            "filterable" => MetaProperty::Filterable("string".to_string()),
+            "date" => MetaProperty::Date(value),
+            _ => MetaProperty::Unknown(value),
         };
         field
     }
@@ -52,16 +52,16 @@ impl EntryDefineFields {
 mod tests {
     use indexmap::IndexMap;
 
-    use crate::meta::{EntryDefineFields, MetaField};
+    use crate::meta::{EntryDefineProperties, MetaProperty};
 
     #[test]
     fn custom_type() {
         let mut map = IndexMap::new();
         map.insert("title".to_string(), "Title".to_string());
 
-        let fields = EntryDefineFields::from(map);
+        let properties = EntryDefineProperties::from(map);
 
-        let option = fields.get("title").unwrap();
-        assert_eq!(&MetaField::Title(String::from("Title")), option)
+        let option = properties.get("title").unwrap();
+        assert_eq!(&MetaProperty::Title(String::from("Title")), option)
     }
 }

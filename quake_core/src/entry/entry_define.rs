@@ -2,17 +2,17 @@ use indexmap::IndexMap;
 use serde_derive::{Deserialize, Serialize};
 
 use crate::helper::quake_time;
-use crate::meta::{EntryDefineFields, MetaField};
+use crate::meta::{EntryDefineProperties, MetaProperty};
 
 /// Define a new entry:
 /// - `entry_type`: the entry_type for operation in system, should be in letter or `_` use in `dir`, `storage` such as
 /// - `display`: the name for display
-/// - `fields`: in yaml is a key-value list, need to be convert to HashMap
+/// - `properties`: in yaml is a key-value list, need to be convert to HashMap
 /// - `actions`: custom behavior action, can be use as API #TBD
 /// - `flows`: use for a simple workflow like **kanban**
 /// - `states`: use for a **filterable** condition
 ///
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
 pub struct EntryDefine {
     #[serde(rename = "type")]
     pub entry_type: String,
@@ -21,39 +21,26 @@ pub struct EntryDefine {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flows: Option<Vec<FlowField>>,
+    pub flows: Option<Vec<FlowProperty>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub states: Option<Vec<EntryState>>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub struct FlowField {
-    pub field: String,
+pub struct FlowProperty {
+    pub property: String,
     pub items: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct EntryState {
-    pub field: String,
+    pub property: String,
     pub items: Vec<String>,
-}
-
-impl Default for EntryDefine {
-    fn default() -> Self {
-        EntryDefine {
-            entry_type: "".to_string(),
-            display: "".to_string(),
-            properties: vec![],
-            actions: None,
-            flows: None,
-            states: None,
-        }
-    }
 }
 
 impl EntryDefine {
     // todo: directly Deserialize to meta field
-    pub fn to_field_type(&self) -> IndexMap<String, MetaField> {
+    pub fn to_field_type(&self) -> IndexMap<String, MetaProperty> {
         let mut properties: IndexMap<String, String> = IndexMap::new();
         for map in &self.properties {
             for (key, value) in map {
@@ -61,7 +48,7 @@ impl EntryDefine {
             }
         }
 
-        EntryDefineFields::from(properties)
+        EntryDefineProperties::from(properties)
     }
 
     /// set default flow value from first values
@@ -70,13 +57,13 @@ impl EntryDefine {
 
         if let Some(list) = &self.flows {
             for flow in list {
-                map.insert(flow.field.to_string(), flow.items[0].to_string());
+                map.insert(flow.property.to_string(), flow.items[0].to_string());
             }
         }
 
         if let Some(list) = &self.states {
             for flow in list {
-                map.insert(flow.field.to_string(), flow.items[0].to_string());
+                map.insert(flow.property.to_string(), flow.items[0].to_string());
             }
         }
 
@@ -95,18 +82,21 @@ impl EntryDefine {
         map
     }
 
-    /// create default fields with title, date, flows, dates
-    pub fn create_default_fields(&self, title: String) -> IndexMap<String, String> {
+    /// create default properties with title, date, flows, dates
+    pub fn create_default_properties(&self, title: String) -> IndexMap<String, String> {
         let basic_map = self.create_title_and_date(title);
-        let mut fields = self.merge_to_fields(basic_map);
+        let mut properties = self.convert_to_properties(basic_map);
         let flows = self.create_flows_and_states();
-        fields.extend(flows);
+        properties.extend(flows);
 
-        fields
+        properties
     }
 
     /// merge custom yaml map list to Indexmap
-    pub fn merge_to_fields(&self, values: IndexMap<String, String>) -> IndexMap<String, String> {
+    pub fn convert_to_properties(
+        &self,
+        values: IndexMap<String, String>,
+    ) -> IndexMap<String, String> {
         let mut result: IndexMap<String, String> = IndexMap::new();
 
         for field_def in &self.properties {
@@ -132,7 +122,7 @@ mod tests {
     use indexmap::IndexMap;
 
     use crate::entry::entry_define::EntryDefine;
-    use crate::meta::MetaField;
+    use crate::meta::MetaProperty;
 
     fn custom_entry_from_yaml() -> Vec<EntryDefine> {
         let yaml = "
@@ -155,11 +145,11 @@ mod tests {
 
         let custom_type = todo.to_field_type();
         let option = custom_type.get("title").unwrap();
-        assert_eq!(&MetaField::Title(String::from("Title")), option)
+        assert_eq!(&MetaProperty::Title(String::from("Title")), option)
     }
 
     #[test]
-    fn update_fields() {
+    fn update_properties() {
         let todo = &custom_entry_from_yaml()[0];
         let mut map = IndexMap::new();
         map.insert("title".to_string(), "Hello".to_string());
@@ -168,7 +158,7 @@ mod tests {
         map.insert("content".to_string(), "sample".to_string());
         map.insert("new_field".to_string(), "sample".to_string());
 
-        let new_map = todo.merge_to_fields(map);
+        let new_map = todo.convert_to_properties(map);
         assert_eq!("sample", new_map.get("new_field").unwrap())
     }
 
@@ -187,10 +177,10 @@ mod tests {
     - updated_date: Date
   actions: ~
   flows:
-    - field: status
+    - property: status
       items: ['Todo', 'Doing', 'Done']
   states:
-    - field: priority
+    - property: priority
       items: ['Low', 'Medium', 'High']
 
 ";
@@ -201,7 +191,7 @@ mod tests {
         assert_eq!(map.get("status").unwrap().to_string(), "Todo".to_string());
         assert_eq!(map.get("priority").unwrap().to_string(), "Low".to_string());
 
-        let final_map = define.create_default_fields("hello".to_string());
+        let final_map = define.create_default_properties("hello".to_string());
         assert_eq!(
             final_map.get("status").unwrap().to_string(),
             "Todo".to_string()

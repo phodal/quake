@@ -163,14 +163,14 @@ mod tests {
                 let title = simple_escape(page.title.clone());
                 file.name = EntryFile::file_name(index, title.as_str());
 
-                file.add_field("category", format!("{:?}", section.display_name));
-                file.add_field("notebook", format!("{:?}", section.parent_name));
-                file.add_field("title", format!("{:?}", title));
-                file.add_field(
+                file.add_property("category", format!("{:?}", section.display_name));
+                file.add_property("notebook", format!("{:?}", section.parent_name));
+                file.add_property("title", format!("{:?}", title));
+                file.add_property(
                     "created_date",
                     format!("{:?}", page.created_date_time.clone()),
                 );
-                file.add_field("updated_date", format!("{:?}", page.created_date_time));
+                file.add_property("updated_date", format!("{:?}", page.created_date_time));
 
                 file.content = "\n\n".to_string();
 
@@ -209,7 +209,7 @@ mod tests {
         let str = fs::read_to_string(output_dir.join("0001-game-develop.md")).unwrap();
         let file = EntryFile::from(str.as_str(), 1).unwrap();
 
-        assert_eq!(file.field("title").unwrap(), "Game Develop");
+        assert_eq!(file.property("title").unwrap(), "Game Develop");
         fs::remove_dir_all(output_dir).unwrap();
     }
 }

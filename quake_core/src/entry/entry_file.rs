@@ -17,7 +17,7 @@ pub struct EntryFile {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub path: Option<PathBuf>,
     pub name: String,
-    pub fields: IndexMap<String, String>,
+    pub properties: IndexMap<String, String>,
     pub content: String,
     pub changes: Vec<QuakeChange>,
 }
@@ -27,8 +27,8 @@ impl Serialize for EntryFile {
     where
         S: Serializer,
     {
-        let mut map = serializer.serialize_map(Some(self.fields.len()))?;
-        for (k, v) in &self.fields {
+        let mut map = serializer.serialize_map(Some(self.properties.len()))?;
+        for (k, v) in &self.properties {
             map.serialize_entry(&k.to_string(), &v)?;
         }
 
@@ -54,7 +54,7 @@ impl Default for EntryFile {
             id: 1,
             path: None,
             name: "".to_string(),
-            fields: IndexMap::default(),
+            properties: IndexMap::default(),
             content: "".to_string(),
             changes: vec![],
         }
@@ -71,7 +71,7 @@ impl ToString for EntryFile {
         let mut output = String::new();
         output.push_str("---\n");
 
-        for (key, value) in &self.fields {
+        for (key, value) in &self.properties {
             if !key.eq("content") {
                 output.push_str(format!("{}: {}\n", key, value).as_str());
             }
@@ -145,7 +145,7 @@ impl EntryFile {
             id: index_id,
             path: Default::default(),
             name: "".to_string(),
-            fields,
+            properties: fields,
             content,
             changes,
         })
@@ -184,7 +184,7 @@ impl EntryFile {
         let mut header: Vec<String> = vec![];
         let mut column: Vec<String> = vec![index.to_string()];
 
-        for (key, value) in self.fields {
+        for (key, value) in self.properties {
             if !key.eq("content") {
                 header.push(key);
                 column.push(value);
@@ -195,23 +195,23 @@ impl EntryFile {
     }
 
     pub fn insert_id(&mut self, value: usize) {
-        self.fields.insert("id".to_string(), value.to_string());
+        self.properties.insert("id".to_string(), value.to_string());
     }
 
-    pub fn field(&self, field: &str) -> Option<String> {
-        self.fields.get(field).map(|err| err.to_string())
+    pub fn property(&self, field: &str) -> Option<String> {
+        self.properties.get(field).map(|err| err.to_string())
     }
 
-    pub fn add_field(&mut self, key: &str, value: String) {
-        self.fields.insert(key.to_string(), value);
+    pub fn add_property(&mut self, key: &str, value: String) {
+        self.properties.insert(key.to_string(), value);
     }
 
-    pub fn set_fields(&mut self, fields: IndexMap<String, String>) {
-        self.fields = fields;
+    pub fn set_properties(&mut self, fields: IndexMap<String, String>) {
+        self.properties = fields;
     }
 
-    pub fn update_field(&mut self, field: &str, value: &str) {
-        match self.fields.get_mut(field) {
+    pub fn update_property(&mut self, field: &str, value: &str) {
+        match self.properties.get_mut(field) {
             None => {}
             Some(val) => {
                 *val = value.to_string();
@@ -310,7 +310,7 @@ sample
 
         assert_eq!(text, entry_file.to_string());
 
-        let map = entry_file.fields;
+        let map = entry_file.properties;
         entry_file.name = "0001-hello-world.md".to_string();
 
         assert_eq!("hello, world", map.get("title").unwrap());
@@ -349,9 +349,9 @@ sample
         let text = demo_text();
         let mut entry_file = EntryFile::from(text.as_str(), 1).unwrap();
 
-        entry_file.update_field("title", "Hello, World");
+        entry_file.update_property("title", "Hello, World");
 
-        let value = entry_file.fields.get(&"title".to_string()).unwrap();
+        let value = entry_file.properties.get(&"title".to_string()).unwrap();
         assert_eq!(value, &"Hello, World".to_string());
     }
 

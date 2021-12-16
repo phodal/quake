@@ -23,10 +23,10 @@ pub fn dump_microsoft_todo(todos_lists: Vec<OutputList>, path: &PathBuf) {
             let mut file = EntryFile::default();
 
             let title = todo.title;
-            file.add_field("category", format!("{:?}", list.display_name));
-            file.add_field("title", format!("{:?}", simple_escape(title.clone())));
-            file.add_field("created_date", format!("{:?}", todo.created_date_time));
-            file.add_field(
+            file.add_property("category", format!("{:?}", list.display_name));
+            file.add_property("title", format!("{:?}", simple_escape(title.clone())));
+            file.add_property("created_date", format!("{:?}", todo.created_date_time));
+            file.add_property(
                 "updated_date",
                 format!("{:?}", todo.last_modified_date_time),
             );
@@ -35,22 +35,22 @@ pub fn dump_microsoft_todo(todos_lists: Vec<OutputList>, path: &PathBuf) {
                 None => "".to_string(),
                 Some(dat) => dat.date_time,
             };
-            file.add_field("reminder_date", format!("{:?}", time));
+            file.add_property("reminder_date", format!("{:?}", time));
 
             let completed_date = match todo.completed_date_time {
                 None => "".to_string(),
                 Some(dat) => dat.date_time,
             };
-            file.add_field("completed_date", format!("{:?}", completed_date));
+            file.add_property("completed_date", format!("{:?}", completed_date));
 
             let due_date = match todo.due_date_time {
                 None => "".to_string(),
                 Some(dat) => dat.date_time,
             };
-            file.add_field("due_date", format!("{:?}", due_date));
+            file.add_property("due_date", format!("{:?}", due_date));
 
-            file.add_field("importance", format!("{:?}", todo.importance));
-            file.add_field("status", format!("{:?}", todo.status));
+            file.add_property("importance", format!("{:?}", todo.importance));
+            file.add_property("status", format!("{:?}", todo.status));
 
             file.name = EntryFile::file_name(index, title.as_str());
 

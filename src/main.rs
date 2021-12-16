@@ -252,7 +252,7 @@ mod tests {
             let content = fs::read_to_string(paths.base.join("0001-samples.md")).unwrap();
             let file = EntryFile::from(content.as_str(), 1).unwrap();
 
-            let title = file.field("title");
+            let title = file.property("title");
             assert_eq!(title.unwrap(), "samples");
 
             fs::remove_dir_all(test_dir).unwrap();

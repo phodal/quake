@@ -44,7 +44,7 @@ pub fn write_file(path: &PathBuf, row: &Row, id: usize) {
                 title = value.clone();
             }
 
-            file.add_field(name.as_str(), simple_escape(value));
+            file.add_property(name.as_str(), simple_escape(value));
         }
     }
 

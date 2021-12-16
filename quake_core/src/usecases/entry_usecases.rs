@@ -69,7 +69,7 @@ pub fn create_entry_file(
     entry_text: String,
 ) -> EntryFile {
     let mut entry_file = EntryFile::default();
-    entry_file.set_fields(entry_define.create_default_fields(entry_text));
+    entry_file.set_properties(entry_define.create_default_properties(entry_text));
     fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
     entry_file
 }
@@ -96,7 +96,7 @@ pub fn find_entry_path(
     Ok(target_file)
 }
 
-pub fn update_entry_fields(
+pub fn update_entry_properties(
     type_path: PathBuf,
     entry_type: &str,
     index_id: usize,
@@ -108,12 +108,12 @@ pub fn update_entry_fields(
 
     for (key, value) in update_map {
         if key != "content" {
-            entry_file.update_field(key, &format!("{:?}", value));
+            entry_file.update_property(key, &format!("{:?}", value));
         }
     }
 
-    if let Some(_val) = entry_file.fields.get("updated_date") {
-        entry_file.update_field(&"updated_date".to_string(), &date_now())
+    if let Some(_val) = entry_file.properties.get("updated_date") {
+        entry_file.update_property(&"updated_date".to_string(), &date_now())
     }
 
     if let Some(val) = update_map.get("content") {
@@ -132,7 +132,7 @@ mod tests {
     use std::path::PathBuf;
 
     use crate::entry::entry_file::EntryFile;
-    use crate::usecases::entry_usecases::{create_entry, find_entry_path, update_entry_fields};
+    use crate::usecases::entry_usecases::{create_entry, find_entry_path, update_entry_properties};
 
     #[test]
     fn create_todo_entry() {
@@ -148,7 +148,7 @@ mod tests {
         match result {
             Ok((path, file)) => {
                 assert!(path.display().to_string().contains("0001-hello-world.md"));
-                assert_eq!("hello, world", file.field("title").unwrap())
+                assert_eq!("hello, world", file.property("title").unwrap())
             }
             Err(_err) => {
                 assert!(false)
@@ -167,7 +167,7 @@ mod tests {
         let mut map: HashMap<String, String> = HashMap::new();
         map.insert("title".to_string(), "this is a test".to_string());
 
-        update_entry_fields(yiki_path.clone(), &entry_type, index_id, &map).unwrap();
+        update_entry_properties(yiki_path.clone(), &entry_type, index_id, &map).unwrap();
 
         let entry_path = find_entry_path(yiki_path, &entry_type.to_string(), index_id).unwrap();
         let string = fs::read_to_string(&entry_path).unwrap();
@@ -175,9 +175,9 @@ mod tests {
 
         let string = fs::read_to_string(&entry_path).unwrap();
         let mut entry_file = EntryFile::from(string.as_str(), index_id).unwrap();
-        entry_file.update_field(&"title".to_string(), &"概念知识容量表".to_string());
+        entry_file.update_property(&"title".to_string(), &"概念知识容量表".to_string());
         // reset time
-        entry_file.update_field(
+        entry_file.update_property(
             &"updated_date".to_string(),
             &"2021-11-25 10:14:26".to_string(),
         );
@@ -196,7 +196,7 @@ mod tests {
         let mut map: HashMap<String, String> = HashMap::new();
         map.insert("content".to_string(), "this is a content".to_string());
 
-        update_entry_fields(yiki_path.clone(), &entry_type, index_id, &map).unwrap();
+        update_entry_properties(yiki_path.clone(), &entry_type, index_id, &map).unwrap();
 
         let entry_path = find_entry_path(yiki_path, &entry_type.to_string(), index_id).unwrap();
         let string = fs::read_to_string(&entry_path).unwrap();
@@ -206,7 +206,7 @@ mod tests {
         let mut entry_file = EntryFile::from(string.as_str(), index_id).unwrap();
         entry_file.update_content(&"允许自定义字段\n".to_string());
         // reset time
-        entry_file.update_field(
+        entry_file.update_property(
             &"updated_date".to_string(),
             &"2021-12-01 11:08:40".to_string(),
         );

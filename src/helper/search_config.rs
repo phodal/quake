@@ -1,5 +1,5 @@
 use quake_core::entry::EntryDefine;
-use quake_core::meta::MetaField;
+use quake_core::meta::MetaProperty;
 use serde_derive::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -32,10 +32,10 @@ pub fn define_to_settings(define: &EntryDefine) -> SettingsUpdate {
 
     for (key, value) in define.to_field_type() {
         match value {
-            MetaField::Searchable(_) => {
+            MetaProperty::Searchable(_) => {
                 searchable.push(key);
             }
-            MetaField::Filterable(_) => {
+            MetaProperty::Filterable(_) => {
                 filterable.push(key);
             }
             _ => {}
@@ -80,10 +80,10 @@ mod tests {
     - updated_date: Date
   actions: ~
   flows:
-    - field: status
+    - property: status
       items: ['Todo', 'Doing', 'Done']
   states:
-    - field: priority
+    - property: priority
       items: ['Low', 'Medium', 'High']
 
 ";

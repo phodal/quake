@@ -86,7 +86,7 @@ fn show_entry_detail(expr: &QuakeActionNode, paths: &EntryPaths) -> Result<(), B
     let content = fs::read_to_string(target_file)?;
     let file = EntryFile::from(content.as_str(), index)?;
 
-    highlight_content(format!("{:?}", file.fields).as_str(), "json");
+    highlight_content(format!("{:?}", file.properties).as_str(), "json");
 
     println!("{:}", file.content);
 

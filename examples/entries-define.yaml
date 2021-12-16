@@ -90,10 +90,10 @@ entries:
       - updated_date: Date
     actions: ~
     flows:
-      - field: status
+      - property: status
         items: ['Spike', 'Todo', 'Doing', 'Done']
     states:
-      - field: priority
+      - property: priority
         items: ['Low', 'Medium', 'High']
   - type: onenote
     display: "Onenote"
@@ -132,7 +132,7 @@ entries:
       - created_date: Date
       - updated_date: Date
     states:
-      - field: priority
+      - property: priority
         items: ['Low', 'Medium', 'High']
     actions: ~
   - type: quake_book

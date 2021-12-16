@@ -87,7 +87,7 @@ pub(crate) async fn get_entry(
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct EntryUpdate {
-    fields: HashMap<String, String>,
+    properties: HashMap<String, String>,
 }
 
 #[post("/<entry_type>/<id>", data = "<entry>")]
@@ -98,7 +98,7 @@ pub(crate) async fn update_entry(
     config: &State<QuakeConfig>,
 ) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
     let path = PathBuf::from(&config.workspace).join(entry_type);
-    return match entry_usecases::update_entry_fields(path, entry_type, id, &entry.fields) {
+    return match entry_usecases::update_entry_properties(path, entry_type, id, &entry.properties) {
         Ok(file) => Ok(Json(file)),
         Err(err) => Err(NotFound(Json(ApiError {
             msg: err.to_string(),
@@ -154,6 +154,6 @@ mod test {
         fields.insert("created_date".to_string(), time.to_string());
         fields.insert("updated_date".to_string(), time.to_string());
 
-        EntryUpdate { fields }
+        EntryUpdate { properties: fields }
     }
 }
