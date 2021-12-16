@@ -35,7 +35,14 @@ some config:
 and a fetch next API
 
 ```
-<fetch-next url="@prop" fetchSuccess={(data) => {}}>
-</fetch-next>
+@Event(): fetchSuccess={(data) => {}}
+@Props(): url;
+@Props(): type
+
+load global quake config;
+
+<fetch-api url="@prop" type="github">
+
+</fetch-api>
 ```
 

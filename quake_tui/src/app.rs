@@ -40,7 +40,12 @@ impl App {
                     let type_path = PathBuf::from(&self.config.workspace).join(&action.object);
                     let mut fields = HashMap::new();
                     fields.insert("content".to_string(), string.clone());
-                    entry_usecases::update_entry_properties(type_path, &action.object, file.id, &fields)
+                    entry_usecases::update_entry_properties(
+                        type_path,
+                        &action.object,
+                        file.id,
+                        &fields,
+                    )
                 })
                 .unwrap();
         }
