@@ -1,0 +1,70 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="offline/css/ionic.bundle.css"/>
+  <!-- calendar styles -->
+  <link rel="stylesheet" href="packages/calendar/build/static/css/main.3bad1123.css">
+  <!-- timeline styles -->
+  <link rel="stylesheet" href="packages/timeline/build/static/css/main.b2e7138b.css">
+  <style>
+    body {
+      /* fix in ionic.css */
+      overflow: scroll;
+      position: relative;
+      font-family: "Lato Medium", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    }
+
+    .ion-page {
+      top: 20px;
+    }
+
+    #transflow-nav {
+      display: inline;
+    }
+
+    quake-render {
+      padding: 2em;
+    }
+
+    #transflow-nav a {
+      margin: 0 10px;
+    }
+  </style>
+</head>
+<body>
+<div id="navigator">
+  <a href="/">Go Home</a>
+  <div id="transflow-nav"></div>
+</div>
+<div id="outlet"></div>
+</body>
+
+<!--ionic for ui-->
+<script type="module" src="offline/ionic/ionic.esm.js"></script>
+<script nomodule src="offline/ionic/ionic.js"></script>
+
+<!--vaadin rotuer-->
+<script src="offline/js/vaadin-router.umd.min.js"></script>
+
+<!--search engine-->
+<script src="offline/js/meilisearch.umd.js"></script>
+
+<!-- By Stencilj.js -->
+<script type="module" src="./dashboard/dist/dashboard/dashboard.esm.js"></script>
+<script type="module" src="./quake-render/dist/quake-render/quake-render.esm.js"></script>
+
+<!-- by React Frameworks -->
+<script src="./quake-editor/build/static/quake-editor.min.js"></script>
+<script src="./packages/calendar/build/static/quake-calendar.min.js"></script>
+<script src="./packages/timeline/build/static/quake-timeline.min.js"></script>
+
+<script src="app.js"></script>
+<!-- saved transflow-scripts-->
+<script src="/transflow/script/gen_code"></script>
+<script src="/transflow/script/load_code"></script>
+
+</html>
