@@ -12,6 +12,12 @@ export namespace Components {
         "entryId": number;
         "entryType": string;
     }
+    interface FetchNext {
+        "data": any;
+        "method": String;
+        "searchEngine": boolean;
+        "url": String;
+    }
     interface GraphBar {
         "config": any;
         "data": QuakeDownType.Table;
@@ -31,6 +37,12 @@ declare global {
     var HTMLEmbedLinkElement: {
         prototype: HTMLEmbedLinkElement;
         new (): HTMLEmbedLinkElement;
+    };
+    interface HTMLFetchNextElement extends Components.FetchNext, HTMLStencilElement {
+    }
+    var HTMLFetchNextElement: {
+        prototype: HTMLFetchNextElement;
+        new (): HTMLFetchNextElement;
     };
     interface HTMLGraphBarElement extends Components.GraphBar, HTMLStencilElement {
     }
@@ -52,6 +64,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "embed-link": HTMLEmbedLinkElement;
+        "fetch-next": HTMLFetchNextElement;
         "graph-bar": HTMLGraphBarElement;
         "graph-network": HTMLGraphNetworkElement;
         "quake-render": HTMLQuakeRenderElement;
@@ -61,6 +74,13 @@ declare namespace LocalJSX {
     interface EmbedLink {
         "entryId"?: number;
         "entryType"?: string;
+    }
+    interface FetchNext {
+        "data"?: any;
+        "method"?: String;
+        "onFetchSuccess"?: (event: CustomEvent<any>) => void;
+        "searchEngine"?: boolean;
+        "url"?: String;
     }
     interface GraphBar {
         "config"?: any;
@@ -78,6 +98,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "embed-link": EmbedLink;
+        "fetch-next": FetchNext;
         "graph-bar": GraphBar;
         "graph-network": GraphNetwork;
         "quake-render": QuakeRender;
@@ -88,6 +109,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "embed-link": LocalJSX.EmbedLink & JSXBase.HTMLAttributes<HTMLEmbedLinkElement>;
+            "fetch-next": LocalJSX.FetchNext & JSXBase.HTMLAttributes<HTMLFetchNextElement>;
             "graph-bar": LocalJSX.GraphBar & JSXBase.HTMLAttributes<HTMLGraphBarElement>;
             "graph-network": LocalJSX.GraphNetwork & JSXBase.HTMLAttributes<HTMLGraphNetworkElement>;
             "quake-render": LocalJSX.QuakeRender & JSXBase.HTMLAttributes<HTMLQuakeRenderElement>;
