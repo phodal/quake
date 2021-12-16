@@ -97,10 +97,10 @@ const create_entry = async (context, commands) => {
   return create_editor_element(entry, params);
 }
 
-const update_entry = async (entry_type, id, fields) => {
+const update_entry = async (entry_type, id, properties) => {
   let response = await fetch(`/entry/${entry_type}/${id}`, {
     method: 'POST',
-    body: JSON.stringify({fields: fields})
+    body: JSON.stringify({properties: properties})
   });
 
   let data = await response.json();

@@ -22,7 +22,7 @@ export interface FlowDefine {
 export interface EntryInfo {
   type: string,
   display: string,
-  fields: any[],
+  properties: any[],
   action: any[],
   flows: FlowDefine[]
 }
