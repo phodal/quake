@@ -7,7 +7,6 @@ use quake_core::QuakeConfig;
 use crate::widgets::{CmdLine, MainWidget};
 
 pub struct App {
-    pub mode: Mode,
     pub state: AppState,
     pub config: QuakeConfig,
     pub main_widget: MainWidget,
@@ -17,7 +16,6 @@ pub struct App {
 impl App {
     pub fn new(config: QuakeConfig) -> App {
         App {
-            mode: Mode::Normal,
             main_widget: MainWidget::Home,
             cmd_line: CmdLine::default(),
             state: Default::default(),
@@ -35,32 +33,69 @@ impl App {
 
     pub fn save_entry(&mut self) {
         if let MainWidget::Editor(ref action, ref string) = self.main_widget {
-            entry_usecases::create_entry(&self.config.workspace, &action.object, &action.text)
-                .and_then(|(_, file)| {
-                    let type_path = PathBuf::from(&self.config.workspace).join(&action.object);
-                    let mut fields = HashMap::new();
-                    fields.insert("content".to_string(), string.clone());
-                    entry_usecases::update_entry_properties(
-                        type_path,
-                        &action.object,
-                        file.id,
-                        &fields,
-                    )
-                })
-                .unwrap();
+            let result =
+                entry_usecases::create_entry(&self.config.workspace, &action.object, &action.text)
+                    .and_then(|(_, file)| {
+                        let type_path = PathBuf::from(&self.config.workspace).join(&action.object);
+                        let mut fields = HashMap::new();
+                        fields.insert("content".to_string(), string.clone());
+                        entry_usecases::update_entry_properties(
+                            type_path,
+                            &action.object,
+                            file.id,
+                            &fields,
+                        )
+                    });
+            match result {
+                Ok(_) => self.send_message("saved!"),
+                Err(_) => self.send_message("save failed!"),
+            }
         }
-    }
-
-    pub fn message_push(&mut self, c: char) {
-        self.cmd_line.message.push(c);
-    }
-
-    pub fn message_pop(&mut self) {
-        self.cmd_line.message.pop();
     }
 
     pub fn message_clear(&mut self) {
         self.cmd_line.message.clear();
+    }
+
+    pub fn send_message(&mut self, message: &str) {
+        self.message_clear();
+        self.cmd_line.message.push_str(message);
+    }
+
+    pub fn back_to_normal(&mut self) {
+        self.state.mode = Mode::Normal;
+        self.state.input.clear();
+        self.message_clear();
+    }
+
+    pub fn input_push(&mut self, ch: char) {
+        self.state.input.push(ch);
+        self.cmd_line.message.push(ch);
+    }
+
+    pub fn input_pop(&mut self) {
+        self.state.input.pop();
+        self.cmd_line.message.pop();
+    }
+
+    pub fn collect_command(&mut self) -> String {
+        self.state.input.drain(..).collect()
+    }
+}
+
+pub struct AppState {
+    running: bool,
+    pub mode: Mode,
+    input: String,
+}
+
+impl Default for AppState {
+    fn default() -> AppState {
+        AppState {
+            running: true,
+            mode: Mode::Normal,
+            input: "".to_string(),
+        }
     }
 }
 
@@ -70,31 +105,52 @@ pub enum Mode {
     Insert,
 }
 
-pub struct AppState {
-    running: bool,
-}
-
-impl Default for AppState {
-    fn default() -> AppState {
-        AppState { running: true }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use quake_core::QuakeConfig;
 
-    use super::App;
+    use super::{App, Mode};
 
     #[test]
-    fn test_message_collect() {
+    fn test_command_collect() {
         let mut app = App::new(QuakeConfig::default());
-        app.message_push('g');
-        app.message_push('t');
+        app.state.mode = Mode::Command;
+
+        app.input_push('g');
+        app.input_push('t');
+        assert_eq!(app.state.input, "gt".to_string());
+
+        let command = app.collect_command();
+        assert_eq!(command, "gt".to_string());
+        assert_eq!(app.state.input, "".to_string());
+        assert_eq!(app.cmd_line.message, "gt".to_string());
+    }
+
+    #[test]
+    fn test_send_message() {
+        let mut app = App::new(QuakeConfig::default());
+        app.state.mode = Mode::Command;
+
+        app.input_push('g');
+        app.input_push('t');
         assert_eq!(app.cmd_line.message, "gt".to_string());
 
-        app.message_pop();
-        app.message_pop();
+        app.send_message("todo.show");
+        assert_eq!(app.cmd_line.message, "todo.show".to_string());
+    }
+
+    #[test]
+    fn test_clear_state_after_back_to_normal() {
+        let mut app = App::new(QuakeConfig::default());
+        app.state.mode = Mode::Command;
+
+        app.input_push('l');
+        app.input_push('s');
+        assert_eq!(app.cmd_line.message, "ls".to_string());
+        assert_eq!(app.state.input, "ls".to_string());
+
+        app.back_to_normal();
         assert_eq!(app.cmd_line.message, "".to_string());
+        assert_eq!(app.state.input, "".to_string());
     }
 }
