@@ -60,14 +60,14 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<(), B
                 }
                 Mode::Command => match key.code {
                     KeyCode::Enter => {
-                        let command: String = app.cmd_line.message.drain(..).collect();
+                        let command: String = app.collect_command();
                         execute_command(&command, &mut app)?;
                     }
                     KeyCode::Char(c) => {
-                        app.message_push(c);
+                        app.input_push(c);
                     }
                     KeyCode::Backspace => {
-                        app.message_pop();
+                        app.input_pop();
                     }
                     KeyCode::Esc => {
                         app.back_to_normal();

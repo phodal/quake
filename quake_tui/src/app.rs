@@ -53,14 +53,6 @@ impl App {
         }
     }
 
-    pub fn message_push(&mut self, c: char) {
-        self.cmd_line.message.push(c);
-    }
-
-    pub fn message_pop(&mut self) {
-        self.cmd_line.message.pop();
-    }
-
     pub fn message_clear(&mut self) {
         self.cmd_line.message.clear();
     }
@@ -72,13 +64,29 @@ impl App {
 
     pub fn back_to_normal(&mut self) {
         self.state.mode = Mode::Normal;
+        self.state.input.clear();
         self.message_clear();
+    }
+
+    pub fn input_push(&mut self, ch: char) {
+        self.state.input.push(ch);
+        self.cmd_line.message.push(ch);
+    }
+
+    pub fn input_pop(&mut self) {
+        self.state.input.pop();
+        self.cmd_line.message.pop();
+    }
+
+    pub fn collect_command(&mut self) -> String {
+        self.state.input.drain(..).collect()
     }
 }
 
 pub struct AppState {
     running: bool,
     pub mode: Mode,
+    input: String,
 }
 
 impl Default for AppState {
@@ -86,6 +94,7 @@ impl Default for AppState {
         AppState {
             running: true,
             mode: Mode::Normal,
+            input: "".to_string(),
         }
     }
 }
@@ -103,17 +112,18 @@ mod tests {
     use super::{App, Mode};
 
     #[test]
-    fn test_message_collect() {
+    fn test_command_collect() {
         let mut app = App::new(QuakeConfig::default());
         app.state.mode = Mode::Command;
 
-        app.message_push('g');
-        app.message_push('t');
-        assert_eq!(app.cmd_line.message, "gt".to_string());
+        app.input_push('g');
+        app.input_push('t');
+        assert_eq!(app.state.input, "gt".to_string());
 
-        app.message_pop();
-        app.message_pop();
-        assert_eq!(app.cmd_line.message, "".to_string());
+        let command = app.collect_command();
+        assert_eq!(command, "gt".to_string());
+        assert_eq!(app.state.input, "".to_string());
+        assert_eq!(app.cmd_line.message, "gt".to_string());
     }
 
     #[test]
@@ -121,8 +131,8 @@ mod tests {
         let mut app = App::new(QuakeConfig::default());
         app.state.mode = Mode::Command;
 
-        app.message_push('g');
-        app.message_push('t');
+        app.input_push('g');
+        app.input_push('t');
         assert_eq!(app.cmd_line.message, "gt".to_string());
 
         app.send_message("todo.show");
@@ -130,15 +140,17 @@ mod tests {
     }
 
     #[test]
-    fn test_clear_msg_after_back_to_normal() {
+    fn test_clear_state_after_back_to_normal() {
         let mut app = App::new(QuakeConfig::default());
         app.state.mode = Mode::Command;
 
-        app.message_push('l');
-        app.message_push('s');
+        app.input_push('l');
+        app.input_push('s');
         assert_eq!(app.cmd_line.message, "ls".to_string());
+        assert_eq!(app.state.input, "ls".to_string());
 
         app.back_to_normal();
         assert_eq!(app.cmd_line.message, "".to_string());
+        assert_eq!(app.state.input, "".to_string());
     }
 }
