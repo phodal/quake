@@ -17,11 +17,11 @@ transflow_expr = {
 }
 
 midway = {
-    from ~ parameters ~ "." ~ to ~ lbracket ~ parameter ~ rbracket ~ filter_expr?
+    from ~ (rest_source | parameters) ~ "." ~ to ~ lbracket ~ parameter ~ rbracket ~ filter_expr?
 }
 
 endway = {
-    from ~ parameters ~ "." ~ to ~ lbracket ~ component_decl ~ rbracket ~ filter_expr?
+    from ~ (rest_source | parameters) ~ "." ~ to ~ lbracket ~ component_decl ~ rbracket ~ filter_expr?
 }
 
 filter_expr = {
@@ -78,6 +78,12 @@ sized_empty_comp = {
 call_flow = {
     "flow" ~ lbracket ~ string ~ rbracket ~ ("," ~ digits ~ ("x" | "X"))?
     | component_decl ~ ("," ~ digits ~ ("x" | "X"))?
+}
+
+rest_source = {
+    // get / post / put / delete
+    // token
+    lbracket ~ "rest" ~ lbracket ~ string ~ rbracket ~ ("." ~ "get")? ~ rbracket
 }
 
 use_name = { ident }

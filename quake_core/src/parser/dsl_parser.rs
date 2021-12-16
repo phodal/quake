@@ -405,4 +405,12 @@ mod tests {
             assert_eq!(2, layout.rows[1][0].size);
         }
     }
+
+    #[test]
+    fn should_parse_rest_uri_source() {
+        let define = "transflow show_calendar { from(rest('https://quake.inherd.org')).to(<quake-calendar>); }";
+        let unit = parse(define).unwrap();
+
+        println!("{:?}", unit);
+    }
 }
