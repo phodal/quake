@@ -29,6 +29,9 @@ export class SimpleLayout {
   @State() flowMap: any = {};
   @State() slots: any[] = [];
 
+  // build logic
+  // 1. collection element of layouts before render.
+  // 2. recursive layout and append element to node
   componentWillRender() {
     this.createFlows();
   }
@@ -99,8 +102,6 @@ export class SimpleLayout {
   }
 
   render() {
-    console.log(this.layout);
-    console.log(this.flowMap);
     return (
       <Host ref={(el) => this.hostEl = el}>
         {!!this.layout.rows &&

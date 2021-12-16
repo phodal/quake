@@ -14,8 +14,6 @@ export namespace Components {
         "searchEngine": boolean;
         "type": String;
     }
-    interface FlowView {
-    }
     interface QuakeDashboard {
         "indexName": string;
     }
@@ -29,12 +27,6 @@ declare global {
     var HTMLFetchApiElement: {
         prototype: HTMLFetchApiElement;
         new (): HTMLFetchApiElement;
-    };
-    interface HTMLFlowViewElement extends Components.FlowView, HTMLStencilElement {
-    }
-    var HTMLFlowViewElement: {
-        prototype: HTMLFlowViewElement;
-        new (): HTMLFlowViewElement;
     };
     interface HTMLQuakeDashboardElement extends Components.QuakeDashboard, HTMLStencilElement {
     }
@@ -50,7 +42,6 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "fetch-api": HTMLFetchApiElement;
-        "flow-view": HTMLFlowViewElement;
         "quake-dashboard": HTMLQuakeDashboardElement;
         "simple-layout": HTMLSimpleLayoutElement;
     }
@@ -64,8 +55,6 @@ declare namespace LocalJSX {
         "searchEngine"?: boolean;
         "type"?: String;
     }
-    interface FlowView {
-    }
     interface QuakeDashboard {
         "indexName"?: string;
         "onDispatchAction"?: (event: CustomEvent<ActionDefine>) => void;
@@ -75,7 +64,6 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "fetch-api": FetchApi;
-        "flow-view": FlowView;
         "quake-dashboard": QuakeDashboard;
         "simple-layout": SimpleLayout;
     }
@@ -85,7 +73,6 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "fetch-api": LocalJSX.FetchApi & JSXBase.HTMLAttributes<HTMLFetchApiElement>;
-            "flow-view": LocalJSX.FlowView & JSXBase.HTMLAttributes<HTMLFlowViewElement>;
             "quake-dashboard": LocalJSX.QuakeDashboard & JSXBase.HTMLAttributes<HTMLQuakeDashboardElement>;
             "simple-layout": LocalJSX.SimpleLayout & JSXBase.HTMLAttributes<HTMLSimpleLayoutElement>;
         }
