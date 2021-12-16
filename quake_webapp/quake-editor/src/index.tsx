@@ -15,7 +15,7 @@ class ReactElement extends HTMLElement {
 
   disconnectedCallback() {
     this.unmount();
-    this.observer.disconnect();
+    this.observer && this.observer.disconnect();
   }
 
   attributeChangedCallback() {
@@ -40,8 +40,8 @@ class ReactElement extends HTMLElement {
       (props as any).content = "";
     }
 
-    // console.log(props);
-    // console.log(this.attributes);
+    console.log(props);
+    console.log(this.attributes);
     // @ts-ignore
     render(<QuakeEditor {...props}/>, this);
   }

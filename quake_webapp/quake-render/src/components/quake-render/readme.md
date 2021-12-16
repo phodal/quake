@@ -30,11 +30,13 @@
 ### Depends on
 
 - [graph-bar](../graph-bar)
+- [graph-line](../graph-line)
 
 ### Graph
 ```mermaid
 graph TD;
   quake-render --> graph-bar
+  quake-render --> graph-line
   embed-link --> quake-render
   style quake-render fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -15,7 +15,7 @@ class ReactElement extends HTMLElement {
 
   disconnectedCallback() {
     this.unmount();
-    this.observer.disconnect();
+    this.observer && this.observer.disconnect();
   }
 
   attributeChangedCallback() {

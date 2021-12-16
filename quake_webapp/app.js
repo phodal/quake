@@ -59,7 +59,7 @@ function create_editor_element(entry, params) {
   const editor = document.createElement('quake-editor');
 
   // todo: should set value first,?
-  editor.setAttribute('value', entry.content);
+  editor.setAttribute('content', entry.content);
 
   editor.setAttribute('id', entry.id);
   editor.setAttribute('title', entry.title);

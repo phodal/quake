@@ -1,4 +1,4 @@
-# graph-bar
+# graph-line
 
 
 
@@ -23,8 +23,8 @@
 ### Graph
 ```mermaid
 graph TD;
-  quake-render --> graph-bar
-  style graph-bar fill:#f9f,stroke:#333,stroke-width:4px
+  quake-render --> graph-line
+  style graph-line fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------
