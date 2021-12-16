@@ -191,14 +191,14 @@ mod tests {
         let yaml = "
 - type: todo
   display: Todo
-  fields:
+  properties:
     - title: Title
     - content: Body
     - author: Author
 
 - type: blog
   display: Blog
-  fields:
+  properties:
     - title: Title
     - content: Body
     - author: Author

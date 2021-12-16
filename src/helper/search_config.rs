@@ -69,7 +69,7 @@ mod tests {
         let yaml = "
 - type: story
   display: Story
-  fields:
+  properties:
     - title: Title
     - author: Filterable
     - description: Searchable

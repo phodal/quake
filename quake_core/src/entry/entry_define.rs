@@ -17,7 +17,7 @@ pub struct EntryDefine {
     #[serde(rename = "type")]
     pub entry_type: String,
     pub display: String,
-    pub fields: Vec<IndexMap<String, String>>,
+    pub properties: Vec<IndexMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -43,7 +43,7 @@ impl Default for EntryDefine {
         EntryDefine {
             entry_type: "".to_string(),
             display: "".to_string(),
-            fields: vec![],
+            properties: vec![],
             actions: None,
             flows: None,
             states: None,
@@ -54,14 +54,14 @@ impl Default for EntryDefine {
 impl EntryDefine {
     // todo: directly Deserialize to meta field
     pub fn to_field_type(&self) -> IndexMap<String, MetaField> {
-        let mut fields: IndexMap<String, String> = IndexMap::new();
-        for map in &self.fields {
+        let mut properties: IndexMap<String, String> = IndexMap::new();
+        for map in &self.properties {
             for (key, value) in map {
-                fields.insert(key.to_string(), value.to_string());
+                properties.insert(key.to_string(), value.to_string());
             }
         }
 
-        EntryDefineFields::from(fields)
+        EntryDefineFields::from(properties)
     }
 
     /// set default flow value from first values
@@ -109,7 +109,7 @@ impl EntryDefine {
     pub fn merge_to_fields(&self, values: IndexMap<String, String>) -> IndexMap<String, String> {
         let mut result: IndexMap<String, String> = IndexMap::new();
 
-        for field_def in &self.fields {
+        for field_def in &self.properties {
             for (key, _field_type) in field_def {
                 let value = if let Some(va) = values.get(key) {
                     va.to_string()
@@ -138,7 +138,7 @@ mod tests {
         let yaml = "
 - type: todo
   display: Todo
-  fields:
+  properties:
     - title: Title
     - content: Body
     - author: Author
@@ -151,7 +151,7 @@ mod tests {
     #[test]
     fn parse_yaml() {
         let todo = &custom_entry_from_yaml()[0];
-        assert_eq!(3, todo.fields.len());
+        assert_eq!(3, todo.properties.len());
 
         let custom_type = todo.to_field_type();
         let option = custom_type.get("title").unwrap();
@@ -177,7 +177,7 @@ mod tests {
         let yaml = "
 - type: story
   display: Story
-  fields:
+  properties:
     - title: Title
     - author: String
     - content: Body

@@ -170,7 +170,7 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     let todo_define = "
 - type: todo
   display: Todo
-  fields:
+  properties:
     - title: Title
     - author: String
 ";

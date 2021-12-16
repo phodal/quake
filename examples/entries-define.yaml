@@ -2,7 +2,7 @@
 entries:
   - type: blog
     display: ""
-    fields:
+    properties:
       - keywords: String
       - title: Title
       - description: String
@@ -15,7 +15,7 @@ entries:
     actions: ~
   - type: bookmark
     display: ""
-    fields:
+    properties:
       - title: Title
       - created_date: Date
       - updated_date: Date
@@ -24,12 +24,12 @@ entries:
     actions: ~
   - type: code
     display: ""
-    fields:
+    properties:
       - title: Title
     actions: ~
   - type: microsoft_todo
     display: ""
-    fields:
+    properties:
       - category: String
       - title: Title
       - created_date: Date
@@ -42,7 +42,7 @@ entries:
     actions: ~
   - type: notes
     display: ""
-    fields:
+    properties:
       - title: Title
       - description: String
       - category: String
@@ -52,7 +52,7 @@ entries:
     actions: ~
   - type: todo
     display: ""
-    fields:
+    properties:
       - title: Title
       - author: String
       - content: Body
@@ -61,7 +61,7 @@ entries:
     actions: ~
   - type: yiki
     display: ""
-    fields:
+    properties:
       - title: Title
       - author: String
       - content: Body
@@ -70,7 +70,7 @@ entries:
     actions: ~
   - type: spike
     display: "Spike"
-    fields:
+    properties:
       - title: Title
       - author: String
       - content: Body
@@ -80,7 +80,7 @@ entries:
     actions: ~
   - type: story
     display: "Story"
-    fields:
+    properties:
       - title: Title
       - author: String
       - content: Body
@@ -97,7 +97,7 @@ entries:
         items: ['Low', 'Medium', 'High']
   - type: onenote
     display: "Onenote"
-    fields:
+    properties:
       - title: Title
       - created_date: Date
       - updated_date: Date
@@ -106,7 +106,7 @@ entries:
     actions: ~
   - type: framework_doc
     display: "Frameworks Documentation"
-    fields:
+    properties:
       - title: Title
       - created_date: String
       - updated_date: Date
@@ -114,14 +114,14 @@ entries:
     actions: ~
   - type: roadmap
     display: "Roadmap"
-    fields:
+    properties:
       - title: Title
       - created_date: String
       - updated_date: Date
     actions: ~
   - type: issue
     display: "Issue"
-    fields:
+    properties:
       - title: Title
       - assignee: Author
       - created_by: Author
@@ -137,7 +137,7 @@ entries:
     actions: ~
   - type: quake_book
     display: ""
-    fields:
+    properties:
       - title: Title
       - created_date: Date
       - updated_date: Date
@@ -146,7 +146,7 @@ entries:
     actions: ~
   - type: testcases
     display: ""
-    fields:
+    properties:
       - title: Title
       - created_date: Date
       - updated_date: Date

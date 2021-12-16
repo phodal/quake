@@ -237,7 +237,7 @@ impl Entrysets {
                 map.insert(name, "String".to_string());
             }
 
-            define.fields.push(map);
+            define.properties.push(map);
         }
 
         Ok(define)
@@ -278,10 +278,10 @@ mod tests {
 
         assert_eq!("todo", define.entry_type);
 
-        assert_eq!("Title", define.fields[0].get("title").unwrap());
-        assert_eq!("String", define.fields[1].get("author").unwrap());
-        assert_eq!("Date", define.fields[2].get("created_date").unwrap());
-        assert_eq!("Date", define.fields[3].get("updated_date").unwrap());
+        assert_eq!("Title", define.properties[0].get("title").unwrap());
+        assert_eq!("String", define.properties[1].get("author").unwrap());
+        assert_eq!("Date", define.properties[2].get("created_date").unwrap());
+        assert_eq!("Date", define.properties[3].get("updated_date").unwrap());
     }
 
     #[test]
@@ -321,7 +321,7 @@ mod tests {
         let yaml = "
 - type: todo
   display: Todo
-  fields:
+  properties:
     - title: Title
     - author: Author
     - created_date: Date

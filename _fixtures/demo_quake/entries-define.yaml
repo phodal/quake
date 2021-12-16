@@ -2,7 +2,7 @@
 entries:
   - type: todo
     display: ""
-    fields:
+    properties:
       - title: Title
       - author: String
       - content: Body
