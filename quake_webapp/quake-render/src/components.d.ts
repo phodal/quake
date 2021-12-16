@@ -17,6 +17,11 @@ export namespace Components {
         "data": QuakeDownType.Table;
         "width": number;
     }
+    interface GraphLine {
+        "config": any;
+        "data": QuakeDownType.Table;
+        "width": number;
+    }
     interface GraphNetwork {
         "config": any;
         "data": any;
@@ -39,6 +44,12 @@ declare global {
         prototype: HTMLGraphBarElement;
         new (): HTMLGraphBarElement;
     };
+    interface HTMLGraphLineElement extends Components.GraphLine, HTMLStencilElement {
+    }
+    var HTMLGraphLineElement: {
+        prototype: HTMLGraphLineElement;
+        new (): HTMLGraphLineElement;
+    };
     interface HTMLGraphNetworkElement extends Components.GraphNetwork, HTMLStencilElement {
     }
     var HTMLGraphNetworkElement: {
@@ -54,6 +65,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "embed-link": HTMLEmbedLinkElement;
         "graph-bar": HTMLGraphBarElement;
+        "graph-line": HTMLGraphLineElement;
         "graph-network": HTMLGraphNetworkElement;
         "quake-render": HTMLQuakeRenderElement;
     }
@@ -64,6 +76,11 @@ declare namespace LocalJSX {
         "entryType"?: string;
     }
     interface GraphBar {
+        "config"?: any;
+        "data"?: QuakeDownType.Table;
+        "width"?: number;
+    }
+    interface GraphLine {
         "config"?: any;
         "data"?: QuakeDownType.Table;
         "width"?: number;
@@ -81,6 +98,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "embed-link": EmbedLink;
         "graph-bar": GraphBar;
+        "graph-line": GraphLine;
         "graph-network": GraphNetwork;
         "quake-render": QuakeRender;
     }
@@ -91,6 +109,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "embed-link": LocalJSX.EmbedLink & JSXBase.HTMLAttributes<HTMLEmbedLinkElement>;
             "graph-bar": LocalJSX.GraphBar & JSXBase.HTMLAttributes<HTMLGraphBarElement>;
+            "graph-line": LocalJSX.GraphLine & JSXBase.HTMLAttributes<HTMLGraphLineElement>;
             "graph-network": LocalJSX.GraphNetwork & JSXBase.HTMLAttributes<HTMLGraphNetworkElement>;
             "quake-render": LocalJSX.QuakeRender & JSXBase.HTMLAttributes<HTMLQuakeRenderElement>;
         }

@@ -30,7 +30,7 @@ export namespace QuakeDownType {
     type: 'table',
     align: any[],
     rows: any[],
-    header: any[][],
+    header: any[],
   }
   export interface Code {
     type: 'code',

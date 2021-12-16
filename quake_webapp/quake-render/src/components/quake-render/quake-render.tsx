@@ -98,19 +98,7 @@ export class QuakeRender {
         let code = item as QuakeDownType.Code;
         switch (code.code_type) {
           case CodeType.Graph:
-            switch (code.code_param) {
-              case 'bar':
-                let data = this.tableToJson(code);
-                out = <div class="quake-bar">
-                  <div class="quake-bar-data">
-                    {this.renderTable(data)}
-                  </div>
-                  <graph-bar data={data} class="quake-bar-chart"/>
-                </div>
-                break;
-              default:
-                out = <p>not support graph</p>
-            }
+            out = this.renderGraph(code);
 
             break;
           default:
@@ -124,6 +112,28 @@ export class QuakeRender {
     }
 
     return out;
+  }
+
+  private renderGraph(code: QuakeDownType.Code) {
+    let data = this.tableToJson(code);
+    switch (code.code_param) {
+      case 'bar':
+        return <div class="quake-bar">
+          <div class="quake-bar-data">
+            {this.renderTable(data)}
+          </div>
+          <graph-bar data={data} class="quake-bar-chart"/>
+        </div>
+      case 'line':
+        return <div class="quake-line">
+          <div class="quake-line-data">
+            {this.renderTable(data)}
+          </div>
+          <graph-line data={data} class="quake-line-chart"/>
+        </div>
+      default:
+        return <p>not support graph</p>
+    }
   }
 
   private tableToJson(code: QuakeDownType.Code): QuakeDownType.Table | null {
