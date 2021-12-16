@@ -1,12 +1,12 @@
 import {Component, Host, h, Prop, EventEmitter, Event} from '@stencil/core';
 
 @Component({
-  tag: 'fetch-next',
+  tag: 'fetch-api',
   shadow: true,
 })
-export class FetchNext {
-  @Prop() url: String = '';
-  @Prop() method: String = 'get';
+export class FetchApi {
+  @Prop() entryType: String[] = [];
+  @Prop() type: String = '';
 
   // todo: may be not need
   @Prop() data: any = {};
@@ -14,11 +14,18 @@ export class FetchNext {
   @Prop() searchEngine: boolean = false;
 
   @Event({
-    eventName: 'fetchSuccess',
+    eventName: 'fetchNextSuccess',
     composed: true,
     cancelable: true,
     bubbles: true,
-  }) fetchSuccess: EventEmitter;
+  }) fetchNextSuccess: EventEmitter;
+
+  @Event({
+    eventName: 'fetchAllSuccess',
+    composed: true,
+    cancelable: true,
+    bubbles: true,
+  }) fetchAllSuccess: EventEmitter;
 
   componentWillLoad() {
 

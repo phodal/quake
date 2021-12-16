@@ -6,6 +6,7 @@
   "scripts": {
     "rinstall": "pnpm recursive install",
     "rstart": "pnpm recursive run start",
+    "local": "pnpm recursive run build && node build.js",
     "dist": "nx run-many --target=build --all && node build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
