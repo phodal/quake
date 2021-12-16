@@ -120,6 +120,12 @@ Flowy to chart:
 from('todo','blog').to(<quake-network>);
 ```
 
+also
+
+```
+from('https://examples.com/api/blog').to(<quake-network>);
+```
+
 Graph and chart in markdown
 
 ````@graph('bar')
