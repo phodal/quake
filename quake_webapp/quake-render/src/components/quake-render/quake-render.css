@@ -4,6 +4,12 @@ current based on: https://github.com/JuliaDocs/Documenter.jl with MIT License
 */
 @import "../../../node_modules/prismjs/themes/prism.css";
 
+.quake-bar {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
 :host {
   display: block;
 }

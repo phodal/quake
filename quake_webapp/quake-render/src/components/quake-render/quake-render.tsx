@@ -101,7 +101,12 @@ export class QuakeRender {
             switch (code.code_param) {
               case 'bar':
                 let data = this.tableToJson(code);
-                out = <graph-bar data={data}/>
+                out = <div class="quake-bar">
+                  <div class="quake-bar-data">
+                    {this.renderTable(data)}
+                  </div>
+                  <graph-bar data={data} class="quake-bar-chart"/>
+                </div>
                 break;
               default:
                 out = <p>not support graph</p>
@@ -109,7 +114,8 @@ export class QuakeRender {
 
             break;
           default:
-            out = <pre class={'language-' + code.lang}><code class={'language-' + code.lang} innerHTML={code.text}/></pre>
+            out =
+              <pre class={'language-' + code.lang}><code class={'language-' + code.lang} innerHTML={code.text}/></pre>
         }
         break;
       default:
@@ -123,7 +129,7 @@ export class QuakeRender {
   private tableToJson(code: QuakeDownType.Code): QuakeDownType.Table | null {
     let data = this.quakeDown.build_data(code.text);
     for (let datum of data) {
-      if(datum.type == 'table') {
+      if (datum.type == 'table') {
         return datum;
       }
     }

@@ -15,6 +15,7 @@ export namespace Components {
     interface GraphBar {
         "config": any;
         "data": QuakeDownType.Table;
+        "width": number;
     }
     interface GraphNetwork {
         "config": any;
@@ -65,6 +66,7 @@ declare namespace LocalJSX {
     interface GraphBar {
         "config"?: any;
         "data"?: QuakeDownType.Table;
+        "width"?: number;
     }
     interface GraphNetwork {
         "config"?: any;

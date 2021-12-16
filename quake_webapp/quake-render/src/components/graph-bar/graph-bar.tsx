@@ -1,6 +1,8 @@
-import {Component, Host, h, State, Prop} from '@stencil/core';
+import {Component, h, Host, Prop, State} from '@stencil/core';
 import * as echarts from "echarts";
 import {QuakeDownType} from "../../markdown/quake-down.type";
+import {EChartsType} from "echarts/types/dist/echarts";
+import {EChartsOption} from "echarts";
 
 @Component({
   tag: 'graph-bar',
@@ -8,15 +10,23 @@ import {QuakeDownType} from "../../markdown/quake-down.type";
   shadow: true,
 })
 export class GraphBar {
-  @State() myChart: any;
+  @State() myChart: EChartsType;
   element!: HTMLElement;
   @Prop() config: any = {};
 
   @Prop() data: QuakeDownType.Table = null;
 
+  @Prop() width = 300;
+
   componentDidRender() {
+    let cells = this.transpose(this.data.rows);
+
+    let width = cells[0].length * 40 + 200 + 'px';
+    this.element.style.width = width;
+    this.element.style.height = width;
+
     this.myChart = echarts.init(this.element);
-    this.renderGraph();
+    this.renderGraph(cells);
   }
 
   transpose(array: any[][]) {
@@ -35,11 +45,13 @@ export class GraphBar {
     );
   }
 
-  private renderGraph() {
+  private renderGraph(cells: any[][]) {
     this.myChart.hideLoading();
-    let cells = this.transpose(this.data.rows);
 
-    const option: any = {
+    const option: EChartsOption = {
+      title: {
+        text: ""
+      },
       xAxis: {
         type: 'category',
         data: cells[0]
