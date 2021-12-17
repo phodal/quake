@@ -1,24 +1,28 @@
-import {Component, Host, h, Prop, EventEmitter, Event} from '@stencil/core';
+import {Component, Event, EventEmitter, h, Host, Prop} from '@stencil/core';
+import {MeiliSearch} from "meilisearch";
+import axios from "axios";
 
 @Component({
   tag: 'fetch-api',
   shadow: true,
 })
 export class FetchApi {
-  @Prop() entryType: String[] = [];
-  @Prop() type: String = '';
-
-  // todo: may be not need
-  @Prop() data: any = {};
+  @Prop() entryType: string[] = [];
+  @Prop() type: string = '';
+  @Prop() url: string = '';
 
   @Prop() searchEngine: boolean = false;
 
+  client = new MeiliSearch({
+    host: 'http://127.0.0.1:7700'
+  })
+
   @Event({
-    eventName: 'fetchNextSuccess',
+    eventName: 'fetchSuccess',
     composed: true,
     cancelable: true,
     bubbles: true,
-  }) fetchNextSuccess: EventEmitter;
+  }) fetchSuccess: EventEmitter;
 
   @Event({
     eventName: 'fetchAllSuccess',
@@ -27,15 +31,33 @@ export class FetchApi {
     bubbles: true,
   }) fetchAllSuccess: EventEmitter;
 
-  componentWillLoad() {
+  getRequest(url: string): Promise<any> {
+    return axios.get(url).then((data) => this.fetchSuccess.emit(data));
+  }
 
+  postRequest(url: string, data: any): Promise<any> {
+    return axios.post(url, data).then((data) => this.fetchSuccess.emit(data));
+  }
+
+  componentWillLoad() {
+    switch (this.type) {
+      case 'suggest': {
+        this.url = "/action/suggest";
+        break;
+      }
+      case 'layout': {
+        this.url = "/layout/dashboard";
+        break;
+      }
+      default:
+        console.log(this.type);
+    }
+    this.getRequest(this.url).then(() => {});
   }
 
   render() {
     return (
-      <Host>
-        <slot></slot>
-      </Host>
+      <Host></Host>
     );
   }
 

@@ -5,7 +5,7 @@ import axios from "axios";
 
 // only for: IDEA jump
 // @ts-ignore
-import {IonSearchbar} from "@ionic/core";
+import {IonSearchbar, loadingController} from "@ionic/core";
 
 export interface ActionDefine {
   object: String,
@@ -88,15 +88,32 @@ export class QuakeDashboard {
 
   componentWillLoad() {
     const that = this;
-    axios.get('/action/suggest')
-      .then((response: any) => {
-        that.entries_info = response.data.entries;
-        that.actions_list = response.data.actions;
-      });
-    axios.get('/layout/dashboard')
-      .then((response: any) => {
-        that.layout = response.data;
-      });
+    this.loadingElement("rest", "suggest", (res: any) => {
+      that.entries_info = res.data.entries;
+      that.actions_list = res.data.actions;
+    });
+
+    this.loadingElement("rest", "layout", (res: any) => {
+      that.layout = res.data;
+    });
+  }
+
+  async loadingElement(type: string, _url: string, callback: any) {
+    const loading = await loadingController.create({
+      message: 'Please wait...',
+      duration: 500
+    });
+
+    const fetchEl = document.createElement('fetch-api');
+    fetchEl.setAttribute("type", type);
+    fetchEl.addEventListener("fetchSuccess", (res: any) => {
+      let response = res.detail;
+      loading.onDidDismiss().then(() => {});
+      callback(response);
+    })
+
+    loading.appendChild(fetchEl);
+    await loading.present();
   }
 
   handleInput(event) {
@@ -135,14 +152,21 @@ export class QuakeDashboard {
 
   private search_item(that: this, doc: string) {
     const index = this.client.index(doc)
-    requestAnimationFrame(() => {
-      index.search(that.query, {
-        attributesToHighlight: ['overview']
-      }).then((result) => {
-        that.list[doc] = result.hits;
-        that.items = result.hits;
-      })
-    });
+    index.search(that.query, {
+      attributesToHighlight: ['overview']
+    }).then((result) => {
+      that.list[doc] = result.hits;
+      that.items = result.hits;
+    })
+  }
+
+  private queryItems(offset: number) {
+    const index = this.client.index(this.selected_entry.type)
+    return index.search('', {
+      attributesToHighlight: ['overview'],
+      limit: 40,
+      offset
+    })
   }
 
   formatDate(str) {
@@ -186,15 +210,6 @@ export class QuakeDashboard {
       this.query = this.query + action;
       this.handleQuery(this);
     }
-  }
-
-  private queryItems(offset: number) {
-    const index = this.client.index(this.selected_entry.type)
-    return index.search('', {
-      attributesToHighlight: ['overview'],
-      limit: 40,
-      offset
-    })
   }
 
   private process_flow(parsed) {
@@ -384,7 +399,7 @@ export class QuakeDashboard {
             }
           </ion-row>
         </ion-grid>
-        { this.showSimpleLayout && this.layout && <simple-layout layout={this.layout} />  }
+        {this.showSimpleLayout && this.layout && <simple-layout layout={this.layout}/>}
       </ion-content>
     </ion-app>;
   }
@@ -397,7 +412,7 @@ export class QuakeDashboard {
           <ion-card>
             <ion-card-header>
               <ion-card-subtitle># {this.padLeft(item.id, 4, '')}
-                <ion-icon name="book-outline"  onClick={() => this.showEntry(item.id, this.selected_entry.type)}/>
+                <ion-icon name="book-outline" onClick={() => this.showEntry(item.id, this.selected_entry.type)}/>
                 <ion-icon name="create-outline" onClick={() => this.editEntry(item.id, this.selected_entry.type)}/>
               </ion-card-subtitle>
               <ion-card-title>{item.title}</ion-card-title>
@@ -427,7 +442,7 @@ export class QuakeDashboard {
       <ion-card>
         <ion-card-header>
           <ion-card-subtitle># {this.padLeft(item.id, 4, '')}
-            <ion-icon name="book-outline"  onClick={() => this.showEntry(item.id, type)}/>
+            <ion-icon name="book-outline" onClick={() => this.showEntry(item.id, type)}/>
             <ion-icon name="create-outline" onClick={() => this.editEntry(item.id, type)}/>
           </ion-card-subtitle>
           <ion-card-title>{item.title}</ion-card-title>
