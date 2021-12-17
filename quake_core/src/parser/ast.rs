@@ -37,15 +37,26 @@ pub enum TransflowEnum {
     Endway(Endway),
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, Default)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Midway {
-    pub from: Vec<Parameter>,
+    pub from: TransflowSource,
     pub end: String,
     pub filter: String,
 }
 
+impl Default for Midway {
+    fn default() -> Self {
+        Self {
+            from: TransflowSource::Empty,
+            end: "".to_string(),
+            filter: "".to_string(),
+        }
+    }
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum TransflowSource {
+    Empty,
     EntryTypes(Vec<Parameter>),
     RestUrl(FlowUrl),
 }
@@ -83,11 +94,21 @@ pub enum HttpMethod {
     Delete,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, Default)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Endway {
-    pub from: Vec<Parameter>,
+    pub from: TransflowSource,
     pub component: String,
     pub filter: String,
+}
+
+impl Default for Endway {
+    fn default() -> Self {
+        Self {
+            from: TransflowSource::Empty,
+            component: "".to_string(),
+            filter: "".to_string(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Default)]

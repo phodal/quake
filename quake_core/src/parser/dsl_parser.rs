@@ -5,7 +5,7 @@ use pest::Parser;
 
 use crate::parser::ast::{
     ActionDecl, Endway, FlowUrl, LayoutComponentNode, Midway, Parameter, SimpleLayoutDecl,
-    SourceUnit, SourceUnitPart, TransflowDecl, TransflowEnum,
+    SourceUnit, SourceUnitPart, TransflowDecl, TransflowEnum, TransflowSource,
 };
 use crate::parser::errors::QuakeParserError;
 
@@ -185,7 +185,7 @@ fn midway(decl: Pair<Rule>) -> Midway {
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::entry_list => {
-                midway.from = parameters(pair);
+                midway.from = TransflowSource::EntryTypes(parameters(pair));
             }
             Rule::parameter => {
                 midway.end = value(pair);
@@ -214,7 +214,7 @@ fn endway(decl: Pair<Rule>) -> Endway {
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::entry_list => {
-                endway.from = parameters(pair);
+                endway.from = TransflowSource::EntryTypes(parameters(pair));
             }
             Rule::component_decl => {
                 for name in pair.into_inner() {
@@ -336,7 +336,7 @@ pub fn replace_string_markers(input: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::ast::{SourceUnitPart, TransflowEnum};
+    use crate::parser::ast::{SourceUnitPart, TransflowEnum, TransflowSource};
     use crate::parser::dsl_parser::parse;
 
     #[test]
@@ -379,11 +379,17 @@ mod tests {
             SourceUnitPart::Transflow(decl) => {
                 let flow = decl.flows[0].clone();
                 match flow {
-                    TransflowEnum::Midway(_) => assert!(false),
+                    TransflowEnum::Midway(_) => panic!(),
                     TransflowEnum::Endway(end) => {
-                        assert_eq!(2, end.from.len());
-                        assert_eq!("todo", end.from[0].value);
-                        assert_eq!("blog", end.from[1].value);
+                        match end.from {
+                            TransflowSource::EntryTypes(params) => {
+                                assert_eq!(2, params.len());
+                                assert_eq!("todo", params[0].value);
+                                assert_eq!("blog", params[1].value);
+                            }
+                            _ => panic!(),
+                        }
+
                         assert_eq!("quake-calendar", end.component);
                     }
                 }
@@ -417,11 +423,11 @@ mod tests {
             assert_eq!("Calendar", &layout.rows[0][0].name);
             assert_eq!("show_calendar", layout.rows[0][0].flow.as_ref().unwrap());
             assert_eq!(12, layout.rows[0][0].size);
-            assert_eq!(false, layout.rows[0][0].is_empty);
+            assert!(!layout.rows[0][0].is_empty);
 
             assert_eq!(3, layout.rows[1].len());
             assert_eq!("Empty", &layout.rows[1][0].name);
-            assert_eq!(true, layout.rows[1][0].is_empty);
+            assert!(layout.rows[1][0].is_empty);
             assert_eq!(2, layout.rows[1][0].size);
         }
     }

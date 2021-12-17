@@ -1,7 +1,9 @@
 use crate::helper::quake_time::replace_to_unix;
 use std::error::Error;
 
-use crate::parser::ast::{SimpleLayoutDecl, SourceUnitPart, TransflowDecl, TransflowEnum};
+use crate::parser::ast::{
+    SimpleLayoutDecl, SourceUnitPart, TransflowDecl, TransflowEnum, TransflowSource,
+};
 use crate::parser::dsl_parser::parse;
 use crate::parser::errors::QuakeParserError;
 
@@ -184,8 +186,14 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
             match flow_decl {
                 TransflowEnum::Midway(way) => {
                     route.to = way.end.clone();
-                    for param in &way.from {
-                        route.from.push(param.value.clone())
+                    match &way.from {
+                        TransflowSource::EntryTypes(params) => {
+                            for param in params {
+                                route.from.push(param.value.clone())
+                            }
+                        }
+                        TransflowSource::RestUrl(_) => {}
+                        _ => {}
                     }
 
                     route.filter = replace_to_unix(way.filter.as_str());
@@ -196,8 +204,14 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                 TransflowEnum::Endway(way) => {
                     route.to = way.component.clone();
                     route.is_end_way = true;
-                    for param in &way.from {
-                        route.from.push(param.value.clone())
+                    match &way.from {
+                        TransflowSource::EntryTypes(params) => {
+                            for param in params {
+                                route.from.push(param.value.clone())
+                            }
+                        }
+                        TransflowSource::RestUrl(_) => {}
+                        _ => {}
                     }
 
                     route.filter = replace_to_unix(way.filter.as_str());
