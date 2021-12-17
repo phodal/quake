@@ -2103,6 +2103,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "quake_wasm"
+version = "0.1.0"
+dependencies = [
+ "quake_core",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "quote"
 version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"

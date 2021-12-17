@@ -84,7 +84,7 @@ pub struct QuakeActionNode {
 impl QuakeActionNode {
     /// QuakeAction will only process one by one in current
     /// so, just return first action
-    pub fn action_from_text(text: &str) -> Result<QuakeActionNode, Box<dyn Error>> {
+    pub fn from_text(text: &str) -> Result<QuakeActionNode, Box<dyn Error>> {
         let it = quake(text)?;
         if it.actions.is_empty() {
             return Err(Box::new(QuakeParserError::new("not match action")));
@@ -248,7 +248,7 @@ mod tests {
 
     #[test]
     fn should_parse_expression() {
-        let expr = QuakeActionNode::action_from_text("todo.add: 添加 todo 的支持").unwrap();
+        let expr = QuakeActionNode::from_text("todo.add: 添加 todo 的支持").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "add");
         assert_eq!(expr.text, "添加 todo 的支持");
@@ -256,7 +256,7 @@ mod tests {
 
     #[test]
     fn should_parse_update_parameter() {
-        let expr = QuakeActionNode::action_from_text("todo.update(1)").unwrap();
+        let expr = QuakeActionNode::from_text("todo.update(1)").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "1");
@@ -266,14 +266,14 @@ mod tests {
 
     #[test]
     fn should_parse_com() {
-        let expr = QuakeActionNode::action_from_text("phodal_com.sync").unwrap();
+        let expr = QuakeActionNode::from_text("phodal_com.sync").unwrap();
         assert_eq!(expr.object, "phodal_com");
         assert_eq!(expr.action, "sync");
     }
 
     #[test]
     fn should_parse_double_digital() {
-        let expr = QuakeActionNode::action_from_text("todo.update(12)").unwrap();
+        let expr = QuakeActionNode::from_text("todo.update(12)").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "12");
@@ -282,7 +282,7 @@ mod tests {
 
     #[test]
     fn should_parse_chinese_quote() {
-        let expr = QuakeActionNode::action_from_text("todo.update（12）").unwrap();
+        let expr = QuakeActionNode::from_text("todo.update（12）").unwrap();
         assert_eq!(expr.object, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "12");

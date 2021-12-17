@@ -22,7 +22,7 @@ pub struct ActionSuggest {
 
 #[get("/query?<input>")]
 pub fn parse_query(input: String) -> String {
-    let result = QuakeActionNode::action_from_text(input.as_str());
+    let result = QuakeActionNode::from_text(input.as_str());
     let output = match result {
         Ok(value) => serde_json::to_string(&value).unwrap(),
         Err(err) => serde_json::to_string(&ApiError {

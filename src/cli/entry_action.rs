@@ -135,7 +135,7 @@ mod tests {
 
     #[test]
     fn throw_editor_empty() {
-        let expr = QuakeActionNode::action_from_text("todo.edit(1)").unwrap();
+        let expr = QuakeActionNode::from_text("todo.edit(1)").unwrap();
         let config = QuakeConfig {
             editor: "".to_string(),
             workspace: "examples".to_string(),

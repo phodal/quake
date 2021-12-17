@@ -91,7 +91,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
         SubCommand::Cmd(cmd) => {
             let conf = config_quake(&cmd)?;
             if !cmd.input.is_empty() {
-                let expr = QuakeActionNode::action_from_text(cmd.input.as_str())?;
+                let expr = QuakeActionNode::from_text(cmd.input.as_str())?;
                 cli::action(expr, conf)?
             }
         }

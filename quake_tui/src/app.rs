@@ -149,7 +149,7 @@ impl App {
             "listAll" => self.main_widget = MainWidget::EntryTypes,
             "save" => self.save_entry(),
             other => {
-                if let Ok(action) = QuakeActionNode::action_from_text(other) {
+                if let Ok(action) = QuakeActionNode::from_text(other) {
                     self.main_widget = MainWidget::Editor(action, "".to_string());
                 } else {
                     return Err(format!("Unknown command: {}", command));
