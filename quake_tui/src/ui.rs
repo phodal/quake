@@ -20,9 +20,10 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &mut App) {
             chunks[0].y + 1,
         ),
         Mode::Insert => {
+            let input_lines: Vec<&str> = app.main_widget.get_input().split('\n').collect();
             f.set_cursor(
-                chunks[1].x + app.main_widget.get_input().width() as u16 + 1,
-                chunks[1].y + 1,
+                chunks[1].x + input_lines.last().unwrap_or(&"").width() as u16 + 1,
+                chunks[1].y + input_lines.len() as u16,
             );
         }
     }
