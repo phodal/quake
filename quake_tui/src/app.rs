@@ -126,7 +126,10 @@ impl App {
                     self.state.mode = Mode::Normal;
                 }
                 KeyCode::Char(c) => {
-                    self.main_widget.collect_input(c);
+                    self.main_widget.input_push(c);
+                }
+                KeyCode::Backspace => {
+                    self.main_widget.input_pop();
                 }
                 _ => {}
             },
