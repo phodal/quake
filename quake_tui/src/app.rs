@@ -108,42 +108,50 @@ pub enum Mode {
 #[cfg(test)]
 mod tests {
     use quake_core::QuakeConfig;
+    use rstest::{fixture, rstest};
 
     use super::{App, Mode};
 
-    #[test]
-    fn test_command_collect() {
+    #[fixture]
+    pub fn app() -> App {
         let mut app = App::new(QuakeConfig::default());
         app.state.mode = Mode::Command;
+        app
+    }
 
-        app.input_push('g');
-        app.input_push('t');
-        assert_eq!(app.state.input, "gt".to_string());
+    #[rstest]
+    #[case(vec!['g', 't'], "gt")]
+    #[case(vec!['l', 's'], "ls")]
+    #[case(vec!['q', 'u', 'i', 't'], "quit")]
+    #[case(vec!['*', '/', '#', '@'], "*/#@")]
+    fn test_command_collect(mut app: App, #[case] input_chars: Vec<char>, #[case] expect: &str) {
+        for ch in input_chars {
+            app.input_push(ch);
+        }
+        assert_eq!(app.state.input, expect.to_string());
 
         let command = app.collect_command();
-        assert_eq!(command, "gt".to_string());
+        assert_eq!(command, expect.to_string());
         assert_eq!(app.state.input, "".to_string());
-        assert_eq!(app.cmd_line.message, "gt".to_string());
+        assert_eq!(app.cmd_line.message, expect.to_string());
     }
 
-    #[test]
-    fn test_send_message() {
-        let mut app = App::new(QuakeConfig::default());
-        app.state.mode = Mode::Command;
-
+    #[rstest]
+    #[case("todo.show")]
+    #[case("todo.edit(1)")]
+    #[case("todo.add: hello")]
+    #[case("success")]
+    fn test_send_message(mut app: App, #[case] message: &str) {
         app.input_push('g');
         app.input_push('t');
         assert_eq!(app.cmd_line.message, "gt".to_string());
 
-        app.send_message("todo.show");
-        assert_eq!(app.cmd_line.message, "todo.show".to_string());
+        app.send_message(message);
+        assert_eq!(app.cmd_line.message, message.to_string());
     }
 
-    #[test]
-    fn test_clear_state_after_back_to_normal() {
-        let mut app = App::new(QuakeConfig::default());
-        app.state.mode = Mode::Command;
-
+    #[rstest]
+    fn test_clear_state_after_back_to_normal(mut app: App) {
         app.input_push('l');
         app.input_push('s');
         assert_eq!(app.cmd_line.message, "ls".to_string());
