@@ -73,9 +73,15 @@ impl MainWidget {
         }
     }
 
-    pub fn collect_input(&mut self, c: char) {
+    pub fn input_push(&mut self, c: char) {
         if let Self::Editor(_, ref mut string) = self {
             string.push(c);
+        }
+    }
+
+    pub fn input_pop(&mut self) {
+        if let Self::Editor(_, ref mut string) = self {
+            string.pop();
         }
     }
 }
