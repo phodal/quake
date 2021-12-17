@@ -1,11 +1,13 @@
-use crate::parser::ast::{
-    ActionDecl, Endway, LayoutComponentNode, Midway, Parameter, SimpleLayoutDecl, SourceUnit,
-    SourceUnitPart, TransflowDecl, TransflowEnum,
-};
-use crate::parser::errors::QuakeParserError;
+use std::error::Error;
+
 use pest::iterators::Pair;
 use pest::Parser;
-use std::error::Error;
+
+use crate::parser::ast::{
+    ActionDecl, Endway, FlowUrl, LayoutComponentNode, Midway, Parameter, SimpleLayoutDecl,
+    SourceUnit, SourceUnitPart, TransflowDecl, TransflowEnum,
+};
+use crate::parser::errors::QuakeParserError;
 
 #[derive(Parser)]
 #[grammar = "parser/quake.pest"]
@@ -189,6 +191,9 @@ fn midway(decl: Pair<Rule>) -> Midway {
                 midway.end = value(pair);
             }
             Rule::from | Rule::to | Rule::l_bracket | Rule::r_bracket => {}
+            Rule::rest_request => {
+                println!("{}", pair);
+            }
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
                     if inner.as_rule() == Rule::string {
@@ -222,6 +227,10 @@ fn endway(decl: Pair<Rule>) -> Endway {
                 }
             }
             Rule::from | Rule::to | Rule::l_bracket | Rule::r_bracket => {}
+            Rule::rest_request => {
+                let url = rest_request(pair);
+                println!("{:?}", url);
+            }
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
                     if inner.as_rule() == Rule::string {
@@ -236,6 +245,23 @@ fn endway(decl: Pair<Rule>) -> Endway {
     }
 
     endway
+}
+
+fn rest_request(decl: Pair<Rule>) -> FlowUrl {
+    let mut url = FlowUrl::default();
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::string => {
+                url.url = string_from_pair(pair);
+            }
+            Rule::l_bracket | Rule::r_bracket => {}
+            _ => {
+                println!("{}", pair);
+            }
+        }
+    }
+
+    url
 }
 
 fn action_decl(decl: Pair<Rule>) -> ActionDecl {
