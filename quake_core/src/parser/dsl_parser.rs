@@ -182,7 +182,7 @@ fn midway(decl: Pair<Rule>) -> Midway {
     let mut midway = Midway::default();
     for pair in decl.into_inner() {
         match pair.as_rule() {
-            Rule::parameters => {
+            Rule::entry_list => {
                 midway.from = parameters(pair);
             }
             Rule::parameter => {
@@ -211,7 +211,7 @@ fn endway(decl: Pair<Rule>) -> Endway {
     let mut endway = Endway::default();
     for pair in decl.into_inner() {
         match pair.as_rule() {
-            Rule::parameters => {
+            Rule::entry_list => {
                 endway.from = parameters(pair);
             }
             Rule::component_decl => {

@@ -17,11 +17,11 @@ transflow_expr = {
 }
 
 midway = {
-    from ~ (rest_source | parameters) ~ "." ~ to ~ lbracket ~ parameter ~ rbracket ~ filter_expr?
+    from ~ (rest_request | entry_list) ~ "." ~ to ~ lbracket ~ parameter ~ rbracket ~ filter_expr?
 }
 
 endway = {
-    from ~ (rest_source | parameters) ~ "." ~ to ~ lbracket ~ component_decl ~ rbracket ~ filter_expr?
+    from ~ (rest_request | entry_list) ~ "." ~ to ~ lbracket ~ component_decl ~ rbracket ~ filter_expr?
 }
 
 filter_expr = {
@@ -40,6 +40,10 @@ component_name = {
 
 from = { "from" }
 to = { "to" }
+
+entry_list = {
+    lbracket ~ parameter ~ ("," ~ parameter)* ~ rbracket
+}
 
 parameters = {
     lbracket ~ parameter ~ ("," ~ parameter)* ~ rbracket
@@ -80,7 +84,7 @@ call_flow = {
     | component_decl ~ ("," ~ digits ~ ("x" | "X"))?
 }
 
-rest_source = {
+rest_request = {
     // get / post / put / delete
     // token
     lbracket ~ "rest" ~ lbracket ~ string ~ rbracket ~ ("." ~ "get")? ~ rbracket
