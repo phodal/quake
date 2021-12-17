@@ -131,6 +131,9 @@ impl App {
                 KeyCode::Backspace => {
                     self.main_widget.input_pop();
                 }
+                KeyCode::Enter => {
+                    self.main_widget.input_push('\n');
+                }
                 _ => {}
             },
         }
