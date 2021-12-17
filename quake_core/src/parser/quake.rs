@@ -39,6 +39,20 @@ impl QuakeTransflowNode {
     }
 }
 
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+pub struct RouteSource {
+    pub url: String,
+    /// GET, POST
+    pub method: String,
+}
+
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+pub enum RouteTarget {
+    Empty,
+    Component(String),
+    Temp(String),
+}
+
 #[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct Route {
     pub name: String,

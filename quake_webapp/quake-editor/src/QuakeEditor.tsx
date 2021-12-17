@@ -6,13 +6,14 @@ import styled from "styled-components";
 export type Props = {
   id: number,
   title: string,
-  content: string,
+  value: string,
   onSave: (content: object) => any
 }
 
 function QuakeEditor(props: Props) {
   const [title, setTitle] = React.useState(props.title);
-  const [content, setContent] = React.useState(props.content);
+  const [value, setValue] = React.useState(props.value);
+
 
   const pattern = /[a-zA-Z0-9_\u00A0-\u02AF\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
   const wordCount = (data: string) => {
@@ -39,20 +40,20 @@ function QuakeEditor(props: Props) {
 
 
   React.useEffect(() => {
-    setContent(props.content);
+    setValue(props.value);
   }, [props])
 
 
   const onSave = React.useCallback(() => {
     props.onSave({
       title: title,
-      value: content,
+      value: value,
     });
-  }, [props, title, content])
+  }, [props, title, value])
 
   const onChange = React.useCallback((getValue) => {
-    setContent(getValue())
-  }, [setContent]);
+    setValue(getValue())
+  }, [setValue]);
 
   const saveEntry = () => {
     onSave();
@@ -64,11 +65,11 @@ function QuakeEditor(props: Props) {
         <StyleLabel># {props.id}</StyleLabel>
         <StyleInput type="text" value={title} onChange={(e) => { setTitle(e.target.value)}}/>
         <StyleButton onClick={saveEntry}>Save</StyleButton>
-        <StyleCount>words：{wordCount(content)}</StyleCount>
+        <StyleCount>words：{wordCount(value)}</StyleCount>
       </StyledTitle>
       <StyledEditor
         autoFocus={true}
-        defaultValue={props.content}
+        defaultValue={props.value}
         onChange={onChange}
         onSave={onSave}
       />
