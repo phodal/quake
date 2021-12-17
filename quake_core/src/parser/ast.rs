@@ -44,6 +44,45 @@ pub struct Midway {
     pub filter: String,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum TransflowSource {
+    EntryTypes(Vec<Parameter>),
+    RestUrl(FlowUrl),
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct FlowUrl {
+    pub url: String,
+    /// GET, POST
+    pub method: HttpMethod,
+    /// http request params
+    pub params: Vec<String>,
+    /// http body
+    pub body: String,
+    // to be defined.
+    // pub next_rule: NextRule
+}
+
+impl Default for FlowUrl {
+    fn default() -> Self {
+        // todo: add pre check for valid url
+        Self {
+            url: "".to_string(),
+            method: HttpMethod::Get,
+            params: vec![],
+            body: "".to_string(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum HttpMethod {
+    Get,
+    Post,
+    Put,
+    Delete,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct Endway {
     pub from: Vec<Parameter>,
