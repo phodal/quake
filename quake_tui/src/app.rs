@@ -3,12 +3,12 @@ use std::error::Error;
 use std::path::PathBuf;
 
 use crossterm::event::{self, Event, KeyCode};
+use quake_core::parser::quake::QuakeActionNode;
 use quake_core::usecases::entry_usecases;
 use quake_core::QuakeConfig;
 use tui::backend::Backend;
 use tui::Terminal;
 
-use crate::command::execute_command;
 use crate::ui::draw;
 use crate::widgets::{CmdLine, MainWidget};
 
@@ -100,8 +100,7 @@ impl App {
             }
             Mode::Command => match key_code {
                 KeyCode::Enter => {
-                    let command: String = self.collect_command();
-                    execute_command(&command, self)?;
+                    self.execute_command()?;
                 }
                 KeyCode::Char(c) => {
                     self.input_push(c);
@@ -125,6 +124,24 @@ impl App {
                 }
                 _ => {}
             },
+        }
+
+        Ok(())
+    }
+
+    fn execute_command(&mut self) -> Result<(), String> {
+        let command: String = self.collect_command();
+        match command.as_str() {
+            "quit" => self.shutdown(),
+            "listAll" => self.main_widget = MainWidget::EntryTypes,
+            "save" => self.save_entry(),
+            other => {
+                if let Ok(action) = QuakeActionNode::action_from_text(other) {
+                    self.main_widget = MainWidget::Editor(action, "".to_string());
+                } else {
+                    return Err(format!("Unknown command: {}", command));
+                }
+            }
         }
 
         Ok(())
@@ -161,7 +178,6 @@ mod tests {
     use rstest::{fixture, rstest};
 
     use super::{App, Mode};
-    use crate::command::execute_command;
 
     #[fixture]
     pub fn app() -> App {
@@ -222,8 +238,16 @@ mod tests {
 
     #[rstest]
     fn test_command_quit(mut app: App) {
+        app.state.input = "quit".to_string();
         assert!(app.state.running);
-        execute_command("quit", &mut app).unwrap();
+        app.execute_command().unwrap();
         assert!(!app.state.running);
+    }
+
+    #[rstest]
+    fn test_unknown_command(mut app: App) {
+        app.state.input = "nonexistent".to_string();
+        let result = app.execute_command();
+        assert_eq!(result, Err("Unknown command: nonexistent".to_string()));
     }
 }

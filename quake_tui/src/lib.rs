@@ -1,5 +1,4 @@
 mod app;
-mod command;
 mod ui;
 mod widgets;
 
