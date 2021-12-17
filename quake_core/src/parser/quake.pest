@@ -25,7 +25,7 @@ endway = {
 }
 
 filter_expr = {
-    "." ~ filter_str ~ l_bracket ~ (double_quoted_string |single_quoted_string) ~ r_bracket
+    "." ~ filter_str ~ l_bracket ~ string ~ r_bracket
 }
 
 filter_str = { "filter" | "FILTER" }
@@ -93,7 +93,7 @@ rest_request = {
 use_name = { ident }
 
 parameter = {
-    digits | single_quoted_string | double_quoted_string
+    digits | string
 }
 
 digits =  {

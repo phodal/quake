@@ -192,7 +192,7 @@ fn midway(decl: Pair<Rule>) -> Midway {
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
                     match inner.as_rule() {
-                        Rule::double_quoted_string | Rule::single_quoted_string => {
+                        Rule::string => {
                             midway.filter = string_from_pair(inner);
                         }
                         _ => {}
@@ -228,7 +228,7 @@ fn endway(decl: Pair<Rule>) -> Endway {
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
                     match inner.as_rule() {
-                        Rule::double_quoted_string | Rule::single_quoted_string => {
+                        Rule::string => {
                             endway.filter = string_from_pair(inner);
                         }
                         _ => {}
@@ -289,7 +289,7 @@ fn value(decl: Pair<Rule>) -> String {
     let mut value: String = "".to_string();
     for pair in decl.into_inner() {
         match pair.as_rule() {
-            Rule::double_quoted_string | Rule::single_quoted_string => {
+            Rule::string => {
                 value = string_from_pair(pair);
             }
             _ => {
