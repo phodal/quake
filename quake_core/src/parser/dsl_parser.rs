@@ -191,11 +191,8 @@ fn midway(decl: Pair<Rule>) -> Midway {
             Rule::from | Rule::to | Rule::l_bracket | Rule::r_bracket => {}
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
-                    match inner.as_rule() {
-                        Rule::string => {
-                            midway.filter = string_from_pair(inner);
-                        }
-                        _ => {}
+                    if inner.as_rule() == Rule::string {
+                        midway.filter = string_from_pair(inner);
                     }
                 }
             }
@@ -227,11 +224,8 @@ fn endway(decl: Pair<Rule>) -> Endway {
             Rule::from | Rule::to | Rule::l_bracket | Rule::r_bracket => {}
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
-                    match inner.as_rule() {
-                        Rule::string => {
-                            endway.filter = string_from_pair(inner);
-                        }
-                        _ => {}
+                    if inner.as_rule() == Rule::string {
+                        endway.filter = string_from_pair(inner);
                     }
                 }
             }
