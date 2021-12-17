@@ -93,11 +93,17 @@ impl App {
 
     fn handle_key_event(&mut self, key_code: KeyCode) -> Result<(), Box<dyn Error>> {
         match self.state.mode {
-            Mode::Normal => {
-                if let KeyCode::Char(':') = key_code {
+            Mode::Normal => match key_code {
+                KeyCode::Char(':') => {
+                    self.collect_command();
+                    self.message_clear();
                     self.state.mode = Mode::Command;
                 }
-            }
+                KeyCode::Char('i') => {
+                    self.state.mode = Mode::Insert;
+                }
+                _ => {}
+            },
             Mode::Command => match key_code {
                 KeyCode::Enter => {
                     self.execute_command()?;
@@ -130,6 +136,7 @@ impl App {
     }
 
     fn execute_command(&mut self) -> Result<(), String> {
+        self.state.mode = Mode::Normal;
         let command: String = self.collect_command();
         match command.as_str() {
             "quit" => self.shutdown(),
@@ -237,6 +244,27 @@ mod tests {
     }
 
     #[rstest]
+    #[case("todo.show")]
+    #[case("todo.edit(1)")]
+    #[case("todo.add: hello")]
+    #[case("success")]
+    fn test_into_command_mode(mut app: App, #[case] message: &str) {
+        app.state.input = message.to_string();
+        app.cmd_line.message = message.to_string();
+
+        app.handle_key_event(KeyCode::Char(':')).unwrap();
+        assert_eq!(app.state.input, "".to_string());
+        assert_eq!(app.cmd_line.message, "".to_string());
+    }
+
+    #[rstest]
+    fn test_into_insert_mode(mut app: App) {
+        assert_eq!(app.state.mode, Mode::Normal);
+        app.handle_key_event(KeyCode::Char('i')).unwrap();
+        assert_eq!(app.state.mode, Mode::Insert);
+    }
+
+    #[rstest]
     fn test_command_quit(mut app: App) {
         app.state.input = "quit".to_string();
         assert!(app.state.running);
@@ -249,5 +277,13 @@ mod tests {
         app.state.input = "nonexistent".to_string();
         let result = app.execute_command();
         assert_eq!(result, Err("Unknown command: nonexistent".to_string()));
+    }
+
+    #[rstest]
+    fn test_back_to_normal_after_command_exec(mut app: App) {
+        app.state.mode = Mode::Command;
+        app.state.input = "nonexistent".to_string();
+        let _ = app.execute_command();
+        assert_eq!(app.state.mode, Mode::Normal);
     }
 }
