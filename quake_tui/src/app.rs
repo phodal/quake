@@ -161,6 +161,7 @@ mod tests {
     use rstest::{fixture, rstest};
 
     use super::{App, Mode};
+    use crate::command::execute_command;
 
     #[fixture]
     pub fn app() -> App {
@@ -217,5 +218,12 @@ mod tests {
         assert_eq!(app.state.mode, Mode::Normal);
         assert_eq!(app.state.input, "".to_string());
         assert_eq!(app.cmd_line.message, "".to_string());
+    }
+
+    #[rstest]
+    fn test_command_quit(mut app: App) {
+        assert!(app.state.running);
+        execute_command("quit", &mut app).unwrap();
+        assert!(!app.state.running);
     }
 }

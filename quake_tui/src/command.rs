@@ -29,16 +29,6 @@ mod tests {
     use quake_core::QuakeConfig;
 
     #[test]
-    #[ignore]
-    fn test_command_quit() {
-        let mut app = App::new(QuakeConfig::default());
-
-        // assert!(app.state.running);
-        execute_command("quit", &mut app).unwrap();
-        // assert!(!app.state.running);
-    }
-
-    #[test]
     fn test_unknown_command() {
         let mut app = App::new(QuakeConfig::default());
 
