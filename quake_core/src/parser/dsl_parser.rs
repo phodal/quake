@@ -192,7 +192,8 @@ fn midway(decl: Pair<Rule>) -> Midway {
             }
             Rule::from | Rule::to | Rule::l_bracket | Rule::r_bracket => {}
             Rule::rest_request => {
-                println!("{}", pair);
+                let url = rest_request(pair);
+                midway.from = TransflowSource::RestUrl(url);
             }
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
@@ -229,7 +230,7 @@ fn endway(decl: Pair<Rule>) -> Endway {
             Rule::from | Rule::to | Rule::l_bracket | Rule::r_bracket => {}
             Rule::rest_request => {
                 let url = rest_request(pair);
-                println!("{:?}", url);
+                endway.from = TransflowSource::RestUrl(url);
             }
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
@@ -414,7 +415,6 @@ mod tests {
         .unwrap();
 
         assert_eq!(1, unit.0.len());
-        println!("{:?}", unit);
         if let SourceUnitPart::SimpleLayout(layout) = &unit.0[0] {
             assert_eq!(layout.name, "Dashboard");
             assert_eq!(3, layout.rows.len());
@@ -438,5 +438,19 @@ mod tests {
         let unit = parse(define).unwrap();
 
         println!("{:?}", unit);
+
+        if let SourceUnitPart::Transflow(decl) = &unit.0[0] {
+            match &decl.flows[0] {
+                TransflowEnum::Midway(_) => panic!(),
+                TransflowEnum::Endway(end) => match &end.from {
+                    TransflowSource::RestUrl(url) => {
+                        assert_eq!("https://quake.inherd.org", url.url);
+                    }
+                    _ => panic!(),
+                },
+            }
+        } else {
+            panic!();
+        }
     }
 }
