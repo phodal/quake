@@ -135,7 +135,7 @@ fn component_flow(component: &mut LayoutComponentNode, pair: Pair<Rule>) {
                     }
                 }
             }
-            Rule::lbracket | Rule::rbracket => {}
+            Rule::l_bracket | Rule::r_bracket => {}
             _ => {
                 println!("{:}", inner);
             }
@@ -188,7 +188,7 @@ fn midway(decl: Pair<Rule>) -> Midway {
             Rule::parameter => {
                 midway.end = value(pair);
             }
-            Rule::from | Rule::to | Rule::lbracket | Rule::rbracket => {}
+            Rule::from | Rule::to | Rule::l_bracket | Rule::r_bracket => {}
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
                     match inner.as_rule() {
@@ -224,7 +224,7 @@ fn endway(decl: Pair<Rule>) -> Endway {
                     }
                 }
             }
-            Rule::from | Rule::to | Rule::lbracket | Rule::rbracket => {}
+            Rule::from | Rule::to | Rule::l_bracket | Rule::r_bracket => {}
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
                     match inner.as_rule() {
@@ -274,8 +274,8 @@ fn parameters(decl: Pair<Rule>) -> Vec<Parameter> {
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::parameter => params.push(Parameter { value: value(pair) }),
-            Rule::lbracket => {}
-            Rule::rbracket => {}
+            Rule::l_bracket => {}
+            Rule::r_bracket => {}
             _ => {
                 println!("{}", pair);
             }

@@ -17,15 +17,15 @@ transflow_expr = {
 }
 
 midway = {
-    from ~ (rest_request | entry_list) ~ "." ~ to ~ lbracket ~ parameter ~ rbracket ~ filter_expr?
+    from ~ (rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ parameter ~ r_bracket ~ filter_expr?
 }
 
 endway = {
-    from ~ (rest_request | entry_list) ~ "." ~ to ~ lbracket ~ component_decl ~ rbracket ~ filter_expr?
+    from ~ (rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ component_decl ~ r_bracket ~ filter_expr?
 }
 
 filter_expr = {
-    "." ~ filter_str ~ lbracket ~ (double_quoted_string |single_quoted_string) ~ rbracket
+    "." ~ filter_str ~ l_bracket ~ (double_quoted_string |single_quoted_string) ~ r_bracket
 }
 
 filter_str = { "filter" | "FILTER" }
@@ -42,18 +42,18 @@ from = { "from" }
 to = { "to" }
 
 entry_list = {
-    lbracket ~ parameter ~ ("," ~ parameter)* ~ rbracket
+    l_bracket ~ parameter ~ ("," ~ parameter)* ~ r_bracket
 }
 
 parameters = {
-    lbracket ~ parameter ~ ("," ~ parameter)* ~ rbracket
+    l_bracket ~ parameter ~ ("," ~ parameter)* ~ r_bracket
 }
 
-lbracket = {
+l_bracket = {
     "(" | "（"
 }
 
-rbracket = {
+r_bracket = {
     ")" | "）"
 }
 
@@ -72,22 +72,22 @@ component_use_decl =  {
 }
 
 component_flow = {
-    use_name ~ lbracket ~ call_flow ~  rbracket
+    use_name ~ l_bracket ~ call_flow ~  r_bracket
 }
 
 sized_empty_comp = {
-    ("EMPTY" | "empty" | "Empty") ~ lbracket ~ digits ~  ("x" | "X") ~ rbracket
+    ("EMPTY" | "empty" | "Empty") ~ l_bracket ~ digits ~  ("x" | "X") ~ r_bracket
 }
 
 call_flow = {
-    "flow" ~ lbracket ~ string ~ rbracket ~ ("," ~ digits ~ ("x" | "X"))?
+    "flow" ~ l_bracket ~ string ~ r_bracket ~ ("," ~ digits ~ ("x" | "X"))?
     | component_decl ~ ("," ~ digits ~ ("x" | "X"))?
 }
 
 rest_request = {
     // get / post / put / delete
     // token
-    lbracket ~ "rest" ~ lbracket ~ string ~ rbracket ~ ("." ~ "get")? ~ rbracket
+    l_bracket ~ "rest" ~ l_bracket ~ string ~ r_bracket ~ ("." ~ "get")? ~ r_bracket
 }
 
 use_name = { ident }
