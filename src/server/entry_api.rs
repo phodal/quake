@@ -146,7 +146,7 @@ mod test {
         assert!(res.contains("\"title\":\"demo\""));
 
         let paths = EntryPaths::init(&"examples".to_string(), &"test_quake".to_string());
-        fs::remove_dir_all(paths.base).unwrap();
+        fs::remove_dir_all(paths.entry_path).unwrap();
     }
 
     fn create_update_req(time: &str) -> EntryUpdate {

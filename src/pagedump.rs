@@ -1,7 +1,9 @@
+use quake_core::QuakeConfig;
+
 // export data for GitHub pages as demo
-pub fn dump() {
+pub fn page_dump(conf: QuakeConfig) {
     // 1. dump entries config;
-    dump_entries_define();
+    dump_entries_define(&conf);
     // 2. dump quake information;
     dump_transflow();
     dump_layout();
@@ -22,9 +24,7 @@ fn dump_links() {
     todo!()
 }
 
-fn dump_entries_define() {
-    todo!()
-}
+fn dump_entries_define(_conf: &QuakeConfig) {}
 
 fn dump_entries_data() {
     todo!()

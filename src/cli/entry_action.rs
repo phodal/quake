@@ -33,7 +33,8 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
             entry_usecases::sync_in_path(&paths)?
         }
         "edit" => {
-            let file = find_entry_path(paths.base, &expr.object, expr.index_from_parameter())?;
+            let file =
+                find_entry_path(paths.entry_path, &expr.object, expr.index_from_parameter())?;
             if !conf.editor.is_empty() {
                 editor_exec::edit_file(conf.editor, format!("{:}", file.display()))?;
             } else {
@@ -44,7 +45,7 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
         "feed" => feed_by_path(&paths, &expr.object, &conf)?,
         "dump" => dump_by_path(&paths)?,
         "show" => show_entry_detail(expr, &paths)?,
-        "list" => show_entrysets(&paths.base.join("entries.csv")),
+        "list" => show_entrysets(&paths.entry_path.join("entries.csv")),
         _ => {
             return Err(Box::new(QuakeError(format!(
                 "unknown entry action: {:?}",
@@ -68,7 +69,7 @@ fn feed_by_path(
         .find(entry_type)
         .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
 
-    let map = Entrysets::jsonify_with_format_date(&paths.base, &define)?.to_string();
+    let map = Entrysets::jsonify_with_format_date(&paths.entry_path, &define)?.to_string();
     fs::write(temp_file, map)?;
 
     meili_exec::feed_documents(&conf.search_url, entry_type)?;
@@ -81,7 +82,7 @@ fn feed_by_path(
 
 fn show_entry_detail(expr: &QuakeActionNode, paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     let index = expr.index_from_parameter();
-    let target_file = find_entry_path(paths.base.clone(), &expr.object, index)?;
+    let target_file = find_entry_path(paths.entry_path.clone(), &expr.object, index)?;
     info!("show file: {:}", &target_file.display());
     let content = fs::read_to_string(target_file)?;
     let file = EntryFile::from(content.as_str(), index)?;
@@ -121,7 +122,7 @@ fn show_entrysets(path: &Path) {
 }
 
 pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
-    let map = Entrysets::jsonify(&paths.base)?;
+    let map = Entrysets::jsonify(&paths.entry_path)?;
     fs::write("dump.json", map)?;
     Ok(())
 }

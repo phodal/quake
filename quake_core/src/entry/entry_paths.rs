@@ -2,7 +2,7 @@ use std::fs;
 use std::path::PathBuf;
 
 pub struct EntryPaths {
-    pub base: PathBuf,
+    pub entry_path: PathBuf,
     pub entry_node_info: PathBuf,
     pub entries_define: PathBuf,
     pub entries_csv: PathBuf,
@@ -17,7 +17,7 @@ impl EntryPaths {
         let _ = fs::create_dir(obj_dir);
 
         EntryPaths {
-            base: PathBuf::from(&obj_dir),
+            entry_path: PathBuf::from(&obj_dir),
             entries_csv: PathBuf::from(&obj_dir.join("entries.csv")),
             entry_node_info: PathBuf::from(&obj_dir.join("entry-node-info.yaml")),
             entries_define: PathBuf::from(&path.join("entries-define.yaml")),

@@ -6,6 +6,7 @@ use clap::Parser;
 use futures::executor::block_on;
 use futures::future;
 use helper::entry_watcher;
+use pagedump::page_dump;
 use tracing::{debug, error};
 
 use quake_core::entry::entry_defines::EntryDefines;
@@ -37,10 +38,21 @@ pub enum SubCommand {
     Server(WebServer),
     /// terminal UI
     Tui(Terminal),
+    /// download for web deploy
+    Page(PageDump),
 }
 
 #[derive(Parser)]
 pub struct Terminal {}
+
+#[derive(Parser)]
+pub struct PageDump {
+    #[clap(short, long, default_value = ".quake.yaml")]
+    config: String,
+
+    #[clap(short, long, default_value = "output")]
+    output: String,
+}
 
 #[derive(Parser)]
 pub struct WebServer {
@@ -116,6 +128,10 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
         }
         SubCommand::Tui(_) => {
             tui_main_loop()?;
+        }
+        SubCommand::Page(dump) => {
+            let config = load_config(&dump.config)?;
+            page_dump(config);
         }
     }
 
@@ -250,7 +266,7 @@ mod tests {
                 &"water".to_string(),
             );
 
-            let content = fs::read_to_string(paths.base.join("0001-samples.md")).unwrap();
+            let content = fs::read_to_string(paths.entry_path.join("0001-samples.md")).unwrap();
             let file = EntryFile::from(content.as_str(), 1).unwrap();
 
             let title = file.property("title");

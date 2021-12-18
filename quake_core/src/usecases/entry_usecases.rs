@@ -14,7 +14,7 @@ use crate::usecases::entrysets::Entrysets;
 
 /// generate entries.csv from by paths
 pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
-    let (size, content) = Entrysets::generate(&paths.base)?;
+    let (size, content) = Entrysets::generate(&paths.entry_path)?;
 
     if size > 0 {
         fs::write(&paths.entries_csv, content)?;
@@ -49,7 +49,7 @@ pub fn create_entry(
     let index = new_index;
     let text = entry_text;
     let new_md_file = EntryFile::file_name(index, text);
-    let mut target_path = paths.base.join(new_md_file);
+    let mut target_path = paths.entry_path.join(new_md_file);
     File::create(&target_path)?;
 
     let mut entry_file =
