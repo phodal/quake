@@ -9,10 +9,10 @@ import { ActionDefine } from "./components/quake-dashboard/quake-dashboard";
 import { Layout } from "./components/simple-layout/simple-layout";
 export namespace Components {
     interface FetchApi {
-        "data": any;
-        "entryType": String[];
+        "entryType": string[];
         "searchEngine": boolean;
-        "type": String;
+        "type": string;
+        "url": string;
     }
     interface QuakeDashboard {
         "indexName": string;
@@ -48,12 +48,12 @@ declare global {
 }
 declare namespace LocalJSX {
     interface FetchApi {
-        "data"?: any;
-        "entryType"?: String[];
+        "entryType"?: string[];
         "onFetchAllSuccess"?: (event: CustomEvent<any>) => void;
-        "onFetchNextSuccess"?: (event: CustomEvent<any>) => void;
+        "onFetchSuccess"?: (event: CustomEvent<any>) => void;
         "searchEngine"?: boolean;
-        "type"?: String;
+        "type"?: string;
+        "url"?: string;
     }
     interface QuakeDashboard {
         "indexName"?: string;

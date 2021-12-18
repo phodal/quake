@@ -150,6 +150,8 @@ const StyledEditor = styled(Editor)`
   }
 
   p {
+    margin: 20px;
+
     a {
       color: #111319;
       border-bottom: 1px solid ${lighten(0.5, "#111319")};
