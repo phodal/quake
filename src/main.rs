@@ -17,6 +17,7 @@ use crate::server::quake_rocket;
 
 pub mod cli;
 pub mod helper;
+pub mod pagedump;
 pub mod server;
 
 #[derive(Parser)]
