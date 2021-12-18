@@ -2,17 +2,20 @@ import {lighten} from "polished";
 import React from 'react';
 import Editor from "rich-markdown-editor";
 import styled from "styled-components";
+import {prop} from "cheerio/lib/api/attributes";
 
 export type Props = {
   id: number,
   title: string,
   value: string,
+  entryType: string,
   onSave: (content: object) => any
 }
 
 function QuakeEditor(props: Props) {
   const [title, setTitle] = React.useState(props.title);
   const [value, setValue] = React.useState(props.value);
+  const [entryType, setEntryType] = React.useState(props.entryType);
 
 
   const pattern = /[a-zA-Z0-9_\u00A0-\u02AF\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
@@ -59,6 +62,24 @@ function QuakeEditor(props: Props) {
     onSave();
   }
 
+  const uploadFile = async (file: File, options: any) => {
+    return {} as any;
+  }
+
+  // https://github.com/outline/outline/blob/main/app/components/Editor.tsx
+  // https://github.com/outline/outline/blob/main/app/utils/uploadFile.ts
+  // https://github.com/SergioBenitez/Rocket/blob/master/examples/pastebin/src/main.rs
+  const onUploadImage = React.useCallback(
+    async (file: File) => {
+      const result = await uploadFile(file, {
+        entry_type: entryType,
+        id: props.id,
+      });
+      return result.url;
+    },
+    [entryType, props]
+  );
+
   return (
     <div>
       <StyledTitle>
@@ -72,6 +93,7 @@ function QuakeEditor(props: Props) {
         defaultValue={props.value}
         onChange={onChange}
         onSave={onSave}
+        uploadImage={onUploadImage}
       />
     </div>
   );
