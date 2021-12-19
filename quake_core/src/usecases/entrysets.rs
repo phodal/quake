@@ -102,49 +102,57 @@ impl Entrysets {
         let mut json: JsonValue = array![];
         let type_maps = define.to_field_type();
         for file in files {
-            let mut element = object! {};
-            let string = fs::read_to_string(&file)?;
-
-            let mut entry_file = EntryFile::from(&*string, index)?;
-            entry_file.name = (&file.file_name().unwrap().to_str().unwrap()).to_string();
-
-            let mut error = "".to_string();
-            let mut has_convert_date_issue = false;
-            for (k, v) in &entry_file.properties {
-                if let Some(MetaProperty::Date(_date)) = type_maps.get(k) {
-                    let value = quake_time::replace_to_unix(v);
-                    match value.parse::<usize>() {
-                        Ok(time) => {
-                            element[k.clone()] = time.into();
-                            continue;
-                        }
-                        Err(err) => {
-                            if !has_convert_date_issue {
-                                error =
-                                    format!("parse {:?} field: {:?},  error:{:?}", file, k, err);
-                            }
-                            has_convert_date_issue = true;
-                        }
-                    }
-                }
-
-                element[k.clone()] = v.clone().into();
-            }
-
-            if has_convert_date_issue {
-                println!("{:?}", error);
-            }
-
-            element["id".to_string()] = entry_file.id.into();
-            element["content".to_string()] = entry_file.content.into();
-            element["type".to_string()] = define.entry_type.clone().into();
-
+            let element = Self::file_to_json(define, index, &type_maps, &file)?;
             json.push(element)?;
-
             index += 1;
         }
 
         Ok(json)
+    }
+
+    pub fn file_to_json(
+        define: &EntryDefine,
+        index: usize,
+        type_maps: &IndexMap<String, MetaProperty>,
+        file: &Path,
+    ) -> Result<JsonValue, Box<dyn Error>> {
+        let mut element = object! {};
+        let string = fs::read_to_string(&file)?;
+
+        let mut entry_file = EntryFile::from(&*string, index)?;
+        entry_file.name = (&file.file_name().unwrap().to_str().unwrap()).to_string();
+
+        let mut error = "".to_string();
+        let mut has_convert_date_issue = false;
+        for (k, v) in &entry_file.properties {
+            if let Some(MetaProperty::Date(_date)) = type_maps.get(k) {
+                let value = quake_time::replace_to_unix(v);
+                match value.parse::<usize>() {
+                    Ok(time) => {
+                        element[k.clone()] = time.into();
+                        continue;
+                    }
+                    Err(err) => {
+                        if !has_convert_date_issue {
+                            error = format!("parse {:?} field: {:?},  error:{:?}", file, k, err);
+                        }
+                        has_convert_date_issue = true;
+                    }
+                }
+            }
+
+            element[k.clone()] = v.clone().into();
+        }
+
+        if has_convert_date_issue {
+            println!("{:?}", error);
+        }
+
+        element["id".to_string()] = entry_file.id.into();
+        element["content".to_string()] = entry_file.content.into();
+        element["type".to_string()] = define.entry_type.clone().into();
+
+        Ok(element)
     }
 
     /// scan all entries files, and rebuild indexes
@@ -183,7 +191,8 @@ impl Entrysets {
         Ok(CsvTable { header, body })
     }
 
-    fn scan_files(path: &Path) -> Vec<PathBuf> {
+    /// scan files from map
+    pub fn scan_files(path: &Path) -> Vec<PathBuf> {
         fn is_markdown(entry: &DirEntry) -> bool {
             entry
                 .file_name()

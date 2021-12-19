@@ -1,3 +1,4 @@
+use quake_core::entry::entry_file::EntryFile;
 use std::fs;
 use std::path::PathBuf;
 
@@ -82,13 +83,17 @@ fn dump_entries_data(conf: &QuakeConfig) {
             .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
         let entry_path = path.join(&entry_type);
 
-        let map = Entrysets::jsonify_with_format_date(&entry_path, &define)
-            .unwrap()
-            .to_string();
-        let file = PathBuf::from(DUMP_PATH)
-            .join("entry")
-            .join(format!("{:}.json", entry_type));
-        fs::write(file, map).unwrap();
+        let index = 1;
+        let type_maps = define.to_field_type();
+        let target_dir = PathBuf::from(DUMP_PATH).join("entry").join(entry_type);
+        fs::create_dir_all(&target_dir).unwrap();
+        for path in &Entrysets::scan_files(&*entry_path) {
+            let content = Entrysets::file_to_json(&define, index, &type_maps, path).unwrap();
+
+            let file = target_dir.join(format!("{:}.json", EntryFile::file_prefix(index)));
+
+            fs::write(file, content.to_string()).unwrap();
+        }
     }
 }
 
@@ -128,7 +133,10 @@ mod tests {
         let layout = PathBuf::from(DUMP_PATH).join("layout.json");
         assert!(layout.exists());
 
-        let todo_entry = PathBuf::from(DUMP_PATH).join("entry").join("todo.json");
+        let todo_entry = PathBuf::from(DUMP_PATH)
+            .join("entry")
+            .join("todo")
+            .join("0001.json");
         assert!(todo_entry.exists());
     }
 }
