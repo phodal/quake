@@ -12,7 +12,10 @@ static DUMP_PATH: &str = "pagedump";
 // export data for GitHub pages as demo
 pub fn page_dump(conf: QuakeConfig) {
     // init dir
-    fs::remove_dir_all(DUMP_PATH).unwrap();
+    if PathBuf::from(DUMP_PATH).exists() {
+        fs::remove_dir_all(DUMP_PATH).expect("dir not exists");
+    }
+
     fs::create_dir_all(DUMP_PATH).unwrap();
     fs::create_dir_all(PathBuf::from(DUMP_PATH).join("entry")).unwrap();
 
@@ -63,7 +66,7 @@ fn dump_entries_data(conf: &QuakeConfig) {
     for define in &defines.entries {
         let entry_type = &*define.entry_type;
         let define = defines
-            .find(&entry_type)
+            .find(entry_type)
             .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
         let entry_path = path.join(&entry_type);
 
