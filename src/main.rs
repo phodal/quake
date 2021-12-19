@@ -39,7 +39,7 @@ pub enum SubCommand {
     /// terminal UI
     Tui(Terminal),
     /// dump page for web deploy
-    PageDump(PageDump),
+    Pagedump(PageDump),
 }
 
 #[derive(Parser)]
@@ -129,7 +129,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
         SubCommand::Tui(_) => {
             tui_main_loop()?;
         }
-        SubCommand::PageDump(dump) => {
+        SubCommand::Pagedump(dump) => {
             let config = load_config(&dump.config)?;
             page_dump(config);
         }
