@@ -16,6 +16,7 @@ use quake_core::transflow::Transflow;
 use quake_core::QuakeConfig;
 
 use crate::server::ApiError;
+use quake_core::usecases::flow_usecases;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
@@ -65,35 +66,7 @@ pub(crate) async fn transflow_gen_code(
     config: &State<QuakeConfig>,
 ) -> Result<JavaScript<String>, Json<ApiError>> {
     let path = PathBuf::from(config.workspace.clone());
-
-    let flow_path = path.join(EntryPaths::quake()).join(EntryPaths::transflow());
-    let content = fs::read_to_string(flow_path).unwrap();
-    let flows: Vec<Transflow> = serde_yaml::from_str(&*content).unwrap();
-
-    let mut scripts = vec![];
-    for flow in flows {
-        let trans = JsFlowCodegen::gen_transform(&flow);
-        let els = JsFlowCodegen::gen_element(&flow, None);
-
-        let route = format!(
-            "Quake.transflow.add({{name:'{:}',action:tl_{:}}})",
-            &flow.name, &flow.name
-        );
-        let bind = format!("Quake.flows['tl_{:}'] = tl_{:}", &flow.name, &flow.name);
-
-        let script = format!(
-            "{:}\n{:}\n{:}\n{:}\n",
-            trans.join("\n"),
-            els.join("\n"),
-            route,
-            bind
-        );
-
-        scripts.push(script);
-    }
-
-    let scripts = scripts.join("\n");
-
+    let scripts = flow_usecases::dump_flows(path);
     Ok(JavaScript(scripts))
 }
 

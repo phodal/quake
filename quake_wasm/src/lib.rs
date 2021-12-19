@@ -2,8 +2,8 @@ use quake_core::entry::EntryDefines;
 use wasm_bindgen::prelude::*;
 
 use quake_core::quake::{QuakeActionNode, QuakeTransflowNode, SimpleLayout};
-use quake_core::transflow::js_flow_codegen::JsFlowCodegen;
 use quake_core::transflow::Transflow;
+use quake_core::usecases::flow_usecases;
 
 #[wasm_bindgen]
 pub fn parse_transflow(string: &str) -> String {
@@ -29,29 +29,7 @@ pub fn flow_to_code(content: &str, defines: &str) -> String {
     let defines: EntryDefines = serde_json::from_str(defines).unwrap();
     let flow = Transflow::from(defines.entries, node);
 
-    let mut scripts = vec![];
-
-    let trans = JsFlowCodegen::gen_transform(&flow);
-    let els = JsFlowCodegen::gen_element(&flow, None);
-
-    let route = format!(
-        "Quake.transflow.add({{name:'{:}',action:tl_{:}}})",
-        &flow.name, &flow.name
-    );
-    let bind = format!("Quake.flows['tl_{:}'] = tl_{:}", &flow.name, &flow.name);
-
-    let script = format!(
-        "{:}\n{:}\n{:}\n{:}\n",
-        trans.join("\n"),
-        els.join("\n"),
-        route,
-        bind
-    );
-
-    scripts.push(script);
-
-    let scripts = scripts.join("\n");
-    scripts
+    flow_usecases::flow_to_script(&flow)
 }
 
 #[cfg(test)]

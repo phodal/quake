@@ -126,9 +126,7 @@ const StyleInput = styled.input`
   width: 60%;
 `;
 
-const StyleLabel = styled.label`
-
-`;
+const StyleLabel = styled.label``;
 
 const StyledEditor = styled(Editor)`
   padding: 0 60px;
