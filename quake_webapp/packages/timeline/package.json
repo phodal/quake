@@ -49,6 +49,9 @@
     "@types/react-calendar-timeline": "^0.26.5",
     "@types/react-vertical-timeline-component": "^3.3.1",
     "@types/styled-components": "^5.1.15",
+    "customize-cra": "^1.0.0",
+    "mini-css-extract-plugin": "^2.4.5",
+    "react-app-rewire-create-react-library": "^0.1.1",
     "react-app-rewired": "^2.1.8"
   }
 }

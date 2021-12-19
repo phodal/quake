@@ -10,10 +10,8 @@ fse.removeSync("dist");
 
 if (!fs.existsSync("dist")){
   fs.mkdirSync("dist");
-}
-
-if (!fs.existsSync("dist/js")){
   fs.mkdirSync("dist/js");
+  fs.mkdirSync("dist/css");
 }
 
 if (!fs.existsSync("dist/js/dashboard")){

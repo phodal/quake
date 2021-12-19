@@ -9,19 +9,32 @@
 
 | Property       | Attribute       | Description | Type       | Default |
 | -------------- | --------------- | ----------- | ---------- | ------- |
-| `data`         | `data`          |             | `any`      | `{}`    |
-| `entryType`    | --              |             | `String[]` | `[]`    |
+| `entryType`    | --              |             | `string[]` | `[]`    |
 | `searchEngine` | `search-engine` |             | `boolean`  | `false` |
-| `type`         | --              |             | `String`   | `''`    |
+| `type`         | `type`          |             | `string`   | `''`    |
+| `url`          | `url`           |             | `string`   | `''`    |
 
 
 ## Events
 
-| Event              | Description | Type               |
-| ------------------ | ----------- | ------------------ |
-| `fetchAllSuccess`  |             | `CustomEvent<any>` |
-| `fetchNextSuccess` |             | `CustomEvent<any>` |
+| Event             | Description | Type               |
+| ----------------- | ----------- | ------------------ |
+| `fetchAllSuccess` |             | `CustomEvent<any>` |
+| `fetchSuccess`    |             | `CustomEvent<any>` |
 
+
+## Dependencies
+
+### Used by
+
+ - [quake-dashboard](../quake-dashboard)
+
+### Graph
+```mermaid
+graph TD;
+  quake-dashboard --> fetch-api
+  style fetch-api fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 
