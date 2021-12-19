@@ -52,7 +52,11 @@ fn dump_transflow(conf: &QuakeConfig) {
 
 fn dump_layout(conf: &QuakeConfig) {
     let path = PathBuf::from(&conf.workspace);
-    let out_path = PathBuf::from(DUMP_PATH).join("layout.json");
+
+    let out_layout_path = PathBuf::from(DUMP_PATH).join("layout");
+    fs::create_dir_all(&out_layout_path).unwrap();
+
+    let out_path = out_layout_path.join("dashboard.json");
 
     if let Ok(layout) = layout_usecases::dump_dashboard_layout(path) {
         let content = serde_json::to_string(&layout).unwrap();
@@ -130,7 +134,9 @@ mod tests {
         assert!(transflow.exists());
 
         page_dump(config());
-        let layout = PathBuf::from(DUMP_PATH).join("layout.json");
+        let layout = PathBuf::from(DUMP_PATH)
+            .join("layout")
+            .join("dashboard.json");
         assert!(layout.exists());
 
         let todo_entry = PathBuf::from(DUMP_PATH)
