@@ -57,7 +57,7 @@ pub fn quake_rocket() -> Rocket<Build> {
             "/transflow",
             routes![
                 transflow_api::transflow_gen_code,
-                transflow_api::transflow_load_code,
+                transflow_api::load_custom_transfuncs,
                 transflow_api::translate
             ],
         )

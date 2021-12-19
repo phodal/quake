@@ -31,9 +31,21 @@ pub fn page_dump(conf: QuakeConfig) {
 
 fn dump_transflow(conf: &QuakeConfig) {
     let path = PathBuf::from(&conf.workspace);
-    if let Ok(content) = flow_usecases::dump_flows(path) {
-        let out_path = PathBuf::from(DUMP_PATH).join("transflows.js");
-        fs::write(out_path, content).unwrap();
+    let out_path = PathBuf::from(DUMP_PATH).join("transflow").join("script");
+
+    // dump gen code
+    if let Ok(content) = flow_usecases::dump_flows(path.clone()) {
+        fs::create_dir_all(&out_path).unwrap();
+
+        let out_file = out_path.join("gen_code.js");
+
+        fs::write(out_file, content).unwrap();
+    }
+
+    // copy for define load
+    let transfuncs = path.join(EntryPaths::quake()).join("transfuncs.js");
+    if transfuncs.exists() {
+        fs::copy(transfuncs, out_path.join("custom_scripts.js")).unwrap();
     }
 }
 
@@ -106,7 +118,10 @@ mod tests {
         let defines = PathBuf::from(DUMP_PATH).join("defines.json");
         assert!(defines.exists());
 
-        let transflow = PathBuf::from(DUMP_PATH).join("transflows.js");
+        let transflow = PathBuf::from(DUMP_PATH)
+            .join("transflow")
+            .join("script")
+            .join("gen_code.js");
         assert!(transflow.exists());
 
         page_dump(config());

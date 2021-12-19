@@ -61,7 +61,7 @@ pub(crate) async fn translate(
 /// 2. generate js scripts
 /// 3. create router
 /// as nocode
-#[get("/script/gen_code")]
+#[get("/script/gen_code.js")]
 pub(crate) async fn transflow_gen_code(
     config: &State<QuakeConfig>,
 ) -> Result<JavaScript<String>, Json<ApiError>> {
@@ -79,8 +79,8 @@ pub(crate) async fn transflow_gen_code(
 
 /// todo: load transflow from yaml files
 /// as lowcode
-#[get("/script/load_code")]
-pub(crate) async fn transflow_load_code(config: &State<QuakeConfig>) -> Option<NamedFile> {
+#[get("/script/custom_transfuncs.js")]
+pub(crate) async fn load_custom_transfuncs(config: &State<QuakeConfig>) -> Option<NamedFile> {
     let path = PathBuf::from(config.workspace.clone());
     let fs = path
         .join(EntryPaths::quake())
@@ -113,7 +113,7 @@ mod test {
     #[test]
     fn transflow_script() {
         let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
-        let mut response = client.get("/transflow/script/gen_code").dispatch();
+        let mut response = client.get("/transflow/script/gen_code.js").dispatch();
 
         let mut res = "".to_string();
         let _ = response.read_to_string(&mut res);
