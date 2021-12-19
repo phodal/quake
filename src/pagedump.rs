@@ -1,8 +1,10 @@
-use quake_core::entry::entry_paths::EntryPaths;
-use quake_core::entry::EntryDefines;
-use quake_core::QuakeConfig;
 use std::fs;
 use std::path::PathBuf;
+
+use quake_core::entry::entry_paths::EntryPaths;
+use quake_core::entry::EntryDefines;
+use quake_core::usecases::{flow_usecases, layout_usecases};
+use quake_core::QuakeConfig;
 
 static DUMP_PATH: &str = "pagedump";
 
@@ -12,16 +14,30 @@ pub fn page_dump(conf: QuakeConfig) {
     // 1. dump entries config;
     dump_entries_define(&conf);
     // 2. dump quake information;
-    dump_transflow();
-    dump_layout();
+    dump_transflow(&conf);
+    dump_layout(&conf);
     dump_links();
     // 3. export all entry_type data to json
     dump_entries_data();
 }
 
-fn dump_transflow() {}
+fn dump_transflow(conf: &QuakeConfig) {
+    let path = PathBuf::from(&conf.workspace);
+    let content = flow_usecases::dump_flows(path);
+    let out_path = PathBuf::from(DUMP_PATH).join("transflows.js");
 
-fn dump_layout() {}
+    fs::write(out_path, content).unwrap();
+}
+
+fn dump_layout(conf: &QuakeConfig) {
+    let path = PathBuf::from(&conf.workspace);
+    let out_path = PathBuf::from(DUMP_PATH).join("layout.json");
+
+    if let Ok(layout) = layout_usecases::dump_dashboard_layout(path) {
+        let content = serde_json::to_string(&layout).unwrap();
+        fs::write(out_path, content).unwrap();
+    }
+}
 
 fn dump_links() {}
 
@@ -39,10 +55,12 @@ fn dump_entries_data() {}
 
 #[cfg(test)]
 mod tests {
+    use std::path::PathBuf;
+
+    use quake_core::QuakeConfig;
+
     use crate::page_dump;
     use crate::pagedump::DUMP_PATH;
-    use quake_core::QuakeConfig;
-    use std::path::PathBuf;
 
     fn config() -> QuakeConfig {
         QuakeConfig {
@@ -58,6 +76,20 @@ mod tests {
     fn should_dump_entries_define() {
         page_dump(config());
         let output = PathBuf::from(DUMP_PATH).join("defines.json");
+        assert!(output.exists());
+    }
+
+    #[test]
+    fn should_dump_transflows() {
+        page_dump(config());
+        let output = PathBuf::from(DUMP_PATH).join("transflows.js");
+        assert!(output.exists());
+    }
+
+    #[test]
+    fn should_dump_layout() {
+        page_dump(config());
+        let output = PathBuf::from(DUMP_PATH).join("layout.json");
         assert!(output.exists());
     }
 }

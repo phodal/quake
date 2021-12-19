@@ -1,12 +1,11 @@
-use std::fs;
 use std::path::PathBuf;
 
 use rocket::response::status::NotFound;
 use rocket::serde::json::Json;
 use rocket::{get, State};
 
-use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::quake::SimpleLayout;
+use quake_core::usecases::layout_usecases;
 use quake_core::QuakeConfig;
 
 use crate::server::ApiError;
@@ -15,13 +14,8 @@ use crate::server::ApiError;
 pub fn dashboard_layout(
     config: &State<QuakeConfig>,
 ) -> Result<Json<SimpleLayout>, NotFound<Json<ApiError>>> {
-    let workspace = PathBuf::from(config.workspace.clone());
-    let path = workspace
-        .join(EntryPaths::quake())
-        .join(EntryPaths::dashboard_layout());
-
-    let content = fs::read_to_string(path).unwrap();
-    let layout = match SimpleLayout::from_text(content.as_str()) {
+    let path = PathBuf::from(config.workspace.clone());
+    let layout = match layout_usecases::dump_dashboard_layout(path) {
         Ok(layout) => layout,
         Err(err) => {
             return Err(NotFound(Json(ApiError {
