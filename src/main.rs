@@ -20,6 +20,7 @@ pub mod cli;
 pub mod helper;
 pub mod pagedump;
 pub mod server;
+pub mod usecases;
 
 #[derive(Parser)]
 #[clap(version = "0.1.2", author = "Inherd <quake@inherd.org>")]

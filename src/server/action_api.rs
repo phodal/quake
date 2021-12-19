@@ -1,24 +1,13 @@
-use std::fs;
-use std::path::PathBuf;
-
 use rocket::get;
 use rocket::serde::json::Json;
-use rocket::tokio::task::spawn_blocking;
 use rocket::State;
-use serde_derive::{Deserialize, Serialize};
 
-use quake_core::entry::entry_defines::EntryDefines;
-use quake_core::entry::EntryDefine;
 use quake_core::parser::quake::QuakeActionNode;
 use quake_core::QuakeConfig;
 
 use crate::server::ApiError;
-
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
-pub struct ActionSuggest {
-    pub entries: Vec<EntryDefine>,
-    pub actions: Vec<String>,
-}
+use crate::usecases::suggest_usecases;
+use crate::usecases::suggest_usecases::ActionSuggest;
 
 #[get("/query?<input>")]
 pub fn parse_query(input: String) -> String {
@@ -36,33 +25,17 @@ pub fn parse_query(input: String) -> String {
 
 #[get("/suggest")]
 pub async fn suggest(config: &State<QuakeConfig>) -> Json<ActionSuggest> {
-    let mut suggest = ActionSuggest::default();
-    let path = PathBuf::from(&config.workspace).join("entries-define.yaml");
-
-    suggest.entries = spawn_blocking(|| {
-        let entries_str = fs::read_to_string(path).expect("cannot read entries-define.yaml");
-        let entries: EntryDefines = serde_yaml::from_str(&*entries_str).unwrap();
-        entries.entries
-    })
-    .await
-    .map_err(|e| ApiError {
-        msg: format!("{:?}", e),
-    })
-    .unwrap();
-
-    let actions = vec!["add", "edit", "show"];
-    for action in actions {
-        suggest.actions.push(action.to_string());
-    }
-
+    let workspace = &config.workspace;
+    let suggest = suggest_usecases::create_suggest(workspace);
     Json(suggest)
 }
 
 #[cfg(test)]
 mod test {
+    use std::io::Read;
+
     use rocket::http::Status;
     use rocket::local::blocking::Client;
-    use std::io::Read;
 
     use crate::quake_rocket;
 

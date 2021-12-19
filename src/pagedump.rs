@@ -2,6 +2,7 @@ use quake_core::entry::entry_file::EntryFile;
 use std::fs;
 use std::path::PathBuf;
 
+use crate::usecases::suggest_usecases;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::entry::EntryDefines;
 use quake_core::usecases::entrysets::Entrysets;
@@ -28,6 +29,8 @@ pub fn page_dump(conf: QuakeConfig) {
     dump_links(&conf);
     // 3. export all entry_type data to json
     dump_entries_data(&conf);
+    // 4. export others
+    dump_suggest(&conf);
 }
 
 fn dump_transflow(conf: &QuakeConfig) {
@@ -99,6 +102,15 @@ fn dump_entries_data(conf: &QuakeConfig) {
             fs::write(file, content.to_string()).unwrap();
         }
     }
+}
+
+fn dump_suggest(conf: &QuakeConfig) {
+    let suggest = suggest_usecases::create_suggest(&conf.workspace);
+    let out_path = PathBuf::from(DUMP_PATH).join("action");
+    fs::create_dir_all(&out_path).unwrap();
+
+    let content = serde_json::to_string(&suggest).unwrap();
+    fs::write(out_path.join("suggest"), content).unwrap();
 }
 
 #[cfg(test)]
