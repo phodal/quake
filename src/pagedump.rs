@@ -56,7 +56,7 @@ fn dump_layout(conf: &QuakeConfig) {
     let out_layout_path = PathBuf::from(DUMP_PATH).join("layout");
     fs::create_dir_all(&out_layout_path).unwrap();
 
-    let out_path = out_layout_path.join("dashboard.json");
+    let out_path = out_layout_path.join("dashboard");
 
     if let Ok(layout) = layout_usecases::dump_dashboard_layout(path) {
         let content = serde_json::to_string(&layout).unwrap();
@@ -71,7 +71,7 @@ fn dump_entries_define(conf: &QuakeConfig) {
     let defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
 
     let content = serde_json::to_string(&defines).unwrap();
-    let out_path = PathBuf::from(DUMP_PATH).join("defines.json");
+    let out_path = PathBuf::from(DUMP_PATH).join("defines");
 
     fs::write(out_path, content).unwrap();
 }
@@ -94,7 +94,7 @@ fn dump_entries_data(conf: &QuakeConfig) {
         for path in &Entrysets::scan_files(&*entry_path) {
             let content = Entrysets::file_to_json(&define, index, &type_maps, path).unwrap();
 
-            let file = target_dir.join(format!("{:}.json", EntryFile::file_prefix(index)));
+            let file = target_dir.join(EntryFile::file_prefix(index).to_string());
 
             fs::write(file, content.to_string()).unwrap();
         }
@@ -124,7 +124,7 @@ mod tests {
     #[test]
     fn should_dump_entries_define() {
         page_dump(config());
-        let defines = PathBuf::from(DUMP_PATH).join("defines.json");
+        let defines = PathBuf::from(DUMP_PATH).join("defines");
         assert!(defines.exists());
 
         let transflow = PathBuf::from(DUMP_PATH)
@@ -134,15 +134,13 @@ mod tests {
         assert!(transflow.exists());
 
         page_dump(config());
-        let layout = PathBuf::from(DUMP_PATH)
-            .join("layout")
-            .join("dashboard.json");
+        let layout = PathBuf::from(DUMP_PATH).join("layout").join("dashboard");
         assert!(layout.exists());
 
         let todo_entry = PathBuf::from(DUMP_PATH)
             .join("entry")
             .join("todo")
-            .join("0001.json");
+            .join("0001");
         assert!(todo_entry.exists());
     }
 }
