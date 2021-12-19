@@ -3,6 +3,7 @@ use std::path::PathBuf;
 
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::entry::EntryDefines;
+use quake_core::usecases::entrysets::Entrysets;
 use quake_core::usecases::{flow_usecases, layout_usecases};
 use quake_core::QuakeConfig;
 
@@ -10,23 +11,27 @@ static DUMP_PATH: &str = "pagedump";
 
 // export data for GitHub pages as demo
 pub fn page_dump(conf: QuakeConfig) {
+    // init dir
+    fs::remove_dir_all(DUMP_PATH).unwrap();
     fs::create_dir_all(DUMP_PATH).unwrap();
+    fs::create_dir_all(PathBuf::from(DUMP_PATH).join("entry")).unwrap();
+
     // 1. dump entries config;
     dump_entries_define(&conf);
     // 2. dump quake information;
     dump_transflow(&conf);
     dump_layout(&conf);
-    dump_links();
+    dump_links(&conf);
     // 3. export all entry_type data to json
-    dump_entries_data();
+    dump_entries_data(&conf);
 }
 
 fn dump_transflow(conf: &QuakeConfig) {
     let path = PathBuf::from(&conf.workspace);
-    let content = flow_usecases::dump_flows(path);
-    let out_path = PathBuf::from(DUMP_PATH).join("transflows.js");
-
-    fs::write(out_path, content).unwrap();
+    if let Ok(content) = flow_usecases::dump_flows(path) {
+        let out_path = PathBuf::from(DUMP_PATH).join("transflows.js");
+        fs::write(out_path, content).unwrap();
+    }
 }
 
 fn dump_layout(conf: &QuakeConfig) {
@@ -39,7 +44,7 @@ fn dump_layout(conf: &QuakeConfig) {
     }
 }
 
-fn dump_links() {}
+fn dump_links(_conf: &QuakeConfig) {}
 
 fn dump_entries_define(conf: &QuakeConfig) {
     let path = PathBuf::from(&conf.workspace);
@@ -51,7 +56,26 @@ fn dump_entries_define(conf: &QuakeConfig) {
     fs::write(out_path, content).unwrap();
 }
 
-fn dump_entries_data() {}
+fn dump_entries_data(conf: &QuakeConfig) {
+    let path = PathBuf::from(&conf.workspace);
+    let defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
+
+    for define in &defines.entries {
+        let entry_type = &*define.entry_type;
+        let define = defines
+            .find(&entry_type)
+            .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
+        let entry_path = path.join(&entry_type);
+
+        let map = Entrysets::jsonify_with_format_date(&entry_path, &define)
+            .unwrap()
+            .to_string();
+        let file = PathBuf::from(DUMP_PATH)
+            .join("entry")
+            .join(format!("{:}.json", entry_type));
+        fs::write(file, map).unwrap();
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -63,8 +87,9 @@ mod tests {
     use crate::pagedump::DUMP_PATH;
 
     fn config() -> QuakeConfig {
+        let path = PathBuf::from("_fixtures").join("demo_quake");
         QuakeConfig {
-            workspace: "examples".to_string(),
+            workspace: path.display().to_string(),
             editor: "".to_string(),
             search_url: "http://127.0.0.1:7700".to_string(),
             server_location: "web".to_string(),
@@ -75,21 +100,17 @@ mod tests {
     #[test]
     fn should_dump_entries_define() {
         page_dump(config());
-        let output = PathBuf::from(DUMP_PATH).join("defines.json");
-        assert!(output.exists());
-    }
+        let defines = PathBuf::from(DUMP_PATH).join("defines.json");
+        assert!(defines.exists());
 
-    #[test]
-    fn should_dump_transflows() {
-        page_dump(config());
-        let output = PathBuf::from(DUMP_PATH).join("transflows.js");
-        assert!(output.exists());
-    }
+        let transflow = PathBuf::from(DUMP_PATH).join("transflows.js");
+        assert!(transflow.exists());
 
-    #[test]
-    fn should_dump_layout() {
         page_dump(config());
-        let output = PathBuf::from(DUMP_PATH).join("layout.json");
-        assert!(output.exists());
+        let layout = PathBuf::from(DUMP_PATH).join("layout.json");
+        assert!(layout.exists());
+
+        let todo_entry = PathBuf::from(DUMP_PATH).join("entry").join("todo.json");
+        assert!(todo_entry.exists());
     }
 }

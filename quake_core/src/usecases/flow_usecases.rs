@@ -1,13 +1,14 @@
 use crate::entry::entry_paths::EntryPaths;
 use crate::transflow::js_flow_codegen::JsFlowCodegen;
 use crate::transflow::Transflow;
+use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
 
-pub fn dump_flows(path: PathBuf) -> String {
+pub fn dump_flows(path: PathBuf) -> Result<String, Box<dyn Error>> {
     let flow_path = path.join(EntryPaths::quake()).join(EntryPaths::transflow());
-    let content = fs::read_to_string(flow_path).unwrap();
-    let flows: Vec<Transflow> = serde_yaml::from_str(&*content).unwrap();
+    let content = fs::read_to_string(flow_path)?;
+    let flows: Vec<Transflow> = serde_yaml::from_str(&*content)?;
 
     let mut scripts = vec![];
     for flow in flows {
@@ -16,7 +17,7 @@ pub fn dump_flows(path: PathBuf) -> String {
         scripts.push(script);
     }
 
-    scripts.join("\n")
+    Ok(scripts.join("\n"))
 }
 
 pub fn flow_to_script(flow: &Transflow) -> String {

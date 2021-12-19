@@ -10,6 +10,6 @@ pub fn dump_dashboard_layout(path: PathBuf) -> Result<SimpleLayout, Box<dyn Erro
         .join(EntryPaths::quake())
         .join(EntryPaths::dashboard_layout());
 
-    let content = fs::read_to_string(path).unwrap();
+    let content = fs::read_to_string(path)?;
     SimpleLayout::from_text(content.as_str())
 }

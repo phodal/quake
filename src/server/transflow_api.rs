@@ -66,7 +66,14 @@ pub(crate) async fn transflow_gen_code(
     config: &State<QuakeConfig>,
 ) -> Result<JavaScript<String>, Json<ApiError>> {
     let path = PathBuf::from(config.workspace.clone());
-    let scripts = flow_usecases::dump_flows(path);
+    let scripts = match flow_usecases::dump_flows(path) {
+        Ok(scripts) => scripts,
+        Err(err) => {
+            return Err(Json(ApiError {
+                msg: err.to_string(),
+            }))
+        }
+    };
     Ok(JavaScript(scripts))
 }
 
