@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 
 // only for: IDEA jump
 // @ts-ignore
-import {IonSearchbar, loadingController} from "@ionic/core";
+import {IonSearchbar} from "@ionic/core";
 import {createTransflow, init_wasm, parseAction} from "./quake-core-wrapper";
 
 export interface ActionDefine {
@@ -104,10 +104,10 @@ export class QuakeDashboard {
   }
 
   async loadingElement(type: string, params: object = {}, callback: any) {
-    const loading = await loadingController.create({
-      message: 'Please wait...',
-      duration: 500
-    });
+    const loading = document.createElement('ion-loading');
+    loading.cssClass = 'my-custom-class';
+    loading.message = 'Please wait...';
+    loading.duration = 500;
 
     const fetchEl = document.createElement('fetch-api');
     fetchEl.setAttribute("type", type);
@@ -118,8 +118,9 @@ export class QuakeDashboard {
       });
       callback(response);
     })
-
+    
     loading.appendChild(fetchEl);
+    document.body.appendChild(loading);
     await loading.present();
   }
 
