@@ -67,6 +67,6 @@ mod tests {
       ]
     }]}"#;
         let code = flow_to_code(code, defines);
-        assert!(code.contains("Quake.transflow.add"));
+        assert!(code.contains("from_todo_to_quake_calendar"));
     }
 }
