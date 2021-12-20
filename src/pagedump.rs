@@ -53,6 +53,32 @@ fn dump_entries_data_search(conf: &QuakeConfig) {
     }
 }
 
+fn dump_entries_data(conf: &QuakeConfig) {
+    let path = PathBuf::from(&conf.workspace);
+    let defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
+
+    for define in &defines.entries {
+        let entry_type = &*define.entry_type;
+        let define = defines
+            .find(entry_type)
+            .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
+        let entry_path = path.join(&entry_type);
+
+        let mut index = 1;
+        let type_maps = define.to_field_type();
+        let target_dir = PathBuf::from(DUMP_PATH).join("entry").join(entry_type);
+        fs::create_dir_all(&target_dir).unwrap();
+        for path in &Entrysets::scan_files(&*entry_path) {
+            let content = Entrysets::file_to_json(&define, index, &type_maps, path).unwrap();
+
+            let file = target_dir.join(index.to_string());
+
+            fs::write(file, content.to_string()).unwrap();
+            index += 1;
+        }
+    }
+}
+
 fn dump_transflow(conf: &QuakeConfig) {
     let path = PathBuf::from(&conf.workspace);
     let out_path = PathBuf::from(DUMP_PATH).join("transflow").join("script");
@@ -97,32 +123,6 @@ fn dump_entries_define(conf: &QuakeConfig) {
     let out_path = PathBuf::from(DUMP_PATH).join("entry").join("defines");
 
     fs::write(out_path, content).unwrap();
-}
-
-fn dump_entries_data(conf: &QuakeConfig) {
-    let path = PathBuf::from(&conf.workspace);
-    let defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
-
-    for define in &defines.entries {
-        let entry_type = &*define.entry_type;
-        let define = defines
-            .find(entry_type)
-            .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
-        let entry_path = path.join(&entry_type);
-
-        let mut index = 1;
-        let type_maps = define.to_field_type();
-        let target_dir = PathBuf::from(DUMP_PATH).join("entry").join(entry_type);
-        fs::create_dir_all(&target_dir).unwrap();
-        for path in &Entrysets::scan_files(&*entry_path) {
-            let content = Entrysets::file_to_json(&define, index, &type_maps, path).unwrap();
-
-            let file = target_dir.join(index.to_string());
-
-            fs::write(file, content.to_string()).unwrap();
-            index += 1;
-        }
-    }
 }
 
 fn dump_suggest(conf: &QuakeConfig) {
