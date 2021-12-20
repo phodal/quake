@@ -12,7 +12,6 @@ export namespace Components {
         "entryType": string[];
         "searchEngine": boolean;
         "type": string;
-        "url": string;
     }
     interface QuakeDashboard {
         "indexName": string;
@@ -53,7 +52,6 @@ declare namespace LocalJSX {
         "onFetchSuccess"?: (event: CustomEvent<any>) => void;
         "searchEngine"?: boolean;
         "type"?: string;
-        "url"?: string;
     }
     interface QuakeDashboard {
         "indexName"?: string;

@@ -1,4 +1,4 @@
-import {Component, Event, EventEmitter, h, Host, Prop} from '@stencil/core';
+import {Component, Event, EventEmitter, h, Host, Prop, State} from '@stencil/core';
 import {MeiliSearch} from "meilisearch";
 import axios from "axios";
 
@@ -9,7 +9,7 @@ import axios from "axios";
 export class FetchApi {
   @Prop() entryType: string[] = [];
   @Prop() type: string = '';
-  @Prop() url: string = '';
+  @State() url: string = '';
 
   @Prop() searchEngine: boolean = false;
 

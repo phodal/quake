@@ -324,7 +324,6 @@ export class QuakeDashboard {
       return "no more data";
     }
 
-    console.log('Loaded data');
     let type = this.selected_entry.type;
     this.queryItems(this.offset[type]).then((result) => {
       this.offset[type] = this.offset[type] + 40;
@@ -338,7 +337,6 @@ export class QuakeDashboard {
       }
 
       this.selected_result = this.selected_result.concat(parsed);
-      console.log(this.selected_result.length);
     })
 
   }
