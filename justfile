@@ -20,10 +20,13 @@ coverage:
 
 pages:
     cargo run -- pagedump
-    cp -a pagedump/* quake_webapp/dist/
     cargo build -p quake_wasm
     cd quake_webapp && npm run local
+
+    # copy file after has dist
+    cp -a pagedump/* quake_webapp/dist/
     cd quake_wasm && wasm-pack build --scope quakeworks --target web
+    mkdir -p quake_webapp/dist/js/dashboard/
     cp quake_wasm/pkg/quake_wasm_bg.wasm quake_webapp/dist/js/dashboard/
 
 @bench:

@@ -12,9 +12,6 @@ if (!fs.existsSync("dist")){
   fs.mkdirSync("dist");
   fs.mkdirSync("dist/js");
   fs.mkdirSync("dist/css");
-}
-
-if (!fs.existsSync("dist/js/dashboard")){
   fs.mkdirSync("dist/js/dashboard");
 }
 
