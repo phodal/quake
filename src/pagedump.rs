@@ -74,7 +74,7 @@ fn dump_entries_define(conf: &QuakeConfig) {
     let defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
 
     let content = serde_json::to_string(&defines).unwrap();
-    let out_path = PathBuf::from(DUMP_PATH).join("defines");
+    let out_path = PathBuf::from(DUMP_PATH).join("entry").join("defines");
 
     fs::write(out_path, content).unwrap();
 }
@@ -136,7 +136,7 @@ mod tests {
     #[test]
     fn should_dump_entries_define() {
         page_dump(config());
-        let defines = PathBuf::from(DUMP_PATH).join("defines");
+        let defines = PathBuf::from(DUMP_PATH).join("entry").join("defines");
         assert!(defines.exists());
 
         let transflow = PathBuf::from(DUMP_PATH)
