@@ -88,17 +88,19 @@ export class QuakeDashboard {
 
   componentWillLoad() {
     const that = this;
-    this.loadingElement("rest", "suggest", (res: any) => {
+    this.loadingElement("suggest", {}, (res: any) => {
       that.entries_info = res.data.entries;
       that.actions_list = res.data.actions;
+    }).then(() => {
     });
 
-    this.loadingElement("rest", "layout", (res: any) => {
+    this.loadingElement("layout", {}, (res: any) => {
       that.layout = res.data;
+    }).then(() => {
     });
   }
 
-  async loadingElement(_style: string, type: string, callback: any) {
+  async loadingElement(type: string, params: object = {}, callback: any) {
     const loading = await loadingController.create({
       message: 'Please wait...',
       duration: 500
@@ -106,9 +108,11 @@ export class QuakeDashboard {
 
     const fetchEl = document.createElement('fetch-api');
     fetchEl.setAttribute("type", type);
+    fetchEl.setAttribute("params", JSON.stringify(params));
     fetchEl.addEventListener("fetchSuccess", (res: any) => {
       let response = res.detail;
-      loading.onDidDismiss().then(() => {});
+      loading.onDidDismiss().then(() => {
+      });
       callback(response);
     })
 
@@ -278,22 +282,25 @@ export class QuakeDashboard {
     }
 
     const that = this;
-    requestAnimationFrame(() => {
-      axios.get('/action/query/', {
-        params: {
-          input: this.query.substring(1,)
-        }
-      }).then(response => {
-        if (response.data.object) {
-          that.actionDefine = response.data
-          that.dispatchAction.emit(response.data);
-        } else {
-          that.actionDefine = null;
-          that.presentToast(response.data.msg);
-        }
-      }).catch(function (error) {
-        console.log(error);
-      });
+
+    this.loadingElement('actionQuery', {input: this.query.substring(1,)}, (_response) => {
+
+    }).then(() => {});
+
+    axios.get('/action/query/', {
+      params: {
+        input: this.query.substring(1,)
+      }
+    }).then(response => {
+      if (response.data.object) {
+        that.actionDefine = response.data
+        that.dispatchAction.emit(response.data);
+      } else {
+        that.actionDefine = null;
+        that.presentToast(response.data.msg);
+      }
+    }).catch(function (error) {
+      console.log(error);
     });
   }
 

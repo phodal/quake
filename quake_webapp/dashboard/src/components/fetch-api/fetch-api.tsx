@@ -49,10 +49,15 @@ export class FetchApi {
         this.url = "/layout/dashboard";
         break;
       }
+      case 'actionQuery' : {
+        // todo: use wasm
+        break;
+      }
       default:
         console.log(this.type);
     }
-    this.getRequest(this.url).then(() => {});
+    this.getRequest(this.url).then(() => {
+    });
   }
 
   render() {
