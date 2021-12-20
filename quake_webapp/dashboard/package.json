@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@ionic/core": "^5.9.1",
+    "@quakeworks/quake_wasm": "^0.1.0",
     "@stencil/core": "^2.7.0",
     "axios": "^0.24.0",
     "dayjs": "^1.10.7",

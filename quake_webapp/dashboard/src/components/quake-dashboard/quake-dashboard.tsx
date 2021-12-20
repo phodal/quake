@@ -1,11 +1,11 @@
 import {Component, Element, Event, EventEmitter, h, Prop, State} from '@stencil/core';
 import {MeiliSearch} from "meilisearch";
 import dayjs from "dayjs";
-import axios from "axios";
 
 // only for: IDEA jump
 // @ts-ignore
 import {IonSearchbar, loadingController} from "@ionic/core";
+import {createTransflow, init_wasm, parseAction} from "./quake-core-wrapper";
 
 export interface ActionDefine {
   object: String,
@@ -87,6 +87,9 @@ export class QuakeDashboard {
   })
 
   componentWillLoad() {
+    init_wasm().then(() => {
+    });
+
     const that = this;
     this.loadingElement("suggest", {}, (res: any) => {
       that.entries_info = res.data.entries;
@@ -239,11 +242,7 @@ export class QuakeDashboard {
   async createTransflow() {
     let flow_name = `temp_${this.flow_index}`;
     let flow = this.query.substring(1,);
-    axios.post(`/transflow/translate/${flow_name}`, {
-      flow: flow
-    }).then(response => {
-      let src = response.data;
-
+    createTransflow(flow_name, flow).then(src => {
       src = src + "\n " + `Quake.router.addRoutes({path: '/transflow/show_${flow_name}', action: tl_${flow_name} },)`;
 
       // todo: remove old id??
@@ -269,7 +268,6 @@ export class QuakeDashboard {
   async handleSubmit(e) {
     e.preventDefault()
 
-    console.log(this.query, e.target);
     if (this.query.startsWith(":")) {
       this.inputType = InputType.Transflow;
       await this.createTransflow();
@@ -282,22 +280,13 @@ export class QuakeDashboard {
     }
 
     const that = this;
-
-    this.loadingElement('actionQuery', {input: this.query.substring(1,)}, (_response) => {
-
-    }).then(() => {});
-
-    axios.get('/action/query/', {
-      params: {
-        input: this.query.substring(1,)
-      }
-    }).then(response => {
-      if (response.data.object) {
-        that.actionDefine = response.data
-        that.dispatchAction.emit(response.data);
+    parseAction(this.query.substring(1,)).then(data => {
+      if (data.object) {
+        that.actionDefine = data
+        that.dispatchAction.emit(data);
       } else {
         that.actionDefine = null;
-        that.presentToast(response.data.msg);
+        that.presentToast(data.msg);
       }
     }).catch(function (error) {
       console.log(error);

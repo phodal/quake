@@ -19,9 +19,12 @@ coverage:
     cargo llvm-cov --all-features --workspace --html
 
 pages:
+    cargo run -- pagedump
+    cp -a pagedump/* quake_webapp/dist/
     cargo build -p quake_wasm
     cd quake_webapp && npm run local
-    cd quake_wasm && wasm-pack build --scope quakeworks --target web -d ../quake_webapp/dist/wasm
+    cd quake_wasm && wasm-pack build --scope quakeworks --target web
+    cp quake_wasm/pkg/quake_wasm_bg.wasm quake_webapp/dist/js/dashboard/
 
 @bench:
 	cargo bench

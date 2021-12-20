@@ -15,6 +15,13 @@ export const config: Config = {
       type: 'docs-readme',
     },
     {
+      // copy wasm
+      type: 'dist',
+      copy: [
+        { src: '../node_modules/@quakeworks/quake_wasm/quake_wasm_bg.wasm', dest: 'quake_wasm_bg.wasm' }
+      ]
+    },
+    {
       type: 'www',
       serviceWorker: null, // disable service workers
     },

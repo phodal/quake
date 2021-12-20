@@ -1,43 +1,27 @@
 use std::collections::HashMap;
 use std::fs;
-use std::fs::File;
 use std::path::PathBuf;
 
 use rocket::response::status::NotFound;
 use rocket::serde::json::Json;
 use rocket::serde::{Deserialize, Serialize};
-use rocket::tokio::task::spawn_blocking;
 use rocket::State;
 use rocket::{get, post};
 
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
+use quake_core::entry::EntryDefines;
 use quake_core::helper::file_filter;
 use quake_core::usecases::entry_usecases;
 use quake_core::QuakeConfig;
 
-use crate::server::helper::csv_to_json::csv_to_json;
 use crate::server::ApiError;
 
-#[get("/<entry_type>/from_csv")]
-pub(crate) async fn get_entries_from_csv(
-    entry_type: String,
-    config: &State<QuakeConfig>,
-) -> Result<Json<String>, NotFound<Json<ApiError>>> {
-    let path = PathBuf::from(config.workspace.clone())
-        .join(entry_type)
-        .join(EntryPaths::entries_csv());
-    let content = spawn_blocking(|| {
-        let mut rdr = csv::Reader::from_reader(File::open(path).unwrap());
-        csv_to_json(&mut rdr).unwrap().to_string()
-    })
-    .await
-    .map_err(|err| ApiError {
-        msg: err.to_string(),
-    })
-    .unwrap();
-
-    Ok(Json(content))
+#[get("/defines")]
+pub(crate) async fn get_entry_defines(conf: &State<QuakeConfig>) -> String {
+    let path = PathBuf::from(&conf.workspace);
+    let defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
+    serde_json::to_string(&defines).unwrap()
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]

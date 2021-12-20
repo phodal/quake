@@ -43,7 +43,7 @@ pub fn quake_rocket() -> Rocket<Build> {
         .mount(
             "/entry",
             routes![
-                entry_api::get_entries_from_csv,
+                entry_api::get_entry_defines,
                 entry_api::get_entry,
                 entry_api::create_entry,
                 entry_api::update_entry
