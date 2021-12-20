@@ -23,7 +23,8 @@
   },
   "scripts": {
     "start": "export PORT=4003 && react-app-rewired start",
-    "build": "react-app-rewired build",
+    "build": "react-app-rewired build && npm run rename:css",
+    "rename:css": "cp build/static/css/*.css build/static/quake-calendar.min.css",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },
