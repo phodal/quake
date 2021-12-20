@@ -27,6 +27,7 @@ use std::error::Error;
 use std::ffi::OsString;
 use std::path::PathBuf;
 
+use crate::markdown::entry_reference::EntryReference;
 use pulldown_cmark::{CodeBlockKind, CowStr, Event, Options, Parser, Tag};
 use pulldown_cmark_to_cmark::cmark_with_options;
 
@@ -37,26 +38,19 @@ pub type MarkdownEvents<'a> = Vec<Event<'a>>;
 #[derive(Debug, Default)]
 pub struct MdProcessor {}
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
-pub struct PageLink {
-    entry_type: String,
-    entry_id: String,
-    entry_title: String,
-}
-
 impl MdProcessor {
     pub fn transform(content: &str) -> Result<String, Box<dyn Error>> {
         let mut down = MdProcessor::default();
-        let mut links: Vec<PageLink> = vec![];
+        let mut links: Vec<EntryReference> = vec![];
         let events = down.add_custom_syntax(content, &mut links)?;
         let mapping = events.into_iter().map(event_to_owned).collect();
 
         Ok(events_to_text(mapping))
     }
 
-    pub fn pagelinks(content: &str) -> Result<Vec<PageLink>, Box<dyn Error>> {
+    pub fn pagelinks(content: &str) -> Result<Vec<EntryReference>, Box<dyn Error>> {
         let mut down = MdProcessor::default();
-        let mut links: Vec<PageLink> = vec![];
+        let mut links: Vec<EntryReference> = vec![];
         let _events = down.add_custom_syntax(content, &mut links)?;
 
         Ok(links)
@@ -66,7 +60,7 @@ impl MdProcessor {
     fn add_custom_syntax<'a>(
         &mut self,
         content: &'a str,
-        _links: &mut Vec<PageLink>,
+        _links: &mut Vec<EntryReference>,
     ) -> Result<Vec<Event<'a>>, Box<dyn Error>> {
         let mut parser_options = Options::empty();
         parser_options.insert(Options::ENABLE_TABLES);
@@ -288,7 +282,6 @@ fn codeblock_kind_to_owned<'a>(codeblock_kind: CodeBlockKind) -> CodeBlockKind<'
 #[cfg(test)]
 mod tests {
     use crate::markdown::md_processor::MdProcessor;
-    use regex::Regex;
     use std::fs;
     use std::path::PathBuf;
 
@@ -323,22 +316,5 @@ mod tests {
     fn transform_page_file() {
         let string = MdProcessor::transform("![[Note:0001#Heading|Label \"file name\"]]").unwrap();
         assert_eq!("[Label “file name”](Note:0001)", string);
-    }
-
-    #[test]
-    fn parse_quake_down_link() {
-        let page_ref = Regex::new(
-            r#"^(?P<type>[^#|:]+):(?P<id>\d{1,})??(#(?P<section>.+?))??(\|(?P<label>.+?))??\s"([^"]+)"$"#,
-        ).unwrap();
-        let text = r#"note:0001#Heading|Label "file name""#;
-
-        let captures = page_ref
-            .captures(text)
-            .expect("note link regex didn't match - bad input?");
-        let entry_type = captures.name("type").map(|v| v.as_str());
-        let _label = captures.name("label").map(|v| v.as_str());
-        let _section = captures.name("section").map(|v| v.as_str());
-
-        println!("{:?}", entry_type);
     }
 }
