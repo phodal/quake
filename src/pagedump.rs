@@ -29,8 +29,29 @@ pub fn page_dump(conf: QuakeConfig) {
     dump_links(&conf);
     // 3. export all entry_type data to json
     dump_entries_data(&conf);
+    dump_entries_data_search(&conf);
     // 4. export others
     dump_suggest(&conf);
+}
+
+fn dump_entries_data_search(conf: &QuakeConfig) {
+    let path = PathBuf::from(&conf.workspace);
+    let defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
+
+    for define in &defines.entries {
+        let entry_path = path.join(&define.entry_type);
+        let string = Entrysets::jsonify_with_format_date(&*entry_path, define)
+            .unwrap()
+            .to_string();
+
+        let path = PathBuf::from(DUMP_PATH)
+            .join("indexes")
+            .join(&define.entry_type);
+
+        fs::create_dir_all(&path).unwrap();
+        let out_file = path.join("search");
+        fs::write(out_file, string).unwrap();
+    }
 }
 
 fn dump_transflow(conf: &QuakeConfig) {
@@ -90,7 +111,7 @@ fn dump_entries_data(conf: &QuakeConfig) {
             .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
         let entry_path = path.join(&entry_type);
 
-        let index = 1;
+        let mut index = 1;
         let type_maps = define.to_field_type();
         let target_dir = PathBuf::from(DUMP_PATH).join("entry").join(entry_type);
         fs::create_dir_all(&target_dir).unwrap();
@@ -100,6 +121,7 @@ fn dump_entries_data(conf: &QuakeConfig) {
             let file = target_dir.join(EntryFile::file_prefix(index).to_string());
 
             fs::write(file, content.to_string()).unwrap();
+            index += 1;
         }
     }
 }
