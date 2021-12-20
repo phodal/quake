@@ -1,4 +1,3 @@
-use quake_core::entry::entry_file::EntryFile;
 use std::fs;
 use std::path::PathBuf;
 
@@ -70,7 +69,7 @@ fn dump_transflow(conf: &QuakeConfig) {
     // copy for define load
     let transfuncs = path.join(EntryPaths::quake()).join("transfuncs.js");
     if transfuncs.exists() {
-        fs::copy(transfuncs, out_path.join("custom_scripts.js")).unwrap();
+        fs::copy(transfuncs, out_path.join("custom_transfuncs.js")).unwrap();
     }
 }
 
@@ -118,7 +117,7 @@ fn dump_entries_data(conf: &QuakeConfig) {
         for path in &Entrysets::scan_files(&*entry_path) {
             let content = Entrysets::file_to_json(&define, index, &type_maps, path).unwrap();
 
-            let file = target_dir.join(EntryFile::file_prefix(index).to_string());
+            let file = target_dir.join(index.to_string());
 
             fs::write(file, content.to_string()).unwrap();
             index += 1;
@@ -174,7 +173,7 @@ mod tests {
         let todo_entry = PathBuf::from(DUMP_PATH)
             .join("entry")
             .join("todo")
-            .join("0001");
+            .join("1");
         assert!(todo_entry.exists());
     }
 }
