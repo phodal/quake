@@ -37,20 +37,36 @@ pub type MarkdownEvents<'a> = Vec<Event<'a>>;
 #[derive(Debug, Default)]
 pub struct MdProcessor {}
 
+#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
+pub struct PageLink {
+    entry_type: String,
+    entry_id: String,
+    entry_title: String,
+}
+
 impl MdProcessor {
     pub fn transform(content: &str) -> Result<String, Box<dyn Error>> {
         let mut down = MdProcessor::default();
-        let events = down.add_custom_syntax(content)?;
-
+        let mut links: Vec<PageLink> = vec![];
+        let events = down.add_custom_syntax(content, &mut links)?;
         let mapping = events.into_iter().map(event_to_owned).collect();
 
         Ok(events_to_text(mapping))
+    }
+
+    pub fn pagelinks(content: &str) -> Result<Vec<PageLink>, Box<dyn Error>> {
+        let mut down = MdProcessor::default();
+        let mut links: Vec<PageLink> = vec![];
+        let _events = down.add_custom_syntax(content, &mut links)?;
+
+        Ok(links)
     }
 
     // based on https://github.com/zoni/obsidian-export/blob/main/src/lib.rs
     fn add_custom_syntax<'a>(
         &mut self,
         content: &'a str,
+        _links: &mut Vec<PageLink>,
     ) -> Result<Vec<Event<'a>>, Box<dyn Error>> {
         let mut parser_options = Options::empty();
         parser_options.insert(Options::ENABLE_TABLES);
