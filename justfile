@@ -18,6 +18,11 @@ release:
 coverage:
     cargo llvm-cov --all-features --workspace --html
 
+pages:
+    cargo build -p quake_wasm
+    cd quake_webapp && npm run local
+    cd quake_wasm && wasm-pack build --target web -d ../quake_webapp/dist/wasm
+
 @bench:
 	cargo bench
 

@@ -30,26 +30,43 @@ fse.copySync(srcDir, destDir, { overwrite: true }, function (err) {
   }
 });
 
+$('link').map((i, link) => {
+  let attribs = link.attribs;
+  if (!(!!attribs.href && (!attribs.href.startsWith('http') && !attribs.href.startsWith('//')))) {
+    return;
+  }
+
+  let split = attribs.href.split("/");
+  let file_name = split[split.length - 1];
+
+  text = text.replace(attribs.href, `css/${file_name}`);
+
+  fs.copyFile(attribs.href, `dist/css/${file_name}`, (err) => {
+    if (err) throw err;
+  });
+});
+
 $('body > script').map((i, script) => {
   let attribs = script.attribs;
-  if (!!attribs.src && (!attribs.src.startsWith('http') && !attribs.src.startsWith('//'))) {
-    let split = attribs.src.split("/");
-    let file_name = split[split.length - 1];
 
-    if (attribs.src.startsWith('/transflow/')) {
-      return;
-    }
+  if (!(!!attribs.src && (!attribs.src.startsWith('http') && !attribs.src.startsWith('//')))) {
+    return;
+  }
 
-    if (attribs.type !== 'module') {
-      text = text.replace(attribs.src, `js/${file_name}`);
+  let split = attribs.src.split("/");
+  let file_name = split[split.length - 1];
+  if (attribs.src.startsWith('/transflow/')) {
+    return;
+  }
+  if (attribs.type !== 'module') {
+    text = text.replace(attribs.src, `js/${file_name}`);
 
-      fs.copyFile(attribs.src, `dist/js/${file_name}`, (err) => {
-        if (err) throw err;
-      });
-    } else {
-      let dir = file_name.split(".")[0];
-      text = text.replace(attribs.src, `js/${dir}/${file_name}`);
-    }
+    fs.copyFile(attribs.src, `dist/js/${file_name}`, (err) => {
+      if (err) throw err;
+    });
+  } else {
+    let dir = file_name.split(".")[0];
+    text = text.replace(attribs.src, `js/${dir}/${file_name}`);
   }
 })
 
