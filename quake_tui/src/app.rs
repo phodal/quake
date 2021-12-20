@@ -106,7 +106,9 @@ impl App {
             },
             Mode::Command => match key_code {
                 KeyCode::Enter => {
-                    self.execute_command()?;
+                    if let Err(err_msg) = self.execute_command() {
+                        self.send_message(&err_msg);
+                    }
                 }
                 KeyCode::Char(c) => {
                     self.input_push(c);
@@ -283,6 +285,23 @@ mod tests {
         app.state.input = "nonexistent".to_string();
         let result = app.execute_command();
         assert_eq!(result, Err("Unknown command: nonexistent".to_string()));
+    }
+    #[rstest]
+    #[case(vec!['u', 'k', 'n', 'o', 'w', 'n'])]
+    #[case(vec!['e', 'r', 'r', 'o', 'r'])]
+    #[case(vec!['t', 'o', 'd', 'o', ' ', 'a', 'd', 'd', 'd'])]
+    fn test_unknown_command_error_message(mut app: App, #[case] inputs: Vec<char>) {
+        app.handle_key_event(KeyCode::Char(':')).unwrap();
+        inputs
+            .iter()
+            .for_each(|ch| app.handle_key_event(KeyCode::Char(ch.to_owned())).unwrap());
+
+        app.handle_key_event(KeyCode::Enter).unwrap();
+
+        assert_eq!(app.state.mode, Mode::Normal);
+
+        let error_message = format!("Unknown command: {}", inputs.iter().collect::<String>());
+        assert_eq!(app.cmd_line.message, error_message);
     }
 
     #[rstest]
