@@ -2,7 +2,14 @@
 name = "quake_wasm"
 version = "0.1.0"
 edition = "2021"
-
+authors = ["Inherd Group <quake@inherd.org>"]
+description = """
+Simple knowledge management tool for geek.
+"""
+documentation = "https://github.com/phodal/quake"
+repository = "https://github.com/phodal/quake"
+readme = "README.md"
+license = "MIT"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

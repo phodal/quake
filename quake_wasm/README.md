@@ -1,6 +1,6 @@
-# WASM
+# Rust WASM
 
-> provide core for Web API as demo
+> provide Quake core API for Web api in Web.
 
 
 

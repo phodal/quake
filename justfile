@@ -21,7 +21,7 @@ coverage:
 pages:
     cargo build -p quake_wasm
     cd quake_webapp && npm run local
-    cd quake_wasm && wasm-pack build --target web -d ../quake_webapp/dist/wasm
+    cd quake_wasm && wasm-pack build --scope quakeworks --target web -d ../quake_webapp/dist/wasm
 
 @bench:
 	cargo bench
