@@ -288,6 +288,7 @@ fn codeblock_kind_to_owned<'a>(codeblock_kind: CodeBlockKind) -> CodeBlockKind<'
 #[cfg(test)]
 mod tests {
     use crate::markdown::md_processor::MdProcessor;
+    use regex::Regex;
     use std::fs;
     use std::path::PathBuf;
 
@@ -320,7 +321,24 @@ mod tests {
 
     #[test]
     fn transform_page_file() {
-        let string = MdProcessor::transform("![[note::SourceCode]]").unwrap();
-        assert_eq!("[note::SourceCode](note::SourceCode)", string);
+        let string = MdProcessor::transform("![[Note:0001#Heading|Label \"file name\"]]").unwrap();
+        assert_eq!("[Label “file name”](Note:0001)", string);
+    }
+
+    #[test]
+    fn parse_quake_down_link() {
+        let page_ref = Regex::new(
+            r#"^(?P<type>[^#|:]+):(?P<id>\d{1,})??(#(?P<section>.+?))??(\|(?P<label>.+?))??\s"([^"]+)"$"#,
+        ).unwrap();
+        let text = r#"note:0001#Heading|Label "file name""#;
+
+        let captures = page_ref
+            .captures(text)
+            .expect("note link regex didn't match - bad input?");
+        let entry_type = captures.name("type").map(|v| v.as_str());
+        let _label = captures.name("label").map(|v| v.as_str());
+        let _section = captures.name("section").map(|v| v.as_str());
+
+        println!("{:?}", entry_type);
     }
 }
