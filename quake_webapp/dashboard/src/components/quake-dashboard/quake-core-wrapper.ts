@@ -1,4 +1,3 @@
-import {Build} from "@stencil/core";
 import init, {flow_to_code, parse_action} from "@quakeworks/quake_wasm";
 import axios from "axios";
 
@@ -7,12 +6,12 @@ export async function init_wasm() {
 }
 
 export async function parseAction(str: string) {
-  if (!Build.isDev) {
+  if ((window as any).Quake?.pagedump) {
     return JSON.parse(parse_action(str));
   } else {
     return axios.get('/action/query/', {
       params: {
-        input: this.query.substring(1,)
+        input: str
       }
     }).then((res) => {return res.data});
   }
@@ -20,7 +19,7 @@ export async function parseAction(str: string) {
 
 // demo: from('blog').to(<ion-button>)
 export async function createTransflow(flow_name: string, flow: string) {
-  if (!Build.isDev) {
+  if ((window as any).Quake?.pagedump) {
     let transflow = `transflow ${flow_name} { ${flow} } `
     let defines = await axios.get('/entry/defines').then((res) => {
       return res.data;

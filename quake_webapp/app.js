@@ -2,10 +2,34 @@ const Router = Vaadin.Router;
 const outlet = document.getElementById('outlet');
 const router = new Router(outlet);
 
+function PageSearch(options) {
+  this.options = options;
+  this.type = '';
+}
+
+PageSearch.prototype.index = function (type) {
+  this.type = type;
+  return this;
+}
+
+PageSearch.prototype.search = function (options) {
+  return new Promise(async (resolve, reject) => {
+    let response = await fetch(`/indexes/${this.type}/search`);
+    let data = await response.json();
+    resolve({
+      hits: data
+    });
+  })
+};
+
+// modify by content
+let is_pagedump = false;
+
 const Quake = {
-  // init flow map
+  // config for global
+  pagedump: is_pagedump,
   flows: {},
-  client: new MeiliSearch({
+  client: is_pagedump ? new PageSearch() : new MeiliSearch({
     host: 'http://127.0.0.1:7700'
   }),
   router: router,
@@ -118,7 +142,6 @@ const show_entry = async (context, commands) => {
 
   editor.addEventListener("clickPageLink", function (event) {
     let data = event.detail;
-    console.log(data);
     Router.go(`/show/${data.type}/${data.id}`);
   });
 
@@ -128,7 +151,7 @@ const show_entry = async (context, commands) => {
 function handleAction(define) {
   if (define.action === 'add') {
     Router.go(`/entry/${define.object}/new?text=${define.text}`)
-  } else if(define.action === 'show') {
+  } else if (define.action === 'show') {
     Router.go(`/show/${define.object}/${define.parameters[0]}`);
   } else if (define.parameters.length > 0) {
     Router.go(`/edit/${define.object}/${define.parameters[0]}`);

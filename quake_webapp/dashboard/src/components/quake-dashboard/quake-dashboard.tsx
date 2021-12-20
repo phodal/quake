@@ -82,9 +82,9 @@ export class QuakeDashboard {
     bubbles: true,
   }) dispatchAction: EventEmitter<ActionDefine>;
 
-  client = new MeiliSearch({
+  client = (window as any).Quake?.client ? (window as any).Quake.client : new MeiliSearch({
     host: 'http://127.0.0.1:7700'
-  })
+  });
 
   componentWillLoad() {
     init_wasm().then(() => {
