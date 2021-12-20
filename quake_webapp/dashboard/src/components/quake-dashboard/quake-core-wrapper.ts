@@ -22,7 +22,7 @@ export async function parseAction(str: string) {
 export async function createTransflow(flow_name: string, flow: string) {
   if (!Build.isDev) {
     let transflow = `transflow ${flow_name} { ${flow} } `
-    let defines = await axios.get('/entry/defines/').then((res) => {
+    let defines = await axios.get('/entry/defines').then((res) => {
       return res.data;
     });
 

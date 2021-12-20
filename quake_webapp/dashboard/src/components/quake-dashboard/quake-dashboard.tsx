@@ -118,7 +118,7 @@ export class QuakeDashboard {
       });
       callback(response);
     })
-    
+
     loading.appendChild(fetchEl);
     document.body.appendChild(loading);
     await loading.present();
