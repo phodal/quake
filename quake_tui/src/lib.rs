@@ -1,4 +1,5 @@
 mod app;
+mod entry_action;
 mod ui;
 mod widgets;
 

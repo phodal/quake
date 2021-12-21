@@ -3,12 +3,12 @@ use std::error::Error;
 use std::path::PathBuf;
 
 use crossterm::event::{self, Event, KeyCode};
-use quake_core::parser::quake::QuakeActionNode;
 use quake_core::usecases::entry_usecases;
 use quake_core::QuakeConfig;
 use tui::backend::Backend;
 use tui::Terminal;
 
+use crate::entry_action::action_result_to_main_widget;
 use crate::ui::draw;
 use crate::widgets::{CmdLine, MainWidget};
 
@@ -34,21 +34,16 @@ impl App {
     }
 
     pub fn save_entry(&mut self) {
-        if let MainWidget::Editor(ref action, ref string) = self.main_widget {
-            let result =
-                entry_usecases::create_entry(&self.config.workspace, &action.object, &action.text)
-                    .and_then(|(_, file)| {
-                        let type_path = PathBuf::from(&self.config.workspace).join(&action.object);
-                        let mut fields = HashMap::new();
-                        fields.insert("content".to_string(), string.clone());
-                        entry_usecases::update_entry_properties(
-                            type_path,
-                            &action.object,
-                            file.id,
-                            &fields,
-                        )
-                    });
-            match result {
+        if let MainWidget::Editor {
+            ref entry_type,
+            ref id,
+            ref content,
+        } = self.main_widget
+        {
+            let mut fields = HashMap::new();
+            fields.insert("content".to_string(), content.clone());
+            let type_path = PathBuf::from(&self.config.workspace).join(entry_type);
+            match entry_usecases::update_entry_properties(type_path, entry_type, *id, &fields) {
                 Ok(_) => self.send_message("saved!"),
                 Err(_) => self.send_message("save failed!"),
             }
@@ -151,11 +146,8 @@ impl App {
             "listAll" => self.main_widget = MainWidget::EntryTypes,
             "save" => self.save_entry(),
             other => {
-                if let Ok(action) = QuakeActionNode::from_text(other) {
-                    self.main_widget = MainWidget::Editor(action, "".to_string());
-                } else {
-                    return Err(format!("Unknown command: {}", command));
-                }
+                return action_result_to_main_widget(other, &self.config)
+                    .map(|widget| self.main_widget = widget);
             }
         }
 

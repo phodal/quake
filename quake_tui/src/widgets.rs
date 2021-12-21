@@ -10,14 +10,17 @@ use tui::text::{Span, Spans};
 use tui::widgets::{Block, Borders, List, ListItem, Paragraph, Widget};
 
 use quake_core::entry::EntryDefines;
-use quake_core::quake::QuakeActionNode;
 use quake_core::QuakeConfig;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum MainWidget {
     Home,
     EntryTypes,
-    Editor(QuakeActionNode, String),
+    Editor {
+        entry_type: String,
+        id: usize,
+        content: String,
+    },
 }
 
 impl Widget for MainWidget {
@@ -56,8 +59,8 @@ impl Widget for MainWidget {
 
                 entry_types_list.render(area, buf);
             }
-            MainWidget::Editor(_, string) => {
-                let editor = Paragraph::new(string.as_ref())
+            MainWidget::Editor { content, .. } => {
+                let editor = Paragraph::new(content.as_ref())
                     .block(Block::default().borders(Borders::ALL).title("Editro"));
                 editor.render(area, buf);
             }
@@ -68,20 +71,26 @@ impl Widget for MainWidget {
 impl MainWidget {
     pub fn get_input(&self) -> &str {
         match self {
-            Self::Editor(_, string) => string,
+            Self::Editor { content, .. } => content,
             _ => "",
         }
     }
 
     pub fn input_push(&mut self, c: char) {
-        if let Self::Editor(_, ref mut string) = self {
-            string.push(c);
+        if let Self::Editor {
+            ref mut content, ..
+        } = self
+        {
+            content.push(c);
         }
     }
 
     pub fn input_pop(&mut self) {
-        if let Self::Editor(_, ref mut string) = self {
-            string.pop();
+        if let Self::Editor {
+            ref mut content, ..
+        } = self
+        {
+            content.pop();
         }
     }
 }
