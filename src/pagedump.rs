@@ -1,12 +1,14 @@
 use std::fs;
 use std::path::PathBuf;
 
-use crate::usecases::suggest_usecases;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::entry::EntryDefines;
 use quake_core::usecases::entrysets::Entrysets;
 use quake_core::usecases::{flow_usecases, layout_usecases};
 use quake_core::QuakeConfig;
+
+use crate::usecases::pagelink_usecases::{create_entries_refs, EntryReference};
+use crate::usecases::suggest_usecases;
 
 static DUMP_PATH: &str = "pagedump";
 
@@ -113,7 +115,33 @@ fn dump_layout(conf: &QuakeConfig) {
     }
 }
 
-fn dump_links(_conf: &QuakeConfig) {}
+fn dump_links(conf: &QuakeConfig) {
+    let path = PathBuf::from(&conf.workspace);
+
+    // todo: update defines
+    create_entries_refs(&path).unwrap();
+    let defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
+
+    let link_dir = path
+        .join(EntryPaths::quake())
+        .join(EntryPaths::references());
+    let out_dir = PathBuf::from(DUMP_PATH).join(EntryPaths::references());
+    fs::create_dir_all(&out_dir).unwrap();
+
+    for define in &defines.entries {
+        let entry_type = &*define.entry_type;
+
+        // yaml to links structs
+        let path = &link_dir.join(format!("{:}.yml", entry_type));
+        let string = fs::read_to_string(path).unwrap();
+        let links: Vec<EntryReference> = serde_yaml::from_str(&string).unwrap();
+
+        // dump to json structs
+        let content = serde_json::to_string(&links).unwrap();
+        let out_path = out_dir.join(format!("{:}.json", entry_type));
+        fs::write(out_path, content).unwrap();
+    }
+}
 
 fn dump_entries_define(conf: &QuakeConfig) {
     let path = PathBuf::from(&conf.workspace);

@@ -12,7 +12,7 @@ author:
 
 ambiguous link
 
-[["title"]]
+[[note:0002#demo "title"]]
 
 ### Embed  link
 

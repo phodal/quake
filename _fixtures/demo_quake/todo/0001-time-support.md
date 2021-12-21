@@ -10,3 +10,4 @@ ahaha
 
 [[todo:0001 "links"]]
 
+[[note:0002#Demo "title"]]
