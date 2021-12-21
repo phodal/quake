@@ -1,0 +1,10 @@
+---
+- source_type: quake_book
+  source_id: "7"
+  references:
+    - entry_type: note
+      entry_id: "0001"
+      entry_title: markdown-syntax
+    - entry_type: ""
+      entry_id: ""
+      entry_title: ""

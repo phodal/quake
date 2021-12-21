@@ -9,6 +9,7 @@ use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::QuakeConfig;
 
 use crate::helper::exec_wrapper::meili_exec;
+use crate::usecases::pagelink_usecases::create_entries_links;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::errors::QuakeError;
 use quake_core::usecases::entry_usecases;
@@ -24,6 +25,10 @@ pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Er
         }
         "feed" => {
             feed_data(conf)?;
+        }
+        "links" => {
+            let path = PathBuf::from(&conf.workspace);
+            create_entries_links(&path)?;
         }
         _ => {
             return Err(Box::new(QuakeError(format!(

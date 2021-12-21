@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -18,45 +19,50 @@ pub struct EntryLink {
 }
 
 /// create all entries links
-#[allow(dead_code)]
-pub fn create_entries_links(path: &Path) {
+pub fn create_entries_links(path: &Path) -> Result<(), Box<dyn Error>> {
     let defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
 
     for define in &defines.entries {
         let entry_path = path.join(&define.entry_type);
 
-        let entry_links = create_entry_links(define, entry_path);
+        let entry_links = create_entry_links(define, entry_path)?;
 
-        let content = serde_yaml::to_string(&entry_links).unwrap();
+        let content = serde_yaml::to_string(&entry_links)?;
         let path = &path
             .join(EntryPaths::quake())
             .join(EntryPaths::links())
             .join(format!("{:}.yml", &define.entry_type));
 
-        fs::write(path, content).unwrap();
+        fs::write(path, content)?;
     }
+
+    Ok(())
 }
 
 /// create entry type's links
-#[allow(dead_code)]
-fn create_entry_links(define: &EntryDefine, entry_path: PathBuf) -> Vec<EntryLink> {
+fn create_entry_links(
+    define: &EntryDefine,
+    entry_path: PathBuf,
+) -> Result<Vec<EntryLink>, Box<dyn Error>> {
     let mut index = 1;
     let mut entry_links: Vec<EntryLink> = vec![];
     for path in &Entrysets::scan_files(&*entry_path) {
-        let string = fs::read_to_string(path).unwrap();
+        let string = fs::read_to_string(path)?;
 
         let mut entry_link = EntryLink::default();
         if let Ok(links) = MdProcessor::pagelinks(&string) {
             entry_link.references = links;
         }
 
-        entry_link.source_id = index.to_string();
-        entry_link.source_type = define.entry_type.clone();
-
-        entry_links.push(entry_link);
+        if entry_link.references.len() > 0 {
+            entry_link.source_id = index.to_string();
+            entry_link.source_type = define.entry_type.clone();
+            entry_links.push(entry_link);
+        }
         index += 1;
     }
-    entry_links
+
+    Ok(entry_links)
 }
 
 #[cfg(test)]

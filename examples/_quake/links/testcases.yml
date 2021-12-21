@@ -1,0 +1,7 @@
+---
+- source_type: testcases
+  source_id: "1"
+  references:
+    - entry_type: issue
+      entry_id: "0001"
+      entry_title: demo
