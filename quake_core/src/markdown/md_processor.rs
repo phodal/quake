@@ -287,20 +287,10 @@ mod tests {
     }
 
     #[test]
-    fn transform_page_link() {
-        let _string = MdProcessor::transform("[[note::SourceCode]]").unwrap();
-        // assert_eq!("[note::SourceCode](note::SourceCode)", string);
-    }
-
-    #[test]
-    fn transform_page_file() {
-        let _string = MdProcessor::transform("![[Note:0001#Heading|Label \"file name\"]]").unwrap();
-        // assert_eq!("[Label “file name”](Note:0001)", string);
-    }
-
-    #[test]
     fn get_entry_refs() {
-        let _links = MdProcessor::pagelinks("![[Note:0001#Heading|Label \"file name\"]]").unwrap();
+        let content = "[[Note:0001#Heading|Label \"file name\"]]";
+        let links = MdProcessor::pagelinks(content).unwrap();
+        println!("{:?}", links);
         // assert_eq!(1, links.len());
     }
 }

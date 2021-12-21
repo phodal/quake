@@ -55,7 +55,6 @@ pub struct RefParser {
 }
 
 impl RefParser {
-    #[allow(clippy::all)]
     pub fn new() -> RefParser {
         RefParser {
             state: RefParserState::NoState,

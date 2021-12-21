@@ -4,7 +4,7 @@ use std::fmt;
 
 lazy_static! {
     static ref ENTRY_LINK_RE: Regex =
-        Regex::new(r#"^(?P<type>[^#|:]+):(?P<id>\d{1,})??(#(?P<section>.+?))??(\|(?P<label>.+?))??\s"(?P<title>[^"]+)"$"#).unwrap();
+        Regex::new(r#"^(?P<type>[^#|:]+):(?P<id>\d+)(#(?P<section>.+?))??(\|(?P<label>.+?))??(\s["'](?P<title>.+?)["'])??$"#).unwrap();
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default, Clone)]
@@ -110,7 +110,7 @@ mod tests {
         let label_ref = EntryReference::from_str(with_label);
         assert_eq!(with_label, label_ref.to_string());
 
-        let only_label = r#"note:0001|label "file name""#;
+        let only_label = r#"Note:0001|Label "file name""#;
         let only_label_ref = EntryReference::from_str(only_label);
         assert_eq!(only_label, only_label_ref.to_string());
     }
