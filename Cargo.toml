@@ -64,6 +64,8 @@ tracing-subscriber = "0.2"
 
 syntect = { version = "4.2", default-features = false, features = ["default-fancy"] }
 
+zip = "0.5"
+
 [features]
 webserver = []
 
