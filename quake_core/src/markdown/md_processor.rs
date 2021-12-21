@@ -25,7 +25,7 @@
 // DEALINGS IN THE SOFTWARE.
 use std::error::Error;
 
-use crate::markdown::entry_reference::EntryReference;
+use crate::markdown::entry_reference::PageReference;
 use pulldown_cmark::{CodeBlockKind, CowStr, Event, Options, Parser, Tag};
 use pulldown_cmark_to_cmark::cmark_with_options;
 
@@ -39,16 +39,16 @@ pub struct MdProcessor {}
 impl MdProcessor {
     pub fn transform(content: &str) -> Result<String, Box<dyn Error>> {
         let mut down = MdProcessor::default();
-        let mut links: Vec<EntryReference> = vec![];
+        let mut links: Vec<PageReference> = vec![];
         let events = down.add_custom_syntax(content, &mut links)?;
         let mapping = events.into_iter().map(event_to_owned).collect();
 
         Ok(events_to_text(mapping))
     }
 
-    pub fn pagelinks(content: &str) -> Result<Vec<EntryReference>, Box<dyn Error>> {
+    pub fn pagelinks(content: &str) -> Result<Vec<PageReference>, Box<dyn Error>> {
         let mut down = MdProcessor::default();
-        let mut links: Vec<EntryReference> = vec![];
+        let mut links: Vec<PageReference> = vec![];
         let _ = down.add_custom_syntax(content, &mut links)?;
 
         Ok(links)
@@ -58,7 +58,7 @@ impl MdProcessor {
     fn add_custom_syntax<'a>(
         &mut self,
         content: &'a str,
-        links: &mut Vec<EntryReference>,
+        links: &mut Vec<PageReference>,
     ) -> Result<Vec<Event<'a>>, Box<dyn Error>> {
         let mut parser_options = Options::empty();
         parser_options.insert(Options::ENABLE_TABLES);
@@ -130,7 +130,7 @@ impl MdProcessor {
                 RefParserState::ExpectFinalCloseBracket => match event {
                     Event::Text(CowStr::Borrowed("]")) => match ref_parser.ref_type {
                         Some(RefType::Link) => {
-                            let reference = EntryReference::from_str(
+                            let reference = PageReference::from_str(
                                 ref_parser.ref_text.clone().as_ref()
                             );
                             links.push(reference.clone());
@@ -162,7 +162,7 @@ impl MdProcessor {
         Ok(events)
     }
 
-    pub fn make_link_to_file<'c>(&mut self, reference: EntryReference) -> MarkdownEvents<'c> {
+    pub fn make_link_to_file<'c>(&mut self, reference: PageReference) -> MarkdownEvents<'c> {
         let link = format!("/{:}/{:}", reference.entry_type, reference.entry_id);
 
         let link_tag = pulldown_cmark::Tag::Link(
@@ -182,7 +182,7 @@ impl MdProcessor {
         &mut self,
         link_text: &str,
     ) -> Result<MarkdownEvents<'b>, Box<dyn Error>> {
-        let note_ref = EntryReference::from_str(link_text);
+        let note_ref = PageReference::from_str(link_text);
 
         Ok(self.make_link_to_file(note_ref))
     }
