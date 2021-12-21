@@ -59,7 +59,7 @@ jobs:
       - name: zip macos artifact
         if: runner.os == 'macOS'
         run: |
-          cd quake_webapp && zip -qq -r ../web.zip dist
+          cd quake_webapp && mv dist web && zip -qq -r ../web.zip web
 
       - name: Upload binaries to release
         if: runner.os == 'macOS'
