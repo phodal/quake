@@ -54,6 +54,12 @@ pub struct RefParser {
     pub ref_text: String,
 }
 
+impl Default for RefParser {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl RefParser {
     pub fn new() -> RefParser {
         RefParser {
