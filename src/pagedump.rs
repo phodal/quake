@@ -7,7 +7,7 @@ use quake_core::usecases::entrysets::Entrysets;
 use quake_core::usecases::{flow_usecases, layout_usecases};
 use quake_core::QuakeConfig;
 
-use crate::usecases::pagelink_usecases::{create_entries_refs, EntryReference};
+use crate::usecases::reference_usecases::{create_entries_refs, EntryReference};
 use crate::usecases::suggest_usecases;
 
 static DUMP_PATH: &str = "pagedump";

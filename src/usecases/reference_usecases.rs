@@ -30,7 +30,7 @@ pub fn create_entries_refs(path: &Path) -> Result<(), Box<dyn Error>> {
     for define in &defines.entries {
         let entry_path = path.join(&define.entry_type);
 
-        let entry_links = create_entry_refrence(define, entry_path)?;
+        let entry_links = create_entry_reference(define, entry_path)?;
 
         let content = serde_yaml::to_string(&entry_links)?;
         let path = &path
@@ -45,7 +45,7 @@ pub fn create_entries_refs(path: &Path) -> Result<(), Box<dyn Error>> {
 }
 
 /// create entry type's links
-fn create_entry_refrence(
+fn create_entry_reference(
     define: &EntryDefine,
     entry_path: PathBuf,
 ) -> Result<Vec<EntryReference>, Box<dyn Error>> {
@@ -75,7 +75,7 @@ mod tests {
     use std::fs;
     use std::path::PathBuf;
 
-    use crate::usecases::pagelink_usecases::{create_entries_refs, EntryReference};
+    use crate::usecases::reference_usecases::{create_entries_refs, EntryReference};
 
     #[test]
     fn should_generate_links() {

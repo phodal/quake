@@ -9,7 +9,7 @@ use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::QuakeConfig;
 
 use crate::helper::exec_wrapper::meili_exec;
-use crate::usecases::pagelink_usecases::create_entries_refs;
+use crate::usecases::reference_usecases::create_entries_refs;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::errors::QuakeError;
 use quake_core::usecases::entry_usecases;

@@ -62,6 +62,7 @@ pub fn quake_rocket() -> Rocket<Build> {
                 transflow_api::translate
             ],
         )
+        .mount("/reference", routes![reference_api::reference_by_type])
         .mount("/layout", routes![layout_api::dashboard_layout])
         .attach(AdHoc::config::<QuakeConfig>())
 }
