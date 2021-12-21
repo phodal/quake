@@ -9,11 +9,11 @@ lazy_static! {
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct EntryReference {
-    entry_type: String,
-    entry_id: String,
-    entry_title: String,
-    label: Option<String>,
-    section: Option<String>,
+    pub(crate) entry_type: String,
+    pub(crate) entry_id: String,
+    pub(crate) entry_title: String,
+    pub(crate) label: Option<String>,
+    pub(crate) section: Option<String>,
 }
 
 impl EntryReference {
@@ -37,6 +37,10 @@ impl EntryReference {
             label,
             section,
         }
+    }
+
+    pub fn display(&self) -> String {
+        format!("{}", self)
     }
 }
 

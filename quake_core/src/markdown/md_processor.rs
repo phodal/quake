@@ -24,14 +24,12 @@
 // IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 use std::error::Error;
-use std::ffi::OsString;
-use std::path::PathBuf;
 
 use crate::markdown::entry_reference::EntryReference;
 use pulldown_cmark::{CodeBlockKind, CowStr, Event, Options, Parser, Tag};
 use pulldown_cmark_to_cmark::cmark_with_options;
 
-use crate::markdown::references::{NoteReference, RefParser, RefParserState, RefType};
+use crate::markdown::references::{RefParser, RefParserState, RefType};
 
 pub type MarkdownEvents<'a> = Vec<Event<'a>>;
 
@@ -133,7 +131,7 @@ impl MdProcessor {
                     Event::Text(CowStr::Borrowed("]")) => match ref_parser.ref_type {
                         Some(RefType::Link) => {
                             let mut elements = self.make_link_to_file(
-                                NoteReference::from_str(
+                                EntryReference::from_str(
                                     ref_parser.ref_text.clone().as_ref()
                                 )
                             );
@@ -162,14 +160,8 @@ impl MdProcessor {
         Ok(events)
     }
 
-    pub fn make_link_to_file<'b, 'c>(
-        &mut self,
-        reference: NoteReference<'b>,
-    ) -> MarkdownEvents<'c> {
-        let link = match reference.file {
-            None => "".to_string(),
-            Some(file) => file.to_string(),
-        };
+    pub fn make_link_to_file<'c>(&mut self, reference: EntryReference) -> MarkdownEvents<'c> {
+        let link = format!("/{:}/{:}", reference.entry_type, reference.entry_id);
 
         let link_tag = pulldown_cmark::Tag::Link(
             pulldown_cmark::LinkType::Inline,
@@ -188,23 +180,9 @@ impl MdProcessor {
         &mut self,
         link_text: &str,
     ) -> Result<MarkdownEvents<'b>, Box<dyn Error>> {
-        let note_ref = NoteReference::from_str(link_text);
-        let path = match note_ref.file {
-            None => {
-                return Ok(self.make_link_to_file(note_ref));
-            }
-            Some(file) => Some(PathBuf::from(file)),
-        };
+        let note_ref = EntryReference::from_str(link_text);
 
-        let path = path.unwrap();
-        let no_ext = OsString::new();
-
-        #[allow(clippy::all)]
-        let events = match path.extension().unwrap_or(&no_ext).to_str() {
-            _ => self.make_link_to_file(note_ref),
-        };
-
-        Ok(events)
+        Ok(self.make_link_to_file(note_ref))
     }
 }
 
