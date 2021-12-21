@@ -37,6 +37,10 @@ impl EntryPaths {
         "_quake"
     }
 
+    pub fn links() -> &'static str {
+        "links"
+    }
+
     pub fn transfuncs() -> &'static str {
         "transfuncs.js"
     }
