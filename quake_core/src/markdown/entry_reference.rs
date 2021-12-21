@@ -4,7 +4,7 @@ use std::fmt;
 
 lazy_static! {
     static ref ENTRY_LINK_RE: Regex =
-        Regex::new(r#"^(?P<type>[^#|:]+):(?P<id>\d+)(#(?P<section>.+?))??(\|(?P<label>.+?))??(\s["'](?P<title>.+?)["'])??$"#).unwrap();
+        Regex::new(r#"^(?P<type>[^#|:]+):(?P<id>\d+)(#(?P<section>.+?))??(\|(?P<label>.+?))??(\s["'“](?P<title>.+?)["'”])??$"#).unwrap();
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default, Clone)]

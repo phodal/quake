@@ -290,7 +290,7 @@ mod tests {
     fn get_entry_refs() {
         let content = "[[Note:0001#Heading|Label \"file name\"]]";
         let links = MdProcessor::pagelinks(content).unwrap();
-        println!("{:?}", links);
-        // assert_eq!(1, links.len());
+        assert_eq!(1, links.len());
+        assert_eq!("file name", links[0].entry_title);
     }
 }
