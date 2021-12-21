@@ -7,7 +7,7 @@ lazy_static! {
         Regex::new(r#"^(?P<type>[^#|:]+):(?P<id>\d{1,})??(#(?P<section>.+?))??(\|(?P<label>.+?))??\s"(?P<title>[^"]+)"$"#).unwrap();
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Default, Clone)]
 pub struct EntryReference {
     pub(crate) entry_type: String,
     pub(crate) entry_id: String,
@@ -19,9 +19,10 @@ pub struct EntryReference {
 impl EntryReference {
     #[allow(clippy::all)]
     pub fn from_str(text: &str) -> EntryReference {
-        let captures = ENTRY_LINK_RE
-            .captures(text)
-            .expect("note link regex didn't match - bad input?");
+        let captures = match ENTRY_LINK_RE.captures(text) {
+            None => return EntryReference::default(),
+            Some(capts) => capts,
+        };
 
         let entry_type = captures.name("type").map(|v| v.as_str()).unwrap_or("");
         let entry_id = captures.name("id").map(|v| v.as_str()).unwrap_or("");
