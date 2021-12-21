@@ -1,6 +1,7 @@
 use std::error::Error;
-use std::fs;
-use std::path::PathBuf;
+use std::io::{self, Cursor};
+use std::path::{Path, PathBuf};
+use std::{env, fs};
 
 use clap::Parser;
 use futures::executor::block_on;
@@ -21,6 +22,8 @@ pub mod helper;
 pub mod pagedump;
 pub mod server;
 pub mod usecases;
+
+const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[derive(Parser)]
 #[clap(version = "0.1.2", author = "Inherd <quake@inherd.org>")]
@@ -101,7 +104,7 @@ async fn main() {
 
 pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
     match opts.cmd {
-        SubCommand::Init(init) => init_projects(init)?,
+        SubCommand::Init(init) => init_projects(init).await?,
         SubCommand::Cmd(cmd) => {
             let conf = config_quake(&cmd)?;
             if !cmd.input.is_empty() {
@@ -168,13 +171,14 @@ fn load_config(path: &str) -> Result<QuakeConfig, Box<dyn Error>> {
     Ok(conf)
 }
 
-fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
+async fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     fs::create_dir_all(&config.path)?;
 
-    let path = PathBuf::from(&config.path).join(".quake.yaml");
-    let define = PathBuf::from(&config.path).join("entries-define.yaml");
+    let workspace = PathBuf::from(&config.path);
+    let path = workspace.join(".quake.yaml");
+    let define = workspace.join("entries-define.yaml");
 
-    let config = QuakeConfig {
+    let quake_config = QuakeConfig {
         workspace: config.path,
         editor: "".to_string(),
         search_url: "http://127.0.0.1:7700".to_string(),
@@ -182,7 +186,7 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
         port: 8000,
     };
 
-    fs::write(&path, serde_yaml::to_string(&config)?)?;
+    fs::write(&path, serde_yaml::to_string(&quake_config)?)?;
     debug!("create .quake.yaml in {:?}", &path.display());
 
     let todo_define = "
@@ -200,6 +204,66 @@ fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     fs::write(&define, serde_yaml::to_string(&file)?)?;
     debug!("create default entry defines in {:?}", &define.display());
 
+    if config.download {
+        let target = format!(
+            "https://github.com/phodal/quake/releases/download/v{}/web.zip",
+            VERSION
+        );
+        debug!("download web.zip from {}", target);
+
+        let response = reqwest::get(&target).await?.bytes().await?;
+        unzip_all(Cursor::new(response.to_vec()), &workspace)?;
+    }
+
+    Ok(())
+}
+
+fn unzip_all(reader: Cursor<Vec<u8>>, plugins_path: &Path) -> Result<(), Box<dyn Error>> {
+    let mut archive = zip::ZipArchive::new(reader)?;
+
+    for i in 0..archive.len() {
+        let mut file = archive.by_index(i)?;
+        let out_path = match file.enclosed_name() {
+            Some(path) => plugins_path.join(path),
+            None => continue,
+        };
+
+        {
+            let comment = file.comment();
+            if !comment.is_empty() {
+                println!("Plugin {} comment: {}", i, comment);
+            }
+        }
+
+        if (&*file.name()).ends_with('/') {
+            println!("File {} extracted to \"{}\"", i, out_path.display());
+            fs::create_dir_all(&out_path)?;
+        } else {
+            println!(
+                "File {} extracted to \"{}\" ({} bytes)",
+                i,
+                out_path.display(),
+                file.size()
+            );
+            if let Some(p) = out_path.parent() {
+                if !p.exists() {
+                    fs::create_dir_all(&p)?;
+                }
+            }
+            let mut outfile = fs::File::create(&out_path)?;
+            io::copy(&mut file, &mut outfile)?;
+        }
+
+        // Get and Set permissions
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+
+            if let Some(mode) = file.unix_mode() {
+                fs::set_permissions(&out_path, fs::Permissions::from_mode(mode))?;
+            }
+        }
+    }
     Ok(())
 }
 
@@ -275,6 +339,22 @@ mod tests {
 
             fs::remove_dir_all(test_dir).unwrap();
         });
+    }
+
+    #[test]
+    #[ignore = "need tokio runtime"]
+    fn should_download_webapp_dist() {
+        task::block_on(async {
+            let test_dir = "test_dir";
+            process_cmd(Opts {
+                cmd: SubCommand::Init(Init {
+                    path: test_dir.to_string(),
+                    download: true,
+                }),
+            })
+            .await
+            .unwrap();
+        })
     }
 
     fn config_dir() -> PathBuf {
