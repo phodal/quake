@@ -1,10 +1,10 @@
 ---
 title: dump data for github pages
 author: 
-status: Spike
+status: Done
 priority: Low
 created_date: 2021-12-18 23:28:14
-updated_date: 2021-12-18 23:28:14
+updated_date: 2021-12-22 08:18:24
 ---
 
 // 1. dump entries config;

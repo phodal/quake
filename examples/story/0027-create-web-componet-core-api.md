@@ -1,10 +1,10 @@
 ---
-title: create web componnent core api
+title: create web component core api
 author: 
 status: Spike
 priority: Low
 created_date: 2021-12-16 09:15:39
-updated_date: 2021-12-16 09:15:39
+updated_date: 2021-12-22 08:18:24
 ---
 
 such as:

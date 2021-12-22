@@ -1,10 +1,10 @@
 ---
 title: transflow with function generate
 author: Phodal
-status: Doing
+status: Done
 priority: Low
 created_date: 2021-12-05 02:03:24
-updated_date: 2021-12-05 02:03:24
+updated_date: 2021-12-22 08:18:24
 ---
 
 1. transforms.js for loading and process
