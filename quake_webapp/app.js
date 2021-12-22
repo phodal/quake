@@ -168,28 +168,39 @@ router.setRoutes([
 ]);
 
 function from_quake_references_to_network(data) {
-  console.log(data);
-  let categories = [];
+  let category_index = [];
   let nodes = [];
   let links = [];
+
   for (let node of data) {
-    categories[node.source_type] = 1;
-    nodes.push = {
-      id: node.source_id,
-      name: node.source_title,
-      type: node.source_type
+    if (!category_index.includes(node.source_type)) {
+      category_index.push(node.source_type);
     }
+    nodes.push({
+      id: parseInt(node.source_id),
+      name: node.source_title,
+      type: category_index.indexOf(node.source_type)
+    });
 
     for (let ref of node.references) {
-      nodes.push = {
+      if (!category_index.includes(ref.entry_type)) {
+        category_index.push(ref.entry_type);
+      }
+
+      nodes.push({
         id: parseInt(ref.entry_id),
         title: ref.entry_title,
-        type: ref.entry_type
-      }
-      links.push({source: node.source_id, target: ref.entry_id});
+        type: category_index.indexOf(ref.entry_type)
+      })
+
+      links.push({source: parseInt(node.source_id), target: parseInt(ref.entry_id)});
     }
   }
 
+  let categories = [];
+  for (let category of category_index) {
+    categories.push({name: category})
+  }
   return {
     nodes,
     links,
