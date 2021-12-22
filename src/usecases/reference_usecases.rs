@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 
 use serde_derive::{Deserialize, Serialize};
 
+use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::entry::{EntryDefine, EntryDefines};
 use quake_core::markdown::entry_reference::PageReference;
@@ -15,6 +16,7 @@ use quake_core::usecases::entrysets::Entrysets;
 pub struct EntryReference {
     pub source_type: String,
     pub source_id: String,
+    pub source_title: String,
     pub references: Vec<PageReference>,
 }
 
@@ -55,15 +57,21 @@ fn create_entry_reference(
         let string = fs::read_to_string(path)?;
 
         let mut entry_link = EntryReference::default();
-        if let Ok(links) = MdProcessor::pagelinks(&string) {
+
+        let file = EntryFile::from(&string, index).unwrap();
+
+        if let Ok(links) = MdProcessor::pagelinks(&file.content) {
             entry_link.references = links;
         }
 
         if !entry_link.references.is_empty() {
             entry_link.source_id = index.to_string();
+            entry_link.source_title = file.property("title").unwrap();
             entry_link.source_type = define.entry_type.clone();
+            // source_id
             entry_links.push(entry_link);
         }
+
         index += 1;
     }
 
@@ -81,7 +89,7 @@ mod tests {
     fn should_generate_links() {
         let path = PathBuf::from("_fixtures").join("demo_quake");
         create_entries_refs(&path).unwrap();
-        let buf = path.join("_quake").join("links").join("todo.yml");
+        let buf = path.join("_quake").join("references").join("todo.yml");
 
         let string = fs::read_to_string(buf).unwrap();
         let links: Vec<EntryReference> = serde_yaml::from_str(&string).unwrap();

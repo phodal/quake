@@ -26,7 +26,7 @@ pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Er
         "feed" => {
             feed_data(conf)?;
         }
-        "links" => {
+        "refs" => {
             let path = PathBuf::from(&conf.workspace);
             create_entries_refs(&path)?;
         }
