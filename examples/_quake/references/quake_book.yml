@@ -1,6 +1,7 @@
 ---
 - source_type: quake_book
   source_id: "7"
+  source_title: "Quake's markdown syntax"
   references:
     - entry_type: note
       entry_id: "0001"

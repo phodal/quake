@@ -166,3 +166,40 @@ router.setRoutes([
   {path: '/edit/:type/:id', action: edit_entry},
   {path: '/show/:type/:id', action: show_entry},
 ]);
+
+function from_quake_references_to_network(data) {
+  console.log(data);
+  let categories = [];
+  let nodes = [];
+  let links = [];
+  for (let node of data) {
+    categories[node.source_type] = 1;
+    nodes.push = {
+      id: node.source_id,
+      name: node.source_title,
+      type: node.source_type
+    }
+
+    for (let ref of node.references) {
+      nodes.push = {
+        id: parseInt(ref.entry_id),
+        title: ref.entry_title,
+        type: ref.entry_type
+      }
+      links.push({source: node.source_id, target: ref.entry_id});
+    }
+  }
+
+  return {
+    nodes,
+    links,
+    categories
+  }
+}
+
+fetch("/reference/quake_book").then((res) => {
+  res.json().then((data) => {
+    let network = from_quake_references_to_network(data);
+    console.log(network);
+  })
+})

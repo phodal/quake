@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::fs;
 use std::fs::File;
+use std::ops::Deref;
 use std::path::Path;
 
 use tracing::info;
@@ -17,6 +18,32 @@ use quake_core::usecases::entrysets::Entrysets;
 
 use crate::cli::helper::table_process;
 use crate::helper::exec_wrapper::{editor_exec, meili_exec};
+
+pub enum EntryAction {
+    Add,
+    Dump,
+    Edit,
+    Feed,
+    List,
+    Show,
+    Sync,
+    Error,
+}
+
+impl EntryAction {
+    pub fn from(text: &str) -> EntryAction {
+        match text {
+            "add" => EntryAction::Add,
+            "dump" => EntryAction::Dump,
+            "edit" => EntryAction::Edit,
+            "feed" => EntryAction::Feed,
+            "list" => EntryAction::List,
+            "show" => EntryAction::Show,
+            "sync" => EntryAction::Sync,
+            _ => EntryAction::Error,
+        }
+    }
+}
 
 pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.workspace, &expr.object);

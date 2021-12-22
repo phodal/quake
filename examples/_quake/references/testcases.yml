@@ -1,6 +1,7 @@
 ---
 - source_type: testcases
   source_id: "1"
+  source_title: pagelink
   references:
     - entry_type: issue
       entry_id: "0001"

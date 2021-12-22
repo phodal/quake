@@ -1,36 +1,54 @@
 use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
-use tracing::info;
 
+use tracing::info;
 use walkdir::{DirEntry, FilterEntry, IntoIter, WalkDir};
 
 use quake_core::entry::entry_defines::EntryDefines;
-use quake_core::QuakeConfig;
-
-use crate::helper::exec_wrapper::meili_exec;
-use crate::usecases::reference_usecases::create_entries_refs;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::errors::QuakeError;
 use quake_core::usecases::entry_usecases;
 use quake_core::usecases::entrysets::Entrysets;
+use quake_core::QuakeConfig;
+
+use crate::helper::exec_wrapper::meili_exec;
+use crate::usecases::reference_usecases::create_entries_refs;
+
+pub enum QuakeAction {
+    Sync,
+    Migration,
+    Feed,
+    Refs,
+    Error,
+}
+
+impl QuakeAction {
+    pub fn from(text: &str) -> QuakeAction {
+        match text {
+            "sync" => QuakeAction::Sync,
+            "migration" => QuakeAction::Migration,
+            "feed" => QuakeAction::Feed,
+            "refs" => QuakeAction::Refs,
+            _ => QuakeAction::Error,
+        }
+    }
+}
 
 pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
-    match action.as_str() {
-        "sync" => {
+    match QuakeAction::from(action.as_str()) {
+        QuakeAction::Sync => {
             sync_defines(conf)?;
         }
-        "migration" => {
-            // todo: add migrations for on entries
-        }
-        "feed" => {
+        QuakeAction::Migration => {}
+        QuakeAction::Feed => {
             feed_data(conf)?;
         }
-        "refs" => {
+        QuakeAction::Refs => {
             let path = PathBuf::from(&conf.workspace);
             create_entries_refs(&path)?;
         }
-        _ => {
+        QuakeAction::Error => {
             return Err(Box::new(QuakeError(format!(
                 "unknown quake action: {:?}",
                 action

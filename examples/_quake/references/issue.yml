@@ -1,6 +1,7 @@
 ---
 - source_type: issue
   source_id: "1"
+  source_title: more content for search results
   references:
     - entry_type: framework_doc
       entry_id: "0001"
