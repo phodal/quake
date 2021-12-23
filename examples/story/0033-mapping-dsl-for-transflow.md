@@ -7,7 +7,6 @@ created_date: 2021-12-23 23:15:25
 updated_date: 2021-12-23 23:15:25
 ---
 
-
 default by fields:
 
 ```
@@ -41,4 +40,28 @@ multiple
 ```
 blog.title -> title | uppercase | lowercase,
 ```
+
+size(blog, 150)
+
+methods:
+
+- limit, limit by length
+- first/last(T = string) = split by chars
+- first/last(T = number) = split by length
+- uppercase/lowercase
+
+- int = parseInt
+- string = toString
+- type system?
+
+
+- date(str string) = toDate
+
+- sqrt | sin/cos/ = math functional
+- regex(string) = default get first
+
+- other custom methods
+
+
+load custom `transflow.lib.js`
 
