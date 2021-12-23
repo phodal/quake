@@ -111,7 +111,6 @@ export class SimpleLayout {
                 {row.columns.map((col, colId) =>
                   <ion-col class="quake-component" size={col.size.toString()}
                            ref={(el) => (this.addElementToMap(el, this.layoutId(rowId, colId)))}>
-                    {col.name}
                   </ion-col>
                 )}
               </ion-row>
