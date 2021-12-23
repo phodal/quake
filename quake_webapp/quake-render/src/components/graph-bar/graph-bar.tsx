@@ -1,8 +1,8 @@
-import {Component, h, Host, Prop, State} from '@stencil/core';
+import {Component, h, Host, Prop} from '@stencil/core';
 import * as echarts from "echarts";
+import {EChartsOption} from "echarts";
 import {QuakeDownType} from "../../markdown/quake-down.type";
 import {EChartsType} from "echarts/types/dist/echarts";
-import {EChartsOption} from "echarts";
 
 @Component({
   tag: 'graph-bar',
@@ -10,13 +10,12 @@ import {EChartsOption} from "echarts";
   shadow: true,
 })
 export class GraphBar {
-  @State() myChart: EChartsType;
-  element!: HTMLElement;
   @Prop() config: any = {};
-
   @Prop() data: QuakeDownType.Table = null;
-
   @Prop() width = 300;
+
+  myChart: EChartsType;
+  element!: HTMLElement;
 
   componentDidRender() {
     let cells = this.transpose(this.data.rows);

@@ -1,4 +1,4 @@
-import {Component, h, Host, Prop, State} from '@stencil/core';
+import {Component, h, Host, Prop} from '@stencil/core';
 import * as echarts from 'echarts';
 
 let defaultData = {
@@ -16,22 +16,22 @@ let defaultData = {
   shadow: true,
 })
 export class GraphNetwork {
-  @State() myChart: any;
+  myChart: any;
   element!: HTMLElement;
   @Prop() config: any = {};
   @Prop() data: any = defaultData;
 
-  componentDidRender() {
+  componentDidLoad() {
+    this.renderGraph();
+  }
+
+  render() {
     this.myChart = echarts.init(this.element);
     if(!this.data) {
       console.info("cannot find data, will use default data: " + JSON.stringify(defaultData));
       this.data = defaultData;
     }
 
-    this.renderGraph();
-  }
-
-  render() {
     return (
       <Host>
         <div class='chart' ref={(el) => this.element = el as HTMLElement}/>
@@ -40,7 +40,6 @@ export class GraphNetwork {
   }
 
   private renderGraph() {
-    this.myChart.hideLoading();
     this.data.nodes.forEach(function (node) {
       node.symbolSize = 10;
     });

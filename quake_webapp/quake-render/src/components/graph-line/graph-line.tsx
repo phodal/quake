@@ -1,4 +1,4 @@
-import {Component, Host, h, State, Prop} from '@stencil/core';
+import {Component, Host, h, Prop} from '@stencil/core';
 import {EChartsType} from "echarts/types/dist/echarts";
 import {QuakeDownType} from "../../markdown/quake-down.type";
 import * as echarts from "echarts";
@@ -10,13 +10,12 @@ import {EChartsOption} from "echarts";
   shadow: true,
 })
 export class GraphLine {
-  @State() myChart: EChartsType;
-  element!: HTMLElement;
   @Prop() config: any = {};
-
   @Prop() data: QuakeDownType.Table = null;
-
   @Prop() width = 300;
+
+  myChart: EChartsType;
+  element!: HTMLElement;
 
   componentDidRender() {
     let cells = this.transpose(this.data.rows);
