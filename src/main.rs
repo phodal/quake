@@ -26,7 +26,7 @@ pub mod usecases;
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[derive(Parser)]
-#[clap(version = "0.1.2", author = "Inherd <quake@inherd.org>")]
+#[clap(version = "0.3.0", author = "Inherd <quake@inherd.org>")]
 pub struct Opts {
     #[clap(subcommand)]
     cmd: SubCommand,

@@ -1,6 +1,6 @@
 [package]
 name = "quake_tui"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2018"
 authors = ["Inherd Group <quake@inherd.org>"]
 description = """
@@ -17,7 +17,7 @@ keywords = ["knowledge", "dashboard"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-quake_core = { path = "../quake_core", version = "0.2.0" }
+quake_core = { path = "../quake_core", version = "0.3.0" }
 
 crossterm = "0.22"
 tui = { version = "0.16", default-features = false, features = ['crossterm'] }

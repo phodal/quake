@@ -1,6 +1,6 @@
 [package]
 name = "quake"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2018"
 authors = ["Inherd Group <quake@inherd.org>"]
 description = """
@@ -15,8 +15,8 @@ autoexamples = true
 keywords = ["knowledge", "dashboard"]
 
 [dependencies]
-quake_core = { path = "quake_core", version = "0.2.0" }
-quake_tui = { path = "quake_tui", version = "0.2.0" }
+quake_core = { path = "quake_core", version = "0.3.0" }
+quake_tui = { path = "quake_tui", version = "0.3.0" }
 
 # cli parser
 clap = { version = "3.0.0-beta.5", features = ["derive"] }
