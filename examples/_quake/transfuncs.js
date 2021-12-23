@@ -3,7 +3,9 @@ function from_quake_references_to_network(data) {
   let nodes = [];
   let links = [];
 
-  for (let node of data) {
+  for (let key of Object.keys(data)) {
+    let node = data[key];
+
     if (!category_index.includes(node.source_type)) {
       category_index.push(node.source_type);
     }

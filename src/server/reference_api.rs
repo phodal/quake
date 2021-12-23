@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
@@ -15,7 +16,7 @@ use crate::usecases::reference_usecases::EntryReference;
 pub(crate) async fn reference_by_type(
     entry_type: String,
     conf: &State<QuakeConfig>,
-) -> Result<Json<Vec<EntryReference>>, NotFound<Json<ApiError>>> {
+) -> Result<Json<HashMap<String, EntryReference>>, NotFound<Json<ApiError>>> {
     let path = PathBuf::from(&conf.workspace);
 
     let yaml_file = path
@@ -32,7 +33,7 @@ pub(crate) async fn reference_by_type(
         }
     };
 
-    let refs: Vec<EntryReference> = serde_yaml::from_str(&content).unwrap();
+    let refs: HashMap<String, EntryReference> = serde_yaml::from_str(&content).unwrap();
     Ok(Json(refs))
 }
 
