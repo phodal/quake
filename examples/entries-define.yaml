@@ -1,5 +1,18 @@
 ---
 entries:
+  - type: blog
+    display: ""
+    properties:
+      - keywords: String
+      - title: Title
+      - description: String
+      - slug: String
+      - first_name: String
+      - last_name: String
+      - email: String
+      - created_date: Date
+      - updated_date: Date
+    actions: ~
   - type: bookmark
     display: ""
     properties:
@@ -13,6 +26,29 @@ entries:
     display: ""
     properties:
       - title: Title
+    actions: ~
+  - type: microsoft_todo
+    display: ""
+    properties:
+      - category: String
+      - title: Title
+      - created_date: Date
+      - updated_date: Date
+      - reminder_date: Date
+      - completed_date: Date
+      - due_date: Date
+      - importance: String
+      - status: String
+    actions: ~
+  - type: notes
+    display: ""
+    properties:
+      - title: Title
+      - description: String
+      - category: String
+      - created_date: Date
+      - updated_date: Date
+      - author: String
     actions: ~
   - type: todo
     display: ""
@@ -59,6 +95,15 @@ entries:
     states:
       - property: priority
         items: ['Low', 'Medium', 'High']
+  - type: onenote
+    display: "Onenote"
+    properties:
+      - title: Title
+      - created_date: Date
+      - updated_date: Date
+      - category: String
+      - notebook: String
+    actions: ~
   - type: framework_doc
     display: "Frameworks Documentation"
     properties:
@@ -106,3 +151,4 @@ entries:
       - created_date: Date
       - updated_date: Date
     actions: ~
+

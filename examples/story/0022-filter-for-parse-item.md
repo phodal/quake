@@ -1,7 +1,7 @@
 ---
 title: filter for parse item
 author: 
-status: Spike
+status: Done
 priority: Low
 created_date: 2021-12-09 09:32:28
 updated_date: 2021-12-09 09:32:28
