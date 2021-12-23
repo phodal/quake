@@ -61,7 +61,7 @@ impl Widget for MainWidget {
             }
             MainWidget::Editor { content, .. } => {
                 let editor = Paragraph::new(content.as_ref())
-                    .block(Block::default().borders(Borders::ALL).title("Editro"));
+                    .block(Block::default().borders(Borders::ALL).title("Editor"));
                 editor.render(area, buf);
             }
         }
