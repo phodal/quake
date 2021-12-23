@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -50,9 +51,9 @@ pub fn create_entries_refs(path: &Path) -> Result<(), Box<dyn Error>> {
 fn create_entry_reference(
     define: &EntryDefine,
     entry_path: PathBuf,
-) -> Result<Vec<EntryReference>, Box<dyn Error>> {
+) -> Result<HashMap<String, EntryReference>, Box<dyn Error>> {
     let mut index = 1;
-    let mut entry_links: Vec<EntryReference> = vec![];
+    let mut refs_map: HashMap<String, EntryReference> = HashMap::new();
     for path in &Entrysets::scan_files(&*entry_path) {
         let string = fs::read_to_string(path)?;
 
@@ -65,21 +66,22 @@ fn create_entry_reference(
         }
 
         if !entry_link.references.is_empty() {
-            entry_link.source_id = index.to_string();
+            entry_link.source_id = EntryFile::file_prefix(index);
             entry_link.source_title = file.property("title").unwrap();
             entry_link.source_type = define.entry_type.clone();
             // source_id
-            entry_links.push(entry_link);
+            refs_map.insert(entry_link.source_id.clone(), entry_link.to_owned());
         }
 
         index += 1;
     }
 
-    Ok(entry_links)
+    Ok(refs_map)
 }
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
     use std::fs;
     use std::path::PathBuf;
 
@@ -92,9 +94,10 @@ mod tests {
         let buf = path.join("_quake").join("references").join("todo.yml");
 
         let string = fs::read_to_string(buf).unwrap();
-        let links: Vec<EntryReference> = serde_yaml::from_str(&string).unwrap();
+        let refs: HashMap<String, EntryReference> = serde_yaml::from_str(&string).unwrap();
 
-        assert_eq!(1, links.len());
-        assert_eq!("todo", links[0].source_type);
+        assert_eq!(1, refs.len());
+        let reference = refs.get("0001").unwrap();
+        assert_eq!("todo", reference.source_type);
     }
 }
