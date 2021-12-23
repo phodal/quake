@@ -1,7 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.2.0] - 2021-12-10
+## [unreleased]
+
+### Bug Fixes
+
+- Fix chart ERROR
+
+## [0.3.0] - 2021-12-23
 
 ### Bug Fixes
 
@@ -26,6 +32,47 @@ All notable changes to this project will be documented in this file.
 - Fix test ignore issues
 - Fix tests
 - Typos
+- Back normal mode after excute command
+- Calendar element should be quake-calendar instead of quake-calendar-timeline.
+- Fix page_link issues
+- Fix timeline issue
+- Fix tests
+- Fix deserde issue
+- Fix date issue
+- Fix testings
+- Fix action lint
+- Fix file & sets lint
+- Fix js flow codegen lint
+- Fix ast default issue
+- Ignore rule for 3rd part
+- Fix quake default issue
+- Fix watch issue
+- Fix typos && fixed #25
+- Fix typo
+- Fix typo
+- Fix layout issue
+- Fix test
+- Remove unused highlightjs
+- Fix lint issue
+- Seperate app's input state and message
+- Fix empty value issue
+- Delete char in editor
+- Revert value change for editor content
+- Fix lint
+- Align styles naming
+- Panic in execute command
+- Fix tests
+- Fix build script error issue
+- Fix path to align api
+- Fix path
+- Fix data issues
+- Fix typos
+- Fix lint
+- Fix lint
+- Remove unused titles
+- Not sync after entry saved
+- Fix condition error issue for match notebook
+- Fix chart render issues
 
 ### Documentation
 
@@ -58,10 +105,40 @@ All notable changes to this project will be documented in this file.
 - Update config
 - Setup quake book
 - Add lost RADME
+- Update README
+- Add more for README
+- Need to lunch meilisearch engine after installed.
+- Update todo
+- Init quake book for quake component
+- Replace transfunc.js with transflow.yaml
+- Adding an introduction to the overall structure of the project and modifying the set-up process.
+- Update design for transfuncs
+- Add transflow for timeline examples
+- Update transflow for timeline for tesitng
+- Add simple description for web app build and development.
+- Add lint & web badge
+- Add download to init for design
+- Update docs for quake down
+- Add render doccs for markdown
+- Update story status & init page link storage
+- Add more design to README
+- Add bookmark for test
+- Add utf8 notes
+- Add stories for api
+- Update desing for http/https
+- Remove unused code & add some comments
+- Refactor to element
+- Add resources for upload file
+- Add basic design for down data
+- Rename command
+- Update stsatus
+- Update content
+- Add link to online demo
 
 ### Feat
 
 - Make pass filter for struct
+- Add first heading
 
 ### Features
 
@@ -93,10 +170,83 @@ All notable changes to this project will be documented in this file.
 - Add format for RFC3339_NANO
 - Add app state
 - Try pdf read file module
+- Add hr for renderer
+- Add heading support
+- Add table support
+- Execute quake action and into insert mode
+- Add inline parser
+- Add basic page link extentions for parse
+- Add parse for admonition
+- Add admonition in content
+- Make list in list works
+- Add code highlight support
+- Make admoition render
+- Try d3 for render
+- Make d3 works
+- Add to core view in dashboard
+- Add timeline for render
+- Make calendar render
+- Make /transflow/script load from yaml file
+- Add route to script
+- Try to set loging for doc
+- Add mapping for status change
+- Save new entry
+- Add status logging suppport
+- Add simple layout syntax
+- Split lowcode & nocode
+- Add parse for layout
+- Add test for render
+- Add event to click page link
+- Add handle for entry sync
+- Add support for embed link & page link
+- Add simple layout dsl
+- Add data for graph:
+- Add simple layout api
+- Make simple layout works
+- Make shadow false to use app
+- Send message after save entry file
+- Add easy component support for simple layout
+- Add simple data for component
+- Add match for @graph('bar') code type
+- Add bar chart as a graph sample
+- Try to create fetch api
+- Try create offline.html
+- Add simple bar for testing
+- Add graph-line for testing
+- Enable load from url
+- Make request into source
+- Make parser return flowurl
+- Vim-like mode state
+- Line feed
+- Try loading for process
+- Init packages
+- Try call in components
+- Export action for js
+- Export json for defines
+- Make dump transflow to code api
+- Add dump dashboard layout
+- Export suggest api
+- Add dump for data
+- Try to add link parser
+- Add parsing function for quake note
+- Add test for parseing function
+- Update markdown processor
+- Support for utf8 regex for fix quote issue
+- Edit entry
+- Init with webapp dist
+- Make for generate links
+- Add dump to links
+- Add api for reference
+- Add lost title
+- Try make sense for functions
+- Update regex rule for markdown pagelink
+- Update match cases
 
 ### Miscellaneous Tasks
 
 - Release 0.2.0
+- Fix dist name
+- Editor typo
 
 ### Refactor
 
@@ -150,6 +300,71 @@ All notable changes to this project will be documented in this file.
 - Rename mappings to map
 - Change feed settings to json file
 - Extract main render logic to `MainWidget`
+- Rename quake render
+- Clean code
+- Extract function `execute_command`
+- Rename functions for rendener
+- Move inline render to render component
+- Add support for list
+- Try to use custom data
+- Rename componet
+- Extract render element
+- Reset page link module
+- Rename api funcs name
+- Move router to custom
+- Expose translate api from yaml
+- Use global define path
+- Replace origin feed settings
+- Remove old curl for feed single entry
+- Change expose api for jsonify map
+- Extract widgets
+- Rename funcs
+- Split extensions
+- Extract CmdLine widget
+- Rename components
+- Review & remove some code
+- Extract function back_to_normal
+- Align data
+- Remove unused comments
+- Rename fields to properties
+- Rename fields to properties by fields
+- Align frontend api
+- Mvoe fetch api to dashboard
+- Make parameters -> entry_list
+- Rename lbracket -> l_bracket
+- Inline string usage
+- Extact entry type
+- Event handle in App
+- Move test about app's state
+- Merge command and app
+- Rename entry path path
+- Move usecases to core
+- Refactor testcases for dump
+- Chagne transfuncs api name
+- Change entry dump to list logic
+- Align layout paths
+- Replace json
+- Update build scripts for wasm
+- Try to use query api
+- Change to loading
+- Add basic toggle for show dump
+- Fix fetach api data issue
+- Change order for entries data
+- Try to update parsing sytnax for entry ref
+- Remove unused link
+- Test for match array
+- Update ref api
+- Add lost title
+- Move tranfuncs design to funcs
+- Change todo to hashmap for match api
+- Align hashmap change for refs
+- Align key change
+
+### Styling
+
+- Test for styles
+- Update styles
+- Fix link to item
 
 ### Testing
 
@@ -157,6 +372,14 @@ All notable changes to this project will be documented in this file.
 - Add test for create entry
 - Try to set test server in ci
 - Add testing for time
+- Add type to jsonify
+- Make timeline works
+- Add test for action api
+- Add test for entry update
+- Make expose to component
+- Make it works
+- Introduce rstest to improve tests
+- Add test for cases
 
 ### Build
 
@@ -167,10 +390,43 @@ All notable changes to this project will be documented in this file.
 - Specific version for develop (#12)
 - Add basic web api config
 - Update links
+- Init quake graph
+- Test for quake graph
+- Update docs from generate
+- Add nx as build tool for web app(nx cloud enabled).
+- Fix cra and @nrwl/workspace eslint version conflict.
+- Add github actions for web app.
+- Try to fix nx build error command.
+- Nx main branch should be 'master' instead of 'main'.
+- Need to fetch all branches and commits so that Nx affected has a base to compare against.
+- Go to web app folder before building.
+- Add command to debug.
+- Add command to debug 1.
+- Add command to debug 2
+- Add command to debug 3.
+- Fix ci build issue.
+- Init flow url
+- Rename command for use
+- Try to rewrite css
+- Update content
+- Add scripts for build project
+- Add wasm build
+- Try to setp link
 
 ### Ci
 
 - Update coverage script
+
+### Lint
+
+- Fix some lint issue
+- Refactor element to csvtable
+- Fix some lint issue
+- Fix more lint
+- Fix string issue
+- Fix lints
+- Fix path issues
+- Fix last lints
 
 ## [0.1.2] - 2021-12-05
 
