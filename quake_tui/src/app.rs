@@ -3,6 +3,7 @@ use std::error::Error;
 use std::path::PathBuf;
 
 use crossterm::event::{self, Event, KeyCode};
+use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::usecases::entry_usecases;
 use quake_core::QuakeConfig;
 use tui::backend::Backend;
@@ -44,7 +45,14 @@ impl App {
             fields.insert("content".to_string(), content.clone());
             let type_path = PathBuf::from(&self.config.workspace).join(entry_type);
             match entry_usecases::update_entry_properties(type_path, entry_type, *id, &fields) {
-                Ok(_) => self.send_message("saved!"),
+                Ok(_) => {
+                    entry_usecases::sync_in_path(&EntryPaths::init(
+                        &self.config.workspace,
+                        entry_type,
+                    ))
+                    .unwrap();
+                    self.send_message("saved!")
+                }
                 Err(_) => self.send_message("save failed!"),
             }
         }
