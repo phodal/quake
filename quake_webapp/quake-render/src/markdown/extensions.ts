@@ -41,9 +41,9 @@ function getPageLink() {
           raw: match[0],
           entry_type: match[1].trim(),
           entry_id: match[2].trim(),
-          entry_heading: match[3].trim(),
-          entry_label: match[4].trim(),
-          entry_title: match[5].trim()
+          entry_heading: match[3]?.trim(),
+          entry_label: match[4]?.trim(),
+          entry_title: match[5]?.trim()
         };
       }
     }
