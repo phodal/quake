@@ -49,7 +49,6 @@ pub async fn async_watch<P: AsRef<Path>>(path: P, search_url: String) -> notify:
 }
 
 fn feed_by_event(event: Event, search_url: &str) -> Result<(), Box<dyn Error>> {
-    // only for data modify
     // todo: looking for better way
     match &event.kind {
         EventKind::Modify(ModifyKind::Data(_data)) => {

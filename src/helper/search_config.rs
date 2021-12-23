@@ -1,7 +1,9 @@
+use std::collections::{BTreeMap, BTreeSet};
+
+use serde_derive::{Deserialize, Serialize};
+
 use quake_core::entry::EntryDefine;
 use quake_core::meta::MetaProperty;
-use serde_derive::{Deserialize, Serialize};
-use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -62,8 +64,9 @@ fn str_to_string(list: Vec<&str>) -> Vec<String> {
 
 #[cfg(test)]
 mod tests {
-    use crate::helper::search_config::define_to_settings;
     use quake_core::entry::EntryDefine;
+
+    use crate::helper::search_config::define_to_settings;
 
     fn get_define() -> EntryDefine {
         let yaml = "
