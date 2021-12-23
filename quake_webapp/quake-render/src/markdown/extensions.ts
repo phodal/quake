@@ -28,7 +28,7 @@ function getPageLink() {
     name: 'page_link',
     level: 'inline',
     tokenizer(src, _tokens) {
-      const rule = /^\[\[([a-zA-Z_-]+):(\d{1,4}) "(.+?(?="]]))"]]/;
+      const rule = /^\[\[(.+(?=:)):(\d+)(#(.+)([|\s]))?(|(.+))? "(.+?(?="]]))"]]/;
       const match = rule.exec(src);
       if (match) {
         return {
@@ -36,7 +36,9 @@ function getPageLink() {
           raw: match[0],
           entry_type: match[1].trim(),
           entry_id: match[2].trim(),
-          entry_title: match[3].trim()
+          entry_title: match[3].trim(),
+          entry_heading: '',
+          entry_label: ''
         };
       }
     }
@@ -48,7 +50,7 @@ function getEmbedLink() {
     name: 'embed_link',
     level: 'inline',
     tokenizer(src, _tokens) {
-      const rule = /^\!\[\[([a-zA-Z_-]+):(\d{1,4}) "(.+?(?="]]))"]]/;
+      const rule = /^!\[\[([a-zA-Z_-]+):(\d{1,4}) "(.+?(?="]]))"]]/;
       const match = rule.exec(src);
 
       if (match) {
