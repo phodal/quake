@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
@@ -134,7 +135,7 @@ fn dump_links(conf: &QuakeConfig) {
         // yaml to links structs
         let path = &link_dir.join(format!("{:}.yml", entry_type));
         let string = fs::read_to_string(path).unwrap();
-        let links: Vec<EntryReference> = serde_yaml::from_str(&string).unwrap();
+        let links: HashMap<String, EntryReference> = serde_yaml::from_str(&string).unwrap();
 
         // dump to json structs
         let content = serde_json::to_string(&links).unwrap();

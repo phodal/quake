@@ -1,6 +1,7 @@
 ---
-- source_type: story
-  source_id: "3"
+"0003":
+  source_type: story
+  source_id: "0003"
   source_title: page link support
   references:
     - entry_type: ""
