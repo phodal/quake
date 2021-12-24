@@ -338,7 +338,7 @@ pub fn replace_string_markers(input: &str) -> String {
 #[cfg(test)]
 mod tests {
     use crate::parser::ast::{SourceUnitPart, TransflowEnum, TransflowSource};
-    use crate::parser::dsl_parser::parse;
+    use crate::parser::quake_parser::parse;
 
     #[test]
     fn should_parse_add_todo() {

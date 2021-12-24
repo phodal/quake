@@ -4,8 +4,8 @@ use std::error::Error;
 use crate::parser::ast::{
     SimpleLayoutDecl, SourceUnitPart, TransflowDecl, TransflowEnum, TransflowSource,
 };
-use crate::parser::dsl_parser::parse;
 use crate::parser::errors::QuakeParserError;
+use crate::parser::quake_parser::parse;
 
 #[derive(Debug, Serialize, Deserialize, Default)]
 pub struct QuakeIt {
