@@ -1,11 +1,19 @@
 ---
-title: mapping dsl for transflow
+title: "mapping dsl for transflow"
 author: 
 status: Spike
 priority: Low
 created_date: 2021-12-23 23:15:25
-updated_date: 2021-12-23 23:15:25
+updated_date: 2021-12-24 09:44:01
 ---
+
+## Design Principle
+
+* reuse JavaScript standard library with default value
+  * alias some method for fun, and can be handle in other function
+* pipe syntax for convert
+
+## Pipe map Syntax
 
 default by fields:
 
@@ -27,9 +35,9 @@ with convert:
 blog.title -> title | restrict([length = 150, first = "。", toUppercase])
 ```
 
-- method for string
-- method for int
-- method for object
+* method for string
+* method for int
+* method for object
 
 ```
 blog.id -> id | limit(150) | first("。") | string_to_int
@@ -45,23 +53,45 @@ size(blog, 150)
 
 methods:
 
-- limit, limit by length
+* limit, limit by length
+
+## **Transflow** standard lib
+
+### String handle
+
+```
 - first/last(T = string) = split by chars
 - first/last(T = number) = split by length
 - uppercase/lowercase
-
-- int = parseInt
-- string = toString
-- type system?
-
-
-- date(str string) = toDate
-
-- sqrt | sin/cos/ = math functional
 - regex(string) = default get first
+- replace("a", "b")
+- substring()
+- trim
+```
 
-- other custom methods
+### Type Casting
+
+* int = parseInt
+* float = parseFloat
+* string = toString
+* date(str string) = toDate
+
+### Math 
+
+use default JavaScript math library
+
+* sqrt | sin/cos/ = math functional
+* fixed (parameter)
+
+### Others
+
+* other custom methods
 
 
-load custom `transflow.lib.js`
+## Tasks
+
+
+1. load custom `transflow.lib.js`
+2. Transform DSL
+
 
