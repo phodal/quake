@@ -84,16 +84,26 @@ pub struct MapStream {
     pub operators: Vec<MapOperator>,
 }
 
+impl MapStream {
+    pub fn new(source: &str, target: &str) -> MapStream {
+        Self {
+            source: source.to_string(),
+            target: target.to_string(),
+            operators: vec![],
+        }
+    }
+}
+
 impl Display for MapStream {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let mut str = String::new();
         for operator in &self.operators {
             str.push_str(" | ");
             str.push_str(operator.operator.as_str());
-            if operator.params.len() > 0 {
-                str.push_str("(");
-                str.push_str(format!("{:}", operator.params.join(",")).as_str());
-                str.push_str(")");
+            if !operator.params.is_empty() {
+                str.push('(');
+                String::push_str(&mut str, operator.params.join(",").to_string().as_str());
+                str.push(')');
             }
         }
 
@@ -285,9 +295,7 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
 fn streams_from_ast(map_decl: &MapDecl) -> Vec<MapStream> {
     let mut streams = vec![];
     for stream in &map_decl.streams {
-        let mut map_stream = MapStream::default();
-        map_stream.source = stream.source.clone();
-        map_stream.target = stream.target.clone();
+        let mut map_stream = MapStream::new(&stream.source, &stream.target);
 
         for pipe in &stream.pipes {
             let mut operator = MapOperator::default();
@@ -360,7 +368,7 @@ mod tests {
         let define = "transflow show_calendar { from('todo','blog').to(<quake-calendar>); }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!(1, expr.routes.len());
-        assert_eq!(true, expr.routes[0].is_end_way);
+        assert!(expr.routes[0].is_end_way);
         assert_eq!("quake-calendar", expr.routes[0].to);
         assert_eq!("show_calendar", expr.name);
     }
@@ -371,11 +379,11 @@ mod tests {
             "transflow show_calendar { from('todo','blog').to('record'), from('record').to(<quake-calendar>); }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!(2, expr.routes.len());
-        assert_eq!(false, expr.routes[0].is_end_way);
+        assert_eq!(!expr.routes[0].is_end_way);
         assert_eq!("record", expr.routes[0].to);
 
         assert_eq!("record", expr.routes[1].from[0]);
-        assert_eq!(true, expr.routes[1].is_end_way);
+        assert!(expr.routes[1].is_end_way);
         assert_eq!("quake-calendar", expr.routes[1].to);
         assert_eq!("show_calendar", expr.name);
     }
