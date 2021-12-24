@@ -41,7 +41,8 @@ pub enum TransflowEnum {
 pub struct Midway {
     pub from: TransflowSource,
     pub end: String,
-    pub filter: String,
+    pub filter: Option<String>,
+    pub map: Option<MapStream>,
 }
 
 impl Default for Midway {
@@ -49,7 +50,8 @@ impl Default for Midway {
         Self {
             from: TransflowSource::Empty,
             end: "".to_string(),
-            filter: "".to_string(),
+            filter: None,
+            map: None,
         }
     }
 }
@@ -98,7 +100,7 @@ pub enum HttpMethod {
 pub struct Endway {
     pub from: TransflowSource,
     pub component: String,
-    pub filter: String,
+    pub filter: Option<String>,
 }
 
 impl Default for Endway {
@@ -106,7 +108,7 @@ impl Default for Endway {
         Self {
             from: TransflowSource::Empty,
             component: "".to_string(),
-            filter: "".to_string(),
+            filter: None,
         }
     }
 }
@@ -122,4 +124,23 @@ pub struct ActionDecl {
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct Parameter {
     pub value: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Default)]
+pub struct MapStream {
+    pub(crate) source: String,
+    pub(crate) target: String,
+    pub(crate) exprs: Vec<MapExpr>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Default)]
+pub struct MapExpr {
+    pub function: String,
+    pub params: Vec<FuncArg>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum FuncArg {
+    Number(i32),
+    String(String),
 }
