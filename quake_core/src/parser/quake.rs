@@ -318,7 +318,7 @@ fn replace_rule(filter: &Option<String>) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use crate::parser::quake::QuakeActionNode;
-    use crate::quake::{QuakeTransflowNode, SimpleLayout};
+    use crate::quake::{MapOperator, MapStream, QuakeTransflowNode, SimpleLayout};
 
     #[test]
     fn should_parse_expression() {
@@ -416,11 +416,25 @@ mod tests {
            .filter('created_date > 2021.01.01 AND created_date < 2021.12.31')
            .map('blog.content => content | substring(1, 150)'); 
 }";
+
         let expr = QuakeTransflowNode::from_text(define).unwrap();
+        let map_stream = expr.routes[0].map.as_ref().unwrap();
+
         assert_eq!(
-            format!("{:}", expr.routes[0].map.as_ref().unwrap()[0]),
+            format!("{:}", map_stream[0]),
             "blog.content -> content | substring(1,150)"
         );
+        assert_eq!(
+            map_stream[0],
+            MapStream {
+                source: "blog.content".to_string(),
+                target: "content".to_string(),
+                operators: vec![MapOperator {
+                    operator: "substring".to_string(),
+                    params: vec!["1".to_string(), "150".to_string()]
+                }]
+            }
+        )
     }
 
     #[test]
