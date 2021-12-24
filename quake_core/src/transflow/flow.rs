@@ -92,7 +92,7 @@ impl Flow {
             from: route.from.clone(),
             to: route.to.clone(),
             mappings: None,
-            filter: Some(route.filter),
+            filter: route.filter,
         }
     }
 }

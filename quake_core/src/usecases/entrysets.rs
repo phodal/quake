@@ -126,7 +126,7 @@ impl Entrysets {
         let mut has_convert_date_issue = false;
         for (k, v) in &entry_file.properties {
             if let Some(MetaProperty::Date(_date)) = type_maps.get(k) {
-                let value = quake_time::replace_to_unix(v);
+                let value = quake_time::string_date_to_unix(v);
                 match value.parse::<usize>() {
                     Ok(time) => {
                         element[k.clone()] = time.into();

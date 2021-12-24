@@ -43,7 +43,7 @@ pub fn date_now() -> String {
 /// Date
 ///
 /// long time should be in first
-pub fn replace_to_unix(text: &str) -> String {
+pub fn string_date_to_unix(text: &str) -> String {
     let mut result = text.to_string();
     // for: 2021-08-20T06:32:28.214Z
     for caps in UTC_TIME_MS_REGEX.captures_iter(text) {
@@ -99,46 +99,46 @@ pub fn replace_to_unix(text: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::helper::quake_time::replace_to_unix;
+    use crate::helper::quake_time::string_date_to_unix;
 
     #[test]
     fn iso_time_replace() {
         let filter1 = "created_date > 2020-04-12 22:10:57 +08:00";
-        assert_eq!(replace_to_unix(filter1), "created_date > 1586700657");
+        assert_eq!(string_date_to_unix(filter1), "created_date > 1586700657");
 
         let filter2 = "created_date > 2020-04-12 22:10:57";
-        assert_eq!(replace_to_unix(filter2), "created_date > 1586729457");
+        assert_eq!(string_date_to_unix(filter2), "created_date > 1586729457");
 
         let filter3 = "created_date > 2021-12-09";
-        assert_eq!(replace_to_unix(filter3), "created_date > 1639008000");
+        assert_eq!(string_date_to_unix(filter3), "created_date > 1639008000");
 
         let filter4 = "created_date > 2021.12.09";
-        assert_eq!(replace_to_unix(filter4), "created_date > 1639008000");
+        assert_eq!(string_date_to_unix(filter4), "created_date > 1639008000");
     }
 
     #[test]
     fn rfc_time_replace() {
         let filter5 = "created_date > 2021-08-20 06:32:28.537346";
-        assert_eq!(replace_to_unix(filter5), "created_date > 1629441148");
+        assert_eq!(string_date_to_unix(filter5), "created_date > 1629441148");
 
         let filter6 = "created_date > 2021-11-08T07:25:26Z";
-        assert_eq!(replace_to_unix(filter6), "created_date > 1636356326");
+        assert_eq!(string_date_to_unix(filter6), "created_date > 1636356326");
 
         let filter7 = "created_date > 2021-11-08T07:25:26.125Z";
-        assert_eq!(replace_to_unix(filter7), "created_date > 1636356326");
+        assert_eq!(string_date_to_unix(filter7), "created_date > 1636356326");
     }
 
     #[test]
     fn multiple_time_replace() {
         let filter1 = "created_date > 2020-04-12 22:10:57 +08:00 AND created_date < 2020-05-12 22:10:57 +08:00";
         assert_eq!(
-            replace_to_unix(filter1),
+            string_date_to_unix(filter1),
             "created_date > 1586700657 AND created_date < 1589292657"
         );
 
         let filter1 = "created_date > 2020-04-12 22:10:57 +08:00 AND created_date < 2020-05-12";
         assert_eq!(
-            replace_to_unix(filter1),
+            string_date_to_unix(filter1),
             "created_date > 1586700657 AND created_date < 1589241600"
         );
     }

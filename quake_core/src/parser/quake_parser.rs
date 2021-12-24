@@ -198,7 +198,7 @@ fn midway(decl: Pair<Rule>) -> Midway {
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
                     if inner.as_rule() == Rule::string {
-                        midway.filter = string_from_pair(inner);
+                        midway.filter = Some(string_from_pair(inner));
                     }
                 }
             }
@@ -235,7 +235,7 @@ fn endway(decl: Pair<Rule>) -> Endway {
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
                     if inner.as_rule() == Rule::string {
-                        endway.filter = string_from_pair(inner);
+                        endway.filter = Some(string_from_pair(inner));
                     }
                 }
             }
@@ -409,13 +409,15 @@ mod tests {
         )
         .unwrap();
 
-        let _unit = parse(
+        let unit = parse(
             "transflow show_calendar {
         from('todo','blog')
             .to(<quake-calendar>)
             .map('blog.content => content | uppercase | substring(1, 150) '); }",
         )
         .unwrap();
+
+        println!("{:?}", unit);
     }
 
     #[test]

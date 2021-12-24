@@ -1,6 +1,6 @@
-use crate::helper::quake_time::replace_to_unix;
 use std::error::Error;
 
+use crate::helper::quake_time::string_date_to_unix;
 use crate::parser::ast::{
     SimpleLayoutDecl, SourceUnitPart, TransflowDecl, TransflowEnum, TransflowSource,
 };
@@ -58,7 +58,8 @@ pub struct Route {
     pub name: String,
     pub from: Vec<String>,
     pub to: String,
-    pub filter: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filter: Option<String>,
     #[serde(skip_serializing)]
     pub is_end_way: bool,
 }
@@ -210,7 +211,7 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                         _ => {}
                     }
 
-                    route.filter = replace_to_unix(way.filter.as_str());
+                    route.filter = replace_rule(&way.filter);
 
                     // build router rule
                     route.naming();
@@ -228,7 +229,7 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                         _ => {}
                     }
 
-                    route.filter = replace_to_unix(way.filter.as_str());
+                    route.filter = replace_rule(&way.filter);
 
                     // build router rule
                     route.naming();
@@ -239,6 +240,10 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
         .collect::<Vec<Route>>();
 
     transflow
+}
+
+fn replace_rule(filter: &Option<String>) -> Option<String> {
+    filter.as_ref().map(|str| string_date_to_unix(str))
 }
 
 #[cfg(test)]
@@ -330,7 +335,7 @@ mod tests {
 }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!(
-            expr.routes[0].filter,
+            expr.routes[0].filter.as_ref().unwrap(),
             "created_date > 1609459200 AND created_date < 1640908800"
         );
     }
