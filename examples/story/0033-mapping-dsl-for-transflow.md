@@ -4,13 +4,14 @@ author:
 status: Spike
 priority: Low
 created_date: 2021-12-23 23:15:25
-updated_date: 2021-12-24 09:44:01
+updated_date: 2021-12-24 10:04:16
 ---
 
 ## Design Principle
 
 * reuse JavaScript standard library with default value
   * alias some method for fun, and can be handle in other function
+  * math.js for math: <https://github.com/josdejong/mathjs>?
 * pipe syntax for convert
 
 ## Pipe map Syntax
@@ -47,6 +48,12 @@ multiple
 
 ```
 blog.title -> title | uppercase | lowercase,
+```
+
+math calculate
+
+```javascript
+blog.date -> date | int | * 1000
 ```
 
 size(blog, 150)
