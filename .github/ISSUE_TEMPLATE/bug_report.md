@@ -14,6 +14,6 @@ A clear and concise description of what the bug is.
 
 
 ### Environment
-- coco version
-- Rust version
+- quake version: 
+- Rust version: 
 - OS: [e.g. OSX 10.13.4, Windows 10]
