@@ -379,7 +379,7 @@ mod tests {
             "transflow show_calendar { from('todo','blog').to('record'), from('record').to(<quake-calendar>); }";
         let expr = QuakeTransflowNode::from_text(define).unwrap();
         assert_eq!(2, expr.routes.len());
-        assert_eq!(!expr.routes[0].is_end_way);
+        assert!(!expr.routes[0].is_end_way);
         assert_eq!("record", expr.routes[0].to);
 
         assert_eq!("record", expr.routes[1].from[0]);
