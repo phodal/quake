@@ -130,11 +130,11 @@ pub struct Parameter {
 
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct MapDecl {
-    pub streams: Vec<MapStream>,
+    pub streams: Vec<MapExpr>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
-pub struct MapStream {
+pub struct MapExpr {
     pub(crate) source: String,
     pub(crate) target: String,
     pub(crate) pipes: Vec<MapPipe>,
@@ -142,6 +142,6 @@ pub struct MapStream {
 
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct MapPipe {
-    pub operators: String,
+    pub operator: String,
     pub params: Vec<Parameter>,
 }

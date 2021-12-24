@@ -4,9 +4,8 @@ use pest::iterators::Pair;
 use pest::Parser;
 
 use crate::parser::ast::{
-    ActionDecl, Endway, FlowUrl, LayoutComponentNode, MapDecl, MapPipe, MapStream, Midway,
-    Parameter, SimpleLayoutDecl, SourceUnit, SourceUnitPart, TransflowDecl, TransflowEnum,
-    TransflowSource,
+    ActionDecl, Endway, FlowUrl, LayoutComponentNode, MapDecl, MapExpr, MapPipe, Midway, Parameter,
+    SimpleLayoutDecl, SourceUnit, SourceUnitPart, TransflowDecl, TransflowEnum, TransflowSource,
 };
 use crate::parser::errors::QuakeParserError;
 
@@ -273,8 +272,8 @@ fn map_decl(decl: Pair<Rule>) -> MapDecl {
     map_decl
 }
 
-fn map_expr(decl: Pair<Rule>) -> MapStream {
-    let mut stream = MapStream::default();
+fn map_expr(decl: Pair<Rule>) -> MapExpr {
+    let mut stream = MapExpr::default();
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::source => {
@@ -300,7 +299,7 @@ fn pipe_func(decl: Pair<Rule>) -> MapPipe {
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::ident => {
-                pipe.operators = pair.as_str().to_string();
+                pipe.operator = pair.as_str().to_string();
             }
             Rule::parameters => {
                 pipe.params = parameters(pair);
@@ -404,7 +403,7 @@ pub fn replace_string_markers(input: &str) -> String {
 mod tests {
     use crate::parser::ast::TransflowSource::EntryTypes;
     use crate::parser::ast::{
-        Endway, MapDecl, MapPipe, MapStream, Parameter, SourceUnit, SourceUnitPart, TransflowDecl,
+        Endway, MapDecl, MapExpr, MapPipe, Parameter, SourceUnit, SourceUnitPart, TransflowDecl,
         TransflowEnum, TransflowSource,
     };
     use crate::parser::quake_parser::parse;
@@ -502,16 +501,16 @@ mod tests {
                     component: "quake-calendar".to_string(),
                     filter: None,
                     map: Some(MapDecl {
-                        streams: vec![MapStream {
+                        streams: vec![MapExpr {
                             source: "blog.content".to_string(),
                             target: "content".to_string(),
                             pipes: vec![
                                 MapPipe {
-                                    operators: "uppercase".to_string(),
+                                    operator: "uppercase".to_string(),
                                     params: vec![]
                                 },
                                 MapPipe {
-                                    operators: "substring".to_string(),
+                                    operator: "substring".to_string(),
                                     params: vec![
                                         Parameter {
                                             value: "1".to_string()

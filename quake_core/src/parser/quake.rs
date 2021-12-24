@@ -1,8 +1,9 @@
 use std::error::Error;
+use std::fmt::{Display, Formatter};
 
 use crate::helper::quake_time::string_date_to_unix;
 use crate::parser::ast::{
-    SimpleLayoutDecl, SourceUnitPart, TransflowDecl, TransflowEnum, TransflowSource,
+    MapDecl, SimpleLayoutDecl, SourceUnitPart, TransflowDecl, TransflowEnum, TransflowSource,
 };
 use crate::parser::errors::QuakeParserError;
 use crate::parser::quake_parser::parse;
@@ -60,6 +61,8 @@ pub struct Route {
     pub to: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub filter: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub map: Option<Vec<MapStream>>,
     #[serde(skip_serializing)]
     pub is_end_way: bool,
 }
@@ -72,6 +75,36 @@ impl Route {
             self.to.replace("-", "_")
         );
     }
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone, Default)]
+pub struct MapStream {
+    pub source: String,
+    pub target: String,
+    pub operators: Vec<MapOperator>,
+}
+
+impl Display for MapStream {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let mut str = String::new();
+        for operator in &self.operators {
+            str.push_str(" | ");
+            str.push_str(operator.operator.as_str());
+            if operator.params.len() > 0 {
+                str.push_str("(");
+                str.push_str(format!("{:}", operator.params.join(",")).as_str());
+                str.push_str(")");
+            }
+        }
+
+        write!(f, "{:} -> {:}{:}", self.source, self.target, str)
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone, Default)]
+pub struct MapOperator {
+    pub operator: String,
+    pub params: Vec<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
@@ -212,6 +245,9 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                     }
 
                     route.filter = replace_rule(&way.filter);
+                    if way.map.is_some() {
+                        route.map = Some(streams_from_ast(way.map.as_ref().unwrap()));
+                    }
 
                     // build router rule
                     route.naming();
@@ -229,6 +265,10 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                         _ => {}
                     }
 
+                    if way.map.is_some() {
+                        route.map = Some(streams_from_ast(way.map.as_ref().unwrap()));
+                    }
+
                     route.filter = replace_rule(&way.filter);
 
                     // build router rule
@@ -240,6 +280,27 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
         .collect::<Vec<Route>>();
 
     transflow
+}
+
+fn streams_from_ast(map_decl: &MapDecl) -> Vec<MapStream> {
+    let mut streams = vec![];
+    for stream in &map_decl.streams {
+        let mut map_stream = MapStream::default();
+        map_stream.source = stream.source.clone();
+        map_stream.target = stream.target.clone();
+
+        for pipe in &stream.pipes {
+            let mut operator = MapOperator::default();
+            operator.operator = pipe.operator.clone();
+            for param in &pipe.params {
+                operator.params.push(param.value.clone());
+            }
+            map_stream.operators.push(operator);
+        }
+        streams.push(map_stream);
+    }
+
+    streams
 }
 
 fn replace_rule(filter: &Option<String>) -> Option<String> {
@@ -337,6 +398,20 @@ mod tests {
         assert_eq!(
             expr.routes[0].filter.as_ref().unwrap(),
             "created_date > 1609459200 AND created_date < 1640908800"
+        );
+    }
+
+    #[test]
+    fn should_parse_filter_map() {
+        let define = "transflow show_calendar {
+         from('todo','blog').to(<quake-calendar>)
+           .filter('created_date > 2021.01.01 AND created_date < 2021.12.31')
+           .map('blog.content => content | substring(1, 150)'); 
+}";
+        let expr = QuakeTransflowNode::from_text(define).unwrap();
+        assert_eq!(
+            format!("{:}", expr.routes[0].map.as_ref().unwrap()[0]),
+            "blog.content -> content | substring(1,150)"
         );
     }
 
