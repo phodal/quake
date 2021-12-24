@@ -400,6 +400,25 @@ mod tests {
     }
 
     #[test]
+    fn should_parse_flow_map() {
+        let _unit = parse(
+            "transflow show_calendar {
+        from('todo','blog')
+            .to(<quake-calendar>)
+            .map('blog.created_date => date | date '); }",
+        )
+        .unwrap();
+
+        let _unit = parse(
+            "transflow show_calendar {
+        from('todo','blog')
+            .to(<quake-calendar>)
+            .map('blog.content => content | uppercase | substring(1, 150) '); }",
+        )
+        .unwrap();
+    }
+
+    #[test]
     fn should_parse_simple_layout() {
         let unit = parse(
             "layout Dashboard {

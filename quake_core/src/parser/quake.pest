@@ -17,18 +17,34 @@ transflow_expr = {
 }
 
 midway = {
-    from ~ (rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ parameter ~ r_bracket ~ filter_expr?
+    from ~ (rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ parameter ~ r_bracket ~ filter_expr? ~ map_decl?
 }
 
 endway = {
-    from ~ (rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ component_decl ~ r_bracket ~ filter_expr?
+    from ~ (rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ component_decl ~ r_bracket ~ filter_expr?  ~ map_decl?
 }
 
 filter_expr = {
     "." ~ filter_str ~ l_bracket ~ string ~ r_bracket
 }
-
 filter_str = { "filter" | "FILTER" }
+
+map_decl = {
+    "." ~ map_str ~ l_bracket  ~ quoted ~ (map_expr ~ ("," ~ map_expr)*)? ~ quoted ~ r_bracket
+}
+
+map_expr = {
+    ident? ~ ("." ~ ident)* ~ "=>" ~ target ~ pipe_expr*
+}
+
+pipe_expr = {
+    "|" ~ pipe_func
+}
+
+pipe_func = { ident ~ parameters? }
+
+target = { ident }
+map_str = { "map" }
 
 component_decl = {
     "<" ~ component_name ~ ">"
@@ -104,6 +120,8 @@ string = @{
     double_quoted_string |
     single_quoted_string
 }
+
+quoted = { "\"" | "\'" }
 
 double_quoted_string  = @{ "\"" ~ (!("\"") ~ ANY)* ~ "\""}
 single_quoted_string  = @{ "\'" ~ (!("\'") ~ ANY)* ~ "\'"}
