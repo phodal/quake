@@ -34,11 +34,11 @@ map_decl = {
 }
 
 map_expr = {
-    ident? ~ ("." ~ ident)* ~ "=>" ~ target ~ pipe_expr*
+    source ~ "=>" ~ target ~ ("|" ~ pipe_func)*
 }
 
-pipe_expr = {
-    "|" ~ pipe_func
+source = {
+    ident? ~ ("." ~ ident)*
 }
 
 pipe_func = { ident ~ parameters? }

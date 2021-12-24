@@ -4,8 +4,9 @@ use pest::iterators::Pair;
 use pest::Parser;
 
 use crate::parser::ast::{
-    ActionDecl, Endway, FlowUrl, LayoutComponentNode, Midway, Parameter, SimpleLayoutDecl,
-    SourceUnit, SourceUnitPart, TransflowDecl, TransflowEnum, TransflowSource,
+    ActionDecl, Endway, FlowUrl, LayoutComponentNode, MapDecl, MapPipe, MapStream, Midway,
+    Parameter, SimpleLayoutDecl, SourceUnit, SourceUnitPart, TransflowDecl, TransflowEnum,
+    TransflowSource,
 };
 use crate::parser::errors::QuakeParserError;
 
@@ -202,6 +203,9 @@ fn midway(decl: Pair<Rule>) -> Midway {
                     }
                 }
             }
+            Rule::map_decl => {
+                midway.map = Some(map_decl(pair));
+            }
             _ => {
                 println!("{}", pair);
             }
@@ -239,6 +243,10 @@ fn endway(decl: Pair<Rule>) -> Endway {
                     }
                 }
             }
+
+            Rule::map_decl => {
+                endway.map = Some(map_decl(pair));
+            }
             _ => {
                 println!("{}", pair);
             }
@@ -246,6 +254,63 @@ fn endway(decl: Pair<Rule>) -> Endway {
     }
 
     endway
+}
+
+fn map_decl(decl: Pair<Rule>) -> MapDecl {
+    let mut map_decl = MapDecl::default();
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::map_expr => {
+                map_decl.streams.push(map_expr(pair));
+            }
+            Rule::l_bracket | Rule::r_bracket | Rule::quoted | Rule::map_str => {}
+            _ => {
+                println!("{}", pair);
+            }
+        }
+    }
+
+    map_decl
+}
+
+fn map_expr(decl: Pair<Rule>) -> MapStream {
+    let mut stream = MapStream::default();
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::source => {
+                stream.source = pair.as_str().to_string();
+            }
+            Rule::target => {
+                stream.target = pair.as_str().to_string();
+            }
+            Rule::pipe_func => {
+                stream.pipes.push(pipe_func(pair));
+            }
+            _ => {
+                println!("{}", pair);
+            }
+        }
+    }
+
+    stream
+}
+
+fn pipe_func(decl: Pair<Rule>) -> MapPipe {
+    let mut pipe = MapPipe::default();
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::ident => {
+                pipe.operators = pair.as_str().to_string();
+            }
+            Rule::parameters => {
+                pipe.params = parameters(pair);
+            }
+            _ => {
+                println!("{}", pair);
+            }
+        }
+    }
+    pipe
 }
 
 fn rest_request(decl: Pair<Rule>) -> FlowUrl {
@@ -337,7 +402,11 @@ pub fn replace_string_markers(input: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::ast::{SourceUnitPart, TransflowEnum, TransflowSource};
+    use crate::parser::ast::TransflowSource::EntryTypes;
+    use crate::parser::ast::{
+        Endway, MapDecl, MapPipe, MapStream, Parameter, SourceUnit, SourceUnitPart, TransflowDecl,
+        TransflowEnum, TransflowSource,
+    };
     use crate::parser::quake_parser::parse;
 
     #[test]
@@ -417,7 +486,47 @@ mod tests {
         )
         .unwrap();
 
-        println!("{:?}", unit);
+        assert_eq!(
+            unit,
+            SourceUnit(vec![SourceUnitPart::Transflow(TransflowDecl {
+                name: "show_calendar".to_string(),
+                flows: vec![TransflowEnum::Endway(Endway {
+                    from: EntryTypes(vec![
+                        Parameter {
+                            value: "todo".to_string()
+                        },
+                        Parameter {
+                            value: "blog".to_string()
+                        }
+                    ]),
+                    component: "quake-calendar".to_string(),
+                    filter: None,
+                    map: Some(MapDecl {
+                        streams: vec![MapStream {
+                            source: "blog.content".to_string(),
+                            target: "content".to_string(),
+                            pipes: vec![
+                                MapPipe {
+                                    operators: "uppercase".to_string(),
+                                    params: vec![]
+                                },
+                                MapPipe {
+                                    operators: "substring".to_string(),
+                                    params: vec![
+                                        Parameter {
+                                            value: "1".to_string()
+                                        },
+                                        Parameter {
+                                            value: "150".to_string()
+                                        }
+                                    ]
+                                }
+                            ]
+                        }]
+                    })
+                })]
+            })])
+        )
     }
 
     #[test]

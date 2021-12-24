@@ -42,7 +42,7 @@ pub struct Midway {
     pub from: TransflowSource,
     pub end: String,
     pub filter: Option<String>,
-    pub map: Option<MapStream>,
+    pub map: Option<MapDecl>,
 }
 
 impl Default for Midway {
@@ -101,6 +101,7 @@ pub struct Endway {
     pub from: TransflowSource,
     pub component: String,
     pub filter: Option<String>,
+    pub map: Option<MapDecl>,
 }
 
 impl Default for Endway {
@@ -109,6 +110,7 @@ impl Default for Endway {
             from: TransflowSource::Empty,
             component: "".to_string(),
             filter: None,
+            map: None,
         }
     }
 }
@@ -127,6 +129,11 @@ pub struct Parameter {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
+pub struct MapDecl {
+    pub streams: Vec<MapStream>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct MapStream {
     pub(crate) source: String,
     pub(crate) target: String,
@@ -136,11 +143,5 @@ pub struct MapStream {
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct MapPipe {
     pub operators: String,
-    pub params: Vec<FuncArg>,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub enum FuncArg {
-    Number(i32),
-    String(String),
+    pub params: Vec<Parameter>,
 }
