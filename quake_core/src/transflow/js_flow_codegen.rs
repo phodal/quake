@@ -26,27 +26,13 @@ impl JsFlowCodegen {
                 trans.name
             );
             func.push_str(start.as_str());
-
             func.push_str(
                 format!("  const el = document.createElement('{:}');\n", flow.to).as_str(),
             );
-
             func.push('\n');
 
             for item in &flow.from {
-                let mut filter = "".to_string();
-                if flow.filter.is_some() {
-                    let filter_str = flow.filter.as_ref().unwrap();
-                    if !filter_str.is_empty() {
-                        filter =
-                            format!(", '', {{\n    filter: '{:}'\n  }}", &filter_str).to_string();
-                    }
-                }
-
-                let fetch = format!(
-                    "  let {:}s = await Quake.query('{:}'{:});\n",
-                    item, item, filter
-                );
+                let fetch = Self::gen_fetch(flow, item);
                 func.push_str(fetch.as_str());
                 func.push('\n');
             }
@@ -174,18 +160,36 @@ impl JsFlowCodegen {
 
         result
     }
+
+    fn gen_fetch(flow: &Flow, item: &str) -> String {
+        let mut filter = "".to_string();
+        if flow.filter.is_some() {
+            let filter_str = flow.filter.as_ref().unwrap();
+            if !filter_str.is_empty() {
+                filter = format!(", '', {{\n    filter: '{:}'\n  }}", &filter_str).to_string();
+            }
+        }
+
+        let fetch = format!(
+            "  let {:}s = await Quake.query('{:}'{:});\n",
+            item, item, filter
+        );
+
+        fetch
+    }
 }
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+    use std::option::Option::None;
+    use std::path::PathBuf;
+
     use crate::entry::EntryDefine;
     use crate::quake::QuakeTransflowNode;
     use crate::transflow::js_flow_codegen::JsFlowCodegen;
     use crate::transflow::web_component_element::WebComponentElement;
     use crate::transflow::Transflow;
-    use std::fs;
-    use std::option::Option::None;
-    use std::path::PathBuf;
 
     fn entry_defines() -> Vec<EntryDefine> {
         let yaml = "
