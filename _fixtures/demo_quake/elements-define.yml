@@ -2,7 +2,7 @@
 - name: quake-calendar
   events: []
   attributes:
-    - name: data,
+    - name: data
   data_properties:
     - title: String
     - content: String

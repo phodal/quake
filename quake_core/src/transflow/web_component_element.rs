@@ -3,20 +3,23 @@ use std::collections::HashMap;
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct WebComponentElement {
     /// element id, such as `<quake-dashboard>`
-    pub id: String,
+    pub name: String,
     /// element's input attributes, such
     /// data in `<quake-dashboard data=""></quake-dashboard>`
     pub attributes: Vec<Attribute>,
     /// output events
     pub events: Vec<EventListener>,
+    /// data attributes
+    pub data_properties: Vec<HashMap<String, String>>,
 }
 
 impl WebComponentElement {
     pub fn new(id: String) -> Self {
         Self {
-            id,
+            name: id,
             attributes: vec![],
             events: vec![],
+            data_properties: vec![],
         }
     }
 
@@ -80,7 +83,23 @@ pub struct EventListener {
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+    use std::path::PathBuf;
+
     use crate::transflow::web_component_element::WebComponentElement;
+
+    #[test]
+    fn serialize_wc_element() {
+        let quake_path = PathBuf::from("..")
+            .join("_fixtures")
+            .join("demo_quake")
+            .join("elements-define.yml");
+
+        let string = fs::read_to_string(quake_path).unwrap();
+        let elements: Vec<WebComponentElement> = serde_yaml::from_str(&*string).unwrap();
+
+        assert_eq!("quake-calendar", elements[0].name);
+    }
 
     #[test]
     fn test_web_component_element_struct() {
@@ -90,7 +109,7 @@ mod tests {
             vec!["onSave".to_string()],
         );
 
-        assert_eq!("quake-dashboard", wce.id);
+        assert_eq!("quake-dashboard", wce.name);
         assert_eq!(1, wce.events.len());
         assert_eq!(1, wce.attributes.len());
     }
