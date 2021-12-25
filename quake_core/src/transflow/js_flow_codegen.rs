@@ -66,7 +66,8 @@ impl JsFlowCodegen {
             func.push_str("  let results = [];\n");
 
             if flow.map.is_some() {
-                Self::gen_flow_map(&flow, &mut func)
+                let string = Self::gen_flow_map(&flow);
+                func.push_str(&*string);
             }
 
             if flow.mapping.is_some() {
@@ -85,7 +86,8 @@ impl JsFlowCodegen {
         vec
     }
 
-    fn gen_flow_map(flow: &&Flow, func: &mut String) {
+    fn gen_flow_map(flow: &&Flow) -> String {
+        let mut output = String::new();
         let flow_map = Self::build_flow_map_prop(flow);
         for from in &flow.from {
             let mut string = format!(
@@ -107,8 +109,9 @@ impl JsFlowCodegen {
             string.push_str(&*str);
 
             string.push_str("\n    })\n  }\n");
-            func.push_str(string.as_str());
+            output.push_str(&*string);
         }
+        output
     }
 
     fn build_flow_map_prop(flow: &Flow) -> HashMap<String, Vec<String>> {
