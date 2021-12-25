@@ -1,0 +1,7 @@
+---
+- name: quake-calendar
+  properties:
+    - title: String
+    - content: String
+    - created_date: String
+    - updated_date: String
