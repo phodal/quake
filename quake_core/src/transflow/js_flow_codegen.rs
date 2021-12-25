@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use indexmap::IndexMap;
 
 use crate::transflow::flow::{Flow, Mapping};
 use crate::transflow::web_component_element::{EventListener, WebComponentElement};
@@ -65,6 +65,7 @@ impl JsFlowCodegen {
             func.push_str(format!("function {:}({:}) {{\n", &flow.name, params).as_str());
             func.push_str("  let results = [];\n");
 
+            // from normal map
             if flow.map.is_some() {
                 let string = Self::gen_flow_map(&flow, &element);
                 func.push_str(&*string);
@@ -101,7 +102,7 @@ impl JsFlowCodegen {
                 Some(params) => {
                     let mut out: Vec<String> = vec![];
                     for param in params {
-                        out.push(format!("\n      {:}", param));
+                        out.push(format!("\n      {:}: {:}", param.0, param.1));
                     }
 
                     out.join(",")
@@ -118,19 +119,13 @@ impl JsFlowCodegen {
 
     fn build_flow_map_prop(
         flow: &Flow,
-        _element: &Option<WebComponentElement>,
-    ) -> HashMap<String, Vec<String>> {
+        element: &Option<WebComponentElement>,
+    ) -> IndexMap<String, IndexMap<String, String>> {
         let maps = flow.map.as_ref().unwrap();
-        let mut mapping: HashMap<String, Vec<String>> = HashMap::new();
+        let mut mapping = Self::create_default_prop_map(&flow, element);
 
         for stream in maps {
-            let mut loop_expr = String::new();
-            let source: Vec<String> = stream
-                .source_prop
-                .split('.')
-                .map(|s| s.to_string())
-                .collect();
-
+            let mut prop_map: IndexMap<String, String> = IndexMap::new();
             if !stream.operators.is_empty() {
                 let mut str = stream.source_prop.to_string();
                 for operator in &stream.operators {
@@ -142,23 +137,39 @@ impl JsFlowCodegen {
                     );
                 }
 
-                loop_expr.push_str(format!("{:}: {:}", stream.target_prop, str).as_str());
+                prop_map.insert(stream.target_prop.clone(), str);
             } else {
-                loop_expr
-                    .push_str(format!("{:}: {:}", stream.target_prop, stream.source_prop).as_str());
+                prop_map.insert(stream.target_prop.clone(), stream.source_prop.clone());
             }
 
-            match mapping.get_mut(source[0].clone().as_str()) {
+            match mapping.get_mut(&*stream.source_type) {
                 None => {
-                    mapping.insert(source[0].clone(), vec![loop_expr]);
+                    mapping.insert(stream.source_type.clone(), prop_map);
                 }
-                Some(strs) => {
-                    strs.push(loop_expr);
+                Some(origin) => {
+                    origin.extend(prop_map);
                 }
             }
         }
 
         println!("{:?}", mapping);
+        mapping
+    }
+
+    fn create_default_prop_map(
+        flow: &&Flow,
+        element: &Option<WebComponentElement>,
+    ) -> IndexMap<String, IndexMap<String, String>> {
+        let mut mapping: IndexMap<String, IndexMap<String, String>> = IndexMap::new();
+        if element.is_some() {
+            for from in &flow.from {
+                let mut from_map: IndexMap<String, String> = IndexMap::new();
+                for (key, _) in element.as_ref().unwrap().data_map() {
+                    from_map.insert(key.clone(), format!("{:}.{:}", from, key));
+                }
+                mapping.insert(from.clone(), from_map);
+            }
+        }
         mapping
     }
 
@@ -423,6 +434,18 @@ mod tests {
         assert_eq!(except, code[0])
     }
 
+    fn create_blog_data_prop() -> Vec<HashMap<String, String>> {
+        let mut properties = vec![];
+        let mut maps: HashMap<String, String> = HashMap::new();
+        maps.insert("title".to_string(), "String".to_string());
+        properties.push(maps);
+        let mut maps: HashMap<String, String> = HashMap::new();
+        maps.insert("content".to_string(), "String".to_string());
+        properties.push(maps);
+
+        properties
+    }
+
     #[cfg(not(windows))]
     #[test]
     fn gen_transform_with_filter_map() {
@@ -447,17 +470,5 @@ mod tests {
         let except = fs::read_to_string(except_path).unwrap();
 
         assert_eq!(except, code[0])
-    }
-
-    fn create_blog_data_prop() -> Vec<HashMap<String, String>> {
-        let mut properties = vec![];
-        let mut maps: HashMap<String, String> = HashMap::new();
-        maps.insert("title".to_string(), "String".to_string());
-        properties.push(maps);
-        let mut maps: HashMap<String, String> = HashMap::new();
-        maps.insert("content".to_string(), "String".to_string());
-        properties.push(maps);
-
-        properties
     }
 }

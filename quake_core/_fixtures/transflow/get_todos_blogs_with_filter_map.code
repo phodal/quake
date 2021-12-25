@@ -2,10 +2,13 @@ function from_todo_blog_to_quake_calendar(todos, blogs) {
   let results = [];
   for (let todo of todos) {
     results.push({
+      title: todo.title,
+      content: todo.content
     })
   }
   for (let blog of blogs) {
     results.push({
+      title: blog.title,
       content: blog.content.uppercase().substring(1,150),
       created_date: blog.created_date
     })

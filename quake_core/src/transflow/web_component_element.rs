@@ -1,3 +1,5 @@
+use indexmap::IndexMap;
+use serde::Deserialize;
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
@@ -21,6 +23,17 @@ impl WebComponentElement {
             events: vec![],
             data_properties: vec![],
         }
+    }
+
+    pub fn data_map(&self) -> IndexMap<String, String> {
+        let mut result: IndexMap<String, String> = IndexMap::new();
+        for map in &self.data_properties {
+            for (key, value) in map {
+                result.insert(key.to_string(), value.to_string());
+            }
+        }
+
+        result
     }
 
     pub fn from_js(
@@ -99,6 +112,10 @@ mod tests {
         let elements: Vec<WebComponentElement> = serde_yaml::from_str(&*string).unwrap();
 
         assert_eq!("quake-calendar", elements[0].name);
+
+        let map = elements[0].data_map();
+        assert_eq!("String", map.get("title").unwrap());
+        assert_eq!("String", map.get("content").unwrap());
     }
 
     #[test]
