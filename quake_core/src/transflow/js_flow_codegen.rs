@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::transflow::flow::{Flow, Mapping};
 use crate::transflow::web_component_element::{EventListener, WebComponentElement};
 use crate::transflow::Transflow;
@@ -63,6 +65,10 @@ impl JsFlowCodegen {
             func.push_str(format!("function {:}({:}) {{\n", &flow.name, params).as_str());
             func.push_str("  let results = [];\n");
 
+            if flow.map.is_some() {
+                Self::gen_flow_map(&flow, &mut func)
+            }
+
             if flow.mapping.is_some() {
                 let mappings = JsFlowCodegen::gen_obj_mapping(flow.mapping.as_ref().unwrap());
                 func.push_str(mappings.join("\n").as_str());
@@ -77,6 +83,67 @@ impl JsFlowCodegen {
         }
 
         vec
+    }
+
+    fn gen_flow_map(flow: &&Flow, func: &mut String) {
+        let flow_map = Self::build_flow_map_prop(flow);
+        for from in &flow.from {
+            let mut string = format!(
+                "  for (let {:} of {:}s) {{\n    results.push({{",
+                from, from
+            );
+
+            let str = match flow_map.get(from) {
+                None => "".to_string(),
+                Some(params) => {
+                    let mut out: Vec<String> = vec![];
+                    for param in params {
+                        out.push(format!("\n      {:}", param));
+                    }
+                    out.join(",")
+                }
+            };
+
+            string.push_str(&*str);
+
+            string.push_str("\n    })\n  }\n");
+            func.push_str(string.as_str());
+        }
+    }
+
+    fn build_flow_map_prop(flow: &Flow) -> HashMap<String, Vec<String>> {
+        let maps = flow.map.as_ref().unwrap();
+        let mut mapping: HashMap<String, Vec<String>> = HashMap::new();
+        for stream in maps {
+            let mut loop_expr = String::new();
+            let source: Vec<String> = stream.source.split('.').map(|s| s.to_string()).collect();
+
+            if !stream.operators.is_empty() {
+                let mut str = stream.source.to_string();
+                for operator in &stream.operators {
+                    str = format!(
+                        "{:}.{:}({:})",
+                        str,
+                        operator.operator,
+                        operator.params.join(",")
+                    );
+                }
+
+                loop_expr.push_str(format!("{:}: {:}", stream.target, str).as_str());
+            } else {
+                loop_expr.push_str(format!("{:}: {:}", stream.target, stream.source).as_str());
+            }
+
+            match mapping.get_mut(source[0].clone().as_str()) {
+                None => {
+                    mapping.insert(source[0].clone(), vec![loop_expr]);
+                }
+                Some(strs) => {
+                    strs.push(loop_expr);
+                }
+            }
+        }
+        mapping
     }
 
     fn gen_events(func: &mut String, events: &[EventListener]) {
@@ -346,7 +413,7 @@ mod tests {
          from('todo','blog')
             .to(<quake-calendar>)
             .filter('created_date > 2021.01.01 and created_date < 2021.12.31')
-            .map('blog.content => content | uppercase | substring(1, 150)');
+            .map('blog.content => content | uppercase | substring(1, 150), blog.created_date => created_date');
 }";
 
         let node = QuakeTransflowNode::from_text(define).unwrap();

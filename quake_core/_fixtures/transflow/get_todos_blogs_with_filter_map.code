@@ -1,5 +1,15 @@
 function from_todo_blog_to_quake_calendar(todos, blogs) {
   let results = [];
+  for (let todo of todos) {
+    results.push({
+    })
+  }
+  for (let blog of blogs) {
+    results.push({
+      content: blog.content.uppercase().substring(1,150),
+      created_date: blog.created_date
+    })
+  }
   results = results.concat(todos);
   results = results.concat(blogs);
   return results;
