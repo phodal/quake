@@ -38,7 +38,7 @@ map_expr = {
 }
 
 source = {
-    ident? ~ ("." ~ ident)*
+    ident ~ ("." ~ ident)*
 }
 
 pipe_func = { ident ~ parameters? }

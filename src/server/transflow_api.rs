@@ -1,4 +1,5 @@
 use std::fs;
+use std::option::Option::None;
 use std::path::PathBuf;
 
 use rocket::fs::NamedFile;
@@ -48,7 +49,7 @@ pub(crate) async fn translate(
 
     let flow = Transflow::from(defines.entries, node);
     //
-    let trans = JsFlowCodegen::gen_transform(&flow);
+    let trans = JsFlowCodegen::gen_transform(&flow, None);
     let elements = JsFlowCodegen::gen_element(&flow, None);
 
     let scripts = format!("{:} \n{:}", trans.join("\n"), elements.join("\n"));

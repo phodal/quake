@@ -135,8 +135,9 @@ pub struct MapDecl {
 
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct MapExpr {
-    pub(crate) source: String,
-    pub(crate) target: String,
+    pub(crate) source_type: String,
+    pub(crate) source_prop: String,
+    pub(crate) target_prop: String,
     pub(crate) pipes: Vec<MapPipe>,
 }
 

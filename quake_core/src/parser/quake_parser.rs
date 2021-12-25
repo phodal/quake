@@ -277,10 +277,11 @@ fn map_expr(decl: Pair<Rule>) -> MapExpr {
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::source => {
-                stream.source = pair.as_str().to_string();
+                stream.source_prop = pair.as_str().to_string();
+                stream.source_type = pair.into_inner().peek().unwrap().as_str().to_string();
             }
             Rule::target => {
-                stream.target = pair.as_str().to_string();
+                stream.target_prop = pair.as_str().to_string();
             }
             Rule::pipe_func => {
                 stream.pipes.push(pipe_func(pair));
@@ -502,8 +503,9 @@ mod tests {
                     filter: None,
                     map: Some(MapDecl {
                         streams: vec![MapExpr {
-                            source: "blog.content".to_string(),
-                            target: "content".to_string(),
+                            source_type: "blog".to_string(),
+                            source_prop: "blog.content".to_string(),
+                            target_prop: "content".to_string(),
                             pipes: vec![
                                 MapPipe {
                                     operator: "uppercase".to_string(),

@@ -55,7 +55,7 @@ impl JsFlowCodegen {
     }
 
     /// generate transform
-    pub fn gen_transform(trans: &Transflow) -> Vec<String> {
+    pub fn gen_transform(trans: &Transflow, element: Option<WebComponentElement>) -> Vec<String> {
         let mut vec = vec![];
         for flow in &trans.flows {
             let mut func = String::new();
@@ -66,10 +66,11 @@ impl JsFlowCodegen {
             func.push_str("  let results = [];\n");
 
             if flow.map.is_some() {
-                let string = Self::gen_flow_map(&flow);
+                let string = Self::gen_flow_map(&flow, &element);
                 func.push_str(&*string);
             }
 
+            // for from yaml mapping
             if flow.mapping.is_some() {
                 let mappings = JsFlowCodegen::gen_obj_mapping(flow.mapping.as_ref().unwrap());
                 func.push_str(mappings.join("\n").as_str());
@@ -86,9 +87,9 @@ impl JsFlowCodegen {
         vec
     }
 
-    fn gen_flow_map(flow: &&Flow) -> String {
+    fn gen_flow_map(flow: &&Flow, element: &Option<WebComponentElement>) -> String {
         let mut output = String::new();
-        let flow_map = Self::build_flow_map_prop(flow);
+        let flow_map = Self::build_flow_map_prop(flow, element);
         for from in &flow.from {
             let mut string = format!(
                 "  for (let {:} of {:}s) {{\n    results.push({{",
@@ -102,6 +103,7 @@ impl JsFlowCodegen {
                     for param in params {
                         out.push(format!("\n      {:}", param));
                     }
+
                     out.join(",")
                 }
             };
@@ -114,15 +116,23 @@ impl JsFlowCodegen {
         output
     }
 
-    fn build_flow_map_prop(flow: &Flow) -> HashMap<String, Vec<String>> {
+    fn build_flow_map_prop(
+        flow: &Flow,
+        _element: &Option<WebComponentElement>,
+    ) -> HashMap<String, Vec<String>> {
         let maps = flow.map.as_ref().unwrap();
         let mut mapping: HashMap<String, Vec<String>> = HashMap::new();
+
         for stream in maps {
             let mut loop_expr = String::new();
-            let source: Vec<String> = stream.source.split('.').map(|s| s.to_string()).collect();
+            let source: Vec<String> = stream
+                .source_prop
+                .split('.')
+                .map(|s| s.to_string())
+                .collect();
 
             if !stream.operators.is_empty() {
-                let mut str = stream.source.to_string();
+                let mut str = stream.source_prop.to_string();
                 for operator in &stream.operators {
                     str = format!(
                         "{:}.{:}({:})",
@@ -132,9 +142,10 @@ impl JsFlowCodegen {
                     );
                 }
 
-                loop_expr.push_str(format!("{:}: {:}", stream.target, str).as_str());
+                loop_expr.push_str(format!("{:}: {:}", stream.target_prop, str).as_str());
             } else {
-                loop_expr.push_str(format!("{:}: {:}", stream.target, stream.source).as_str());
+                loop_expr
+                    .push_str(format!("{:}: {:}", stream.target_prop, stream.source_prop).as_str());
             }
 
             match mapping.get_mut(source[0].clone().as_str()) {
@@ -146,6 +157,8 @@ impl JsFlowCodegen {
                 }
             }
         }
+
+        println!("{:?}", mapping);
         mapping
     }
 
@@ -249,6 +262,7 @@ impl JsFlowCodegen {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
     use std::fs;
     use std::option::Option::None;
     use std::path::PathBuf;
@@ -289,7 +303,7 @@ mod tests {
         let content = fs::read_to_string(path).unwrap();
         let flows: Vec<Transflow> = serde_yaml::from_str(&*content).unwrap();
 
-        let code = JsFlowCodegen::gen_transform(&flows[0]);
+        let code = JsFlowCodegen::gen_transform(&flows[0], None);
 
         let except_path = fixtures.join("codegen").join("todos_blogs.js");
         let content = fs::read_to_string(except_path).unwrap();
@@ -303,7 +317,7 @@ mod tests {
         let define = "transflow show_calendar { from('todo','blog').to(<quake-calendar>); }";
         let node = QuakeTransflowNode::from_text(define).unwrap();
         let flow = Transflow::from(entry_defines(), node);
-        let code = JsFlowCodegen::gen_transform(&flow);
+        let code = JsFlowCodegen::gen_transform(&flow, None);
 
         assert_eq!(
             "function from_todo_blog_to_quake_calendar(todos, blogs) {
@@ -326,7 +340,7 @@ mod tests {
 
         let flow = Transflow::from(entry_defines(), flow);
 
-        let code = JsFlowCodegen::gen_transform(&flow);
+        let code = JsFlowCodegen::gen_transform(&flow, None);
 
         assert_eq!(
             "function from_todo_blog_to_record(todos, blogs) {
@@ -419,9 +433,12 @@ mod tests {
             .map('blog.content => content | uppercase | substring(1, 150), blog.created_date => created_date');
 }";
 
+        let mut element = WebComponentElement::new("quake-calendar".to_string());
+        element.data_properties = create_blog_data_prop();
+
         let node = QuakeTransflowNode::from_text(define).unwrap();
         let flow = Transflow::from(entry_defines(), node);
-        let code = JsFlowCodegen::gen_transform(&flow);
+        let code = JsFlowCodegen::gen_transform(&flow, Some(element));
 
         let except_path = PathBuf::from("_fixtures")
             .join("transflow")
@@ -430,5 +447,17 @@ mod tests {
         let except = fs::read_to_string(except_path).unwrap();
 
         assert_eq!(except, code[0])
+    }
+
+    fn create_blog_data_prop() -> Vec<HashMap<String, String>> {
+        let mut properties = vec![];
+        let mut maps: HashMap<String, String> = HashMap::new();
+        maps.insert("title".to_string(), "String".to_string());
+        properties.push(maps);
+        let mut maps: HashMap<String, String> = HashMap::new();
+        maps.insert("content".to_string(), "String".to_string());
+        properties.push(maps);
+
+        properties
     }
 }

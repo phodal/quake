@@ -1,3 +1,4 @@
+use std::option::Option::None;
 use wasm_bindgen::prelude::*;
 
 use quake_core::entry::EntryDefines;
@@ -29,7 +30,7 @@ pub fn flow_to_code(content: &str, defines: &str) -> String {
     let defines: EntryDefines = serde_json::from_str(defines).unwrap();
     let flow = Transflow::from(defines.entries, node);
 
-    let trans = JsFlowCodegen::gen_transform(&flow);
+    let trans = JsFlowCodegen::gen_transform(&flow, None);
     let elements = JsFlowCodegen::gen_element(&flow, None);
 
     let scripts = format!("{:} \n{:}", trans.join("\n"), elements.join("\n"));

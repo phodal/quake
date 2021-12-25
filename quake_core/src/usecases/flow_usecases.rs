@@ -3,6 +3,7 @@ use crate::transflow::js_flow_codegen::JsFlowCodegen;
 use crate::transflow::Transflow;
 use std::error::Error;
 use std::fs;
+use std::option::Option::None;
 use std::path::PathBuf;
 
 pub fn dump_flows(path: PathBuf) -> Result<String, Box<dyn Error>> {
@@ -21,7 +22,7 @@ pub fn dump_flows(path: PathBuf) -> Result<String, Box<dyn Error>> {
 }
 
 pub fn flow_to_script(flow: &Transflow) -> String {
-    let trans = JsFlowCodegen::gen_transform(flow);
+    let trans = JsFlowCodegen::gen_transform(flow, None);
     let els = JsFlowCodegen::gen_element(flow, None);
 
     let route = format!(

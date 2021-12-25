@@ -79,16 +79,18 @@ impl Route {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone, Default)]
 pub struct MapStream {
-    pub source: String,
-    pub target: String,
+    pub source_type: String,
+    pub source_prop: String,
+    pub target_prop: String,
     pub operators: Vec<MapOperator>,
 }
 
 impl MapStream {
-    pub fn new(source: &str, target: &str) -> MapStream {
+    pub fn new(source_prop: &str, target_prop: &str, source_type: &str) -> MapStream {
         Self {
-            source: source.to_string(),
-            target: target.to_string(),
+            source_type: source_type.to_string(),
+            source_prop: source_prop.to_string(),
+            target_prop: target_prop.to_string(),
             operators: vec![],
         }
     }
@@ -107,7 +109,7 @@ impl Display for MapStream {
             }
         }
 
-        write!(f, "{:} -> {:}{:}", self.source, self.target, str)
+        write!(f, "{:} -> {:}{:}", self.source_prop, self.target_prop, str)
     }
 }
 
@@ -295,7 +297,11 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
 fn streams_from_ast(map_decl: &MapDecl) -> Vec<MapStream> {
     let mut streams = vec![];
     for stream in &map_decl.streams {
-        let mut map_stream = MapStream::new(&stream.source, &stream.target);
+        let mut map_stream = MapStream::new(
+            &stream.source_prop,
+            &stream.target_prop,
+            &stream.source_type,
+        );
 
         for pipe in &stream.pipes {
             let mut operator = MapOperator::default();
@@ -427,8 +433,9 @@ mod tests {
         assert_eq!(
             map_stream[0],
             MapStream {
-                source: "blog.content".to_string(),
-                target: "content".to_string(),
+                source_type: "blog".to_string(),
+                source_prop: "blog.content".to_string(),
+                target_prop: "content".to_string(),
                 operators: vec![MapOperator {
                     operator: "substring".to_string(),
                     params: vec!["1".to_string(), "150".to_string()]
