@@ -1,0 +1,6 @@
+function from_todo_blog_to_quake_calendar(todos, blogs) {
+  let results = [];
+  results = results.concat(todos);
+  results = results.concat(blogs);
+  return results;
+}

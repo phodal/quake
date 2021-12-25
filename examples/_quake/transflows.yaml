@@ -6,7 +6,7 @@
         - todo
         - story
       to: "quake-calendar"
-      map:
+      mapping:
         - entry: "todo"
           source: ["title", "content", "created_date", "updated_date"]
           target: ["title", "content", "created_date", "updated_date"]
@@ -22,7 +22,7 @@
       from:
         - story
       to: "quake-timeline"
-      map:
+      mapping:
         - entry: "story"
           source: ["title", "content", "created_date"]
           target: ["title", "content", "date"]

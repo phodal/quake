@@ -63,8 +63,8 @@ impl JsFlowCodegen {
             func.push_str(format!("function {:}({:}) {{\n", &flow.name, params).as_str());
             func.push_str("  let results = [];\n");
 
-            if flow.mappings.is_some() {
-                let mappings = JsFlowCodegen::gen_obj_mapping(flow.mappings.as_ref().unwrap());
+            if flow.mapping.is_some() {
+                let mappings = JsFlowCodegen::gen_obj_mapping(flow.mapping.as_ref().unwrap());
                 func.push_str(mappings.join("\n").as_str());
             } else {
                 let results = JsFlowCodegen::gen_obj_concat(&flow.from);
@@ -165,9 +165,7 @@ impl JsFlowCodegen {
         let mut filter = "".to_string();
         if flow.filter.is_some() {
             let filter_str = flow.filter.as_ref().unwrap();
-            if !filter_str.is_empty() {
-                filter = format!(", '', {{\n    filter: '{:}'\n  }}", &filter_str).to_string();
-            }
+            filter = format!(", '', {{\n    filter: '{:}'\n  }}", &filter_str);
         }
 
         let fetch = format!(
@@ -335,6 +333,29 @@ mod tests {
         let except_path = PathBuf::from("_fixtures")
             .join("transflow")
             .join("get_todos_blogs_with_filter.code");
+
+        let except = fs::read_to_string(except_path).unwrap();
+
+        assert_eq!(except, code[0])
+    }
+
+    #[cfg(not(windows))]
+    #[test]
+    fn gen_transform_with_filter_map() {
+        let define = "transflow show_calendar {
+         from('todo','blog')
+            .to(<quake-calendar>)
+            .filter('created_date > 2021.01.01 and created_date < 2021.12.31')
+            .map('blog.content => content | uppercase | substring(1, 150)');
+}";
+
+        let node = QuakeTransflowNode::from_text(define).unwrap();
+        let flow = Transflow::from(entry_defines(), node);
+        let code = JsFlowCodegen::gen_transform(&flow);
+
+        let except_path = PathBuf::from("_fixtures")
+            .join("transflow")
+            .join("get_todos_blogs_with_filter_map.code");
 
         let except = fs::read_to_string(except_path).unwrap();
 

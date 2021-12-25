@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use crate::entry::EntryDefine;
 use crate::parser::quake::{QuakeTransflowNode, Route};
+use crate::quake::MapStream;
 
 /// Transflow defines the data process flow
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
@@ -79,10 +80,12 @@ pub struct Flow {
     pub name: String,
     pub from: Vec<String>,
     pub to: String,
-    #[serde(rename = "map", skip_serializing_if = "Option::is_none")]
-    pub mappings: Option<Vec<Mapping>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mapping: Option<Vec<Mapping>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub filter: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub map: Option<Vec<MapStream>>,
 }
 
 impl Flow {
@@ -91,8 +94,9 @@ impl Flow {
             name: route.name,
             from: route.from.clone(),
             to: route.to.clone(),
-            mappings: None,
+            mapping: None,
             filter: route.filter,
+            map: route.map,
         }
     }
 }
