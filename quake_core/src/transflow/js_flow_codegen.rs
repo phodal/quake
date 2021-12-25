@@ -1,7 +1,7 @@
 use indexmap::IndexMap;
 
+use crate::transflow::element_define::{ElementDefine, EventListener};
 use crate::transflow::flow::{Flow, Mapping};
-use crate::transflow::web_component_element::{EventListener, WebComponentElement};
 use crate::transflow::Transflow;
 
 /// Javascript Transflow Code generate
@@ -19,7 +19,7 @@ impl JsFlowCodegen {
     //   el.setAttribute('data', JSON.stringify(data));
     /// ```
     ///
-    pub fn gen_element(trans: &Transflow, element: Option<WebComponentElement>) -> Vec<String> {
+    pub fn gen_element(trans: &Transflow, element: Option<ElementDefine>) -> Vec<String> {
         let mut vec = vec![];
         for flow in &trans.flows {
             let mut func = String::new();
@@ -55,7 +55,7 @@ impl JsFlowCodegen {
     }
 
     /// generate transform
-    pub fn gen_transform(trans: &Transflow, element: Option<WebComponentElement>) -> Vec<String> {
+    pub fn gen_transform(trans: &Transflow, element: Option<ElementDefine>) -> Vec<String> {
         let mut vec = vec![];
         for flow in &trans.flows {
             let mut func = String::new();
@@ -88,7 +88,7 @@ impl JsFlowCodegen {
         vec
     }
 
-    fn gen_flow_map(flow: &&Flow, element: &Option<WebComponentElement>) -> String {
+    fn gen_flow_map(flow: &&Flow, element: &Option<ElementDefine>) -> String {
         let mut output = String::new();
         let flow_map = Self::build_flow_map_prop(flow, element);
         for from in &flow.from {
@@ -119,7 +119,7 @@ impl JsFlowCodegen {
 
     fn build_flow_map_prop(
         flow: &Flow,
-        element: &Option<WebComponentElement>,
+        element: &Option<ElementDefine>,
     ) -> IndexMap<String, IndexMap<String, String>> {
         let maps = flow.map.as_ref().unwrap();
         let mut mapping = Self::create_default_prop_map(&flow, element);
@@ -158,7 +158,7 @@ impl JsFlowCodegen {
 
     fn create_default_prop_map(
         flow: &&Flow,
-        element: &Option<WebComponentElement>,
+        element: &Option<ElementDefine>,
     ) -> IndexMap<String, IndexMap<String, String>> {
         let mut mapping: IndexMap<String, IndexMap<String, String>> = IndexMap::new();
         if element.is_some() {
@@ -280,8 +280,8 @@ mod tests {
 
     use crate::entry::EntryDefine;
     use crate::quake::QuakeTransflowNode;
+    use crate::transflow::element_define::ElementDefine;
     use crate::transflow::js_flow_codegen::JsFlowCodegen;
-    use crate::transflow::web_component_element::WebComponentElement;
     use crate::transflow::Transflow;
 
     fn entry_defines() -> Vec<EntryDefine> {
@@ -399,7 +399,7 @@ mod tests {
         let node = QuakeTransflowNode::from_text(define).unwrap();
         let flow = Transflow::from(entry_defines(), node);
 
-        let mut element = WebComponentElement::default();
+        let mut element = ElementDefine::default();
         element.add_event("onSave");
         element.add_event("onChange");
 
@@ -456,7 +456,7 @@ mod tests {
             .map('blog.content => content | uppercase | substring(1, 150), blog.created_date => created_date');
 }";
 
-        let mut element = WebComponentElement::new("quake-calendar".to_string());
+        let mut element = ElementDefine::new("quake-calendar".to_string());
         element.data_properties = create_blog_data_prop();
 
         let node = QuakeTransflowNode::from_text(define).unwrap();

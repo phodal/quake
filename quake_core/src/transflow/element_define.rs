@@ -2,8 +2,23 @@ use indexmap::IndexMap;
 use serde::Deserialize;
 use std::collections::HashMap;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
-pub struct WebComponentElement {
+pub type ElementDefines = Vec<ElementDefine>;
+
+pub fn filter_element_define(defines: &[ElementDefine], key: &str) -> Option<ElementDefine> {
+    let def = defines
+        .iter()
+        .filter(|define| define.name == key)
+        .collect::<Vec<&ElementDefine>>();
+
+    if def.is_empty() {
+        None
+    } else {
+        Some(def[0].clone())
+    }
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Debug, Default, Clone)]
+pub struct ElementDefine {
     /// element id, such as `<quake-dashboard>`
     pub name: String,
     /// element's input attributes, such
@@ -15,7 +30,7 @@ pub struct WebComponentElement {
     pub data_properties: Vec<HashMap<String, String>>,
 }
 
-impl WebComponentElement {
+impl ElementDefine {
     pub fn new(id: String) -> Self {
         Self {
             name: id,
@@ -36,11 +51,7 @@ impl WebComponentElement {
         result
     }
 
-    pub fn from_js(
-        element: &str,
-        attributes: Vec<String>,
-        events: Vec<String>,
-    ) -> WebComponentElement {
+    pub fn from_js(element: &str, attributes: Vec<String>, events: Vec<String>) -> ElementDefine {
         let mut wce = Self::new(element.to_string());
 
         for attr in attributes {
@@ -68,7 +79,7 @@ impl WebComponentElement {
     }
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct Attribute {
     #[serde(rename = "type")]
     pub typ: Option<String>,
@@ -87,7 +98,7 @@ pub enum AttributeType {
 
 pub type EventValue = Attribute;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct EventListener {
     pub event_name: String,
     /// to get `event.detail`
@@ -96,20 +107,22 @@ pub struct EventListener {
 
 #[cfg(test)]
 mod tests {
+    use crate::entry::entry_paths::EntryPaths;
     use std::fs;
     use std::path::PathBuf;
 
-    use crate::transflow::web_component_element::WebComponentElement;
+    use crate::transflow::element_define::ElementDefine;
 
     #[test]
     fn serialize_wc_element() {
         let quake_path = PathBuf::from("..")
             .join("_fixtures")
             .join("demo_quake")
-            .join("elements-define.yml");
+            .join("_quake")
+            .join(EntryPaths::element_define());
 
         let string = fs::read_to_string(quake_path).unwrap();
-        let elements: Vec<WebComponentElement> = serde_yaml::from_str(&*string).unwrap();
+        let elements: Vec<ElementDefine> = serde_yaml::from_str(&*string).unwrap();
 
         assert_eq!("quake-calendar", elements[0].name);
 
@@ -120,7 +133,7 @@ mod tests {
 
     #[test]
     fn test_web_component_element_struct() {
-        let wce = WebComponentElement::from_js(
+        let wce = ElementDefine::from_js(
             "quake-dashboard",
             vec!["data".to_string()],
             vec!["onSave".to_string()],

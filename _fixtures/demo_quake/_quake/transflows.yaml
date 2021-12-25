@@ -27,3 +27,27 @@
           source: ["title", "content", "created_date"]
           target: ["title", "content", "date"]
       filter: "created_date > 1609257600 AND updated_date < 1640793600"
+
+- name: "show_blog_calendar"
+  target: "quake-calendar"
+  flows:
+    - name: "from_blog_to_quake_calendar"
+      from:
+        - story
+      to: "quake-calendar"
+      map:
+        - source_type: blog
+          source_prop: blog.content
+          target_prop: content
+          operators:
+            - operator: uppercase
+              params: []
+            - operator: substring
+              params:
+                - "1"
+                - "150"
+        - source_type: blog
+          source_prop: blog.created_date
+          target_prop: created_date
+          operators: []
+      filter: "created_date > 1609257600 AND updated_date < 1640793600"

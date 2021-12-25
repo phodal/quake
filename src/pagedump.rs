@@ -85,14 +85,16 @@ fn dump_entries_data(conf: &QuakeConfig) {
 fn dump_transflow(conf: &QuakeConfig) {
     let path = PathBuf::from(&conf.workspace);
     let out_path = PathBuf::from(DUMP_PATH).join("transflow").join("script");
+    fs::create_dir_all(&out_path).unwrap();
 
     // dump gen code
-    if let Ok(content) = flow_usecases::dump_flows(path.clone()) {
-        fs::create_dir_all(&out_path).unwrap();
-
-        let out_file = out_path.join("gen_code.js");
-
-        fs::write(out_file, content).unwrap();
+    match flow_usecases::dump_flows(path.clone()) {
+        Ok(content) => {
+            fs::write(out_path.join("gen_code.js"), content).unwrap();
+        }
+        Err(err) => {
+            println!("{:?}", err);
+        }
     }
 
     // copy for define load

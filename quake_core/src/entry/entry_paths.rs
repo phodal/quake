@@ -52,4 +52,8 @@ impl EntryPaths {
     pub fn transflow() -> &'static str {
         "transflows.yaml"
     }
+
+    pub fn element_define() -> &'static str {
+        "element-define.yml"
+    }
 }
