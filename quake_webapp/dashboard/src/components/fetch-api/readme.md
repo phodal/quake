@@ -12,7 +12,6 @@
 | `entryType`    | --              |             | `string[]` | `[]`    |
 | `searchEngine` | `search-engine` |             | `boolean`  | `false` |
 | `type`         | `type`          |             | `string`   | `''`    |
-| `url`          | `url`           |             | `string`   | `''`    |
 
 
 ## Events
