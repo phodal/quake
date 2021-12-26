@@ -32,10 +32,13 @@ pub fn action_result_to_main_widget(
                 let file_path = paths[0].clone();
 
                 fs::read_to_string(file_path)
-                    .map(|content| MainWidget::Editor {
-                        entry_type: node.object.clone(),
-                        id: index,
-                        content,
+                    .map(|string| {
+                        let file = EntryFile::from(&string, index).unwrap();
+                        MainWidget::Editor {
+                            entry_type: node.object.clone(),
+                            id: index,
+                            content: file.content,
+                        }
                     })
                     .map_err(|e| format!("Read entry error: {}", e))
             }
