@@ -4,8 +4,9 @@ use pest::iterators::Pair;
 use pest::Parser;
 
 use crate::parser::ast::{
-    ActionDecl, Endway, FlowUrl, LayoutComponentNode, MapDecl, MapExpr, MapPipe, Midway, Parameter,
-    SimpleLayoutDecl, SourceUnit, SourceUnitPart, TransflowDecl, TransflowEnum, TransflowSource,
+    ActionDecl, Endway, FlowUrl, LayoutComponentNode, MapDecl, MapExpr, MapPipe, Midway,
+    ParameterType, SimpleLayoutDecl, SourceUnit, SourceUnitPart, TransflowDecl, TransflowEnum,
+    TransflowSource,
 };
 use crate::parser::errors::QuakeParserError;
 
@@ -355,11 +356,26 @@ fn action_decl(decl: Pair<Rule>) -> ActionDecl {
     action
 }
 
-fn parameters(decl: Pair<Rule>) -> Vec<Parameter> {
+fn parameters(decl: Pair<Rule>) -> Vec<ParameterType> {
     let mut params = vec![];
     for pair in decl.into_inner() {
         match pair.as_rule() {
-            Rule::parameter => params.push(Parameter { value: value(pair) }),
+            Rule::parameter => {
+                for inner in pair.into_inner() {
+                    match inner.as_rule() {
+                        Rule::string => {
+                            params.push(ParameterType::String(string_from_pair(inner)));
+                        }
+                        Rule::digits => {
+                            let string1 = String::from(inner.as_str());
+                            params.push(ParameterType::Number(string1.parse().unwrap()));
+                        }
+                        _ => {
+                            println!("{}", inner);
+                        }
+                    }
+                }
+            }
             Rule::l_bracket => {}
             Rule::r_bracket => {}
             _ => {
@@ -377,6 +393,9 @@ fn value(decl: Pair<Rule>) -> String {
         match pair.as_rule() {
             Rule::string => {
                 value = string_from_pair(pair);
+            }
+            Rule::digits => {
+                value = pair.as_str().to_string();
             }
             _ => {
                 value = String::from(pair.as_str());
@@ -404,8 +423,8 @@ pub fn replace_string_markers(input: &str) -> String {
 mod tests {
     use crate::parser::ast::TransflowSource::EntryTypes;
     use crate::parser::ast::{
-        Endway, MapDecl, MapExpr, MapPipe, Parameter, SourceUnit, SourceUnitPart, TransflowDecl,
-        TransflowEnum, TransflowSource,
+        Endway, MapDecl, MapExpr, MapPipe, ParameterType, SourceUnit, SourceUnitPart,
+        TransflowDecl, TransflowEnum, TransflowSource,
     };
     use crate::parser::quake_parser::parse;
 
@@ -430,7 +449,7 @@ mod tests {
             assert_eq!("todo", action.object);
             assert_eq!("update", action.action);
             assert_eq!(1, action.parameters.len());
-            assert_eq!("1", action.parameters[0].value);
+            assert_eq!(ParameterType::Number(1), action.parameters[0].clone());
         }
     }
 
@@ -454,8 +473,8 @@ mod tests {
                         match end.from {
                             TransflowSource::EntryTypes(params) => {
                                 assert_eq!(2, params.len());
-                                assert_eq!("todo", params[0].value);
-                                assert_eq!("blog", params[1].value);
+                                assert_eq!(ParameterType::String("todo".to_string()), params[0]);
+                                assert_eq!(ParameterType::String("blog".to_string()), params[1]);
                             }
                             _ => panic!(),
                         }
@@ -492,12 +511,8 @@ mod tests {
                 name: "show_calendar".to_string(),
                 flows: vec![TransflowEnum::Endway(Endway {
                     from: EntryTypes(vec![
-                        Parameter {
-                            value: "todo".to_string()
-                        },
-                        Parameter {
-                            value: "blog".to_string()
-                        }
+                        ParameterType::String("todo".to_string()),
+                        ParameterType::String("blog".to_string())
                     ]),
                     component: "quake-calendar".to_string(),
                     filter: None,
@@ -514,12 +529,8 @@ mod tests {
                                 MapPipe {
                                     operator: "substring".to_string(),
                                     params: vec![
-                                        Parameter {
-                                            value: "1".to_string()
-                                        },
-                                        Parameter {
-                                            value: "150".to_string()
-                                        }
+                                        ParameterType::Number(1),
+                                        ParameterType::Number(150)
                                     ]
                                 }
                             ]

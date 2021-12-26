@@ -1,9 +1,16 @@
 use std::error::Error;
 use std::fmt::{Display, Formatter};
 
+use lazy_static::lazy_static;
+use regex::Regex;
+use serde::ser::SerializeMap;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde_yaml::{Sequence, Value};
+
 use crate::helper::quake_time::string_date_to_unix;
 use crate::parser::ast::{
-    MapDecl, SimpleLayoutDecl, SourceUnitPart, TransflowDecl, TransflowEnum, TransflowSource,
+    MapDecl, ParameterType, SimpleLayoutDecl, SourceUnitPart, TransflowDecl, TransflowEnum,
+    TransflowSource,
 };
 use crate::parser::errors::QuakeParserError;
 use crate::parser::quake_parser::parse;
@@ -104,7 +111,18 @@ impl Display for MapStream {
             str.push_str(operator.operator.as_str());
             if !operator.params.is_empty() {
                 str.push('(');
-                String::push_str(&mut str, operator.params.join(",").to_string().as_str());
+                let mut vec = vec![];
+                for param in &operator.params {
+                    match param {
+                        ParamType::String(str) => {
+                            vec.push(format!("{:?}", str));
+                        }
+                        ParamType::Number(num) => {
+                            vec.push(num.to_string());
+                        }
+                    }
+                }
+                String::push_str(&mut str, vec.join(",").to_string().as_str());
                 str.push(')');
             }
         }
@@ -113,10 +131,78 @@ impl Display for MapStream {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Clone, Default)]
+#[derive(Debug, Deserialize, PartialEq, Clone, Default)]
 pub struct MapOperator {
     pub operator: String,
-    pub params: Vec<String>,
+    pub params: Vec<ParamType>,
+}
+
+impl Serialize for MapOperator {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(self.params.len() + 1))?;
+        map.serialize_entry("operator", &self.operator)?;
+
+        let mut vec: Sequence = vec![];
+        for param in &self.params {
+            match param {
+                ParamType::String(str) => {
+                    vec.push(Value::from(format!("{:}", str)));
+                }
+                ParamType::Number(num) => {
+                    vec.push(Value::from(format!("{:}", num)));
+                }
+            }
+        }
+        map.serialize_entry("params", &vec)?;
+
+        map.end()
+    }
+}
+
+impl MapOperator {
+    pub fn params_stringify(&self) -> Vec<String> {
+        let mut vec = vec![];
+        for param in &self.params {
+            match param {
+                ParamType::String(str) => {
+                    vec.push(format!("{:?}", str));
+                }
+                ParamType::Number(num) => {
+                    vec.push(format!("{:}", num));
+                }
+            }
+        }
+
+        vec
+    }
+}
+
+#[derive(Debug, Serialize, PartialEq, Clone)]
+pub enum ParamType {
+    String(String),
+    Number(usize),
+}
+
+lazy_static! {
+    static ref NUMBER: Regex = Regex::new(r"\d+").unwrap();
+}
+
+impl<'de> Deserialize<'de> for ParamType {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?.to_lowercase();
+        if NUMBER.is_match(&s) {
+            let num: usize = s.parse::<usize>().unwrap();
+            Ok(ParamType::Number(num))
+        } else {
+            Ok(ParamType::String(s))
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
@@ -196,7 +282,14 @@ pub fn quake(text: &str) -> Result<QuakeIt, Box<dyn Error>> {
                 action.text = decl.text;
 
                 for parameter in decl.parameters {
-                    action.parameters.push(parameter.value);
+                    match parameter {
+                        ParameterType::String(str) => {
+                            action.parameters.push(str);
+                        }
+                        ParameterType::Number(num) => {
+                            action.parameters.push(num.to_string());
+                        }
+                    }
                 }
 
                 quakes.actions.push(action);
@@ -249,7 +342,14 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                     match &way.from {
                         TransflowSource::EntryTypes(params) => {
                             for param in params {
-                                route.from.push(param.value.clone())
+                                match param {
+                                    ParameterType::String(str) => {
+                                        route.from.push(str.clone());
+                                    }
+                                    ParameterType::Number(num) => {
+                                        route.from.push(num.to_string());
+                                    }
+                                }
                             }
                         }
                         TransflowSource::RestUrl(_) => {}
@@ -270,7 +370,14 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                     match &way.from {
                         TransflowSource::EntryTypes(params) => {
                             for param in params {
-                                route.from.push(param.value.clone())
+                                match param {
+                                    ParameterType::String(str) => {
+                                        route.from.push(str.clone());
+                                    }
+                                    ParameterType::Number(num) => {
+                                        route.from.push(num.to_string());
+                                    }
+                                }
                             }
                         }
                         TransflowSource::RestUrl(_) => {}
@@ -307,7 +414,14 @@ fn streams_from_ast(map_decl: &MapDecl) -> Vec<MapStream> {
             let mut operator = MapOperator::default();
             operator.operator = pipe.operator.clone();
             for param in &pipe.params {
-                operator.params.push(param.value.clone());
+                match param {
+                    ParameterType::String(string) => {
+                        operator.params.push(ParamType::String(string.clone()));
+                    }
+                    ParameterType::Number(number) => {
+                        operator.params.push(ParamType::Number(number.clone()));
+                    }
+                }
             }
             map_stream.operators.push(operator);
         }
@@ -323,8 +437,12 @@ fn replace_rule(filter: &Option<String>) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+    use std::path::PathBuf;
+
     use crate::parser::quake::QuakeActionNode;
-    use crate::quake::{MapOperator, MapStream, QuakeTransflowNode, SimpleLayout};
+    use crate::quake::{MapOperator, MapStream, ParamType, QuakeTransflowNode, SimpleLayout};
+    use crate::transflow::Transflow;
 
     #[test]
     fn should_parse_expression() {
@@ -438,7 +556,7 @@ mod tests {
                 target_prop: "content".to_string(),
                 operators: vec![MapOperator {
                     operator: "substring".to_string(),
-                    params: vec!["1".to_string(), "150".to_string()]
+                    params: vec![ParamType::Number(1), ParamType::Number(150)]
                 }]
             }
         )
@@ -456,5 +574,16 @@ mod tests {
         let layout = SimpleLayout::from_text(define).unwrap();
         let str = format!("{:?}", layout);
         assert_eq!(str, "SimpleLayout { name: \"Dashboard\", rows: [LayoutRow { columns: [LayoutComponent { name: \"Calendar\", is_empty: false, flow: \"show_calendar\", size: 12, is_pure_component: false }] }, LayoutRow { columns: [LayoutComponent { name: \"Empty\", is_empty: true, flow: \"\", size: 2, is_pure_component: false }, LayoutComponent { name: \"Timeline\", is_empty: false, flow: \"show_timeline\", size: 8, is_pure_component: false }, LayoutComponent { name: \"Empty\", is_empty: true, flow: \"\", size: 2, is_pure_component: false }] }] }");
+    }
+
+    #[test]
+    fn deserializer_yaml() {
+        let fixtures = PathBuf::from("../").join("_fixtures");
+        let path = fixtures.join("transflows").join("transflows.yaml");
+
+        let string = fs::read_to_string(path).unwrap();
+        let flows: Vec<Transflow> = serde_yaml::from_str(&*string).unwrap();
+
+        println!("{:?}", flows);
     }
 }

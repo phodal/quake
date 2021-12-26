@@ -59,7 +59,7 @@ impl Default for Midway {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum TransflowSource {
     Empty,
-    EntryTypes(Vec<Parameter>),
+    EntryTypes(Vec<ParameterType>),
     RestUrl(FlowUrl),
 }
 
@@ -119,13 +119,8 @@ impl Default for Endway {
 pub struct ActionDecl {
     pub(crate) action: String,
     pub(crate) object: String,
-    pub(crate) parameters: Vec<Parameter>,
+    pub(crate) parameters: Vec<ParameterType>,
     pub(crate) text: String,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Default)]
-pub struct Parameter {
-    pub value: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
@@ -144,5 +139,11 @@ pub struct MapExpr {
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct MapPipe {
     pub operator: String,
-    pub params: Vec<Parameter>,
+    pub params: Vec<ParameterType>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum ParameterType {
+    String(String),
+    Number(usize),
 }

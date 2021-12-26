@@ -134,7 +134,7 @@ impl JsFlowCodegen {
                         "{:}.{:}({:})",
                         str,
                         operator.operator,
-                        operator.params.join(",")
+                        operator.params_stringify().join(",")
                     );
                 }
 
@@ -472,6 +472,31 @@ mod tests {
         let except_path = PathBuf::from("_fixtures")
             .join("transflow")
             .join("get_todos_blogs_with_filter_map.code");
+
+        let except = fs::read_to_string(except_path).unwrap();
+
+        assert_eq!(except, code[0])
+    }
+    #[cfg(not(windows))]
+    #[test]
+    fn transflow_map_param_split() {
+        let define = "transflow show_calendar {
+         from('todo','blog')
+            .to(<quake-calendar>)
+            .filter('created_date > 2021.01.01 and created_date < 2021.12.31')
+            .map('blog.content => content | split(\"。\")');
+}";
+
+        let mut element = ElementDefine::new("quake-calendar".to_string());
+        element.data_properties = create_blog_data_prop();
+
+        let node = QuakeTransflowNode::from_text(define).unwrap();
+        let flow = Transflow::from(entry_defines(), node);
+        let code = JsFlowCodegen::gen_transform(&flow, &Some(element));
+
+        let except_path = PathBuf::from("_fixtures")
+            .join("transflow")
+            .join("get_todos_blogs_with_filter_map_param.code");
 
         let except = fs::read_to_string(except_path).unwrap();
 
