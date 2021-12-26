@@ -9,8 +9,8 @@ use serde_yaml::{Sequence, Value};
 
 use crate::helper::quake_time::string_date_to_unix;
 use crate::parser::ast::{
-    MapDecl, ParameterType, SimpleLayoutDecl, SourceUnitPart, TransflowDecl, TransflowEnum,
-    TransflowSource,
+    MapDecl, MapPipe, ParameterType, SimpleLayoutDecl, SourceUnitPart, TransflowDecl,
+    TransflowEnum, TransflowSource,
 };
 use crate::parser::errors::QuakeParserError;
 use crate::parser::quake_parser::parse;
@@ -370,6 +370,45 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
     transflow
 }
 
+fn streams_from_ast(map_decl: &MapDecl) -> Vec<MapStream> {
+    let mut streams = vec![];
+    for stream in &map_decl.streams {
+        let mut map_stream = MapStream::new(
+            &stream.source_prop,
+            &stream.target_prop,
+            &stream.source_type,
+        );
+
+        for pipe in &stream.pipes {
+            let mut operator = MapOperator::default();
+            operator.operator = pipe.operator.clone();
+
+            let params = params_from_ast(&pipe);
+
+            operator.params = params;
+            map_stream.operators.push(operator);
+        }
+        streams.push(map_stream);
+    }
+
+    streams
+}
+
+fn params_from_ast(pipe: &&MapPipe) -> Vec<ParamType> {
+    let mut params = vec![];
+    for param in &pipe.params {
+        match param {
+            ParameterType::String(string) => {
+                params.push(ParamType::String(string.clone()));
+            }
+            ParameterType::Number(number) => {
+                params.push(ParamType::Number(*number));
+            }
+        }
+    }
+    params
+}
+
 fn param_types_to_string_vec(params: &[ParameterType]) -> Vec<String> {
     let mut from = vec![];
     for param in params {
@@ -383,36 +422,6 @@ fn param_types_to_string_vec(params: &[ParameterType]) -> Vec<String> {
         }
     }
     from
-}
-
-fn streams_from_ast(map_decl: &MapDecl) -> Vec<MapStream> {
-    let mut streams = vec![];
-    for stream in &map_decl.streams {
-        let mut map_stream = MapStream::new(
-            &stream.source_prop,
-            &stream.target_prop,
-            &stream.source_type,
-        );
-
-        for pipe in &stream.pipes {
-            let mut operator = MapOperator::default();
-            operator.operator = pipe.operator.clone();
-            for param in &pipe.params {
-                match param {
-                    ParameterType::String(string) => {
-                        operator.params.push(ParamType::String(string.clone()));
-                    }
-                    ParameterType::Number(number) => {
-                        operator.params.push(ParamType::Number(*number));
-                    }
-                }
-            }
-            map_stream.operators.push(operator);
-        }
-        streams.push(map_stream);
-    }
-
-    streams
 }
 
 fn replace_rule(filter: &Option<String>) -> Option<String> {
