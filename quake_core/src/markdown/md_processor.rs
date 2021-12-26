@@ -265,7 +265,7 @@ mod tests {
     use std::fs;
     use std::path::PathBuf;
 
-    #[ignore]
+    #[cfg(not(windows))]
     #[test]
     fn markdown_test() {
         let base = PathBuf::from("_fixtures").join("md");

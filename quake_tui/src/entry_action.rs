@@ -65,8 +65,4 @@ mod tests {
 
         fs::remove_dir_all(PathBuf::from(&config.workspace).join("tui_test")).unwrap();
     }
-
-    #[test]
-    #[ignore]
-    fn test_edit_entry_action() {}
 }

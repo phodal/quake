@@ -1,6 +1,7 @@
+use std::collections::HashMap;
+
 use indexmap::IndexMap;
 use serde::Deserialize;
-use std::collections::HashMap;
 
 pub type ElementDefines = Vec<ElementDefine>;
 
@@ -107,10 +108,10 @@ pub struct EventListener {
 
 #[cfg(test)]
 mod tests {
-    use crate::entry::entry_paths::EntryPaths;
     use std::fs;
     use std::path::PathBuf;
 
+    use crate::entry::entry_paths::EntryPaths;
     use crate::transflow::element_define::ElementDefine;
 
     #[test]

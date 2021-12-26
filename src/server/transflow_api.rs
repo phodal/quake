@@ -8,12 +8,14 @@ use rocket::serde::json::Json;
 use rocket::serde::{Deserialize, Serialize};
 use rocket::State;
 use rocket::{get, post};
+use tracing::info;
 
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::entry::EntryDefines;
 use quake_core::quake::QuakeTransflowNode;
+use quake_core::transflow::element_define::ElementDefines;
 use quake_core::transflow::js_flow_codegen::JsFlowCodegen;
-use quake_core::transflow::Transflow;
+use quake_core::transflow::{element_define, Transflow};
 use quake_core::QuakeConfig;
 
 use crate::server::ApiError;
@@ -43,14 +45,27 @@ pub(crate) async fn translate(
     };
 
     let path = PathBuf::from(config.workspace.clone()).join(EntryPaths::entries_define());
+    let defines: EntryDefines = serde_yaml::from_str(&*fs::read_to_string(path).unwrap()).unwrap();
 
-    let content = fs::read_to_string(path).unwrap();
-    let defines: EntryDefines = serde_yaml::from_str(&*content).unwrap();
+    let el_path = PathBuf::from(config.workspace.clone())
+        .join(EntryPaths::quake())
+        .join(EntryPaths::element_define());
 
     let flow = Transflow::from(defines.entries, node);
-    //
+
+    let wc = match fs::read_to_string(el_path) {
+        Ok(content) => {
+            let el_def: ElementDefines = serde_yaml::from_str(&*content).unwrap();
+            element_define::filter_element_define(&el_def, &flow.target)
+        }
+        Err(err) => {
+            info!("{:}", err);
+            None
+        }
+    };
+
     let trans = JsFlowCodegen::gen_transform(&flow, None);
-    let elements = JsFlowCodegen::gen_element(&flow, None);
+    let elements = JsFlowCodegen::gen_element(&flow, wc);
 
     let scripts = format!("{:} \n{:}", trans.join("\n"), elements.join("\n"));
 
