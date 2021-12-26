@@ -63,7 +63,7 @@ will become:
     └── entry-node-info.yaml  # entry node infos
 ```
 
-### Meta-data: Custom Frontmatter with markdown
+### Markdown ecosystem: Frontmatter with markdown
 
 a entry file will a front matter for meta-info, others will be `content`
 
@@ -78,7 +78,7 @@ updated_date: 2021-12-10 20:24:25
 > a hello, world
 ```
 
-### Layout Engine: Custom layout
+### Layout Engine: Custom layout for Dashboard
 
 Quake will load `web` directory code, and start a web server.Everyone can build then pages with Quake.
 
