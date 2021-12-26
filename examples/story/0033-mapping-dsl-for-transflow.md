@@ -71,7 +71,7 @@ methods:
 - first/last(T = number) = split by length
 - uppercase/lowercase
 - regex(string) = default get first
-- replace("a", "b")
+- replaceAll("a", "b")
 - substring()
 - trim
 ```

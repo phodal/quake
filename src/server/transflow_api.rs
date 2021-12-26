@@ -129,7 +129,7 @@ mod test {
     fn transflow_translate_map_script() {
         let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
         let url = format!("/transflow/translate/{:}", "show_timeline");
-        let flow = "from('todo','blog') .to(<quake-calendar>).map('blog.content => content | uppercase | substring(1, 150) ');";
+        let flow = "from('todo','blog').to(<quake-calendar>).map('blog.content => content | uppercase | substring(1, 150)');";
         let body = format!("{{ \"flow\": {:?} }}", flow);
 
         let mut response = client.post(url).body(body).dispatch();

@@ -107,7 +107,7 @@ Transflow 生成的代码，面临的最大问题是数据量大时的性能问�
 
 既然，我们是对数据流进行操作，那么理想情况下，Transflow 的 DSL 就可以设计为向函数式靠齐。不过，当前，我们还没有理由实现这么复杂的功能，可以在后续展开。
 
-### 一个实现一点点的 map
+### mapping
 
 上述的 `from('todo','blog').to(<quake-calendar>);` 会在转化时生成特定的数据结构。因此，也可以直接从数据结构中读取对应的 Transflow，对它们进行存储：
 
@@ -115,7 +115,7 @@ Transflow 生成的代码，面临的最大问题是数据量大时的性能问�
 - name: "from_todo_blog_to_quake_calendar_timeline"
   from: [ "todo", "blog" ]
   to: "<quake-calendar-timeline>"
-  map:
+  mapping:
     - entry: "todo"
       source: ["title", "content", "start_time", "updated_date"]
       target: ["title", "content", "created_date", "updated_date"]
@@ -127,7 +127,7 @@ Transflow 生成的代码，面临的最大问题是数据量大时的性能问�
 
 这里的 `map` 是一个尚未在 DSL 设计的功能，也需要进一步验证是否真的需要。除此，这个 YAML 的设计也是有问题的。
 
-### 还有，一个刚可用的 filter
+### Filter
 
 在 filter 方面，我做了一些简化设计（\~~~偷懒~~\~），因为需要的是搜索引擎，可以可以直接使用搜索引擎的 fliter 功能。在评估了多个 filter-parser 的库之后，我发现没有理由在当前做这么复杂的设计。所以，针对于一些特别的过滤条件做了一些特别的处理。
 
@@ -145,20 +145,16 @@ created_date > 1609459200 AND created_date < 1640908800
 
 等时机成熟，再完成整体的 filter 规则设计。
 
-## 下一步：更简单的 Transflow
+### Map
 
-还在设计中，预期可能会有组件中的编排等。不过，首先我们得需要有足够的 Web Components 组件，才能完成基本的功能开发，并收集这些数据场景。诸如于：
+基于 Unix 的 pipe 思想与语法，结合 Transflow 的 map 标准库（transflow.lib.js），进行数值上的转换。
 
-- [ ] Todo 应用
-- [ ] Kanban 应用
-- [ ] Typeform 编辑器
-- [ ] 白板
-- [ ] ……
+```javascript
+from('todo','blog').to(<quake-calendar>).map('blog.content => content | uppercase | substring(1, 150)')
+```
 
-### 双向绑定的中间组件：ComponentFlow
+主要类型：
 
-理想的情况下，我们应该在 Transflow 中生成的是一个新的 Web Components 组件，以提供数据到组件的通道。只是呢，当前受限于当前的场景有限，所以提供的是简单的代码生成。等组件库进一步完善之后，便可以尝试引入这个新的设计。
-
-### 面向专业人士的 Transflow
-
-在 Quake 现有的设计里，专业人士可以自由自在的对 Quake 进行定制，所以并不需要高级的 Transflow 存在。
+- string。转换规则：uppercase, substring, date, float, int,
+- int。转换规则：sqrt, sin, cos
+- date。
