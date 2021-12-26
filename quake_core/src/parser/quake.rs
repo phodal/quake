@@ -149,7 +149,7 @@ impl Serialize for MapOperator {
         for param in &self.params {
             match param {
                 ParamType::String(str) => {
-                    vec.push(Value::from(format!("{:}", str)));
+                    vec.push(Value::from(str.to_string()));
                 }
                 ParamType::Number(num) => {
                     vec.push(Value::from(format!("{:}", num)));
@@ -419,7 +419,7 @@ fn streams_from_ast(map_decl: &MapDecl) -> Vec<MapStream> {
                         operator.params.push(ParamType::String(string.clone()));
                     }
                     ParameterType::Number(number) => {
-                        operator.params.push(ParamType::Number(number.clone()));
+                        operator.params.push(ParamType::Number(*number));
                     }
                 }
             }
