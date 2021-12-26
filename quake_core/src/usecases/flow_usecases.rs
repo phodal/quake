@@ -34,8 +34,8 @@ pub fn flow_to_script(flow: &Transflow, element_defines: &[ElementDefine]) -> St
     let els = JsFlowCodegen::gen_element(flow, &wc);
 
     let route = format!(
-        "Quake.transflow.add({{name:'{:}',action:tl_{:}}})",
-        &flow.name, &flow.name
+        "Quake.transflow.add({{name: '{:}', action: tl_{:}, display: {:?}}})",
+        &flow.name, &flow.name, &flow.display
     );
     let bind = format!("Quake.flows['tl_{:}'] = tl_{:}", &flow.name, &flow.name);
 

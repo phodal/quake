@@ -45,7 +45,7 @@ const Quake = {
 
       const nav = document.createElement('a');
       nav.setAttribute("href", conf.path);
-      nav.innerText = route.name;
+      nav.innerText = route.display;
 
       let navNode = document.getElementById("transflow-nav");
       navNode.appendChild(nav);

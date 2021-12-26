@@ -8,6 +8,7 @@ use crate::quake::MapStream;
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct Transflow {
     pub name: String,
+    pub display: String,
     #[serde(skip_serializing)]
     pub defines_map: Option<HashMap<String, EntryDefine>>,
     pub flows: Vec<Flow>,
@@ -18,6 +19,7 @@ impl Transflow {
     pub fn new(name: String) -> Self {
         Self {
             name,
+            display: "".to_string(),
             defines_map: None,
             flows: vec![],
             target: "".to_string(),
