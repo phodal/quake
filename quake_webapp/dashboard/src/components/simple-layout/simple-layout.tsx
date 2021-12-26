@@ -78,7 +78,6 @@ export class SimpleLayout {
     try {
       let flow_func = (window as any).Quake.flows[func_name];
       if (flow_func) {
-        console.log("calling: " + func_name);
         // todo: remove unused parameters
         flow_func({}, {}).then((flow) => {
           (that.flowMap[id].hostEl as HTMLElement).appendChild(flow);

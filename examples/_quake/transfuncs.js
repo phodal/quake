@@ -46,7 +46,6 @@ const tl_show_network = async (context, commands) => {
 
   let response = await fetch("/reference/quake_book");
   let data = from_quake_references_to_network(await response.json());
-  console.log(data);
   el.data = data;
 
   return el;
