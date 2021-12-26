@@ -26,12 +26,13 @@ pub fn parse_layout(string: &str) -> String {
 
 #[wasm_bindgen]
 pub fn flow_to_code(content: &str, defines: &str) -> String {
-    let node = QuakeTransflowNode::from_text(content).unwrap();
+    let flow = QuakeTransflowNode::from_text(content).unwrap();
     let defines: EntryDefines = serde_json::from_str(defines).unwrap();
-    let flow = Transflow::from(defines.entries, node);
 
-    let trans = JsFlowCodegen::gen_transform(&flow, None);
-    let elements = JsFlowCodegen::gen_element(&flow, None);
+    let flow = Transflow::from(defines.entries, flow);
+
+    let trans = JsFlowCodegen::gen_transform(&flow, &None);
+    let elements = JsFlowCodegen::gen_element(&flow, &None);
 
     let scripts = format!("{:} \n{:}", trans.join("\n"), elements.join("\n"));
 

@@ -30,8 +30,8 @@ pub fn dump_flows(path: PathBuf) -> Result<String, Box<dyn Error>> {
 pub fn flow_to_script(flow: &Transflow, element_defines: &[ElementDefine]) -> String {
     let wc = filter_element_define(element_defines, flow.target.as_str());
 
-    let trans = JsFlowCodegen::gen_transform(flow, None);
-    let els = JsFlowCodegen::gen_element(flow, wc);
+    let trans = JsFlowCodegen::gen_transform(flow, &None);
+    let els = JsFlowCodegen::gen_element(flow, &wc);
 
     let route = format!(
         "Quake.transflow.add({{name:'{:}',action:tl_{:}}})",

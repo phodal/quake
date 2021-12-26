@@ -19,7 +19,7 @@ impl JsFlowCodegen {
     //   el.setAttribute('data', JSON.stringify(data));
     /// ```
     ///
-    pub fn gen_element(trans: &Transflow, element: Option<ElementDefine>) -> Vec<String> {
+    pub fn gen_element(trans: &Transflow, element: &Option<ElementDefine>) -> Vec<String> {
         let mut vec = vec![];
         for flow in &trans.flows {
             let mut func = String::new();
@@ -55,7 +55,7 @@ impl JsFlowCodegen {
     }
 
     /// generate transform
-    pub fn gen_transform(trans: &Transflow, element: Option<ElementDefine>) -> Vec<String> {
+    pub fn gen_transform(trans: &Transflow, element: &Option<ElementDefine>) -> Vec<String> {
         let mut vec = vec![];
         for flow in &trans.flows {
             let mut func = String::new();
@@ -67,7 +67,7 @@ impl JsFlowCodegen {
 
             // from normal map
             if flow.map.is_some() {
-                let string = Self::gen_flow_map(&flow, &element);
+                let string = Self::gen_flow_map(&flow, element);
                 func.push_str(&*string);
             }
 
@@ -314,7 +314,7 @@ mod tests {
         let content = fs::read_to_string(path).unwrap();
         let flows: Vec<Transflow> = serde_yaml::from_str(&*content).unwrap();
 
-        let code = JsFlowCodegen::gen_transform(&flows[0], None);
+        let code = JsFlowCodegen::gen_transform(&flows[0], &None);
 
         let except_path = fixtures.join("codegen").join("todos_blogs.js");
         let content = fs::read_to_string(except_path).unwrap();
@@ -328,7 +328,7 @@ mod tests {
         let define = "transflow show_calendar { from('todo','blog').to(<quake-calendar>); }";
         let node = QuakeTransflowNode::from_text(define).unwrap();
         let flow = Transflow::from(entry_defines(), node);
-        let code = JsFlowCodegen::gen_transform(&flow, None);
+        let code = JsFlowCodegen::gen_transform(&flow, &None);
 
         assert_eq!(
             "function from_todo_blog_to_quake_calendar(todos, blogs) {
@@ -351,7 +351,7 @@ mod tests {
 
         let flow = Transflow::from(entry_defines(), flow);
 
-        let code = JsFlowCodegen::gen_transform(&flow, None);
+        let code = JsFlowCodegen::gen_transform(&flow, &None);
 
         assert_eq!(
             "function from_todo_blog_to_record(todos, blogs) {
@@ -381,7 +381,7 @@ mod tests {
         let define = "transflow show_calendar { from('todo','blog').to(<quake-calendar>); }";
         let node = QuakeTransflowNode::from_text(define).unwrap();
         let flow = Transflow::from(entry_defines(), node);
-        let code = JsFlowCodegen::gen_element(&flow, None);
+        let code = JsFlowCodegen::gen_element(&flow, &None);
 
         let except_path = PathBuf::from("_fixtures")
             .join("transflow")
@@ -403,7 +403,7 @@ mod tests {
         element.add_event("onSave");
         element.add_event("onChange");
 
-        let code = JsFlowCodegen::gen_element(&flow, Some(element));
+        let code = JsFlowCodegen::gen_element(&flow, &Some(element));
 
         let except_path = PathBuf::from("_fixtures")
             .join("transflow")
@@ -423,7 +423,7 @@ mod tests {
 
         let node = QuakeTransflowNode::from_text(define).unwrap();
         let flow = Transflow::from(entry_defines(), node);
-        let code = JsFlowCodegen::gen_element(&flow, None);
+        let code = JsFlowCodegen::gen_element(&flow, &None);
 
         let except_path = PathBuf::from("_fixtures")
             .join("transflow")
@@ -461,7 +461,7 @@ mod tests {
 
         let node = QuakeTransflowNode::from_text(define).unwrap();
         let flow = Transflow::from(entry_defines(), node);
-        let code = JsFlowCodegen::gen_transform(&flow, Some(element));
+        let code = JsFlowCodegen::gen_transform(&flow, &Some(element));
 
         let except_path = PathBuf::from("_fixtures")
             .join("transflow")

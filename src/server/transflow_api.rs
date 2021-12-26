@@ -46,12 +46,11 @@ pub(crate) async fn translate(
 
     let path = PathBuf::from(config.workspace.clone()).join(EntryPaths::entries_define());
     let defines: EntryDefines = serde_yaml::from_str(&*fs::read_to_string(path).unwrap()).unwrap();
+    let flow = Transflow::from(defines.entries, node);
 
     let el_path = PathBuf::from(config.workspace.clone())
         .join(EntryPaths::quake())
         .join(EntryPaths::element_define());
-
-    let flow = Transflow::from(defines.entries, node);
 
     let wc = match fs::read_to_string(el_path) {
         Ok(content) => {
@@ -64,8 +63,8 @@ pub(crate) async fn translate(
         }
     };
 
-    let trans = JsFlowCodegen::gen_transform(&flow, None);
-    let elements = JsFlowCodegen::gen_element(&flow, wc);
+    let elements = JsFlowCodegen::gen_element(&flow, &wc);
+    let trans = JsFlowCodegen::gen_transform(&flow, &wc);
 
     let scripts = format!("{:} \n{:}", trans.join("\n"), elements.join("\n"));
 
@@ -122,6 +121,22 @@ mod test {
         let flow = "from('todo','blog').to(<quake-calendar>)";
         let body = format!("{{ \"flow\": {:?} }}", flow);
         let response = client.post(url).body(body).dispatch();
+
+        assert_eq!(response.status(), Status::Ok);
+    }
+
+    #[test]
+    fn transflow_translate_map_script() {
+        let client = Client::tracked(quake_rocket()).expect("valid rocket instance");
+        let url = format!("/transflow/translate/{:}", "show_timeline");
+        let flow = "from('todo','blog') .to(<quake-calendar>).map('blog.content => content | uppercase | substring(1, 150) ');";
+        let body = format!("{{ \"flow\": {:?} }}", flow);
+
+        let mut response = client.post(url).body(body).dispatch();
+
+        let mut res = "".to_string();
+        let _ = response.read_to_string(&mut res);
+        println!("{:}", res);
 
         assert_eq!(response.status(), Status::Ok);
     }
