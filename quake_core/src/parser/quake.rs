@@ -276,21 +276,10 @@ pub fn quake(text: &str) -> Result<QuakeIt, Box<dyn Error>> {
         match part {
             SourceUnitPart::Action(decl) => {
                 let mut action = QuakeActionNode::default();
-
                 action.action = decl.action;
                 action.object = decl.object;
                 action.text = decl.text;
-
-                for parameter in decl.parameters {
-                    match parameter {
-                        ParameterType::String(str) => {
-                            action.parameters.push(str);
-                        }
-                        ParameterType::Number(num) => {
-                            action.parameters.push(num.to_string());
-                        }
-                    }
-                }
+                action.parameters = param_types_to_string_vec(&decl.parameters);
 
                 quakes.actions.push(action);
             }
@@ -352,7 +341,6 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                         route.map = Some(streams_from_ast(way.map.as_ref().unwrap()));
                     }
 
-                    // build router rule
                     route.naming();
                 }
                 TransflowEnum::Endway(way) => {
@@ -372,7 +360,6 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
 
                     route.filter = replace_rule(&way.filter);
 
-                    // build router rule
                     route.naming();
                 }
             }
@@ -383,7 +370,7 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
     transflow
 }
 
-fn param_types_to_string_vec(params: &Vec<ParameterType>) -> Vec<String> {
+fn param_types_to_string_vec(params: &[ParameterType]) -> Vec<String> {
     let mut from = vec![];
     for param in params {
         match param {
