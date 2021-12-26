@@ -341,16 +341,7 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                     route.to = way.end.clone();
                     match &way.from {
                         TransflowSource::EntryTypes(params) => {
-                            for param in params {
-                                match param {
-                                    ParameterType::String(str) => {
-                                        route.from.push(str.clone());
-                                    }
-                                    ParameterType::Number(num) => {
-                                        route.from.push(num.to_string());
-                                    }
-                                }
-                            }
+                            route.from = param_types_to_string_vec(params);
                         }
                         TransflowSource::RestUrl(_) => {}
                         _ => {}
@@ -369,16 +360,7 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                     route.is_end_way = true;
                     match &way.from {
                         TransflowSource::EntryTypes(params) => {
-                            for param in params {
-                                match param {
-                                    ParameterType::String(str) => {
-                                        route.from.push(str.clone());
-                                    }
-                                    ParameterType::Number(num) => {
-                                        route.from.push(num.to_string());
-                                    }
-                                }
-                            }
+                            route.from = param_types_to_string_vec(params);
                         }
                         TransflowSource::RestUrl(_) => {}
                         _ => {}
@@ -399,6 +381,21 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
         .collect::<Vec<Route>>();
 
     transflow
+}
+
+fn param_types_to_string_vec(params: &Vec<ParameterType>) -> Vec<String> {
+    let mut from = vec![];
+    for param in params {
+        match param {
+            ParameterType::String(str) => {
+                from.push(str.clone());
+            }
+            ParameterType::Number(num) => {
+                from.push(num.to_string());
+            }
+        }
+    }
+    from
 }
 
 fn streams_from_ast(map_decl: &MapDecl) -> Vec<MapStream> {
