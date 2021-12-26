@@ -15,12 +15,22 @@ function QuakeTimeline(props: Props) {
     setData(props.data);
   }, [props])
 
+  function formatDate(date: number) {
+    let result = '';
+    try {
+      result = format(date * 1000, 'yyyy-MM-dd');
+    } catch (_err) {
+    }
+
+    return result;
+  }
+
   return (
     <div style= {{backgroundColor: "#eee"}}>
       <VerticalTimeline>
         { data && data.map((item) =>
           <VerticalTimelineElement
-            date={format(new Date(item.date * 1000), 'yyyy-MM-dd')}
+            date={formatDate(item.date)}
             key={item.id}
             iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
           >

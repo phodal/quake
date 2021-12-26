@@ -1,4 +1,5 @@
 - name: "show_calendar"
+  display: "Show calendar"
   target: "quake-calendar"
   flows:
     - name: "from_todo_story_to_quake_calendar"
@@ -16,6 +17,7 @@
       filter: "created_date > 1609257600 AND updated_date < 1640793600"
 
 - name: "show_timeline"
+  display: "Show calendar"
   target: "quake-timeline"
   flows:
     - name: "from_story_to_quake_timeline"
@@ -29,6 +31,7 @@
       filter: "created_date > 1609257600 AND updated_date < 1640793600"
 
 - name: "show_blog_calendar"
+  display: "Show calendar"
   target: "quake-calendar"
   flows:
     - name: "from_blog_to_quake_calendar"

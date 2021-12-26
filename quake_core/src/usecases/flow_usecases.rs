@@ -1,6 +1,5 @@
 use std::error::Error;
 use std::fs;
-use std::option::Option::None;
 use std::path::PathBuf;
 
 use crate::entry::entry_paths::EntryPaths;
@@ -10,7 +9,7 @@ use crate::transflow::Transflow;
 
 pub fn dump_flows(path: PathBuf) -> Result<String, Box<dyn Error>> {
     let flow_path = path.join(EntryPaths::quake()).join(EntryPaths::transflow());
-    let flows: Vec<Transflow> = serde_yaml::from_str(&*fs::read_to_string(flow_path)?)?;
+    let flows: Vec<Transflow> = serde_yaml::from_str(&*fs::read_to_string(flow_path)?).unwrap();
 
     let elements_define = path
         .join(EntryPaths::quake())
@@ -30,7 +29,7 @@ pub fn dump_flows(path: PathBuf) -> Result<String, Box<dyn Error>> {
 pub fn flow_to_script(flow: &Transflow, element_defines: &[ElementDefine]) -> String {
     let wc = filter_element_define(element_defines, flow.target.as_str());
 
-    let trans = JsFlowCodegen::gen_transform(flow, &None);
+    let trans = JsFlowCodegen::gen_transform(flow, &wc);
     let els = JsFlowCodegen::gen_element(flow, &wc);
 
     let route = format!(
@@ -47,4 +46,18 @@ pub fn flow_to_script(flow: &Transflow, element_defines: &[ElementDefine]) -> St
         bind
     );
     script
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+
+    use crate::usecases::flow_usecases::dump_flows;
+
+    #[test]
+    fn dump_flows_test() {
+        let quake_path = PathBuf::from("..").join("examples").join("");
+        let str = dump_flows(quake_path).unwrap();
+        println!("{:}", str);
+    }
 }

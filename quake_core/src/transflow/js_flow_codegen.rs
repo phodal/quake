@@ -67,6 +67,7 @@ impl JsFlowCodegen {
 
             // from normal map
             if flow.map.is_some() {
+                println!("{:?}", &flow.map);
                 let string = Self::gen_flow_map(&flow, element);
                 func.push_str(&*string);
             }
@@ -122,7 +123,7 @@ impl JsFlowCodegen {
         element: &Option<ElementDefine>,
     ) -> IndexMap<String, IndexMap<String, String>> {
         let maps = flow.map.as_ref().unwrap();
-        let mut mapping = Self::create_default_prop_map(&flow, element);
+        let mut mapping = Self::create_default_prop_map(flow, element);
 
         for stream in maps {
             let mut prop_map: IndexMap<String, String> = IndexMap::new();
@@ -152,24 +153,28 @@ impl JsFlowCodegen {
             }
         }
 
-        println!("{:?}", mapping);
         mapping
     }
 
     fn create_default_prop_map(
-        flow: &&Flow,
+        flow: &Flow,
         element: &Option<ElementDefine>,
     ) -> IndexMap<String, IndexMap<String, String>> {
         let mut mapping: IndexMap<String, IndexMap<String, String>> = IndexMap::new();
+
         if element.is_some() {
             for from in &flow.from {
                 let mut from_map: IndexMap<String, String> = IndexMap::new();
+                from_map.insert("type".to_string(), format!("{:?}", from));
+
                 for (key, _) in element.as_ref().unwrap().data_map() {
                     from_map.insert(key.clone(), format!("{:}.{:}", from, key));
                 }
+
                 mapping.insert(from.clone(), from_map);
             }
         }
+
         mapping
     }
 
@@ -206,6 +211,7 @@ impl JsFlowCodegen {
         let mut vec = vec![];
         for entry in entries {
             let string = format!("  results = results.concat({:}s);\n", &entry);
+            // vec.push("    console.log(results);\n".to_string());
             vec.push(string);
         }
 

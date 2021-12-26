@@ -8,3 +8,11 @@
     - content: String
     - created_date: String
     - updated_date: String
+- name: quake-timeline
+  events: []
+  attributes:
+    - name: data,
+  data_properties:
+    - title: String
+    - content: String
+    - date: String

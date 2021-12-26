@@ -24,8 +24,21 @@
       from:
         - story
       to: "quake-timeline"
-      mapping:
-        - entry: "story"
-          source: ["title", "content", "created_date"]
-          target: ["title", "content", "date"]
+      map:
+        - source_type: story
+          source_prop: story.title
+          target_prop: title
+          operators: [ ]
+        - source_type: story
+          source_prop: story.content
+          target_prop: content
+          operators:
+            - operator: substring
+              params:
+                - "1"
+                - "20"
+        - source_type: story
+          source_prop: story.created_date
+          target_prop: date
+          operators: []
       filter: "created_date > 1609257600 AND updated_date < 1640793600"

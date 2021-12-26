@@ -1,4 +1,5 @@
 - name: "show_timeline"
+  display: "Show timeline"
   target: "quake-calendar-timeline"
   defines_mapping: ~
   flows:

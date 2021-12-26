@@ -30,6 +30,12 @@ Object.defineProperty(String.prototype, 'int', {
 });
 
 // convert data
+Object.defineProperty(Number.prototype, 'date', {
+  value() {
+    return new Date(this);
+  }
+});
+
 Object.defineProperty(Number.prototype, 'sqrt', {
   value() {
     return Math.sqrt(this);
