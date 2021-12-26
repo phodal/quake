@@ -367,8 +367,8 @@ fn parameters(decl: Pair<Rule>) -> Vec<ParameterType> {
                             params.push(ParameterType::String(string_from_pair(inner)));
                         }
                         Rule::digits => {
-                            let string1 = String::from(inner.as_str());
-                            params.push(ParameterType::Number(string1.parse().unwrap()));
+                            let digits_str = String::from(inner.as_str());
+                            params.push(ParameterType::Number(digits_str.parse().unwrap()));
                         }
                         _ => {
                             println!("{}", inner);
@@ -578,8 +578,6 @@ mod tests {
     fn should_parse_rest_uri_source() {
         let define = "transflow show_calendar { from(rest('https://quake.inherd.org')).to(<quake-calendar>); }";
         let unit = parse(define).unwrap();
-
-        println!("{:?}", unit);
 
         if let SourceUnitPart::Transflow(decl) = &unit.0[0] {
             match &decl.flows[0] {

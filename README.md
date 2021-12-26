@@ -108,6 +108,15 @@ also can filter data
 from('todo','blog').to(<quake-calendar>).filter('created_date > 2021.01.01 AND created_date < 2021.12.31')
 ```
 
+with map:
+
+```javascript
+ from('todo','blog')
+    .to(<quake-calendar>)
+    .filter('created_date > 2021.01.01 and created_date < 2021.12.31')
+    .map('blog.content => content | uppercase | substring(1, 150), blog.created_date => created_date');
+```
+
 ### Free sketchpad
 
 by Web Component
