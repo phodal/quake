@@ -63,7 +63,7 @@ will become:
     └── entry-node-info.yaml  # entry node infos
 ```
 
-### Markdown with Front matter
+### Meta-data: Custom Frontmatter with markdown
 
 a entry file will a front matter for meta-info, others will be `content`
 
@@ -78,7 +78,7 @@ updated_date: 2021-12-10 20:24:25
 > a hello, world
 ```
 
-### Custom frontend
+### Layout Engine: Custom layout
 
 Quake will load `web` directory code, and start a web server.Everyone can build then pages with Quake.
 
@@ -92,7 +92,7 @@ Simple Layout Engine:
 ----------------------------------------------------------------
 ```
 
-### Transflow
+### Data Operators: Transflow
 
 A DSL to connect entry data and component, then auto render it.
 
@@ -123,19 +123,15 @@ by Web Component
 
 To be design.
 
-### Powerful markdown
+### Powerful markdown: Chart with Markdown
 
 Flowy to chart:
 
-```
+````
+```transflow
 from('todo','blog').to(<quake-network>);
 ```
-
-also
-
-```
-from('https://examples.com/api/blog').to(<quake-network>);
-```
+````
 
 Graph and chart in markdown
 
