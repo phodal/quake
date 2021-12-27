@@ -494,7 +494,8 @@ mod tests {
             "transflow show_calendar {
         from('todo','blog')
             .to(<quake-calendar>)
-            .map('blog.created_date => date | date '); }",
+            .map('blog.created_date => date | date')
+            .filter(); }",
         )
         .unwrap();
 
