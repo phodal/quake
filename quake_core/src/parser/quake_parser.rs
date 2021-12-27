@@ -489,6 +489,16 @@ mod tests {
     }
 
     #[test]
+    fn return_same_for_random_filter_map() {
+        let unit1 = parse("transflow show_calendar {from('todo','blog').to(<quake-calendar>).map('blog.created_date => date | date').filter(); }")
+            .unwrap();
+        let unit2 = parse("transflow show_calendar {from('todo','blog').to(<quake-calendar>).filter().map('blog.created_date => date | date'); }")
+            .unwrap();
+
+        assert_eq!(unit1, unit2);
+    }
+
+    #[test]
     fn should_parse_flow_map() {
         let _unit = parse(
             "transflow show_calendar {
