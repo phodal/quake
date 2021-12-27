@@ -16,8 +16,9 @@ struct QuakeParser;
 
 /// parse text to SourceUnit
 /// convert support:
-///   - Action
-///   - Transflow
+///  - Action
+///  - Transflow
+///  - Layout
 pub fn parse(text: &str) -> Result<SourceUnit, Box<dyn Error>> {
     let pairs = match QuakeParser::parse(Rule::earth, text) {
         Ok(pairs) => pairs,

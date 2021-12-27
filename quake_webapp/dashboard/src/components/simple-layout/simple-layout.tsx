@@ -74,12 +74,12 @@ export class SimpleLayout {
 
   private createFlowComponent(component: LayoutComponent, that: this, id: string) {
     let flow = component.flow;
-    let func_name = "tl_" + flow;
+    let funcName = "tl_" + flow;
     try {
-      let flow_func = (window as any).Quake.flows[func_name];
-      if (flow_func) {
+      let flowFunc = (window as any).Quake.flows[funcName];
+      if (flowFunc) {
         // todo: remove unused parameters
-        flow_func({}, {}).then((flow) => {
+        flowFunc({}, {}).then((flow) => {
           (that.flowMap[id].hostEl as HTMLElement).appendChild(flow);
         });
       }

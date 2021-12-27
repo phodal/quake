@@ -142,6 +142,18 @@ created_date > 1609459200 AND created_date < 1640908800
 from('todo','blog').to(<quake-calendar>).map('blog.content => content | uppercase | substring(1, 150)')
 ```
 
+语法的符号参考自 Unix Shell 的设计思想，即使用 `|` 作为表示 pipe 的转换符。语法如下：
+
+```pest
+map_expr = {
+    source ~ "=>" ~ target ~ ("|" ~ pipe_func)*
+}
+
+source = { ident ~ ("." ~ ident)*}
+pipe_func = { ident ~ parameters? }
+target = { ident }
+```
+
 生成的数据转换代码示例：
 
 ```javascript
@@ -167,7 +179,9 @@ results.push({
 1. `quake_parser.rs` 解析 Transflow 中的 map DSL。
 2. 生成 `quake.rs` 中对应的数据结构
 3. 转换为 Transflow，
-4. 通过 `js_flow_codegen.rs` 生成最后的函数 。
+4. 通过 `js_flow_codegen.rs` 生成最后的函数
+    - 反序列化 `element-define.yml`，获利组件的类型定义，设置默认值
+    - 将 DSL 中的算子转换为函数代码。
 
 转换算子的处理逻辑：
 
@@ -182,6 +196,8 @@ for operator in &stream.operators {
 }
 ```
 
+more javascript operators: [https://github.com/codalien/operator-overloading-js](https://github.com/codalien/operator-overloading-js)
+
 ### Mapping 函数（临时 API）
 
 上述的 `from('todo','blog').to(<quake-calendar>);` 会在转化时生成特定的数据结构。因此，也可以直接从数据结构中读取对应的 Transflow，对它们进行存储：
@@ -189,7 +205,7 @@ for operator in &stream.operators {
 ```yaml
 - name: "from_todo_blog_to_quake_calendar_timeline"
   from: [ "todo", "blog" ]
-  to: "<quake-calendar-timeline>"
+  to: "<quake-calendar>"
   mapping:
     - entry: "todo"
       source: ["title", "content", "start_time", "updated_date"]
@@ -199,6 +215,3 @@ for operator in &stream.operators {
       target: ["title", "content", "created_date", "updated_date"]
 ```
 
-这里的 `map` 是一个尚未在 DSL 设计的功能，也需要进一步验证是否真的需要。除此，这个 YAML 的设计也是有问题的。
-
-### 

@@ -37,13 +37,10 @@ map_expr = {
     source ~ "=>" ~ target ~ ("|" ~ pipe_func)*
 }
 
-source = {
-    ident ~ ("." ~ ident)*
-}
-
+source = { ident ~ ("." ~ ident)*}
 pipe_func = { ident ~ parameters? }
-
 target = { ident }
+
 map_str = { "map" }
 
 component_decl = {
