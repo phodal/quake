@@ -1,7 +1,7 @@
 ---
 title: element define support for transflow inheritance
 author: 
-status: Spike
+status: Done
 priority: Low
 created_date: 2021-12-25 17:16:33
 updated_date: 2021-12-25 17:16:33
