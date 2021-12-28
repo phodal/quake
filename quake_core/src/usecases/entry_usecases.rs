@@ -18,7 +18,7 @@ pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
 
     if size > 0 {
         fs::write(&paths.entries_csv, content)?;
-        update_entry_info(&paths.entry_node_info, &mut EntryNodeInfo { index: size });
+        update_entry_info(&paths.entry_node_info, &mut EntryNodeInfo::new(size));
     }
 
     Ok(())

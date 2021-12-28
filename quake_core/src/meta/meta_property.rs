@@ -23,6 +23,8 @@ pub enum MetaProperty {
     Priority(String),
     /// todo: define for Attachment
     Attachment(String),
+    /// File
+    File(String),
     /// todo: add flowy
     Flow(String),
     Unknown(String),
@@ -53,6 +55,7 @@ impl Display for MetaProperty {
             MetaProperty::Attachment(attachment) => write!(f, "{}", attachment),
             MetaProperty::Flow(flow) => write!(f, "{}", flow),
             MetaProperty::Enum(array) => write!(f, "{:?}", array),
+            MetaProperty::File(path) => write!(f, "{}", path),
         }
     }
 }

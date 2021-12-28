@@ -151,4 +151,14 @@ entries:
       - created_date: Date
       - updated_date: Date
     actions: ~
+  - type: papers
+    display: ""
+    properties:
+      - title: Title
+      - file: File
+#     generated content
+      - content: String
+      - created_date: Date
+      - updated_date: Date
+    actions: ~
 
