@@ -30,7 +30,9 @@ Screenshots:
 
 ![Web Samples](http://quake-demo.inherd.org/web.gif)
 
-## Setup
+Roadmap: [Roadmap](https://github.com/phodal/quake/discussions/20)
+
+## Usage
 
 1. download from release or `cargo install quake`
 2. download web from release
@@ -38,7 +40,7 @@ Screenshots:
 4. use `quake cmd -i "todo.add: hello, world"` to add new todo
 5. use `quake server` to start server (ps: need to install `meilisearch` for search entries).
 
-more in [Setup](examples/quake_book/0002-setup.md);
+more for [Setup](examples/quake_book/0002-setup.md);
 
 ## Features
 
