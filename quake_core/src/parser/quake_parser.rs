@@ -587,6 +587,12 @@ mod tests {
     }
 
     #[test]
+    fn should_parse_file_source() {
+        let define = "transflow show_calendar { from(file('https://quake.inherd.org')).to(<quake-calendar>); }";
+        let _unit = parse(define).unwrap();
+    }
+
+    #[test]
     fn should_parse_rest_uri_source() {
         let define = "transflow show_calendar { from(rest('https://quake.inherd.org')).to(<quake-calendar>); }";
         let unit = parse(define).unwrap();

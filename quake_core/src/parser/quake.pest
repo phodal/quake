@@ -17,16 +17,17 @@ transflow_expr = {
 }
 
 midway = {
-    from ~ (rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ parameter ~ r_bracket ~ (filter_expr | map_decl)*
+    from ~ (file_request | rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ parameter ~ r_bracket ~ (filter_expr | map_decl)*
 }
 
 endway = {
-    from ~ (rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ component_decl ~ r_bracket ~ (filter_expr | map_decl)*
+    from ~ (file_request | rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ component_decl ~ r_bracket ~ (filter_expr | map_decl)*
 }
 
 filter_expr = {
     "." ~ filter_str ~ l_bracket ~ string? ~ r_bracket
 }
+
 filter_str = { "filter" | "FILTER" }
 
 map_decl = {
@@ -101,6 +102,10 @@ rest_request = {
     // get / post / put / delete
     // token
     l_bracket ~ "rest" ~ l_bracket ~ string ~ r_bracket ~ ("." ~ "get")? ~ r_bracket
+}
+
+file_request = {
+    l_bracket ~ "file" ~ l_bracket ~ string ~ r_bracket ~ r_bracket
 }
 
 use_name = { ident }
