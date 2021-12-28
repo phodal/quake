@@ -8,7 +8,7 @@ examples/notes/*
 examples/microsoft_todo/*
 examples/onenote/*
 .DS_Store
-quake_importer/scripts/readnotes/*
+libs/quake_importer/scripts/readnotes/*
 dbs/NoteStore.sqlite
 dbs/NoteStore.sqlite-shm
 dbs/NoteStore.sqlite-wal

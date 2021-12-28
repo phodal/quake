@@ -197,7 +197,8 @@ mod tests {
         let output_dir = PathBuf::from("test_temp").join("todo");
         fs::create_dir_all(&output_dir).unwrap();
 
-        let input = PathBuf::from("../")
+        let input = PathBuf::from("..")
+            .join("..")
             .join("_fixtures")
             .join("import_test")
             .join("todo.json");

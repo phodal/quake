@@ -43,6 +43,6 @@ mod tests {
 
     #[test]
     fn sample() {
-        count_by_path(PathBuf::from("examples").join("blog"))
+        count_by_path(PathBuf::from("../../../examples").join("blog"))
     }
 }
