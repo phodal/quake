@@ -11,7 +11,7 @@ Examples:
 ```yaml
   - type: story
     display: "Story"
-    fields:
+    properties:
       - title: Title
       - author: String
       - content: Body
@@ -20,17 +20,17 @@ Examples:
       - created_date: Date
       - updated_date: Date
     flows:
-      - field: status
+      - property: status
         items: ['Spike', 'Todo', 'Doing', 'Done']
     states:
-      - field: priority
+      - property: priority
         items: ['Low', 'Medium', 'High']
 ```
 
-## field type: Date
+## property type: Date
 
 ```yaml
-- explain: a date field will be convert to a standard Unix timestamp.
+- explain: a date property will be convert to a standard Unix timestamp.
 - ability:
     - can be filter by date
 - examples:
@@ -38,7 +38,7 @@ Examples:
     - created_date > 2021.01.01 AND created_date < 2021.12.31
 ```
 
-## field type: Flow
+## property type: Flow (Todo)
 
 ```yaml
 - explain: a flow can show in Kanban mode and loging to system.
@@ -47,7 +47,7 @@ Examples:
     - loging
 ```
 
-a changing example:
+a changing example (TODO):
 
 ```yaml
 quake_change:
@@ -57,5 +57,32 @@ quake_change:
   - 2021-12-10 12:12:28 "Doing" -> "Done"
 ```
 
-## field type: State
+## property type: File
+
+support for content process, such as `.pdf` file:
+
+```yaml
+- type: papers
+  display: ""
+  processors:
+    file_engines: ['pdf', 'mobi', 'epub']
+  properties:
+    - title: Title
+    - file: File
+```
+
+## property type: Attachment
+
+support for open attachment, or viewer?
+
+```yaml
+- type: papers
+  display: ""
+  processors:
+    file_flows:
+      - from("file").filter("*.pdf").to(<pdf-view>)
+  properties:
+    - title: Title
+    - file: Attachment
+```
 
