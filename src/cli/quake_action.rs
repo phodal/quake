@@ -154,3 +154,26 @@ fn walk_in_path(path: PathBuf) -> FilterEntry<IntoIter, fn(&DirEntry) -> bool> {
         .into_iter()
         .filter_entry(|e| !is_hidden(e))
 }
+
+#[cfg(test)]
+mod tests {
+    use quake_core::parser::quake::QuakeActionNode;
+    use quake_core::quake_config::QuakeConfig;
+
+    use crate::cli::action;
+
+    #[test]
+    fn throw_editor_empty() {
+        let expr = QuakeActionNode::from_text("todo.edit(1)").unwrap();
+        let config = QuakeConfig {
+            editor: "".to_string(),
+            workspace: "examples".to_string(),
+            search_url: "".to_string(),
+            server_location: "".to_string(),
+            port: 0,
+        };
+
+        let expected = action(expr, config).expect_err("cannot process");
+        assert_eq!(format!("{:?}", expected), "QuakeError(\"editor is empty\")");
+    }
+}

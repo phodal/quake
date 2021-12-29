@@ -19,13 +19,23 @@ use crate::cli::helper::table_process;
 use crate::helper::exec_wrapper::{editor_exec, meili_exec};
 
 pub enum EntryAction {
+    /// add a new entry
     Add,
+    /// dump data to json
     Dump,
+    /// edit entry by index
     Edit,
+    /// feed entry data to search engine
     Feed,
+    /// generate auto content
+    Generate,
+    /// list all entry
     List,
+    /// show a entry content
     Show,
+    /// sync entry to csv
     Sync,
+    /// error content
     Error,
 }
 
@@ -36,6 +46,7 @@ impl EntryAction {
             "dump" => EntryAction::Dump,
             "edit" => EntryAction::Edit,
             "feed" => EntryAction::Feed,
+            "generate" => EntryAction::Generate,
             "list" => EntryAction::List,
             "show" => EntryAction::Show,
             "sync" => EntryAction::Sync,
@@ -66,6 +77,9 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
             } else {
                 return Err(Box::new(QuakeError("editor is empty".to_string())));
             }
+        }
+        "generate" => {
+            generate_content(&paths);
         }
         "sync" => entry_usecases::sync_in_path(&paths)?,
         "feed" => feed_by_path(&paths, &expr.object, &conf)?,
@@ -153,16 +167,32 @@ pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+fn generate_content(paths: &EntryPaths) {
+    let defines = EntryDefines::from_path(&paths.entries_define);
+    for define in &defines.entries {
+        if define.processors.is_none() {
+            continue;
+        }
+
+        let file_engines = &define.processors.as_ref().unwrap().file_engines;
+        if let Some(engines) = file_engines {
+            for engine in engines {
+                println!("{:}", engine);
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use quake_core::parser::quake::QuakeActionNode;
-    use quake_core::quake_config::QuakeConfig;
+    use quake_core::quake::QuakeActionNode;
+    use quake_core::QuakeConfig;
 
-    use crate::cli::action;
+    use crate::cli::entry_action::entry_action;
 
     #[test]
-    fn throw_editor_empty() {
-        let expr = QuakeActionNode::from_text("todo.edit(1)").unwrap();
+    fn test_generate_content_for_processors() {
+        let expr = QuakeActionNode::from_text("todo.generate").unwrap();
         let config = QuakeConfig {
             editor: "".to_string(),
             workspace: "examples".to_string(),
@@ -171,7 +201,6 @@ mod tests {
             port: 0,
         };
 
-        let expected = action(expr, config).expect_err("cannot process");
-        assert_eq!(format!("{:?}", expected), "QuakeError(\"editor is empty\")");
+        entry_action(&expr, config).unwrap();
     }
 }
