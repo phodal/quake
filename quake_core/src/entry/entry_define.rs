@@ -21,12 +21,21 @@ pub struct EntryDefine {
     pub properties: Vec<IndexMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<String>>,
+    /// file processors
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub processors: Option<Vec<String>>,
+    pub processors: Option<FileProcessor>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flows: Option<Vec<FlowProperty>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub states: Option<Vec<EntryState>>,
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+pub struct FileProcessor {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub file_engines: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub file_flows: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]

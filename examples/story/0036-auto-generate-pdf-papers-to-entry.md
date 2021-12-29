@@ -14,37 +14,25 @@ Set auto processing pdf files;
 3. rename pdf content papers
 4. search support in quake
 
-##
+## DSL design
 
 ```yaml
 processors:
-   - engine: pdf
-     flow: from("file").to("content")
-   - engine: epub
-     flow: from("file").to("content")
+  file_engines: ['pdf', 'mobi', 'epub']
 ```
 
-or
 
-default to pdf?
 
 ```yaml
 processors:
-  - engines: ['pdf', 'mobi', 'epub']
-  - flows:
-      - from("file").to("content").processor("epub")
-      - from("file").to("content").processor("pdf")
-      - from("file").to("content").processor("mobi")
+  file_flows:
+     - from("file").to("content").processor(["epub", "pdf", "mobi"])
 ```
 
 also custom engine for whiteboard?
 
-for example:
-
-- JSON file for component
-
 ```yaml
 processors:
-  - flows:
-      - from(file(".json")).to(<whiteboard>).processor("functions")
+  file_flows:
+    - from("graph").to("content").processor(component("whiteboard"))
 ```

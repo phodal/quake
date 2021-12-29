@@ -154,7 +154,7 @@ entries:
   - type: papers
     display: ""
     processors:
-      - engines: ['pdf', 'mobi', 'epub']
+      file_engines: ['pdf', 'mobi', 'epub']
     properties:
       - title: Title
       - file: File
