@@ -153,10 +153,11 @@ entries:
     actions: ~
   - type: papers
     display: ""
+    processors:
+      - engines: ['pdf', 'mobi', 'epub']
     properties:
       - title: Title
       - file: File
-#     generated content
       - content: String
       - created_date: Date
       - updated_date: Date

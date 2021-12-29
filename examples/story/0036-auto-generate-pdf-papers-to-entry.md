@@ -17,7 +17,7 @@ Set auto processing pdf files;
 ##
 
 ```yaml
-process_rules:
+processors:
    - engine: pdf
      flow: from("file").to("content")
    - engine: epub
@@ -29,10 +29,22 @@ or
 default to pdf?
 
 ```yaml
-process_rules:
-  - engine: ['pdf', 'mobi', 'epub']
+processors:
+  - engines: ['pdf', 'mobi', 'epub']
   - flows:
       - from("file").to("content").processor("epub")
       - from("file").to("content").processor("pdf")
       - from("file").to("content").processor("mobi")
+```
+
+also custom engine for whiteboard?
+
+for example:
+
+- JSON file for component
+
+```yaml
+processors:
+  - flows:
+      - from(file(".json")).to(<whiteboard>).processor("functions")
 ```

@@ -22,7 +22,7 @@ pub struct EntryDefine {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub process_rules: Option<Vec<String>>,
+    pub processors: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flows: Option<Vec<FlowProperty>>,
     #[serde(skip_serializing_if = "Option::is_none")]
