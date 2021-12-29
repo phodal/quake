@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 use std::error::Error;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crossterm::event::{self, Event, KeyCode};
+use quake_core::entry::entry_defines;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::usecases::entry_usecases;
 use quake_core::QuakeConfig;
@@ -151,7 +152,13 @@ impl App {
         let command: String = self.collect_command();
         match command.as_str() {
             "quit" => self.shutdown(),
-            "listAll" => self.main_widget = MainWidget::EntryTypes,
+            "listAll" => {
+                let entry_defines_path =
+                    Path::new(&self.config.workspace).join(EntryPaths::entries_define());
+                self.main_widget = MainWidget::EntryTypes(entry_defines::entries_define_from_path(
+                    &entry_defines_path,
+                ));
+            }
             "save" => self.save_entry(),
             other => {
                 return action_result_to_main_widget(other, &self.config)
