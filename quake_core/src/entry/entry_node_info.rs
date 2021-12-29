@@ -6,6 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct EntryNodeInfo {
     pub index: usize,
+    #[serde(default)]
     pub auto_generate: bool,
 }
 
