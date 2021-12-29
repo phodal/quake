@@ -17,12 +17,14 @@ transflow_expr = {
 }
 
 midway = {
-    from ~ (file_request | rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ parameter ~ r_bracket ~ (filter_expr | map_decl)*
+    from ~ (file_request | rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ parameter ~ r_bracket ~ (filter_expr | map_decl | processor)*
 }
 
 endway = {
-    from ~ (file_request | rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ component_decl ~ r_bracket ~ (filter_expr | map_decl)*
+    from ~ (file_request | rest_request | entry_list) ~ "." ~ to ~ l_bracket ~ component_decl ~ r_bracket ~ (filter_expr | map_decl | processor)*
 }
+
+processor = { ident }
 
 filter_expr = {
     "." ~ filter_str ~ l_bracket ~ string? ~ r_bracket
