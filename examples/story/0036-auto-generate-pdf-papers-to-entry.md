@@ -14,3 +14,12 @@ Set auto generated properties for node-info ? or in entries define?
 3. rename pdf content papers
 4. search support in quake
 
+##
+
+```yaml
+generate_rules:
+   - engine: pdf
+     flow: from("file").to("content")
+   - engine: epub
+     flow: from("file").to("content")
+```
