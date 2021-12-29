@@ -333,7 +333,8 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                             route.from = param_types_to_string_vec(params);
                         }
                         TransflowSource::RestUrl(_) => {}
-                        _ => {}
+                        TransflowSource::Empty => {}
+                        TransflowSource::File(_) => {}
                     }
 
                     route.filter = replace_rule(&way.filter);
@@ -347,11 +348,12 @@ fn build_transflow(decl: TransflowDecl) -> QuakeTransflowNode {
                     route.to = way.component.clone();
                     route.is_end_way = true;
                     match &way.from {
+                        TransflowSource::Empty => {}
                         TransflowSource::EntryTypes(params) => {
                             route.from = param_types_to_string_vec(params);
                         }
                         TransflowSource::RestUrl(_) => {}
-                        _ => {}
+                        TransflowSource::File(_) => {}
                     }
 
                     if way.map.is_some() {
@@ -577,6 +579,6 @@ mod tests {
         let string = fs::read_to_string(path).unwrap();
         let flows: Vec<Transflow> = serde_yaml::from_str(&*string).unwrap();
 
-        println!("{:?}", flows);
+        assert_eq!(1, flows.len());
     }
 }

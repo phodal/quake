@@ -197,6 +197,9 @@ fn midway(decl: Pair<Rule>) -> Midway {
                 let url = rest_request(pair);
                 midway.from = TransflowSource::RestUrl(url);
             }
+            Rule::file_request => {
+                midway.from = TransflowSource::File(file_request(pair));
+            }
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
                     if inner.as_rule() == Rule::string {
@@ -236,6 +239,9 @@ fn endway(decl: Pair<Rule>) -> Endway {
             Rule::rest_request => {
                 let url = rest_request(pair);
                 endway.from = TransflowSource::RestUrl(url);
+            }
+            Rule::file_request => {
+                endway.from = TransflowSource::File(file_request(pair));
             }
             Rule::filter_expr => {
                 for inner in pair.into_inner() {
@@ -313,6 +319,23 @@ fn pipe_func(decl: Pair<Rule>) -> MapPipe {
         }
     }
     pipe
+}
+
+fn file_request(decl: Pair<Rule>) -> String {
+    let mut file = String::new();
+    for pair in decl.into_inner() {
+        match pair.as_rule() {
+            Rule::string => {
+                file = string_from_pair(pair);
+            }
+            Rule::l_bracket | Rule::r_bracket => {}
+            _ => {
+                println!("{}", pair);
+            }
+        }
+    }
+
+    file
 }
 
 fn rest_request(decl: Pair<Rule>) -> FlowUrl {
@@ -588,8 +611,20 @@ mod tests {
 
     #[test]
     fn should_parse_file_source() {
-        let define = "transflow show_calendar { from(file('https://quake.inherd.org')).to(<quake-calendar>); }";
-        let _unit = parse(define).unwrap();
+        let define = "transflow show_calendar { from(file('../README.md')).to(<quake-calendar>); }";
+        let unit = parse(define).unwrap();
+        assert_eq!(
+            SourceUnitPart::Transflow(TransflowDecl {
+                name: "show_calendar".to_string(),
+                flows: vec![TransflowEnum::Endway(Endway {
+                    from: TransflowSource::File("../README.md".to_string()),
+                    component: "quake-calendar".to_string(),
+                    filter: None,
+                    map: None
+                })]
+            }),
+            unit.0[0]
+        );
     }
 
     #[test]

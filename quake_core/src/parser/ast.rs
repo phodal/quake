@@ -61,6 +61,7 @@ pub enum TransflowSource {
     Empty,
     EntryTypes(Vec<ParameterType>),
     RestUrl(FlowUrl),
+    File(String),
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
