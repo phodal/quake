@@ -6,16 +6,11 @@ use serde_derive::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct EntryNodeInfo {
     pub index: usize,
-    #[serde(default)]
-    pub auto_generate: bool,
 }
 
 impl EntryNodeInfo {
     pub fn new(index: usize) -> EntryNodeInfo {
-        EntryNodeInfo {
-            index,
-            auto_generate: false,
-        }
+        EntryNodeInfo { index }
     }
     pub fn inc(&mut self) {
         self.index += 1

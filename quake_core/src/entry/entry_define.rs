@@ -9,8 +9,9 @@ use crate::meta::{EntryDefineProperties, MetaProperty};
 /// - `display`: the name for display
 /// - `properties`: in yaml is a key-value list, need to be convert to HashMap
 /// - `actions`: custom behavior action, can be use as API #TBD
-/// - `flows`: use for a simple workflow like **kanban**
-/// - `states`: use for a **filterable** condition
+/// - `flows`: for a simple workflow like **kanban**
+/// - `states`: such as **filterable** condition
+/// - `generate_rules`: for auto generate content rule
 ///
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
 pub struct EntryDefine {
@@ -20,6 +21,8 @@ pub struct EntryDefine {
     pub properties: Vec<IndexMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub generate_rules: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flows: Option<Vec<FlowProperty>>,
     #[serde(skip_serializing_if = "Option::is_none")]
