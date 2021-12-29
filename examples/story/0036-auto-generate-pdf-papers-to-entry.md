@@ -26,9 +26,13 @@ process_rules:
 
 or
 
+default to pdf?
+
 ```yaml
 process_rules:
-    - from("file").to("content").processor("epub")
-    - from("file").to("content").processor("pdf")
-    - from("file").to("content").processor("mobi")
+  - engine: ['pdf', 'mobi', 'epub']
+  - flows:
+      - from("file").to("content").processor("epub")
+      - from("file").to("content").processor("pdf")
+      - from("file").to("content").processor("mobi")
 ```
