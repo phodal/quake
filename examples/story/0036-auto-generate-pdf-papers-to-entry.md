@@ -4,7 +4,7 @@ author:
 status: Spike
 priority: Low
 created_date: 2021-12-29 08:20:11
-updated_date: 2021-12-29 08:20:11
+updated_date: 2021-12-29 20:06:11
 ---
 
 Set auto generated properties for node-info ? or in entries define?
@@ -22,4 +22,13 @@ generate_rules:
      flow: from("file").to("content")
    - engine: epub
      flow: from("file").to("content")
+```
+
+or
+
+```yaml
+generate_rules:
+    - from("file").to("content").processor("epub")
+    - from("file").to("content").processor("pdf")
+    - from("file").to("content").processor("mobi")
 ```
