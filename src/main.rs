@@ -225,13 +225,13 @@ async fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn unzip_all(reader: Cursor<Vec<u8>>, plugins_path: &Path) -> Result<(), Box<dyn Error>> {
+fn unzip_all(reader: Cursor<Vec<u8>>, workspace: &Path) -> Result<(), Box<dyn Error>> {
     let mut archive = zip::ZipArchive::new(reader)?;
 
     for i in 0..archive.len() {
         let mut file = archive.by_index(i)?;
         let out_path = match file.enclosed_name() {
-            Some(path) => plugins_path.join(path),
+            Some(path) => workspace.join(path),
             None => continue,
         };
 

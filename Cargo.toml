@@ -29,6 +29,7 @@ csv = "1.1"
 
 walkdir = "2"
 
+# time convert
 chrono = "0.4"
 
 # Termnial ui
@@ -65,9 +66,6 @@ tracing-subscriber = "0.2"
 syntect = { version = "4.2", default-features = false, features = ["default-fancy"] }
 
 zip = "0.5"
-
-[features]
-webserver = []
 
 [workspace]
 members = [

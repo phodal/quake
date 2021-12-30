@@ -4,7 +4,7 @@ use std::path::Path;
 
 use pdf_extract::extract_text;
 
-pub fn pdf_file_to_content(file: &Path) -> Result<String, Box<dyn Error>> {
+pub fn pdf_to_content(file: &Path) -> Result<String, Box<dyn Error>> {
     let path = path::Path::new(&file);
     let string = extract_text(path)?;
     Ok(string)
@@ -14,12 +14,12 @@ pub fn pdf_file_to_content(file: &Path) -> Result<String, Box<dyn Error>> {
 mod tests {
     use std::path::PathBuf;
 
-    use crate::pdf_processor::pdf_file_to_content;
+    use crate::pdf_processor::pdf_to_content;
 
     #[test]
     fn it_works() {
         let file = PathBuf::from("_fixtures").join("Test_PDF.pdf");
-        match pdf_file_to_content(&file) {
+        match pdf_to_content(&file) {
             Err(err) => {
                 println!("{:?}", err);
                 panic!();

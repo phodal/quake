@@ -18,6 +18,9 @@ pub struct EntryDefine {
     #[serde(rename = "type")]
     pub entry_type: String,
     pub display: String,
+    /// custom path for entries
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_path: Option<String>,
     pub properties: Vec<IndexMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<String>>,

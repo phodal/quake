@@ -2105,7 +2105,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "quake_pdf"
+name = "quake_processor"
 version = "0.1.0"
 dependencies = [
  "lopdf",

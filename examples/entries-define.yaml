@@ -153,6 +153,7 @@ entries:
     actions: ~
   - type: papers
     display: ""
+    custom_path: "../../papers"
     processors:
       file_engines: ['pdf', 'mobi', 'epub']
     properties:
