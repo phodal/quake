@@ -32,13 +32,26 @@ Screenshots:
 
 Roadmap: [Roadmap](https://github.com/phodal/quake/discussions/20)
 
+## Install
+
+### GitHub release
+
+download from Github release
+
+### cargo
+
+if you has rust toolchains, use `cargo install quake`
+
+### Nix
+
+for Nix user, use `nix-env -iA nixos.inherd-quake`, or `nix-env -iA nixpkgs.inherd-quake` in Non-NixOS environment
+
 ## Usage
 
-1. download from release or `cargo install quake`
-2. download web from release
-3. init with `quake init`
-4. use `quake cmd -i "todo.add: hello, world"` to add new todo
-5. use `quake server` to start server (ps: need to install `meilisearch` for search entries).
+1. download web from release
+2. init with `quake init` or skip step 1 and use `quake init -d`
+3. use `quake cmd -i "todo.add: hello, world"` to add new todo
+4. use `quake server` to start server (ps: need to install `meilisearch` for search entries).
 
 more for [Setup](examples/quake_book/0002-setup.md);
 
