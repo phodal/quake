@@ -155,7 +155,7 @@ entries:
     display: ""
     custom_path: "../../papers"
     processors:
-      file_engines: ['pdf', 'mobi', 'epub']
+      file_engines: ['pdf', 'md']
     properties:
       - title: Title
       - file: File
