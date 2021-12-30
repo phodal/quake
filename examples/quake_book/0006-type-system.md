@@ -80,7 +80,7 @@ support for open attachment, or viewer?
   display: ""
   processors:
     file_flows:
-      - from("file").filter("*.pdf").to(<pdf-view>)
+      - from("file").filter(regex("*.pdf")).to(<pdf-view>)
   properties:
     - title: Title
     - file: Attachment
