@@ -7,6 +7,7 @@ examples/blog/*
 examples/notes/*
 examples/microsoft_todo/*
 examples/onenote/*
+examples/papers/pdca
 .DS_Store
 libs/quake_importer/scripts/readnotes/*
 dbs/NoteStore.sqlite
