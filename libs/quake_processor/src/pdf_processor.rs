@@ -1,15 +1,12 @@
-extern crate lopdf;
-extern crate pdf_extract;
-
 use std::fs::File;
 use std::io::BufWriter;
 use std::path;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
-use lopdf::*;
-use pdf_extract::*;
+use lopdf::Document;
+use pdf_extract::{output_doc, print_metadata, HTMLOutput, OutputDev, PlainTextOutput, SVGOutput};
 
-pub fn pdf_file_to_content(file: &PathBuf) {
+pub fn pdf_file_to_content(file: &Path) {
     let output_kind = "txt";
 
     let path = path::Path::new(&file);
@@ -39,7 +36,7 @@ pub fn pdf_file_to_content(file: &PathBuf) {
 
 #[cfg(test)]
 mod tests {
-    use crate::pdf_file_to_content;
+    use crate::pdf_processor::pdf_file_to_content;
     use std::path::PathBuf;
 
     #[test]
