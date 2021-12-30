@@ -11,6 +11,7 @@ use pagedump::page_dump;
 use tracing::{debug, error};
 
 use quake_core::entry::entry_defines::EntryDefines;
+use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::quake::QuakeActionNode;
 use quake_core::QuakeConfig;
 use quake_tui::tui_main_loop;
@@ -97,6 +98,7 @@ async fn main() {
     let opts: Opts = Opts::parse();
 
     setup_log();
+
     if let Err(err) = process_cmd(opts).await {
         error!("{:?}", err);
     }
@@ -175,9 +177,10 @@ async fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     fs::create_dir_all(&config.path)?;
 
     let workspace = PathBuf::from(&config.path);
-    let path = workspace.join(".quake.yaml");
-    let define = workspace.join("entries-define.yaml");
+    let path = workspace.join(EntryPaths::quake_config());
+    let define = workspace.join(EntryPaths::entries_define());
 
+    // todo: make default config to template
     let quake_config = QuakeConfig {
         workspace: config.path,
         editor: "".to_string(),
@@ -187,7 +190,11 @@ async fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     };
 
     fs::write(&path, serde_yaml::to_string(&quake_config)?)?;
-    debug!("create .quake.yaml in {:?}", &path.display());
+    debug!(
+        "create {:} in {:?}",
+        EntryPaths::quake_config(),
+        &path.display()
+    );
 
     let todo_define = "
 - type: todo

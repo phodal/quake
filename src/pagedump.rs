@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
+use tracing::error;
 
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::entry::EntryDefines;
@@ -93,7 +94,7 @@ fn dump_transflow(conf: &QuakeConfig) {
             fs::write(out_path.join("gen_code.js"), content).unwrap();
         }
         Err(err) => {
-            println!("{:?}", err);
+            error!("{:?}", err);
         }
     }
 
