@@ -7,12 +7,56 @@ created_date: 2021-12-31 19:46:45
 updated_date: 2021-12-31 19:46:45
 ---
 
+Conclusions:
+
+1. 使用数据结构描述
+2. 根据数据生成路由规则函数。
 
 
 ## Rule Engine
 
+Patterns: `action` - `condition`.
 
-Drools
+
+### Drools
+
+
+### Easy Rules
+
+GitHub: [https://github.com/j-easy/easy-rules](https://github.com/j-easy/easy-rules)
+
+Inspires: [Should I use a Rules Engine?](https://martinfowler.com/bliki/RulesEngine.html)
+
+Fluent API
+
+```java
+Rule weatherRule = new RuleBuilder()
+        .name("weather rule")
+        .description("if it rains then take an umbrella")
+        .when(facts -> facts.get("rain").equals(true))
+        .then(facts -> System.out.println("It rains, take an umbrella!"))
+        .build();
+```
+
+Expression Language:
+
+```java
+Rule weatherRule = new MVELRule()
+        .name("weather rule")
+        .description("if it rains then take an umbrella")
+        .when("rain == true")
+        .then("System.out.println(\"It rains, take an umbrella!\");");
+```
+
+Or rule descriptor:
+
+```yaml
+name: "weather rule"
+description: "if it rains then take an umbrella"
+condition: "rain == true"
+actions:
+  - "System.out.println(\"It rains, take an umbrella!\");"
+```
 
 ## Enterprise Integration Pattern
 

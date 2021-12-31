@@ -64,6 +64,10 @@ fn feed_by_event(event: Event, search_url: &str) -> Result<(), Box<dyn Error>> {
         }
 
         if let Some(ext) = path.extension() {
+            // by rules
+            // 1. match quake entry: file by suffix for start with index
+            // 2. match file for engine?
+            // generate
             if !ext.eq("md") {
                 continue;
             }
