@@ -21,7 +21,7 @@ class QuakeDown {
     });
     this.renderer = new marked.Renderer();
 
-    return this.build_data(this.content);
+    return this.buildData(this.content);
   }
 
   // add extensions in extension.ts file for split
@@ -29,7 +29,7 @@ class QuakeDown {
     return getExtensions();
   }
 
-  build_data(src: string) {
+  buildData(src: string) {
     let output = [];
     const tokens = marked.lexer(src);
 
@@ -143,7 +143,7 @@ class QuakeDown {
     let data;
     switch (token.type) {
       case 'admonition':
-        let content = this.build_data(token.body);
+        let content = this.buildData(token.body);
         data = {
           type: 'admonition',
           title: token.title,

@@ -145,7 +145,7 @@ export class QuakeRender {
   }
 
   private tableToJson(code: QuakeDownType.Code): QuakeDownType.Table | null {
-    let data = this.quakeDown.build_data(code.text);
+    let data = this.quakeDown.buildData(code.text);
     for (let datum of data) {
       if (datum.type == 'table') {
         return datum;

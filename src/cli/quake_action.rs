@@ -40,13 +40,14 @@ pub fn quake_action(action: String, conf: &QuakeConfig) -> Result<(), Box<dyn Er
         QuakeAction::Sync => {
             sync_defines(conf)?;
         }
-        QuakeAction::Migration => {}
+        QuakeAction::Migration => {
+            // TBD
+        }
         QuakeAction::Feed => {
             feed_data(conf)?;
         }
         QuakeAction::Refs => {
-            let path = PathBuf::from(&conf.workspace);
-            create_entries_refs(&path)?;
+            create_entries_refs(&PathBuf::from(&conf.workspace))?;
         }
         QuakeAction::Error => {
             return Err(Box::new(QuakeError(format!(

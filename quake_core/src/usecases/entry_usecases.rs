@@ -18,15 +18,10 @@ pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
 
     if size > 0 {
         fs::write(&paths.entries_csv, content)?;
-        update_entry_info(&paths.entry_node_info, &mut EntryNodeInfo::new(size));
+        save_entry_info(&paths.entry_node_info, &mut EntryNodeInfo::new(size));
     }
 
     Ok(())
-}
-
-pub fn update_entry_info(entry_info_path: &Path, entry_info: &mut EntryNodeInfo) {
-    let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
-    fs::write(&entry_info_path, result).expect("cannot write to file");
 }
 
 /// create entry by `path`, `type`, `text`
@@ -56,9 +51,14 @@ pub fn create_entry(
     entry_file.id = new_index;
 
     entry_info.inc();
-    update_entry_info(&paths.entry_node_info, &mut entry_info);
+    save_entry_info(&paths.entry_node_info, &mut entry_info);
 
     Ok((target_path, entry_file))
+}
+
+fn save_entry_info(entry_info_path: &Path, entry_info: &mut EntryNodeInfo) {
+    let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
+    fs::write(&entry_info_path, result).expect("cannot write to file");
 }
 
 /// create really entry file

@@ -58,11 +58,11 @@ impl EntryAction {
 pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
     let paths = EntryPaths::init(&conf.workspace, &expr.object);
 
-    // todo: export api for search
     match expr.action.as_str() {
         "add" => {
             let target_file =
                 entry_usecases::create_entry(&conf.workspace, &expr.object, &expr.text)?.0;
+
             if !conf.editor.is_empty() {
                 editor_exec::edit_file(conf.editor, format!("{:}", target_file.display()))?;
             }
