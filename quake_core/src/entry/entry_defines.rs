@@ -36,7 +36,7 @@ impl EntryDefines {
     }
 }
 
-pub fn entries_define_from_path(config_path: &Path) -> Vec<EntryDefine> {
+pub fn from_path(config_path: &Path) -> Vec<EntryDefine> {
     let entries_str = fs::read_to_string(config_path).expect("cannot read entries-define.yaml");
     let entries: EntryDefines = serde_yaml::from_str(&*entries_str).unwrap();
 

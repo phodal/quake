@@ -155,9 +155,8 @@ impl App {
             "listAll" => {
                 let entry_defines_path =
                     Path::new(&self.config.workspace).join(EntryPaths::entries_define());
-                self.main_widget = MainWidget::EntryTypes(entry_defines::entries_define_from_path(
-                    &entry_defines_path,
-                ));
+                self.main_widget =
+                    MainWidget::EntryTypes(entry_defines::from_path(&entry_defines_path));
             }
             "save" => self.save_entry(),
             other => {

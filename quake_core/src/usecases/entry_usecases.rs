@@ -46,9 +46,8 @@ pub fn create_entry(
     let mut entry_info = entry_node_info::entry_info_from_path(&paths.entry_node_info);
 
     let new_index = entry_info.index + 1;
-    let index = new_index;
-    let text = entry_text;
-    let new_md_file = EntryFile::file_name(index, text);
+    let new_md_file = EntryFile::file_name(new_index, entry_text);
+
     let mut target_path = paths.entry_path.join(new_md_file);
     File::create(&target_path)?;
 
