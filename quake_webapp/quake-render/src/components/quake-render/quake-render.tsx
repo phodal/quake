@@ -1,6 +1,6 @@
 import {Component, Event, EventEmitter, h, Prop, State} from '@stencil/core';
 import QuakeDown from '../../markdown/quake-down';
-import {CodeType, QuakeDownType} from "../../markdown/quake-down.type";
+import {CodeType, QuakeDownType} from '../../markdown/quake-down.type';
 
 export interface Link {
   entry_type: String,
@@ -99,8 +99,12 @@ export class QuakeRender {
         switch (code.code_type) {
           case CodeType.Graph:
             out = this.renderGraph(code);
-
             break;
+
+          case CodeType.Transflow:
+            out = this.renderTransflow(code);
+            break;
+
           default:
             out =
               <pre class={'language-' + code.lang}><code class={'language-' + code.lang} innerHTML={code.text}/></pre>
@@ -134,6 +138,10 @@ export class QuakeRender {
       default:
         return <p>not support graph</p>
     }
+  }
+
+  private renderTransflow(_code: QuakeDownType.Code) {
+    return <graph-transflow />
   }
 
   private tableToJson(code: QuakeDownType.Code): QuakeDownType.Table | null {
