@@ -20,9 +20,9 @@ pub struct Rule {
     pub name: String,
     pub description: String,
     /// constructing from `.when()`
-    pub condition: String,
+    pub condition: Vec<String>,
     /// constructing from `.then()`
-    pub action: String,
+    pub action: Vec<String>,
 }
 
 impl Rule {
