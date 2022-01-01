@@ -87,28 +87,10 @@ export class QuakeRender {
         out = this.renderList(item);
         break;
       case 'admonition':
-        out = <div class={'admonition is-' + item.display_type}>
-          <div class='admonition-header'>{item.title}</div>
-          <div class='admonition-body'>{item.data.map((sub) =>
-            this.conditionRender(sub)
-          )}</div>
-        </div>;
+        out = this.renderAdmonition(item);
         break;
       case 'code':
-        let code = item as QuakeDownType.Code;
-        switch (code.code_type) {
-          case CodeType.Graph:
-            out = this.renderGraph(code);
-            break;
-
-          case CodeType.Transflow:
-            out = this.renderTransflow(code);
-            break;
-
-          default:
-            out =
-              <pre class={'language-' + code.lang}><code class={'language-' + code.lang} innerHTML={code.text}/></pre>
-        }
+        out = this.renderCode(item);
         break;
       default:
         // console.log(item);
@@ -116,6 +98,34 @@ export class QuakeRender {
     }
 
     return out;
+  }
+
+  private renderAdmonition(item: any) {
+    return <div class={'admonition is-' + item.display_type}>
+      <div class='admonition-header'>{item.title}</div>
+      <div class='admonition-body'>{item.data.map((sub) =>
+        this.conditionRender(sub)
+      )}</div>
+    </div>;
+  }
+
+  private renderCode(item: any) {
+    let out;
+    let code = item as QuakeDownType.Code;
+    switch (code.code_type) {
+      case CodeType.Graph:
+        out = this.renderGraph(code);
+        break;
+
+      case CodeType.Transflow:
+        out = this.renderTransflow(code);
+        break;
+
+      default:
+        return <pre class={'language-' + code.lang}><code class={'language-' + code.lang} innerHTML={code.text}/></pre>
+    }
+
+    return out
   }
 
   private renderGraph(code: QuakeDownType.Code) {
