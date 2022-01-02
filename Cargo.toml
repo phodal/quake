@@ -72,8 +72,7 @@ members = [
     'quake_core',
     'quake_gui',
     'quake_tui',
-    'libs/quake_importer',
-    'libs/quake_analysis',
     'quake_wasm',
+    'libs/quake_importer',
     'libs/quake_processor'
 ]
