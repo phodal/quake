@@ -1,10 +1,11 @@
+use quake_core::entry::EntryDefine;
 use tui::buffer::Buffer;
 use tui::layout::{Alignment, Corner, Rect};
 use tui::style::{Color, Modifier, Style};
 use tui::text::{Span, Spans};
-use tui::widgets::{Block, Borders, List, ListItem, Paragraph, Widget};
+use tui::widgets::{Block, Borders, List, ListItem, Paragraph, StatefulWidget, Widget};
 
-use quake_core::entry::EntryDefine;
+use crate::app::AppState;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum MainWidget {
@@ -17,8 +18,10 @@ pub enum MainWidget {
     },
 }
 
-impl Widget for MainWidget {
-    fn render(self, area: Rect, buf: &mut Buffer) {
+impl StatefulWidget for MainWidget {
+    type State = AppState;
+
+    fn render(self, area: Rect, buf: &mut Buffer, state: &mut Self::State) {
         match self {
             MainWidget::Home => {
                 let help_messages = vec![
@@ -59,9 +62,15 @@ impl Widget for MainWidget {
                     .collect();
                 let entry_types_list = List::new(entry_types)
                     .block(Block::default().borders(Borders::ALL).title("List"))
-                    .start_corner(Corner::TopLeft);
+                    .start_corner(Corner::TopLeft)
+                    .highlight_style(
+                        Style::default()
+                            .bg(Color::LightCyan)
+                            .add_modifier(Modifier::BOLD),
+                    )
+                    .highlight_symbol(">> ");
 
-                entry_types_list.render(area, buf);
+                StatefulWidget::render(entry_types_list, area, buf, &mut state.entry_list_state);
             }
             MainWidget::Editor { content, .. } => {
                 let editor = Paragraph::new(content.as_ref())

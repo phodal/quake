@@ -8,6 +8,7 @@ use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::usecases::entry_usecases;
 use quake_core::QuakeConfig;
 use tui::backend::Backend;
+use tui::widgets::ListState;
 use tui::Terminal;
 
 use crate::entry_action::action_result_to_main_widget;
@@ -99,13 +100,14 @@ impl App {
         match self.state.mode {
             Mode::Normal => match key_code {
                 KeyCode::Char(':') => {
-                    self.collect_command();
-                    self.message_clear();
-                    self.state.mode = Mode::Command;
+                    self.into_command_mode();
                 }
                 KeyCode::Char('i') => {
                     self.state.mode = Mode::Insert;
                 }
+                KeyCode::Char('j') => self.entry_next(),
+                KeyCode::Char('k') => self.entry_prev(),
+                KeyCode::Char('a') => self.action_auto_complete(),
                 _ => {}
             },
             Mode::Command => match key_code {
@@ -155,8 +157,11 @@ impl App {
             "listAll" => {
                 let entry_defines_path =
                     Path::new(&self.config.workspace).join(EntryPaths::entries_define());
-                self.main_widget =
-                    MainWidget::EntryTypes(entry_defines::from_path(&entry_defines_path));
+                let defines = entry_defines::from_path(&entry_defines_path);
+                if !defines.is_empty() {
+                    self.state.entry_list_state.select(Some(0));
+                }
+                self.main_widget = MainWidget::EntryTypes(defines);
             }
             "save" => self.save_entry(),
             other => {
@@ -167,12 +172,65 @@ impl App {
 
         Ok(())
     }
+
+    pub fn entry_next(&mut self) {
+        if let MainWidget::EntryTypes(defines) = &self.main_widget {
+            let len = defines.len();
+            let i = match self.state.entry_list_state.selected() {
+                Some(i) => {
+                    if i >= len - 1 {
+                        0
+                    } else {
+                        i + 1
+                    }
+                }
+                None => 0,
+            };
+            self.state.entry_list_state.select(Some(i));
+        }
+    }
+
+    pub fn entry_prev(&mut self) {
+        if let MainWidget::EntryTypes(defines) = &self.main_widget {
+            let len = defines.len();
+            let i = match self.state.entry_list_state.selected() {
+                Some(i) => {
+                    if i == 0 {
+                        len - 1
+                    } else {
+                        i - 1
+                    }
+                }
+                None => 0,
+            };
+            self.state.entry_list_state.select(Some(i));
+        }
+    }
+
+    fn action_auto_complete(&mut self) {
+        if let MainWidget::EntryTypes(defines) = &self.main_widget {
+            if let Some(idx) = self.state.entry_list_state.selected() {
+                let entry_type = defines[idx].entry_type.clone();
+                self.into_command_mode();
+                for ch in entry_type.chars() {
+                    self.input_push(ch);
+                }
+            }
+        }
+    }
+
+    fn into_command_mode(&mut self) {
+        self.collect_command();
+        self.message_clear();
+        self.state.mode = Mode::Command;
+    }
 }
 
 pub struct AppState {
     running: bool,
     pub mode: Mode,
     input: String,
+    pub entry_list_state: ListState,
 }
 
 impl Default for AppState {
@@ -181,6 +239,7 @@ impl Default for AppState {
             running: true,
             mode: Mode::Normal,
             input: "".to_string(),
+            entry_list_state: ListState::default(),
         }
     }
 }
