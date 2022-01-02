@@ -100,15 +100,14 @@ impl App {
         match self.state.mode {
             Mode::Normal => match key_code {
                 KeyCode::Char(':') => {
-                    self.collect_command();
-                    self.message_clear();
-                    self.state.mode = Mode::Command;
+                    self.into_command_mode();
                 }
                 KeyCode::Char('i') => {
                     self.state.mode = Mode::Insert;
                 }
                 KeyCode::Char('j') => self.entry_next(),
                 KeyCode::Char('k') => self.entry_prev(),
+                KeyCode::Char('a') => self.action_auto_complete(),
                 _ => {}
             },
             Mode::Command => match key_code {
@@ -206,6 +205,24 @@ impl App {
             };
             self.state.entry_list_state.select(Some(i));
         }
+    }
+
+    fn action_auto_complete(&mut self) {
+        if let MainWidget::EntryTypes(defines) = &self.main_widget {
+            if let Some(idx) = self.state.entry_list_state.selected() {
+                let entry_type = defines[idx].entry_type.clone();
+                self.into_command_mode();
+                for ch in entry_type.chars() {
+                    self.input_push(ch);
+                }
+            }
+        }
+    }
+
+    fn into_command_mode(&mut self) {
+        self.collect_command();
+        self.message_clear();
+        self.state.mode = Mode::Command;
     }
 }
 
