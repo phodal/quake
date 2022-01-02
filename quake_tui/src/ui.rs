@@ -11,7 +11,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         .constraints([Constraint::Length(3), Constraint::Min(1)].as_ref())
         .split(f.size());
     f.render_widget(app.cmd_line.clone(), chunks[0]);
-    f.render_widget(app.main_widget.clone(), chunks[1]);
+    f.render_stateful_widget(app.main_widget.clone(), chunks[1], &mut app.state);
 
     match app.state.mode {
         Mode::Normal => {}
