@@ -111,6 +111,13 @@ impl EntryFile {
     }
 
     pub fn id_from_name(file_name: &str) -> Result<usize, Box<dyn Error>> {
+        if !EntryFile::is_match(file_name) {
+            return Err(Box::new(QuakeError(format!(
+                "file name {:?} is no match file format",
+                file_name
+            ))));
+        }
+
         if file_name.len() < 4 {
             return Err(Box::new(QuakeError("length < 4".to_string())));
         }
@@ -297,10 +304,16 @@ mod tests {
         assert_eq!(id, 1);
 
         let msg = EntryFile::id_from_name("000").expect_err("");
-        assert_eq!("QuakeError(\"length < 4\")", format!("{:?}", msg));
+        assert_eq!(
+            "QuakeError(\"file name \\\"000\\\" is no match file format\")",
+            format!("{:?}", msg)
+        );
 
         let msg = EntryFile::id_from_name("demo.md").expect_err("");
-        assert_eq!("ParseIntError { kind: InvalidDigit }", format!("{:?}", msg));
+        assert_eq!(
+            "QuakeError(\"file name \\\"demo.md\\\" is no match file format\")",
+            format!("{:?}", msg)
+        );
     }
 
     #[test]
