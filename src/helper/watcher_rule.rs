@@ -1,17 +1,12 @@
+use quake_core::entry::entry_file::EntryFile;
 use serde_derive::{Deserialize, Serialize};
-
-use lazy_static::lazy_static;
-use regex::Regex;
-
-lazy_static! {
-    static ref ENTRY_FILE: Regex = Regex::new(r#"(?P<index>\d{4})-(?P<name>.*).md"#).unwrap();
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FileChangeEvent {
     pub file_name: String,
     pub extension: String,
-    pub parent: String,
+    // entry type
+    pub entry_type: Option<String>,
     is_entry_file: bool,
 }
 
@@ -52,9 +47,17 @@ impl Rule {
 // 2. match file for engine?
 // generate
 pub fn event_to_rule(change: &mut FileChangeEvent) {
-    if ENTRY_FILE.is_match(&*change.file_name) {
+    if EntryFile::is_match(&*change.file_name) {
         change.is_entry_file = true;
     }
+    // check is generate content when pdf join to path
+}
+
+pub enum WatchExtension {
+    MD,
+    PDF,
+    // need a ppt convert to image?
+    PPT,
 }
 
 #[cfg(test)]
@@ -66,7 +69,7 @@ mod tests {
         event_to_rule(&mut FileChangeEvent {
             file_name: "0001-demo.md".to_string(),
             extension: "".to_string(),
-            parent: "".to_string(),
+            entry_type: None,
             is_entry_file: false,
         });
     }

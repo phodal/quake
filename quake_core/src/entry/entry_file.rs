@@ -2,6 +2,8 @@ use std::error::Error;
 use std::path::PathBuf;
 
 use indexmap::IndexMap;
+use lazy_static::lazy_static;
+use regex::Regex;
 use serde::ser::SerializeMap;
 use serde::{Deserialize, Serialize, Serializer};
 use serde_yaml::{Sequence, Value};
@@ -10,6 +12,10 @@ use crate::entry::slug::slugify;
 use crate::errors::QuakeError;
 use crate::helper::date_now;
 use crate::meta::quake_change::QuakeChange;
+
+lazy_static! {
+    static ref ENTRY_FILE: Regex = Regex::new(r#"(?P<index>\d{4})-(?P<name>.*).md"#).unwrap();
+}
 
 #[derive(Deserialize, PartialEq, Debug)]
 pub struct EntryFile {
@@ -100,10 +106,15 @@ impl EntryFile {
         format!("{:0>4}-{:}.md", index, slugify(text))
     }
 
+    pub fn is_match(file_name: &str) -> bool {
+        ENTRY_FILE.is_match(&*file_name)
+    }
+
     pub fn id_from_name(file_name: &str) -> Result<usize, Box<dyn Error>> {
         if file_name.len() < 4 {
             return Err(Box::new(QuakeError("length < 4".to_string())));
         }
+
         let index_str = &file_name[0..4];
         let index: usize = index_str.parse()?;
         Ok(index)
