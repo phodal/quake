@@ -8,7 +8,7 @@ import {IonSearchbar} from "@ionic/core";
 import {createTransflow, init_wasm, parseAction} from "./quake-core-wrapper";
 
 export interface ActionDefine {
-  object: String,
+  entry: String,
   action: String,
   text: String,
   parameters: String[]
@@ -282,7 +282,7 @@ export class QuakeDashboard {
 
     const that = this;
     parseAction(this.query.substring(1,)).then(data => {
-      if (data.object) {
+      if (data.entry) {
         that.actionDefine = data
         that.dispatchAction.emit(data);
       } else {
@@ -294,19 +294,19 @@ export class QuakeDashboard {
     });
   }
 
-  editEntry(id: string, object: string) {
+  editEntry(id: string, entry: string) {
     this.dispatchAction.emit({
       parameters: [id],
       action: 'update',
-      object: object,
+      entry: entry,
     } as any);
   }
 
-  showEntry(id: string, object: string) {
+  showEntry(id: string, entry: string) {
     this.dispatchAction.emit({
       parameters: [id],
       action: 'show',
-      object: object,
+      entry: entry,
     } as any);
   }
 

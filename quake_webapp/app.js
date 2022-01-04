@@ -150,11 +150,11 @@ const show_entry = async (context, commands) => {
 
 function handleAction(define) {
   if (define.action === 'add') {
-    Router.go(`/entry/${define.object}/new?text=${define.text}`)
+    Router.go(`/entry/${define.entry}/new?text=${define.text}`)
   } else if (define.action === 'show') {
-    Router.go(`/show/${define.object}/${define.parameters[0]}`);
+    Router.go(`/show/${define.entry}/${define.parameters[0]}`);
   } else if (define.parameters.length > 0) {
-    Router.go(`/edit/${define.object}/${define.parameters[0]}`);
+    Router.go(`/edit/${define.entry}/${define.parameters[0]}`);
   } else {
     console.log("some action");
   }
