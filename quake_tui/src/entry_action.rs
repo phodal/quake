@@ -14,15 +14,15 @@ pub fn action_result_to_main_widget(
     QuakeActionNode::from_text(action_str)
         .map_err(|_| format!("Unknown command: {}", action_str))
         .and_then(|node| match node.action.as_str() {
-            "add" => entry_usecases::create_entry(&config.workspace, &node.object, &node.text)
+            "add" => entry_usecases::create_entry(&config.workspace, &node.entry, &node.text)
                 .map(|(_, file)| MainWidget::Editor {
-                    entry_type: node.object.clone(),
+                    entry_type: node.entry.clone(),
                     id: file.id,
                     content: "".to_string(),
                 })
                 .map_err(|e| format!("Can't create entry: {}", e)),
             "edit" => {
-                let base_path = PathBuf::from(&config.workspace).join(&node.object);
+                let base_path = PathBuf::from(&config.workspace).join(&node.entry);
                 let index = node.parameters[0].parse().unwrap();
                 let prefix = EntryFile::file_prefix(index);
                 let paths = file_filter::filter_by_prefix(base_path, prefix);
@@ -35,7 +35,7 @@ pub fn action_result_to_main_widget(
                     .map(|string| {
                         let file = EntryFile::from(&string, index).unwrap();
                         MainWidget::Editor {
-                            entry_type: node.object.clone(),
+                            entry_type: node.entry.clone(),
                             id: index,
                             content: file.content,
                         }

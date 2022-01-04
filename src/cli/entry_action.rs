@@ -7,7 +7,7 @@ use tracing::info;
 
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
-use quake_core::entry::EntryDefines;
+use quake_core::entry::{EntryDefine, EntryDefines};
 use quake_core::errors::QuakeError;
 use quake_core::parser::quake::QuakeActionNode;
 use quake_core::quake_config::QuakeConfig;
@@ -56,12 +56,12 @@ impl EntryAction {
 }
 
 pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box<dyn Error>> {
-    let paths = EntryPaths::init(&conf.workspace, &expr.object);
+    let paths = EntryPaths::init(&conf.workspace, &expr.entry);
 
     match expr.action.as_str() {
         "add" => {
             let target_file =
-                entry_usecases::create_entry(&conf.workspace, &expr.object, &expr.text)?.0;
+                entry_usecases::create_entry(&conf.workspace, &expr.entry, &expr.text)?.0;
 
             if !conf.editor.is_empty() {
                 editor_exec::edit_file(conf.editor, format!("{:}", target_file.display()))?;
@@ -70,8 +70,7 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
             entry_usecases::sync_in_path(&paths)?
         }
         "edit" => {
-            let file =
-                find_entry_path(paths.entry_path, &expr.object, expr.index_from_parameter())?;
+            let file = find_entry_path(paths.entry_path, &expr.entry, expr.index_from_parameter())?;
             if !conf.editor.is_empty() {
                 editor_exec::edit_file(conf.editor, format!("{:}", file.display()))?;
             } else {
@@ -82,7 +81,7 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
             generate_content(&paths);
         }
         "sync" => entry_usecases::sync_in_path(&paths)?,
-        "feed" => feed_by_path(&paths, &expr.object, &conf)?,
+        "feed" => feed_by_path(&paths, &expr.entry, &conf)?,
         "dump" => dump_by_path(&paths)?,
         "show" => show_entry_detail(expr, &paths)?,
         "list" => show_entrysets(&paths.entry_path.join("entries.csv")),
@@ -122,7 +121,7 @@ fn feed_by_path(
 
 fn show_entry_detail(expr: &QuakeActionNode, paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     let index = expr.index_from_parameter();
-    let target_file = find_entry_path(paths.entry_path.clone(), &expr.object, index)?;
+    let target_file = find_entry_path(paths.entry_path.clone(), &expr.entry, index)?;
     info!("show file: {:}", &target_file.display());
     let content = fs::read_to_string(target_file)?;
     let file = EntryFile::from(content.as_str(), index)?;

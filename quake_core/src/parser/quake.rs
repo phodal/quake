@@ -207,7 +207,7 @@ impl<'de> Deserialize<'de> for ParamType {
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct QuakeActionNode {
-    pub object: String,
+    pub entry: String,
     pub action: String,
     pub text: String,
     pub parameters: Vec<String>,
@@ -277,7 +277,7 @@ pub fn quake(text: &str) -> Result<QuakeIt, Box<dyn Error>> {
             SourceUnitPart::Action(decl) => {
                 let mut action = QuakeActionNode::default();
                 action.action = decl.action;
-                action.object = decl.object;
+                action.entry = decl.object;
                 action.text = decl.text;
                 action.parameters = param_types_to_string_vec(&decl.parameters);
 
@@ -442,7 +442,7 @@ mod tests {
     #[test]
     fn should_parse_expression() {
         let expr = QuakeActionNode::from_text("todo.add: 添加 todo 的支持").unwrap();
-        assert_eq!(expr.object, "todo");
+        assert_eq!(expr.entry, "todo");
         assert_eq!(expr.action, "add");
         assert_eq!(expr.text, "添加 todo 的支持");
     }
@@ -450,7 +450,7 @@ mod tests {
     #[test]
     fn should_parse_update_parameter() {
         let expr = QuakeActionNode::from_text("todo.update(1)").unwrap();
-        assert_eq!(expr.object, "todo");
+        assert_eq!(expr.entry, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "1");
 
@@ -460,14 +460,14 @@ mod tests {
     #[test]
     fn should_parse_com() {
         let expr = QuakeActionNode::from_text("phodal_com.sync").unwrap();
-        assert_eq!(expr.object, "phodal_com");
+        assert_eq!(expr.entry, "phodal_com");
         assert_eq!(expr.action, "sync");
     }
 
     #[test]
     fn should_parse_double_digital() {
         let expr = QuakeActionNode::from_text("todo.update(12)").unwrap();
-        assert_eq!(expr.object, "todo");
+        assert_eq!(expr.entry, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "12");
         assert_eq!(12, expr.index_from_parameter());
@@ -476,7 +476,7 @@ mod tests {
     #[test]
     fn should_parse_chinese_quote() {
         let expr = QuakeActionNode::from_text("todo.update（12）").unwrap();
-        assert_eq!(expr.object, "todo");
+        assert_eq!(expr.entry, "todo");
         assert_eq!(expr.action, "update");
         assert_eq!(expr.parameters[0], "12");
         assert_eq!(12, expr.index_from_parameter());
