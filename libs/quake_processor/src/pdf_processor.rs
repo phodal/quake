@@ -4,29 +4,15 @@ use std::path::Path;
 
 use pdf_extract::extract_text;
 
-pub fn pdf_to_content(file: &Path) -> Result<String, Box<dyn Error>> {
-    let path = path::Path::new(&file);
-    let string = extract_text(path)?;
-    Ok(string)
-}
+use crate::process_engine::Processor;
 
-#[cfg(test)]
-mod tests {
-    use std::path::PathBuf;
+#[derive(Default)]
+pub struct PdfProcessor {}
 
-    use crate::pdf_processor::pdf_to_content;
-
-    #[test]
-    fn it_works() {
-        let file = PathBuf::from("_fixtures").join("Test_PDF.pdf");
-        match pdf_to_content(&file) {
-            Err(err) => {
-                println!("{:?}", err);
-                panic!();
-            }
-            Ok(some) => {
-                println!("{:?}", some);
-            }
-        }
+impl Processor for PdfProcessor {
+    fn content(&self, file: &Path) -> Result<String, Box<dyn Error>> {
+        let path = path::Path::new(&file);
+        let string = extract_text(path)?;
+        Ok(string)
     }
 }
