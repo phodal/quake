@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::error::Error;
 use std::path::Path;
 
@@ -5,6 +6,7 @@ use crate::pdf_processor::PdfProcessor;
 
 pub trait Processor {
     fn content(&self, file: &Path) -> Result<String, Box<dyn Error>>;
+    fn meta_data(&self) -> HashMap<String, String>;
 }
 
 #[derive(Default)]
@@ -13,6 +15,10 @@ pub struct EmptyProcessor {}
 impl Processor for EmptyProcessor {
     fn content(&self, _file: &Path) -> Result<String, Box<dyn Error>> {
         Ok("".to_string())
+    }
+
+    fn meta_data(&self) -> HashMap<String, String> {
+        todo!()
     }
 }
 

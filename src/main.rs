@@ -116,14 +116,14 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
         }
         SubCommand::Server(server) => {
             let config = load_config(&server.config)?;
-            let path = config.workspace;
+            let workspace = config.workspace;
             let search_url = config.search_url;
 
             if server.watch {
                 block_on(async {
                     let (_s, _g) = future::join(
                         quake_rocket().launch(),
-                        entry_watcher::async_watch(path, search_url),
+                        entry_watcher::async_watch(workspace, search_url),
                     )
                     .await;
                 });

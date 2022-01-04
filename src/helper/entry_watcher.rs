@@ -7,11 +7,16 @@ use futures::channel::mpsc::{channel, Receiver};
 use futures::{SinkExt, StreamExt};
 use notify::event::ModifyKind;
 use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
+use rocket::info;
 use tracing::{debug, error};
 
 use quake_core::entry::entry_file::EntryFile;
+use quake_core::entry::entry_paths::EntryPaths;
+use quake_core::entry::EntryDefines;
 use quake_core::errors::QuakeError;
 use quake_core::helper::file_filter::type_from_md_path;
+use quake_core::helper::quake_time;
+use quake_core::meta::MetaProperty;
 
 use crate::helper::exec_wrapper::meili_exec::feed_document;
 
@@ -29,15 +34,15 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
 }
 
 // todo: add type merge for ranges
-pub async fn async_watch<P: AsRef<Path>>(path: P, search_url: String) -> notify::Result<()> {
-    debug!("start watch: {:?}", path.as_ref());
+pub async fn async_watch<P: AsRef<Path>>(workspace: P, search_url: String) -> notify::Result<()> {
+    debug!("start watch: {:?}", workspace.as_ref());
     let (mut watcher, mut rx) = async_watcher()?;
-    watcher.watch(path.as_ref(), RecursiveMode::Recursive)?;
+    watcher.watch(workspace.as_ref(), RecursiveMode::Recursive)?;
 
     while let Some(res) = rx.next().await {
         match res {
             Ok(event) => {
-                if let Err(err) = feed_by_event(event, &search_url) {
+                if let Err(err) = feed_by_event(event, &search_url, workspace.as_ref()) {
                     error!("watch error: {:?}", err)
                 };
             }
@@ -48,7 +53,7 @@ pub async fn async_watch<P: AsRef<Path>>(path: P, search_url: String) -> notify:
     Ok(())
 }
 
-fn feed_by_event(event: Event, search_url: &str) -> Result<(), Box<dyn Error>> {
+fn feed_by_event(event: Event, search_url: &str, workspace: &Path) -> Result<(), Box<dyn Error>> {
     // todo: looking for better way
     match &event.kind {
         EventKind::Modify(ModifyKind::Data(_data)) => {
@@ -73,28 +78,44 @@ fn feed_by_event(event: Event, search_url: &str) -> Result<(), Box<dyn Error>> {
             }
         }
 
-        let (typ, file) = entry_file_by_path(&path)?;
+        let (typ, file) = entry_file_by_path(&path, workspace)?;
         feed_document(search_url, &typ, &file)?;
     }
 
     Ok(())
 }
 
-pub fn entry_file_by_path(path: &Path) -> Result<(String, EntryFile), Box<dyn Error>> {
-    let typ = type_from_md_path(path).ok_or("")?;
+pub fn entry_file_by_path(
+    path: &Path,
+    workspace: &Path,
+) -> Result<(String, EntryFile), Box<dyn Error>> {
+    let entry_type = type_from_md_path(path).ok_or("")?;
     let file_name = path.file_name().ok_or("")?;
 
-    if file_name.is_empty() || typ.is_empty() {
+    if file_name.is_empty() || entry_type.is_empty() {
         return Err(Box::new(QuakeError(format!(
-            "emtpy type {:?} or file_name {:?}",
-            typ, file_name
+            "empty type {:?} or file_name {:?}",
+            entry_type, file_name
         ))));
     }
 
     let id = EntryFile::id_from_name(file_name.to_str().unwrap().to_string().as_str())?;
     let content = fs::read_to_string(&path)?;
-    let file = EntryFile::from(content.as_str(), id)?;
-    Ok((typ, file))
+
+    let mut file = EntryFile::from(content.as_str(), id)?;
+    let defines = EntryDefines::from_path(&*workspace.join(EntryPaths::entries_define()));
+    if let Some(define) = defines.find(&*entry_type) {
+        for (key, prop) in define.to_field_type() {
+            if let MetaProperty::Date(_date) = prop {
+                let text = &*file.property(&key).unwrap();
+                let value = quake_time::string_date_to_unix(text);
+                file.update_property(&key, &value);
+                info!("update {:} date: from {:} to {:}", key, text, value);
+            }
+        }
+    }
+
+    Ok((entry_type, file))
 }
 
 #[cfg(test)]
@@ -105,12 +126,12 @@ mod tests {
 
     #[test]
     fn entry_by_path() {
-        let buf = PathBuf::from("examples")
-            .join("todo")
-            .join("0001-time-support.md");
+        let workspace = PathBuf::from("examples");
+        let buf = workspace.join("todo").join("0001-time-support.md");
 
-        let (typ, file) = entry_file_by_path(&buf).unwrap();
+        let (typ, file) = entry_file_by_path(&buf, &workspace).unwrap();
         assert_eq!(typ, "todo".to_string());
         assert_eq!(1, file.id);
+        assert_eq!("1637781250", file.property("created_date").unwrap());
     }
 }

@@ -202,22 +202,18 @@ fn generate_by_path(paths: &EntryPaths, define: &EntryDefine) -> Result<(), Box<
         if EntryFile::is_match(name) {
             let content = fs::read_to_string(path.path())?;
             let mut entry_file = EntryFile::from(&*content, 1)?;
-            match entry_file.property(&field) {
-                None => {}
-                Some(value) => {
-                    let file_path = paths.entry_path.join(value);
-                    if file_path.exists() {
-                        let ext = file_path.extension().unwrap().to_str().unwrap();
-                        let engine = ProcessEngine::engine(ext);
-                        let content = engine.content(&file_path)?;
+            if let Some(value) = entry_file.property(&field) {
+                let file_path = paths.entry_path.join(value);
+                if file_path.exists() {
+                    let ext = file_path.extension().unwrap().to_str().unwrap();
+                    let engine = ProcessEngine::engine(ext);
+                    let content = engine.content(&file_path)?;
+                    info!("call {:?} engine from {:?}", ext, file_path);
 
-                        println!("call {:?} engine from {:?}", ext, file_path);
-
-                        entry_file.content = content;
-                        fs::write(&path.path(), entry_file.to_string()).unwrap();
-                    } else {
-                        return Err(Box::new(QuakeError("cannot entry file".to_string())));
-                    }
+                    entry_file.content = content;
+                    fs::write(&path.path(), entry_file.to_string()).unwrap();
+                } else {
+                    return Err(Box::new(QuakeError("cannot entry file".to_string())));
                 }
             }
         }
