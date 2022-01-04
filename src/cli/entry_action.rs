@@ -201,7 +201,7 @@ fn generate_by_path(paths: &EntryPaths, define: &EntryDefine) -> Result<(), Box<
         let name = path.file_name().to_str().unwrap();
         if EntryFile::is_match(name) {
             let content = fs::read_to_string(path.path())?;
-            let entry_file = EntryFile::from(&*content, 1)?;
+            let mut entry_file = EntryFile::from(&*content, 1)?;
             match entry_file.property(&field) {
                 None => {}
                 Some(value) => {
@@ -213,7 +213,8 @@ fn generate_by_path(paths: &EntryPaths, define: &EntryDefine) -> Result<(), Box<
 
                         println!("call {:?} engine from {:?}", ext, file_path);
 
-                        println!("{:?}", content);
+                        entry_file.content = content;
+                        fs::write(&path.path(), entry_file.to_string()).unwrap();
                     } else {
                         return Err(Box::new(QuakeError("cannot entry file".to_string())));
                     }
