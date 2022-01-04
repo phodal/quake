@@ -39,6 +39,7 @@ impl EntryDefineProperties {
             "title" => MetaProperty::Title(value),
             "flow" => MetaProperty::Flow(value),
             "string" => MetaProperty::Text(value),
+            "file" => MetaProperty::File(value),
             "searchable" => MetaProperty::Searchable("string".to_string()),
             "filterable" => MetaProperty::Filterable("string".to_string()),
             "date" => MetaProperty::Date(value),

@@ -4,16 +4,19 @@ use std::fs::File;
 use std::path::Path;
 
 use tracing::info;
+use walkdir::WalkDir;
 
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
-use quake_core::entry::EntryDefines;
+use quake_core::entry::{EntryDefine, EntryDefines};
 use quake_core::errors::QuakeError;
+use quake_core::meta::MetaProperty;
 use quake_core::parser::quake::QuakeActionNode;
 use quake_core::quake_config::QuakeConfig;
 use quake_core::usecases::entry_usecases;
 use quake_core::usecases::entry_usecases::find_entry_path;
 use quake_core::usecases::entrysets::Entrysets;
+use quake_processor::process_engine::ProcessEngine;
 
 use crate::cli::helper::table_process;
 use crate::helper::exec_wrapper::{editor_exec, meili_exec};
@@ -78,7 +81,7 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
             }
         }
         "generate" => {
-            generate_content(&paths);
+            generate_content(&paths, &expr.entry)?;
         }
         "sync" => entry_usecases::sync_in_path(&paths)?,
         "feed" => feed_by_path(&paths, &expr.entry, &conf)?,
@@ -166,20 +169,60 @@ pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn generate_content(paths: &EntryPaths) {
+fn generate_content(paths: &EntryPaths, entry: &str) -> Result<(), Box<dyn Error>> {
     let defines = EntryDefines::from_path(&paths.entries_define);
-    for define in &defines.entries {
-        if define.processors.is_none() {
-            continue;
-        }
+    match defines.find(entry) {
+        None => {}
+        Some(define) => generate_by_path(paths, &define)?,
+    }
 
-        let file_engines = &define.processors.as_ref().unwrap().file_engines;
-        if let Some(engines) = file_engines {
-            for engine in engines {
-                println!("{:}", engine);
+    Ok(())
+}
+
+fn generate_by_path(paths: &EntryPaths, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
+    let mut field = "".to_string();
+    for (typ, property) in define.to_field_type() {
+        if let MetaProperty::File(_file) = property {
+            field = typ
+        }
+    }
+
+    if field.is_empty() {
+        return Err(Box::new(QuakeError("cannot find entry".to_string())));
+    }
+
+    let walk_paths = WalkDir::new(&paths.entry_path)
+        .max_depth(1)
+        .min_depth(1)
+        .into_iter()
+        .filter_map(|e| e.ok());
+
+    for path in walk_paths {
+        let name = path.file_name().to_str().unwrap();
+        if EntryFile::is_match(name) {
+            let content = fs::read_to_string(path.path())?;
+            let entry_file = EntryFile::from(&*content, 1)?;
+            match entry_file.property(&field) {
+                None => {}
+                Some(value) => {
+                    let file_path = paths.entry_path.join(value);
+                    if file_path.exists() {
+                        let ext = file_path.extension().unwrap().to_str().unwrap();
+                        let engine = ProcessEngine::engine(ext);
+                        let content = engine.content(&file_path)?;
+
+                        println!("call {:?} engine from {:?}", ext, file_path);
+
+                        println!("{:?}", content);
+                    } else {
+                        return Err(Box::new(QuakeError("cannot entry file".to_string())));
+                    }
+                }
             }
         }
     }
+
+    Ok(())
 }
 
 #[cfg(test)]
@@ -189,9 +232,10 @@ mod tests {
 
     use crate::cli::entry_action::entry_action;
 
+    #[ignore]
     #[test]
     fn test_generate_content_for_processors() {
-        let expr = QuakeActionNode::from_text("todo.generate").unwrap();
+        let expr = QuakeActionNode::from_text("papers.generate").unwrap();
         let config = QuakeConfig {
             editor: "".to_string(),
             workspace: "examples".to_string(),
