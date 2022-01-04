@@ -302,7 +302,7 @@ mod tests {
             .await
             .expect_err("");
 
-            let error_msg = "QuakeError(\"unknown entry action: QuakeActionNode { object: \\\"story\\\", action: \\\"dddd\\\", text: \\\"\\\", parameters: [] }\")";
+            let error_msg = "QuakeError(\"unknown entry action: QuakeActionNode { entry: \\\"story\\\", action: \\\"dddd\\\", text: \\\"\\\", parameters: [] }\")";
             assert_eq!(format!("{:?}", expected), error_msg);
         });
     }

@@ -49,7 +49,7 @@ mod test {
 
         assert_eq!(response.status(), Status::Ok);
         assert_eq!(
-            "{\"object\":\"todo\",\"action\":\"show\",\"text\":\"\",\"parameters\":[]}",
+            "{\"entry\":\"todo\",\"action\":\"show\",\"text\":\"\",\"parameters\":[]}",
             res
         );
     }
