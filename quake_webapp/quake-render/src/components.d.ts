@@ -26,6 +26,8 @@ export namespace Components {
         "config": any;
         "data": any;
     }
+    interface GraphTransflow {
+    }
     interface QuakeRender {
         "content": string;
         "hasEmbed": boolean;
@@ -56,6 +58,12 @@ declare global {
         prototype: HTMLGraphNetworkElement;
         new (): HTMLGraphNetworkElement;
     };
+    interface HTMLGraphTransflowElement extends Components.GraphTransflow, HTMLStencilElement {
+    }
+    var HTMLGraphTransflowElement: {
+        prototype: HTMLGraphTransflowElement;
+        new (): HTMLGraphTransflowElement;
+    };
     interface HTMLQuakeRenderElement extends Components.QuakeRender, HTMLStencilElement {
     }
     var HTMLQuakeRenderElement: {
@@ -67,6 +75,7 @@ declare global {
         "graph-bar": HTMLGraphBarElement;
         "graph-line": HTMLGraphLineElement;
         "graph-network": HTMLGraphNetworkElement;
+        "graph-transflow": HTMLGraphTransflowElement;
         "quake-render": HTMLQuakeRenderElement;
     }
 }
@@ -89,6 +98,8 @@ declare namespace LocalJSX {
         "config"?: any;
         "data"?: any;
     }
+    interface GraphTransflow {
+    }
     interface QuakeRender {
         "content"?: string;
         "hasEmbed"?: boolean;
@@ -100,6 +111,7 @@ declare namespace LocalJSX {
         "graph-bar": GraphBar;
         "graph-line": GraphLine;
         "graph-network": GraphNetwork;
+        "graph-transflow": GraphTransflow;
         "quake-render": QuakeRender;
     }
 }
@@ -111,6 +123,7 @@ declare module "@stencil/core" {
             "graph-bar": LocalJSX.GraphBar & JSXBase.HTMLAttributes<HTMLGraphBarElement>;
             "graph-line": LocalJSX.GraphLine & JSXBase.HTMLAttributes<HTMLGraphLineElement>;
             "graph-network": LocalJSX.GraphNetwork & JSXBase.HTMLAttributes<HTMLGraphNetworkElement>;
+            "graph-transflow": LocalJSX.GraphTransflow & JSXBase.HTMLAttributes<HTMLGraphTransflowElement>;
             "quake-render": LocalJSX.QuakeRender & JSXBase.HTMLAttributes<HTMLQuakeRenderElement>;
         }
     }

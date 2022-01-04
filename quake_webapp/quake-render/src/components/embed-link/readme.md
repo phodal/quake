@@ -25,6 +25,7 @@ graph TD;
   embed-link --> quake-render
   quake-render --> graph-bar
   quake-render --> graph-line
+  quake-render --> graph-transflow
   style embed-link fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

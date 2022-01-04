@@ -7,7 +7,7 @@ use tracing::info;
 
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
-use quake_core::entry::{EntryDefine, EntryDefines};
+use quake_core::entry::EntryDefines;
 use quake_core::errors::QuakeError;
 use quake_core::parser::quake::QuakeActionNode;
 use quake_core::quake_config::QuakeConfig;

@@ -31,12 +31,14 @@
 
 - [graph-bar](../graph-bar)
 - [graph-line](../graph-line)
+- [graph-transflow](../graph-transflow)
 
 ### Graph
 ```mermaid
 graph TD;
   quake-render --> graph-bar
   quake-render --> graph-line
+  quake-render --> graph-transflow
   embed-link --> quake-render
   style quake-render fill:#f9f,stroke:#333,stroke-width:4px
 ```
