@@ -210,11 +210,10 @@ impl App {
     fn action_auto_complete(&mut self) {
         if let MainWidget::EntryTypes(defines) = &self.main_widget {
             if let Some(idx) = self.state.entry_list_state.selected() {
-                let entry_type = defines[idx].entry_type.clone();
+                let cmd = format!("{}.add: ", defines[idx].entry_type);
                 self.jump_to_command_mode();
-                for ch in entry_type.chars() {
-                    self.input_push(ch);
-                }
+                self.state.input = cmd.clone();
+                self.cmd_line.message = cmd.clone();
             }
         }
     }
