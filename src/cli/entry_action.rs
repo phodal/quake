@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::fs;
 use std::fs::File;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use tracing::info;
 use walkdir::WalkDir;
@@ -199,27 +199,34 @@ fn generate_by_path(paths: &EntryPaths, define: &EntryDefine) -> Result<(), Box<
 
     for path in walk_paths {
         let name = path.file_name().to_str().unwrap();
-        if EntryFile::is_match(name) {
-            let content = fs::read_to_string(path.path())?;
-            let mut entry_file = EntryFile::from(&*content, 1)?;
-            if let Some(value) = entry_file.property(&field) {
-                let file_path = paths.entry_path.join(value);
-                if file_path.exists() {
-                    let ext = file_path.extension().unwrap().to_str().unwrap();
-                    let engine = ProcessEngine::engine(ext);
-                    let content = engine.content(&file_path)?;
-                    info!("call {:?} engine from {:?}", ext, file_path);
+        if !EntryFile::is_match(name) {
+            continue;
+        }
+        let content = fs::read_to_string(path.path())?;
+        let mut entry_file = EntryFile::from(&*content, 1)?;
 
-                    entry_file.content = content;
-                    fs::write(&path.path(), entry_file.to_string()).unwrap();
-                } else {
-                    return Err(Box::new(QuakeError("cannot entry file".to_string())));
-                }
+        if let Some(value) = entry_file.property(&field) {
+            // todo: add absolute path support
+            let file_path = get_file_property_path(paths, value);
+            if file_path.exists() {
+                let ext = file_path.extension().unwrap().to_str().unwrap();
+                let engine = ProcessEngine::engine(ext);
+                let content = engine.content(&file_path)?;
+                info!("call {:?} engine from {:?}", ext, file_path);
+
+                entry_file.content = content;
+                fs::write(&path.path(), entry_file.to_string()).unwrap();
+            } else {
+                return Err(Box::new(QuakeError("cannot entry file".to_string())));
             }
         }
     }
 
     Ok(())
+}
+
+fn get_file_property_path(paths: &EntryPaths, value: String) -> PathBuf {
+    paths.entry_path.join(value)
 }
 
 #[cfg(test)]
