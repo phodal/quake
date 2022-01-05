@@ -13,6 +13,10 @@ Conclusions:
 2. 根据数据生成路由规则函数。
 
 
+## Rust Rule Engine
+
+link: [Building a Datalog engine in under 300 lines of Rust](https://github.com/frankmcsherry/blog/blob/master/posts/2018-05-19.md)
+
 ## Rule Engine
 
 Patterns: `action` - `condition`.
