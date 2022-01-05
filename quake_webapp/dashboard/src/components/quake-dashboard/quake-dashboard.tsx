@@ -22,7 +22,7 @@ export interface FlowDefine {
 export interface EntryInfo {
   type: string,
   display: string,
-  properties: any[],
+  properties: object[],
   action: any[],
   flows: FlowDefine[]
 }
@@ -65,6 +65,7 @@ export class QuakeDashboard {
   @State() selected_entry: EntryInfo = null;
   @State() selected_flow_result: Map<string, object[]> = new Map();
   @State() selected_result: any[] = [];
+  @State() selected_entry_file_prop: string = "";
 
   @State() is_flow: boolean = false;
   @State() offset: object = {};
@@ -188,6 +189,15 @@ export class QuakeDashboard {
   async selectType(_e: Event, info: EntryInfo) {
     this.reset_input();
     this.selected_entry = info;
+    this.selected_entry_file_prop = null;
+    for (let property of this.selected_entry.properties) {
+      for (let key in property) {
+        if(property[key] == "File") {
+          this.selected_entry_file_prop = key;
+        }
+      }
+    }
+
     this.query = '/' + info.type + '.';
     this.handleQuery(this);
   }
@@ -292,6 +302,10 @@ export class QuakeDashboard {
     }).catch(function (error) {
       console.log(error);
     });
+  }
+
+  async showPdf(entry: string, file_prop: string) {
+    await fetch(`/processor/${entry}?file_prop=${file_prop}`)
   }
 
   editEntry(id: string, entry: string) {
@@ -433,11 +447,13 @@ export class QuakeDashboard {
   }
 
   private renderCards(item: any, type: string) {
-    console.log(item)
     return <div class="entry-show-list">
       <ion-card>
         <ion-card-header>
           <ion-card-subtitle># {this.padLeft(item.id, 4, '')}
+            {this.selected_entry_file_prop &&
+              <ion-icon name="document-outline" onClick={() => this.showPdf(type, item[this.selected_entry_file_prop])}/>
+            }
             <ion-icon name="book-outline" onClick={() => this.showEntry(item.id, type)}/>
             <ion-icon name="create-outline" onClick={() => this.editEntry(item.id, type)}/>
           </ion-card-subtitle>

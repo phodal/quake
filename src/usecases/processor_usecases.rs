@@ -42,7 +42,7 @@ pub fn process_by_path(
         let mut entry_file = EntryFile::from(&*content, 1)?;
 
         if let Some(value) = entry_file.property(&file_prop) {
-            let file_path = get_file_property_path(&value, &entry_path);
+            let file_path = get_file_property_path(&value, entry_path);
             if file_path.exists() {
                 let ext = file_path.extension().unwrap().to_str().unwrap();
                 let engine = ProcessEngine::engine(ext);
