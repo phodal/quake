@@ -12,15 +12,9 @@ use quake_core::errors::QuakeError;
 use quake_core::meta::MetaProperty;
 use quake_processor::process_engine::ProcessEngine;
 
-pub fn generate_by_path(paths: &EntryPaths, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
-    let mut field = "".to_string();
-    for (typ, property) in define.to_field_type() {
-        if let MetaProperty::File(_file) = property {
-            field = typ
-        }
-    }
-
-    if field.is_empty() {
+pub fn process_by_path(paths: &EntryPaths, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
+    let file_prop = find_last_file_prop_from_properties(define);
+    if file_prop.is_empty() {
         return Err(Box::new(QuakeError("cannot find entry".to_string())));
     }
 
@@ -38,7 +32,7 @@ pub fn generate_by_path(paths: &EntryPaths, define: &EntryDefine) -> Result<(), 
         let content = fs::read_to_string(path.path())?;
         let mut entry_file = EntryFile::from(&*content, 1)?;
 
-        if let Some(value) = entry_file.property(&field) {
+        if let Some(value) = entry_file.property(&file_prop) {
             let file_path = get_file_property_path(paths, &value);
             if file_path.exists() {
                 let ext = file_path.extension().unwrap().to_str().unwrap();
@@ -55,6 +49,16 @@ pub fn generate_by_path(paths: &EntryPaths, define: &EntryDefine) -> Result<(), 
     }
 
     Ok(())
+}
+
+fn find_last_file_prop_from_properties(define: &EntryDefine) -> String {
+    let mut field = "".to_string();
+    for (typ, property) in define.to_field_type() {
+        if let MetaProperty::File(_file) = property {
+            field = typ
+        }
+    }
+    field
 }
 
 fn get_file_property_path(paths: &EntryPaths, value: &str) -> PathBuf {

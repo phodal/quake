@@ -78,8 +78,8 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
                 return Err(Box::new(QuakeError("editor is empty".to_string())));
             }
         }
-        "generate" => {
-            generate_content(&paths, &expr.entry)?;
+        "process" => {
+            process_content(&paths, &expr.entry)?;
         }
         "sync" => entry_usecases::sync_in_path(&paths)?,
         "feed" => feed_by_path(&paths, &expr.entry, &conf)?,
@@ -167,10 +167,10 @@ pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn generate_content(paths: &EntryPaths, entry: &str) -> Result<(), Box<dyn Error>> {
+fn process_content(paths: &EntryPaths, entry_type: &str) -> Result<(), Box<dyn Error>> {
     let defines = EntryDefines::from_path(&paths.entries_define);
-    if let Some(define) = defines.find(entry) {
-        processor_usecases::generate_by_path(paths, &define)?
+    if let Some(define) = defines.find(entry_type) {
+        processor_usecases::process_by_path(paths, &define)?
     }
 
     Ok(())
@@ -186,7 +186,7 @@ mod tests {
     #[ignore]
     #[test]
     fn test_generate_content_for_processors() {
-        let expr = QuakeActionNode::from_text("papers.generate").unwrap();
+        let expr = QuakeActionNode::from_text("papers.process").unwrap();
         let config = QuakeConfig {
             editor: "".to_string(),
             workspace: "examples".to_string(),
