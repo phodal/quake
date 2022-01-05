@@ -11,15 +11,15 @@ use rocket::{get, post};
 use tracing::info;
 
 use quake_core::entry::entry_paths::EntryPaths;
-use quake_core::entry::EntryDefines;
 use quake_core::quake::QuakeTransflowNode;
 use quake_core::transflow::element_define::ElementDefines;
 use quake_core::transflow::js_flow_codegen::JsFlowCodegen;
 use quake_core::transflow::{element_define, Transflow};
+use quake_core::usecases::flow_usecases;
 use quake_core::QuakeConfig;
 
+use crate::server;
 use crate::server::ApiError;
-use quake_core::usecases::flow_usecases;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
@@ -44,8 +44,7 @@ pub(crate) async fn translate(
         }
     };
 
-    let path = PathBuf::from(config.workspace.clone()).join(EntryPaths::entries_define());
-    let defines: EntryDefines = serde_yaml::from_str(&*fs::read_to_string(path).unwrap()).unwrap();
+    let defines = server::defines(config);
     let flow = Transflow::from(defines.entries, node);
 
     let el_path = PathBuf::from(config.workspace.clone())

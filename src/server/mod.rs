@@ -1,17 +1,22 @@
 use figment::providers::Yaml;
+use quake_core::entry::EntryDefines;
 use rocket::fairing::AdHoc;
 use rocket::figment::providers::{Env, Format, Serialized};
 use rocket::figment::{Figment, Profile};
 use rocket::fs::FileServer;
-use rocket::{routes, Build, Config, Rocket};
+use rocket::{routes, Build, Config, Rocket, State};
 use serde_derive::{Deserialize, Serialize};
 
+use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::QuakeConfig;
+use std::fs;
+use std::path::PathBuf;
 
 mod action_api;
 mod entry_api;
 mod helper;
 mod layout_api;
+mod processor_api;
 mod reference_api;
 mod transflow_api;
 
@@ -63,8 +68,15 @@ pub fn quake_rocket() -> Rocket<Build> {
             ],
         )
         .mount("/reference", routes![reference_api::reference_by_type])
+        .mount("/processor", routes![processor_api::lookup_file])
         .mount("/layout", routes![layout_api::dashboard_layout])
         .attach(AdHoc::config::<QuakeConfig>())
+}
+
+pub fn defines(config: &State<QuakeConfig>) -> EntryDefines {
+    let path = PathBuf::from(config.workspace.clone()).join(EntryPaths::entries_define());
+    let defines: EntryDefines = serde_yaml::from_str(&*fs::read_to_string(path).unwrap()).unwrap();
+    defines
 }
 
 #[cfg(test)]

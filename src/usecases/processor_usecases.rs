@@ -6,7 +6,6 @@ use tracing::info;
 use walkdir::WalkDir;
 
 use quake_core::entry::entry_file::EntryFile;
-use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::entry::EntryDefine;
 use quake_core::errors::QuakeError;
 use quake_core::meta::MetaProperty;
@@ -17,7 +16,7 @@ pub fn process_by_path(
     is_force: bool,
     entry_path: &Path,
 ) -> Result<(), Box<dyn Error>> {
-    let file_prop = find_last_file_prop_from_properties(define);
+    let file_prop = lookup_file_prop_from_define(define);
     if file_prop.is_empty() {
         return Err(Box::new(QuakeError("cannot find entry".to_string())));
     }
@@ -61,13 +60,14 @@ pub fn process_by_path(
     Ok(())
 }
 
-fn find_last_file_prop_from_properties(define: &EntryDefine) -> String {
+pub fn lookup_file_prop_from_define(define: &EntryDefine) -> String {
     let mut field = "".to_string();
     for (typ, property) in define.to_field_type() {
         if let MetaProperty::File(_file) = property {
             field = typ
         }
     }
+
     field
 }
 

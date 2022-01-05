@@ -433,6 +433,7 @@ export class QuakeDashboard {
   }
 
   private renderCards(item: any, type: string) {
+    console.log(item)
     return <div class="entry-show-list">
       <ion-card>
         <ion-card-header>

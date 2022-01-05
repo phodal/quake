@@ -51,21 +51,28 @@ pub(crate) async fn get_entry(
     id: usize,
     config: &State<QuakeConfig>,
 ) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
-    let base_path = PathBuf::from(&config.workspace).join(entry_type);
-    let index = id;
-    let prefix = EntryFile::file_prefix(index);
-    let vec = file_filter::filter_by_prefix(base_path, prefix);
-    if vec.is_empty() {
-        return Err(NotFound(Json(ApiError {
-            msg: "file not found".to_string(),
-        })));
-    }
-    let file_path = vec[0].clone();
+    let file_path = entry_by_id(entry_type, id, config)?;
 
     let str = fs::read_to_string(file_path).expect("cannot read entry type");
     let file = EntryFile::from(str.as_str(), id).unwrap();
 
     Ok(Json(file))
+}
+
+pub fn entry_by_id(
+    entry_type: &str,
+    id: usize,
+    config: &State<QuakeConfig>,
+) -> Result<PathBuf, NotFound<Json<ApiError>>> {
+    let base_path = PathBuf::from(&config.workspace).join(entry_type);
+    let entries = file_filter::filter_by_prefix(base_path, EntryFile::file_prefix(id));
+    if entries.is_empty() {
+        return Err(NotFound(Json(ApiError {
+            msg: "file not found".to_string(),
+        })));
+    }
+
+    Ok(entries[0].clone())
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
