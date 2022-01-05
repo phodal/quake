@@ -12,7 +12,11 @@ use quake_core::errors::QuakeError;
 use quake_core::meta::MetaProperty;
 use quake_processor::process_engine::ProcessEngine;
 
-pub fn process_by_path(paths: &EntryPaths, define: &EntryDefine) -> Result<(), Box<dyn Error>> {
+pub fn process_by_path(
+    paths: &EntryPaths,
+    define: &EntryDefine,
+    is_force: bool,
+) -> Result<(), Box<dyn Error>> {
     let file_prop = find_last_file_prop_from_properties(define);
     if file_prop.is_empty() {
         return Err(Box::new(QuakeError("cannot find entry".to_string())));
@@ -29,6 +33,12 @@ pub fn process_by_path(paths: &EntryPaths, define: &EntryDefine) -> Result<(), B
         if !EntryFile::is_match(name) {
             continue;
         }
+
+        let one_kb = 1024;
+        if is_force && path.metadata().unwrap().len() > one_kb {
+            continue;
+        }
+
         let content = fs::read_to_string(path.path())?;
         let mut entry_file = EntryFile::from(&*content, 1)?;
 

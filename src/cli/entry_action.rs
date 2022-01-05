@@ -29,7 +29,7 @@ pub enum EntryAction {
     /// feed entry data to search engine
     Feed,
     /// generate auto content
-    Generate,
+    Process,
     /// list all entry
     List,
     /// show a entry content
@@ -47,7 +47,7 @@ impl EntryAction {
             "dump" => EntryAction::Dump,
             "edit" => EntryAction::Edit,
             "feed" => EntryAction::Feed,
-            "generate" => EntryAction::Generate,
+            "process" => EntryAction::Process,
             "list" => EntryAction::List,
             "show" => EntryAction::Show,
             "sync" => EntryAction::Sync,
@@ -79,7 +79,10 @@ pub fn entry_action(expr: &QuakeActionNode, conf: QuakeConfig) -> Result<(), Box
             }
         }
         "process" => {
-            process_content(&paths, &expr.entry)?;
+            process_content(&paths, &expr.entry, false)?;
+        }
+        "process::force" => {
+            process_content(&paths, &expr.entry, true)?;
         }
         "sync" => entry_usecases::sync_in_path(&paths)?,
         "feed" => feed_by_path(&paths, &expr.entry, &conf)?,
@@ -167,10 +170,14 @@ pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn process_content(paths: &EntryPaths, entry_type: &str) -> Result<(), Box<dyn Error>> {
+fn process_content(
+    paths: &EntryPaths,
+    entry_type: &str,
+    is_force: bool,
+) -> Result<(), Box<dyn Error>> {
     let defines = EntryDefines::from_path(&paths.entries_define);
     if let Some(define) = defines.find(entry_type) {
-        processor_usecases::process_by_path(paths, &define)?
+        processor_usecases::process_by_path(paths, &define, is_force)?
     }
 
     Ok(())
