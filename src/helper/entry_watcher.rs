@@ -62,8 +62,7 @@ fn feed_by_event(event: Event, search_url: &str, workspace: &Path) -> Result<(),
         _ => return Ok(()),
     }
 
-    debug!("feed_by_event {:?}", &event);
-    for path in event.paths {
+    for path in &event.paths {
         if path.is_dir() {
             continue;
         }
@@ -78,6 +77,7 @@ fn feed_by_event(event: Event, search_url: &str, workspace: &Path) -> Result<(),
             }
         }
 
+        debug!("feed_by_event {:?}", &event);
         let (typ, file) = entry_file_by_path(&path, workspace)?;
         feed_document(search_url, &typ, &file)?;
     }
