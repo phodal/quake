@@ -177,7 +177,7 @@ fn process_content(
 ) -> Result<(), Box<dyn Error>> {
     let defines = EntryDefines::from_path(&paths.entries_define);
     if let Some(define) = defines.find(entry_type) {
-        processor_usecases::process_by_path(paths, &define, is_force)?
+        processor_usecases::process_by_path(&define, is_force, &paths.entry_path)?
     }
 
     Ok(())

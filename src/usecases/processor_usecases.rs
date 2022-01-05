@@ -1,6 +1,6 @@
 use std::error::Error;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use tracing::info;
 use walkdir::WalkDir;
@@ -13,16 +13,16 @@ use quake_core::meta::MetaProperty;
 use quake_processor::process_engine::ProcessEngine;
 
 pub fn process_by_path(
-    paths: &EntryPaths,
     define: &EntryDefine,
     is_force: bool,
+    entry_path: &Path,
 ) -> Result<(), Box<dyn Error>> {
     let file_prop = find_last_file_prop_from_properties(define);
     if file_prop.is_empty() {
         return Err(Box::new(QuakeError("cannot find entry".to_string())));
     }
 
-    let walk_paths = WalkDir::new(&paths.entry_path)
+    let walk_paths = WalkDir::new(&entry_path)
         .max_depth(1)
         .min_depth(1)
         .into_iter()
@@ -43,7 +43,7 @@ pub fn process_by_path(
         let mut entry_file = EntryFile::from(&*content, 1)?;
 
         if let Some(value) = entry_file.property(&file_prop) {
-            let file_path = get_file_property_path(paths, &value);
+            let file_path = get_file_property_path(&value, &entry_path);
             if file_path.exists() {
                 let ext = file_path.extension().unwrap().to_str().unwrap();
                 let engine = ProcessEngine::engine(ext);
@@ -71,11 +71,11 @@ fn find_last_file_prop_from_properties(define: &EntryDefine) -> String {
     field
 }
 
-fn get_file_property_path(paths: &EntryPaths, value: &str) -> PathBuf {
-    let absolute = PathBuf::from(value);
+pub fn get_file_property_path(file_property: &str, entry_path: &Path) -> PathBuf {
+    let absolute = PathBuf::from(file_property);
     if absolute.exists() {
         return absolute;
     }
 
-    paths.entry_path.join(value)
+    entry_path.join(file_property)
 }
