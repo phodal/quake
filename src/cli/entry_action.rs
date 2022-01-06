@@ -164,7 +164,7 @@ fn show_entrysets(path: &Path) {
     println!("{}", table);
 }
 
-pub fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
+fn dump_by_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
     let map = Entrysets::jsonify(&paths.entry_path)?;
     fs::write("dump.json", map)?;
     Ok(())

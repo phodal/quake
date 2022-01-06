@@ -45,6 +45,8 @@ pub enum SubCommand {
     Tui(Terminal),
     /// dump page for web deploy
     Pagedump(PageDump),
+    /// generate content and entry from source
+    Generate(Generate),
 }
 
 #[derive(Parser)]
@@ -78,6 +80,22 @@ pub struct Init {
     #[clap(short, long)]
     /// download web.zip from GitHub
     download: bool,
+}
+
+/// generate from target with filter
+#[derive(Parser, Debug)]
+pub struct Generate {
+    /// input path
+    #[clap(short, long)]
+    source: String,
+    #[clap(short, long)]
+    target: String,
+    /// regex rules, like: `*.pdf`
+    #[clap(short, long)]
+    rule: String,
+
+    #[clap(short, long)]
+    flow: String,
 }
 
 #[derive(Parser, Debug)]
@@ -139,6 +157,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
             let config = load_config(&dump.config)?;
             page_dump(config);
         }
+        SubCommand::Generate(_generate) => {}
     }
 
     Ok(())
