@@ -108,14 +108,14 @@ impl MainWidget {
     }
 }
 
-#[derive(Default, Clone)]
-pub struct CmdLine {
-    pub(crate) message: String,
-}
+#[derive(Clone)]
+pub struct CmdLine;
 
-impl Widget for CmdLine {
-    fn render(self, area: Rect, buf: &mut Buffer) {
-        let message = Paragraph::new(self.message.as_ref())
+impl StatefulWidget for CmdLine {
+    type State = AppState;
+
+    fn render(self, area: Rect, buf: &mut Buffer, state: &mut Self::State) {
+        let message = Paragraph::new(state.message.as_ref())
             .block(Block::default().borders(Borders::ALL).title("Command"));
         message.render(area, buf);
     }

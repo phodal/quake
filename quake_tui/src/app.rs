@@ -13,20 +13,18 @@ use tui::Terminal;
 
 use crate::entry_action::action_result_to_main_widget;
 use crate::ui::draw;
-use crate::widgets::{CmdLine, MainWidget};
+use crate::widgets::MainWidget;
 
 pub struct App {
     pub state: AppState,
     pub config: QuakeConfig,
     pub main_widget: MainWidget,
-    pub cmd_line: CmdLine,
 }
 
 impl App {
     pub fn new(config: QuakeConfig) -> App {
         App {
             main_widget: MainWidget::Home,
-            cmd_line: CmdLine::default(),
             state: Default::default(),
             config,
         }
@@ -61,22 +59,22 @@ impl App {
     }
 
     pub fn message_clear(&mut self) {
-        self.cmd_line.message.clear();
+        self.state.message.clear();
     }
 
     pub fn send_message(&mut self, message: &str) {
         self.message_clear();
-        self.cmd_line.message.push_str(message);
+        self.state.message.push_str(message);
     }
 
     pub fn input_push(&mut self, ch: char) {
         self.state.input.push(ch);
-        self.cmd_line.message.push(ch);
+        self.state.message.push(ch);
     }
 
     pub fn input_pop(&mut self) {
         self.state.input.pop();
-        self.cmd_line.message.pop();
+        self.state.message.pop();
     }
 
     pub fn collect_command(&mut self) -> String {
@@ -210,11 +208,10 @@ impl App {
     fn action_auto_complete(&mut self) {
         if let MainWidget::EntryTypes(defines) = &self.main_widget {
             if let Some(idx) = self.state.entry_list_state.selected() {
-                let entry_type = defines[idx].entry_type.clone();
+                let cmd = format!("{}.add: ", defines[idx].entry_type);
                 self.jump_to_command_mode();
-                for ch in entry_type.chars() {
-                    self.input_push(ch);
-                }
+                self.state.input = cmd.clone();
+                self.state.message = cmd;
             }
         }
     }
@@ -231,6 +228,7 @@ pub struct AppState {
     pub mode: Mode,
     input: String,
     pub entry_list_state: ListState,
+    pub message: String,
 }
 
 impl Default for AppState {
@@ -240,6 +238,7 @@ impl Default for AppState {
             mode: Mode::Normal,
             input: "".to_string(),
             entry_list_state: ListState::default(),
+            message: "".to_string(),
         }
     }
 }
@@ -280,7 +279,7 @@ mod tests {
         let command = app.collect_command();
         assert_eq!(command, expect.to_string());
         assert_eq!(app.state.input, "".to_string());
-        assert_eq!(app.cmd_line.message, expect.to_string());
+        assert_eq!(app.state.message, expect.to_string());
     }
 
     #[rstest]
@@ -293,10 +292,10 @@ mod tests {
 
         app.input_push('g');
         app.input_push('t');
-        assert_eq!(app.cmd_line.message, "gt".to_string());
+        assert_eq!(app.state.message, "gt".to_string());
 
         app.send_message(message);
-        assert_eq!(app.cmd_line.message, message.to_string());
+        assert_eq!(app.state.message, message.to_string());
     }
 
     #[rstest]
@@ -308,12 +307,12 @@ mod tests {
         app.handle_key_event(KeyCode::Char('l')).unwrap();
         app.handle_key_event(KeyCode::Char('s')).unwrap();
         assert_eq!(app.state.input, "ls".to_string());
-        assert_eq!(app.cmd_line.message, "ls".to_string());
+        assert_eq!(app.state.message, "ls".to_string());
 
         app.handle_key_event(KeyCode::Esc).unwrap();
         assert_eq!(app.state.mode, Mode::Normal);
         assert_eq!(app.state.input, "".to_string());
-        assert_eq!(app.cmd_line.message, "".to_string());
+        assert_eq!(app.state.message, "".to_string());
     }
 
     #[rstest]
@@ -323,11 +322,11 @@ mod tests {
     #[case("success")]
     fn test_into_command_mode(mut app: App, #[case] message: &str) {
         app.state.input = message.to_string();
-        app.cmd_line.message = message.to_string();
+        app.state.message = message.to_string();
 
         app.handle_key_event(KeyCode::Char(':')).unwrap();
         assert_eq!(app.state.input, "".to_string());
-        assert_eq!(app.cmd_line.message, "".to_string());
+        assert_eq!(app.state.message, "".to_string());
     }
 
     #[rstest]
@@ -366,7 +365,7 @@ mod tests {
         assert_eq!(app.state.mode, Mode::Normal);
 
         let error_message = format!("Unknown command: {}", inputs.iter().collect::<String>());
-        assert_eq!(app.cmd_line.message, error_message);
+        assert_eq!(app.state.message, error_message);
     }
 
     #[rstest]
