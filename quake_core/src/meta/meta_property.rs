@@ -19,6 +19,8 @@ pub enum MetaProperty {
     Epic(String),
     /// Date as you know
     Date(String),
+    /// Data for things
+    Data(String),
     /// priority
     Priority(String),
     /// todo: define for Attachment
@@ -56,6 +58,7 @@ impl Display for MetaProperty {
             MetaProperty::Flow(flow) => write!(f, "{}", flow),
             MetaProperty::Enum(array) => write!(f, "{:?}", array),
             MetaProperty::File(path) => write!(f, "{}", path),
+            MetaProperty::Data(data) => write!(f, "{}", data),
         }
     }
 }

@@ -7,6 +7,17 @@ created_date: 2021-12-27 08:10:05
 updated_date: 2021-12-27 08:10:05
 ---
 
+## Conclusion
+
+Transflow with: [https://jerosoler.github.io/Drawflow/](https://jerosoler.github.io/Drawflow/)
+
+GoJS: [https://gojs.net/latest/index.html](https://gojs.net/latest/index.html)
+
+### mxGraph
+
+mxGraph: [https://github.com/maxGraph/maxGraph](https://github.com/maxGraph/maxGraph)
+
+from draw.io: [https://stackoverflow.com/questions/49376973/open-drawio-file-in-mxgraph-editor](https://stackoverflow.com/questions/49376973/open-drawio-file-in-mxgraph-editor)
 
 ## MxGraph
 

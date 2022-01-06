@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::error::Error;
-use std::path;
 use std::path::Path;
+use std::{panic, path};
 
 use pdf_extract::extract_text;
 
@@ -18,7 +18,22 @@ impl Processor for PdfProcessor {
 
         let mut string = String::new();
         string.push_str("<quake-br>");
-        string.push_str(extract_text(path)?.as_str());
+
+        println!("processing file: {:}", path.display());
+
+        let extract = panic::catch_unwind(|| extract_text(path));
+        let text = match extract {
+            Ok(t) => match t {
+                Ok(text) => text,
+                Err(err) => return Err(Box::new(err)),
+            },
+            Err(err) => {
+                println!("{:?}", err);
+                "".to_string()
+            }
+        };
+
+        string.push_str(text.as_str());
 
         string = string.replace("\n\n", "<quake-br>").replace("\n", "");
         string = string.replace("<quake-br>", "\n\n");

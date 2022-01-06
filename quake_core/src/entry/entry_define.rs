@@ -87,11 +87,11 @@ impl EntryDefine {
     }
 
     /// add `title`, `created_date`, `updated_date` value to system
-    pub fn create_title_and_date(&self, title: String) -> IndexMap<String, String> {
+    pub fn create_title_and_date(&self, title: &str) -> IndexMap<String, String> {
         let date = quake_time::date_now();
 
         let mut map = IndexMap::new();
-        map.insert("title".to_string(), title);
+        map.insert("title".to_string(), title.to_string());
         map.insert("created_date".to_string(), date.clone());
         map.insert("updated_date".to_string(), date);
 
@@ -99,7 +99,7 @@ impl EntryDefine {
     }
 
     /// create default properties with title, date, flows, dates
-    pub fn create_default_properties(&self, title: String) -> IndexMap<String, String> {
+    pub fn create_default_properties(&self, title: &str) -> IndexMap<String, String> {
         let basic_map = self.create_title_and_date(title);
         let mut properties = self.convert_to_properties(basic_map);
         let flows = self.create_flows_and_states();
@@ -207,7 +207,7 @@ mod tests {
         assert_eq!(map.get("status").unwrap().to_string(), "Todo".to_string());
         assert_eq!(map.get("priority").unwrap().to_string(), "Low".to_string());
 
-        let final_map = define.create_default_properties("hello".to_string());
+        let final_map = define.create_default_properties("hello");
         assert_eq!(
             final_map.get("status").unwrap().to_string(),
             "Todo".to_string()

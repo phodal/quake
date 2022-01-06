@@ -46,8 +46,7 @@ pub fn create_entry(
     let mut target_path = paths.entry_path.join(new_md_file);
     File::create(&target_path)?;
 
-    let mut entry_file =
-        create_entry_file(&entries_define, &mut target_path, entry_text.to_string());
+    let mut entry_file = create_entry_file(&entries_define, &mut target_path, entry_text);
     entry_file.id = new_index;
 
     entry_info.inc();
@@ -65,7 +64,7 @@ fn save_entry_info(entry_info_path: &Path, entry_info: &mut EntryNodeInfo) {
 pub fn create_entry_file(
     entry_define: &EntryDefine,
     target_file: &mut PathBuf,
-    entry_text: String,
+    entry_text: &str,
 ) -> EntryFile {
     let mut entry_file = EntryFile::default();
     entry_file.set_properties(entry_define.create_default_properties(entry_text));

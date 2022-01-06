@@ -1,23 +1,49 @@
 use std::error::Error;
-use std::path::PathBuf;
+use std::fs;
+use std::path::{Path, PathBuf};
 
-use quake_core::entry::entry_paths::EntryPaths;
 use regex::Regex;
+use tracing::info;
 use walkdir::{DirEntry, WalkDir};
 
-use quake_core::entry::EntryDefines;
+use quake_core::entry::entry_file::EntryFile;
+use quake_core::entry::entry_paths::EntryPaths;
+use quake_core::entry::{EntryDefine, EntryDefines};
 use quake_core::errors::QuakeError;
-use quake_core::quake::QuakeTransflowNode;
+use quake_core::quake::{QuakeTransflowNode, Route};
 use quake_core::QuakeConfig;
+use quake_processor::process_engine::ProcessEngine;
 
 pub fn generate_by_flow(flow: &str, config: &QuakeConfig) -> Result<(), Box<dyn Error>> {
     let flow = format!("transflow generate {{ {:} }}", flow);
     let node = QuakeTransflowNode::from_text(&flow)?;
     let route = &node.routes[0];
 
-    let buf = PathBuf::from(&config.workspace).join(EntryPaths::entries_define());
+    let workspace = PathBuf::from(&config.workspace);
+
+    let define = lookup_define(&route, &workspace)?;
+
+    let filter_reg = regex_from_filter(&route)?;
+    let source_files = files_from_route(&route, &filter_reg)?;
+
+    let target_path = workspace.join(&define.entry_type);
+    fs::create_dir_all(&target_path)?;
+
+    process_entries(define, source_files, &target_path)?;
+
+    // todo: update entry node info
+    // let mut entry_info = entry_node_info::entry_info_from_path(&paths.entry_node_info);
+    // let new_index = entry_info.index + 1;
+
+    // todo: create entries csv
+
+    Ok(())
+}
+
+fn lookup_define(route: &&Route, workspace: &Path) -> Result<EntryDefine, Box<dyn Error>> {
+    let buf = workspace.join(EntryPaths::entries_define());
     let defines = EntryDefines::from_path(&buf);
-    let _define = match defines.find(&route.to) {
+    let define = match defines.find(&route.to) {
         None => {
             let err_msg = QuakeError(format!(" lost define of entry {:?}", &route.to));
             return Err(Box::new(err_msg));
@@ -25,19 +51,50 @@ pub fn generate_by_flow(flow: &str, config: &QuakeConfig) -> Result<(), Box<dyn 
         Some(def) => def,
     };
 
-    let filter = match &route.filter {
-        None => ".*",
-        Some(filter) => filter,
-    };
+    Ok(define)
+}
 
-    let filter_reg = match Regex::new(filter) {
-        Ok(reg) => reg,
-        Err(err) => {
-            let err_msg = QuakeError(format!("compile filter error: {:}", err));
-            return Err(Box::new(err_msg));
-        }
-    };
+fn process_entries(
+    define: EntryDefine,
+    source_files: Vec<PathBuf>,
+    target_path: &Path,
+) -> Result<(), Box<dyn Error>> {
+    let mut id = 1;
+    for file in source_files {
+        let ext = file.extension().unwrap().to_str().unwrap();
+        let engine = ProcessEngine::engine(ext);
+        let content = match engine.content(&file) {
+            Ok(content) => content,
+            Err(error) => {
+                info!("{:?}", error);
+                continue;
+            }
+        };
 
+        let target_name = file.file_stem().unwrap().to_str().unwrap();
+
+        let mut entry_file = EntryFile::default();
+        entry_file.set_properties(define.create_default_properties(target_name));
+        entry_file.id = id;
+        entry_file.add_property("file", format!("{:}", file.display()));
+
+        println!("{:?}", content);
+
+        entry_file.content = content;
+
+        let file_name = EntryFile::file_name(id, target_name);
+        let target_file = &target_path.join(file_name);
+
+        println!("save to file: {:?}", target_file.display());
+        fs::write(target_file, entry_file.to_string())?;
+
+        id += 1;
+    }
+
+    Ok(())
+}
+
+fn files_from_route(route: &&Route, filter_reg: &Regex) -> Result<Vec<PathBuf>, Box<dyn Error>> {
     let mut source_files = vec![];
     for source in &route.from {
         let source_dir = PathBuf::from(source);
@@ -55,14 +112,30 @@ pub fn generate_by_flow(flow: &str, config: &QuakeConfig) -> Result<(), Box<dyn 
         }
 
         for entry in WalkDir::new(source_dir).into_iter().filter_map(|e| e.ok()) {
-            if is_source_file(&entry, &filter_reg) {
+            if is_source_file(&entry, filter_reg) {
                 source_files.push(entry.into_path());
             }
         }
     }
-    println!("{:?}", source_files);
 
-    Ok(())
+    Ok(source_files)
+}
+
+// todo: add gitignore support
+fn regex_from_filter(route: &&Route) -> Result<Regex, Box<dyn Error>> {
+    let filter = match &route.filter {
+        None => ".*",
+        Some(filter) => filter,
+    };
+    let filter_reg = match Regex::new(filter) {
+        Ok(reg) => reg,
+        Err(err) => {
+            let err_msg = QuakeError(format!("compile filter error: {:}", err));
+            return Err(Box::new(err_msg));
+        }
+    };
+
+    Ok(filter_reg)
 }
 
 #[cfg(test)]
@@ -71,6 +144,7 @@ mod tests {
 
     use crate::generate_by_flow;
 
+    #[ignore]
     #[test]
     fn return_absolute_when_file_exists() {
         let conf = QuakeConfig {
@@ -81,11 +155,10 @@ mod tests {
             port: 8000,
         };
 
-        match generate_by_flow("from('examples').to('papers').filter('.*.pdf')", &conf) {
-            Ok(_) => {}
-            Err(err) => {
-                println!("{:?}", err);
-            }
+        if let Err(err) =
+            generate_by_flow("from('examples').to('demo_papers').filter('.pdf')", &conf)
+        {
+            println!("{:?}", err);
         }
     }
 }

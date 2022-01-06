@@ -86,3 +86,22 @@ support for open attachment, or viewer?
     - file: Attachment
 ```
 
+## property type: `File`
+
+processable content with `quake_processor`
+
+```yaml
+- type: papers
+  display: ""
+  custom_path: "../../papers"
+  processors:
+    file_engines: ['pdf', 'md']
+  properties:
+    - title: Title
+    - file: File
+    - content: String
+    - created_date: Date
+    - updated_date: Date
+  actions: ~
+```
+
