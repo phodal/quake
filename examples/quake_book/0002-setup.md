@@ -57,6 +57,14 @@ quake cmd -i "todo.sync"
 quake cmd -i "todo.show(1)"
 ```
 
+6. generate from pdf
+
+filter with `Grep` regex syntax
+
+```
+quake generate --flow "from('examples').to('papers').filter('.pdf$')"
+```
+
 ### Web
 
 1. setup search engine

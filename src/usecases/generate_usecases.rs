@@ -34,7 +34,6 @@ pub fn generate_by_flow(flow: &str, config: &QuakeConfig) -> Result<(), Box<dyn 
 
     let mut id = 1;
     process_entries(define, source_files, &entry_path, &mut id)?;
-    println!("{:?}", id);
 
     // update entry node info
     let entry_info_path = entry_path.join(EntryPaths::entry_info());
