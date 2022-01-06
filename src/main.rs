@@ -86,6 +86,8 @@ pub struct Init {
 /// generate from target with filter
 #[derive(Parser, Debug)]
 pub struct Generate {
+    #[clap(short, long, default_value = ".quake.yaml")]
+    config: String,
     /// transflow like: `from("source path").to("target entry").filter("*.pdf")`,
     #[clap(short, long)]
     flow: String,
@@ -137,7 +139,8 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
             page_dump(config);
         }
         SubCommand::Generate(generate) => {
-            generate_by_flow(&generate.flow)?;
+            let conf = load_config(&generate.config)?;
+            generate_by_flow(&generate.flow, &conf)?;
         }
     }
 
@@ -195,8 +198,9 @@ async fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
     fs::create_dir_all(&config.path)?;
 
     let workspace = PathBuf::from(&config.path);
-    let path = workspace.join(EntryPaths::quake_config());
     let define = workspace.join(EntryPaths::entries_define());
+
+    let path = workspace.join(EntryPaths::quake_config());
 
     // todo: make default config to template
     let quake_config = QuakeConfig {
