@@ -95,7 +95,7 @@ fn process_entries(
         info!("save to file: {:?}", target_file.display());
         fs::write(target_file, entry_file.to_string())?;
 
-        *index = *index + 1;
+        *index += 1;
     }
 
     Ok(())
@@ -131,7 +131,6 @@ fn files_from_route(
     Ok(source_files)
 }
 
-// todo: add gitignore support
 fn regex_from_filter(route: &&Route) -> Result<RegexMatcher, Box<dyn Error>> {
     let filter = match &route.filter {
         None => ".*",
@@ -190,6 +189,6 @@ mod tests {
         let matcher = RegexMatcher::new(".pdf").unwrap();
 
         assert!(grep_by_text(&matcher, "pdfd.pdf").unwrap_or(false));
-        assert_eq!(false, grep_by_text(&matcher, "pdf.md").unwrap());
+        assert!(!grep_by_text(&matcher, "pdf.md").unwrap());
     }
 }
