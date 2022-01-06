@@ -2,7 +2,9 @@ use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use regex::Regex;
+use grep_regex::RegexMatcher;
+use grep_searcher::sinks::UTF8;
+use grep_searcher::Searcher;
 use tracing::{error, info};
 use walkdir::{DirEntry, WalkDir};
 
@@ -24,8 +26,8 @@ pub fn generate_by_flow(flow: &str, config: &QuakeConfig) -> Result<(), Box<dyn 
 
     let define = lookup_define(&route, &workspace)?;
 
-    let filter_reg = regex_from_filter(&route)?;
-    let source_files = files_from_route(&route, &filter_reg)?;
+    let matcher = regex_from_filter(&route)?;
+    let source_files = files_from_route(&route, &matcher)?;
 
     let entry_path = workspace.join(&define.entry_type);
     fs::create_dir_all(&entry_path)?;
@@ -99,7 +101,10 @@ fn process_entries(
     Ok(())
 }
 
-fn files_from_route(route: &&Route, filter_reg: &Regex) -> Result<Vec<PathBuf>, Box<dyn Error>> {
+fn files_from_route(
+    route: &&Route,
+    matcher: &RegexMatcher,
+) -> Result<Vec<PathBuf>, Box<dyn Error>> {
     let mut source_files = vec![];
     for source in &route.from {
         let source_dir = PathBuf::from(source);
@@ -108,16 +113,16 @@ fn files_from_route(route: &&Route, filter_reg: &Regex) -> Result<Vec<PathBuf>, 
             return Err(Box::new(error));
         }
 
-        fn is_source_file(entry: &DirEntry, filter_reg: &Regex) -> bool {
+        fn is_source_file(entry: &DirEntry, matcher: &RegexMatcher) -> bool {
             entry
                 .file_name()
                 .to_str()
-                .map(|s| filter_reg.is_match(s))
+                .map(|s| grep_by_text(matcher, s).unwrap_or(false))
                 .unwrap_or(false)
         }
 
         for entry in WalkDir::new(source_dir).into_iter().filter_map(|e| e.ok()) {
-            if is_source_file(&entry, filter_reg) {
+            if is_source_file(&entry, matcher) {
                 source_files.push(entry.into_path());
             }
         }
@@ -127,28 +132,43 @@ fn files_from_route(route: &&Route, filter_reg: &Regex) -> Result<Vec<PathBuf>, 
 }
 
 // todo: add gitignore support
-fn regex_from_filter(route: &&Route) -> Result<Regex, Box<dyn Error>> {
+fn regex_from_filter(route: &&Route) -> Result<RegexMatcher, Box<dyn Error>> {
     let filter = match &route.filter {
         None => ".*",
         Some(filter) => filter,
     };
-    let filter_reg = match Regex::new(filter) {
-        Ok(reg) => reg,
-        Err(err) => {
-            let err_msg = QuakeError(format!("compile filter error: {:}", err));
-            return Err(Box::new(err_msg));
-        }
-    };
 
-    Ok(filter_reg)
+    let matcher = RegexMatcher::new(filter)?;
+    Ok(matcher)
+}
+
+pub fn grep_by_text(matcher: &RegexMatcher, text: &str) -> Result<bool, Box<dyn Error>> {
+    let from = text.as_bytes();
+    let mut searcher = Searcher::new();
+
+    let mut has_match = false;
+    searcher.search_reader(
+        matcher,
+        from,
+        UTF8(|_, _| {
+            has_match = true;
+            Ok(true)
+        }),
+    )?;
+
+    Ok(has_match)
 }
 
 #[cfg(test)]
 mod tests {
+    use grep_regex::RegexMatcher;
+
     use quake_core::QuakeConfig;
 
     use crate::generate_by_flow;
+    use crate::usecases::generate_usecases::grep_by_text;
 
+    #[ignore]
     #[test]
     fn return_absolute_when_file_exists() {
         let conf = QuakeConfig {
@@ -163,5 +183,13 @@ mod tests {
         if let Err(err) = generate_by_flow(flow_text, &conf) {
             println!("{:?}", err);
         }
+    }
+
+    #[test]
+    fn test_grep_regex() {
+        let matcher = RegexMatcher::new(".pdf").unwrap();
+
+        assert!(grep_by_text(&matcher, "pdfd.pdf").unwrap_or(false));
+        assert_eq!(false, grep_by_text(&matcher, "pdf.md").unwrap());
     }
 }
