@@ -79,3 +79,16 @@ pub fn get_file_property_path(file_property: &str, entry_path: &Path) -> PathBuf
 
     entry_path.join(file_property)
 }
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+
+    use crate::usecases::processor_usecases::get_file_property_path;
+
+    #[test]
+    fn return_absolute_when_file_exists() {
+        let buf = get_file_property_path("README.md", &PathBuf::from("docs"));
+        assert_eq!("README.md", buf.display().to_string())
+    }
+}
