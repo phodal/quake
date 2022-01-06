@@ -17,6 +17,7 @@ use quake_core::QuakeConfig;
 use quake_tui::tui_main_loop;
 
 use crate::server::quake_rocket;
+use crate::usecases::generate_usecases::generate_by_flow;
 
 pub mod cli;
 pub mod helper;
@@ -85,15 +86,7 @@ pub struct Init {
 /// generate from target with filter
 #[derive(Parser, Debug)]
 pub struct Generate {
-    /// input path
-    #[clap(short, long)]
-    source: String,
-    #[clap(short, long)]
-    target: String,
-    /// regex rules, like: `*.pdf`
-    #[clap(short, long)]
-    rule: String,
-
+    /// transflow like: `from("source path").to("target entry").filter("*.pdf")`,
     #[clap(short, long)]
     flow: String,
 }
@@ -134,21 +127,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
         }
         SubCommand::Server(server) => {
             let config = load_config(&server.config)?;
-            let workspace = config.workspace;
-            let search_url = config.search_url;
-
-            if server.watch {
-                block_on(async {
-                    let (_s, _g) = future::join(
-                        quake_rocket().launch(),
-                        entry_watcher::async_watch(workspace, search_url),
-                    )
-                    .await;
-                });
-            } else {
-                #[allow(clippy::async_yields_async)]
-                let _ = block_on(async { quake_rocket().launch() }).await;
-            }
+            run_server(server, config).await
         }
         SubCommand::Tui(_) => {
             tui_main_loop()?;
@@ -157,10 +136,30 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
             let config = load_config(&dump.config)?;
             page_dump(config);
         }
-        SubCommand::Generate(_generate) => {}
+        SubCommand::Generate(generate) => {
+            generate_by_flow(&generate.flow)?;
+        }
     }
 
     Ok(())
+}
+
+async fn run_server(server: WebServer, config: QuakeConfig) {
+    let workspace = config.workspace;
+    let search_url = config.search_url;
+
+    if server.watch {
+        block_on(async {
+            let (_s, _g) = future::join(
+                quake_rocket().launch(),
+                entry_watcher::async_watch(workspace, search_url),
+            )
+            .await;
+        });
+    } else {
+        #[allow(clippy::async_yields_async)]
+        let _ = block_on(async { quake_rocket().launch() }).await;
+    }
 }
 
 fn setup_log() {
