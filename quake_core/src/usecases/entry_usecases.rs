@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 use std::fs::File;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use crate::entry::entry_file::EntryFile;
 use crate::entry::entry_paths::EntryPaths;
@@ -14,11 +14,11 @@ use crate::usecases::entrysets::Entrysets;
 
 /// generate entries.csv from by paths
 pub fn sync_in_path(paths: &EntryPaths) -> Result<(), Box<dyn Error>> {
-    let (size, content) = Entrysets::generate(&paths.entry_path)?;
+    let (size, content) = Entrysets::generate_csv(&paths.entry_path)?;
 
     if size > 0 {
         fs::write(&paths.entries_csv, content)?;
-        save_entry_info(&paths.entry_node_info, &mut EntryNodeInfo::new(size));
+        entry_node_info::save_entry_info(&paths.entry_node_info, &mut EntryNodeInfo::new(size));
     }
 
     Ok(())
@@ -50,14 +50,9 @@ pub fn create_entry(
     entry_file.id = new_index;
 
     entry_info.inc();
-    save_entry_info(&paths.entry_node_info, &mut entry_info);
+    entry_node_info::save_entry_info(&paths.entry_node_info, &mut entry_info);
 
     Ok((target_path, entry_file))
-}
-
-fn save_entry_info(entry_info_path: &Path, entry_info: &mut EntryNodeInfo) {
-    let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
-    fs::write(&entry_info_path, result).expect("cannot write to file");
 }
 
 /// create really entry file

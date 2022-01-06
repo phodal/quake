@@ -25,6 +25,10 @@ impl EntryPaths {
         }
     }
 
+    pub fn entry_info() -> &'static str {
+        "entry-node-info.yaml"
+    }
+
     pub fn quake_config() -> &'static str {
         ".quake.yaml"
     }

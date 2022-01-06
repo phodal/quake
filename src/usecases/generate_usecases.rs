@@ -3,14 +3,15 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use regex::Regex;
-use tracing::info;
+use tracing::{error, info};
 use walkdir::{DirEntry, WalkDir};
 
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
-use quake_core::entry::{EntryDefine, EntryDefines};
+use quake_core::entry::{entry_node_info, EntryDefine, EntryDefines};
 use quake_core::errors::QuakeError;
 use quake_core::quake::{QuakeTransflowNode, Route};
+use quake_core::usecases::entrysets::Entrysets;
 use quake_core::QuakeConfig;
 use quake_processor::process_engine::ProcessEngine;
 
@@ -26,16 +27,22 @@ pub fn generate_by_flow(flow: &str, config: &QuakeConfig) -> Result<(), Box<dyn 
     let filter_reg = regex_from_filter(&route)?;
     let source_files = files_from_route(&route, &filter_reg)?;
 
-    let target_path = workspace.join(&define.entry_type);
-    fs::create_dir_all(&target_path)?;
+    let entry_path = workspace.join(&define.entry_type);
+    fs::create_dir_all(&entry_path)?;
 
-    process_entries(define, source_files, &target_path)?;
+    let mut id = 1;
+    process_entries(define, source_files, &entry_path, &mut id)?;
+    println!("{:?}", id);
 
-    // todo: update entry node info
-    // let mut entry_info = entry_node_info::entry_info_from_path(&paths.entry_node_info);
-    // let new_index = entry_info.index + 1;
+    // update entry node info
+    let entry_info_path = entry_path.join(EntryPaths::entry_info());
+    let mut entry_info = entry_node_info::entry_info_from_path(&entry_info_path);
+    entry_info.index = id + 1;
+    entry_node_info::save_entry_info(&entry_info_path, &mut entry_info);
 
-    // todo: create entries csv
+    // update entries csv
+    let (_, content) = Entrysets::generate_csv(&entry_path)?;
+    fs::write(entry_path.join(EntryPaths::entries_csv()), content)?;
 
     Ok(())
 }
@@ -58,15 +65,15 @@ fn process_entries(
     define: EntryDefine,
     source_files: Vec<PathBuf>,
     target_path: &Path,
+    index: &mut usize,
 ) -> Result<(), Box<dyn Error>> {
-    let mut id = 1;
     for file in source_files {
         let ext = file.extension().unwrap().to_str().unwrap();
         let engine = ProcessEngine::engine(ext);
         let content = match engine.content(&file) {
             Ok(content) => content,
             Err(error) => {
-                info!("{:?}", error);
+                error!("{:?}", error);
                 continue;
             }
         };
@@ -75,20 +82,18 @@ fn process_entries(
 
         let mut entry_file = EntryFile::default();
         entry_file.set_properties(define.create_default_properties(target_name));
-        entry_file.id = id;
+        entry_file.id = *index;
         entry_file.add_property("file", format!("{:}", file.display()));
-
-        println!("{:?}", content);
 
         entry_file.content = content;
 
-        let file_name = EntryFile::file_name(id, target_name);
+        let file_name = EntryFile::file_name(*index, target_name);
         let target_file = &target_path.join(file_name);
 
-        println!("save to file: {:?}", target_file.display());
+        info!("save to file: {:?}", target_file.display());
         fs::write(target_file, entry_file.to_string())?;
 
-        id += 1;
+        *index = *index + 1;
     }
 
     Ok(())
@@ -144,7 +149,6 @@ mod tests {
 
     use crate::generate_by_flow;
 
-    #[ignore]
     #[test]
     fn return_absolute_when_file_exists() {
         let conf = QuakeConfig {
@@ -155,9 +159,8 @@ mod tests {
             port: 8000,
         };
 
-        if let Err(err) =
-            generate_by_flow("from('examples').to('demo_papers').filter('.pdf')", &conf)
-        {
+        let flow_text = "from('examples').to('papers').filter('spike.md')";
+        if let Err(err) = generate_by_flow(flow_text, &conf) {
             println!("{:?}", err);
         }
     }

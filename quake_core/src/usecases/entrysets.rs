@@ -211,7 +211,7 @@ impl Entrysets {
         files
     }
 
-    pub fn generate(path: &Path) -> Result<(usize, String), Box<dyn Error>> {
+    pub fn generate_csv(path: &Path) -> Result<(usize, String), Box<dyn Error>> {
         let map = match Entrysets::rebuild(path) {
             Ok(table) => table,
             Err(err) => {
@@ -297,7 +297,7 @@ mod tests {
     fn test_generate() {
         let buf = PathBuf::from("..").join("examples").join("todo");
 
-        let (size, string) = Entrysets::generate(&buf).unwrap();
+        let (size, string) = Entrysets::generate_csv(&buf).unwrap();
 
         assert_eq!(1, size);
         assert_eq!( "\"id\",\"title\",\"author\",\"created_date\",\"updated_date\"\n1,\"time support\",\"\",\"2021-11-24 19:14:10\",\"2021-11-24 19:14:10\"\n", string);
