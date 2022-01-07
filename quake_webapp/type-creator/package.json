@@ -26,7 +26,7 @@
     "generate": "stencil generate"
   },
   "dependencies": {
-    "@bpmn-io/form-js-editor": "^0.5.1",
+    "@quakeworks/form-js-editor": "^0.6.2",
     "@stencil/core": "^2.11.0"
   },
   "devDependencies": {
