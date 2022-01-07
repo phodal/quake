@@ -8,9 +8,11 @@ import {FormEditor} from '@quakeworks/form-js-editor';
 })
 export class TypeCreator {
   formEl: HTMLElement;
+  formEditor: FormEditor
+  schema: any
 
   async componentDidRender() {
-    const schema = {
+    this.schema = {
       "schemaVersion": 1,
       "exporter": {
         "name": "form-js",
@@ -36,20 +38,26 @@ export class TypeCreator {
           "key": "create_date",
           "label": "Create Date",
           "type": "Date"
-        },
+        }
       ],
       "type": "default"
     };
 
-    const formEditor = new FormEditor({
+    this.formEditor = new FormEditor({
       container: this.formEl
     });
 
-    await formEditor.importSchema(schema);
+    await this.formEditor.importSchema(this.schema);
+  }
+
+  submit() {
+    console.log(this.schema);
+    console.log(this.formEditor.getSchema());
   }
 
   render() {
     return <div>
+      <button onClick={() => this.submit()}>Submit</button>
       <div ref={(el) => this.formEl = el} />
     </div>;
   }
