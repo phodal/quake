@@ -1,11 +1,11 @@
 import { newSpecPage } from '@stencil/core/testing';
 import { QuakeDashboard } from './quake-dashboard';
 
-describe('my-component', () => {
+describe('type-creator', () => {
   it('renders', async () => {
     const { root } = await newSpecPage({
       components: [QuakeDashboard],
-      html: '<my-component></my-component>',
+      html: '<type-creator></type-creator>',
     });
     expect(root).toEqualHtml(`
       <my-component>

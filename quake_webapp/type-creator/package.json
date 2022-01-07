@@ -1,5 +1,5 @@
 {
-  "name": "type-creator",
+  "name": "@quakeworks/type-creator",
   "version": "0.0.1",
   "description": "Stencil Component Starter",
   "main": "dist/index.cjs.js",
@@ -26,6 +26,7 @@
     "generate": "stencil generate"
   },
   "dependencies": {
+    "@bpmn-io/form-js-editor": "^0.5.1",
     "@stencil/core": "^2.11.0"
   },
   "devDependencies": {
