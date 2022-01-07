@@ -13,11 +13,22 @@ Transflow with: [https://jerosoler.github.io/Drawflow/](https://jerosoler.github
 
 GoJS: [https://gojs.net/latest/index.html](https://gojs.net/latest/index.html)
 
+## flowchart.js
+
+https://github.com/adrai/flowchart.js/
+
+## Diagram.js
+
+https://github.com/bpmn-io/diagram-js
+
+https://www.libtrends.info/npm-compare/diagram-js-vs-flowchart.js-vs-gojs-vs-jointjs-vs-jsplumb-vs-mxgraph-vs-react-diagrams
+
 ### mxGraph
 
 mxGraph: [https://github.com/maxGraph/maxGraph](https://github.com/maxGraph/maxGraph)
 
 from draw.io: [https://stackoverflow.com/questions/49376973/open-drawio-file-in-mxgraph-editor](https://stackoverflow.com/questions/49376973/open-drawio-file-in-mxgraph-editor)
+
 
 ## MxGraph
 

@@ -61,7 +61,7 @@ quake cmd -i "todo.show(1)"
 
 filter with `Grep` regex syntax
 
-```
+```bash
 quake generate --flow "from('examples').to('papers').filter('.pdf$')"
 ```
 

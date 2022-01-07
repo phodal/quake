@@ -2,7 +2,21 @@
 
 ## Docs
 
-Framework Spikes
+### Framework Spikes
+
+#### Form.js
+
+https://github.com/bpmn-io/form-js
+
+#### Formio
+
+GitHub: [https://github.com/formio](https://github.com/formio)
+
+the type creator for entry type
+
+- dragula
+
+#### Others
 
 - [ ] [Stencil Router](https://github.com/ionic-team/stencil-router)
 
