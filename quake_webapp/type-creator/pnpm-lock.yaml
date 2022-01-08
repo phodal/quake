@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@quakeworks/form-js': ^0.6.2
   '@quakeworks/form-js-editor': ^0.6.2
   '@stencil/core': ^2.11.0
   '@types/jest': ^26.0.24
@@ -9,6 +10,7 @@ specifiers:
   puppeteer: ^10.0.0
 
 dependencies:
+  '@quakeworks/form-js': 0.6.3
   '@quakeworks/form-js-editor': 0.6.2
   '@stencil/core': 2.12.1
 
@@ -561,6 +563,18 @@ packages:
       preact: 10.6.4
     dev: false
 
+  /@quakeworks/form-js-editor/0.6.3:
+    resolution: {integrity: sha512-Pv6sneklbHIDkRp5dlNessqQj1upFgMUwExK3UDTgG6JRhD15A1F1x5dCrNypniChKuBUAwsPUrKwB4X2NR84g==}
+    dependencies:
+      '@quakeworks/form-js-viewer': 0.6.3
+      array-move: 3.0.1
+      dragula: 3.7.3
+      ids: 1.0.0
+      min-dash: 3.8.0
+      min-dom: 3.1.3
+      preact: 10.6.4
+    dev: false
+
   /@quakeworks/form-js-viewer/0.6.2:
     resolution: {integrity: sha512-AMvwm5D6qvDPgApSADEq1LvmH1DGnFAtgLq3DjGRmK5MG2yNpWvcIPQYd/uWllPtqJ5XOhK087M1kQPqIO+57w==}
     dependencies:
@@ -570,6 +584,24 @@ packages:
       min-dash: 3.8.0
       preact: 10.6.4
       preact-markup: 2.1.1_preact@10.6.4
+    dev: false
+
+  /@quakeworks/form-js-viewer/0.6.3:
+    resolution: {integrity: sha512-Gm9IoJdLD0sRAqfImdUfBygs/5Yrw8J7cxmKz8FkvzUVG/gYH5rBg9Zt7AuQXAeMcdGsxRD3Hj8Eg1d533MtIg==}
+    dependencies:
+      '@bpmn-io/snarkdown': 2.1.0
+      didi: 5.2.1
+      ids: 1.0.0
+      min-dash: 3.8.0
+      preact: 10.6.4
+      preact-markup: 2.1.1_preact@10.6.4
+    dev: false
+
+  /@quakeworks/form-js/0.6.3:
+    resolution: {integrity: sha512-fQNzJ7f+OKwmrDlv53qpaHtePvj/IQrH8z7MCkxzO0pMy/NwZ++I3CeF+W1JrIApZ2tryYUk7zPpsAIzRQ9gGg==}
+    dependencies:
+      '@quakeworks/form-js-editor': 0.6.3
+      '@quakeworks/form-js-viewer': 0.6.3
     dev: false
 
   /@sinonjs/commons/1.8.3:
