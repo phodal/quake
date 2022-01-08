@@ -3,7 +3,7 @@ use std::fs;
 use std::fs::File;
 use std::path::{Path, PathBuf};
 
-use crate::entry::entry_by_path::entry_file_by_path;
+use crate::entry::entry_by_path::entry_file_dump;
 use indexmap::IndexMap;
 use serde::Deserialize;
 use serde_derive::Serialize;
@@ -96,7 +96,8 @@ impl Entrysets {
         let workspace = path.parent().unwrap();
         let mut json = vec![];
         for file in files {
-            let (_, entry_file) = entry_file_by_path(&file, workspace)?;
+            // todo: support for read one entry
+            let (_, entry_file) = entry_file_dump(&file, workspace)?;
             json.push(entry_file);
         }
 
@@ -203,7 +204,6 @@ impl Entrysets {
 
 #[cfg(test)]
 mod tests {
-    use crate::entry::EntryDefine;
     use std::path::PathBuf;
 
     use crate::usecases::entrysets::Entrysets;
@@ -271,7 +271,7 @@ mod tests {
         let json = Entrysets::jsonify(&buf).unwrap();
 
         #[cfg(not(windows))]
-        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1,\"content\":\"\\n\\nahaha\\n\"}]");
+        assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1,\"content\":\"\\n\\nahaha\\n\"}]");
     }
 
     #[test]
@@ -280,6 +280,6 @@ mod tests {
         let json = Entrysets::jsonify_with_format_date(&buf).unwrap();
 
         #[cfg(not(windows))]
-        assert_eq!(serde_json::to_string(&json[0]).unwrap(), "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\\n\\nahaha\\n\",\"created_date\":1637781250,\"updated_date\":1637781250,\"id\":1,\"type\":\"todo\"}]");
+        assert_eq!(serde_json::to_string(&json).unwrap(), "[{\"title\":\"time support\",\"author\":\"\",\"created_date\":\"1637781250\",\"updated_date\":\"1637781250\",\"type\":\"todo\",\"id\":1,\"content\":\"\\n\\nahaha\\n\"}]");
     }
 }

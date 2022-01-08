@@ -70,7 +70,7 @@ fn feed_by_event(event: Event, search_url: &str, workspace: &Path) -> Result<(),
         }
 
         debug!("feed_by_event {:?}", &event);
-        let (typ, file) = entry_by_path::entry_file_by_path(path, workspace)?;
+        let (typ, file) = entry_by_path::entry_file_dump(path, workspace)?;
         feed_document(search_url, &typ, &file)?;
     }
 

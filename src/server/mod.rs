@@ -101,6 +101,6 @@ mod test {
         let response = client.get("/entry/todo/1").dispatch();
 
         assert_eq!(response.status(), Status::Ok);
-        assert_eq!(response.into_string().unwrap(), "{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1,\"content\":\"\\n\\nahaha\\n\"}")
+        assert_eq!(response.into_string().unwrap(), "{\"title\":\"time support\",\"author\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1,\"content\":\"\\n\\nahaha\\n\"}")
     }
 }

@@ -2,9 +2,9 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
-use quake_core::entry::entry_by_path::entry_file_by_path;
 use tracing::error;
 
+use quake_core::entry::entry_by_path::entry_file_dump;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::entry::EntryDefines;
 use quake_core::usecases::entrysets::Entrysets;
@@ -71,8 +71,9 @@ fn dump_entries_data(conf: &QuakeConfig) {
         let target_dir = PathBuf::from(DUMP_PATH).join("entry").join(entry_type);
         fs::create_dir_all(&target_dir).unwrap();
 
+        let workspace = entry_path.parent().unwrap();
         for path in &Entrysets::scan_files(&*entry_path) {
-            let (_, entry_file) = entry_file_by_path(path, path.parent().unwrap()).unwrap();
+            let (_, entry_file) = entry_file_dump(path, workspace).unwrap();
             let content = serde_json::to_string(&entry_file).unwrap();
 
             let file = target_dir.join(index.to_string());

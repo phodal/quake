@@ -152,6 +152,10 @@ impl EntryFile {
                         continue;
                     }
 
+                    if v_key == "content" {
+                        continue;
+                    }
+
                     let key = ValueConverter::string(v_key);
                     let value = ValueConverter::string(v_value);
                     fields.insert(key, value);

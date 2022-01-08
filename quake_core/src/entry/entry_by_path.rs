@@ -10,7 +10,7 @@ use crate::helper::file_filter::type_from_md_path;
 use crate::helper::quake_time;
 use crate::meta::MetaProperty;
 
-pub fn entry_file_by_path(
+pub fn entry_file_dump(
     path: &Path,
     workspace: &Path,
 ) -> Result<(String, EntryFile), Box<dyn Error>> {
@@ -29,6 +29,7 @@ pub fn entry_file_by_path(
 
     let mut file = EntryFile::from(content.as_str(), id)?;
     let defines = EntryDefines::from_path(&*workspace.join(EntryPaths::entries_define()));
+
     if let Some(define) = defines.find(&*entry_type) {
         for (key, prop) in define.to_field_type() {
             if let MetaProperty::Date(_date) = prop {
@@ -37,14 +38,17 @@ pub fn entry_file_by_path(
                 file.update_property(&key, &value);
             }
         }
+
+        file.add_property("type", entry_type.clone());
     }
 
+    println!("{:?}", file);
     Ok((entry_type, file))
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::entry::entry_by_path::entry_file_by_path;
+    use crate::entry::entry_by_path::entry_file_dump;
     use std::path::PathBuf;
 
     #[test]
@@ -52,7 +56,7 @@ mod tests {
         let workspace = PathBuf::from("..").join("examples");
         let buf = workspace.join("todo").join("0001-time-support.md");
 
-        let (typ, file) = entry_file_by_path(&buf, &workspace).unwrap();
+        let (typ, file) = entry_file_dump(&buf, &workspace).unwrap();
         assert_eq!(typ, "todo".to_string());
         assert_eq!(1, file.id);
         assert_eq!("1637781250", file.property("created_date").unwrap());

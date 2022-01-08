@@ -15,7 +15,13 @@ impl EntryDefines {
     }
 
     pub fn from_path(path: &Path) -> EntryDefines {
-        let entries_str = fs::read_to_string(path).expect("cannot read entries-define.yaml");
+        let entries_str = match fs::read_to_string(path) {
+            Ok(str) => str,
+            Err(err) => {
+                panic!("cannot read path {:?}, error {:?}", path, err);
+            }
+        };
+
         serde_yaml::from_str(&*entries_str).expect("cannot serde entries-define.yaml")
     }
 
