@@ -33,22 +33,22 @@ jobs:
         if: contains(matrix.os, 'ubuntu')
 
       # from: https://github.com/diesel-rs/diesel/blob/master/.github/workflows/ci.yml
-      - name: Install sqlite (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        run: |
-          choco install sqlite
-          cd /D C:\ProgramData\chocolatey\lib\SQLite\tools
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          lib /machine:x64 /def:sqlite3.def /out:sqlite3.lib
-
-      - name: Set variables for sqlite (Windows)
-        if: runner.os == 'Windows'
-        shell: bash
-        run: |
-          echo "C:\ProgramData\chocolatey\lib\SQLite\tools" >> $GITHUB_PATH
-          echo "SQLITE3_LIB_DIR=C:\ProgramData\chocolatey\lib\SQLite\tools" >> $GITHUB_ENV
-          echo "SQLITE_DATABASE_URL=C:\test.db" >> $GITHUB_ENV
+#      - name: Install sqlite (Windows)
+#        if: runner.os == 'Windows'
+#        shell: cmd
+#        run: |
+#          choco install sqlite
+#          cd /D C:\ProgramData\chocolatey\lib\SQLite\tools
+#          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+#          lib /machine:x64 /def:sqlite3.def /out:sqlite3.lib
+#
+#      - name: Set variables for sqlite (Windows)
+#        if: runner.os == 'Windows'
+#        shell: bash
+#        run: |
+#          echo "C:\ProgramData\chocolatey\lib\SQLite\tools" >> $GITHUB_PATH
+#          echo "SQLITE3_LIB_DIR=C:\ProgramData\chocolatey\lib\SQLite\tools" >> $GITHUB_ENV
+#          echo "SQLITE_DATABASE_URL=C:\test.db" >> $GITHUB_ENV
 
       - name: Run unit tests
         run: ${{matrix.ENV_VARS}} cargo test --all
