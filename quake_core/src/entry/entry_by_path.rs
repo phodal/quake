@@ -42,7 +42,6 @@ pub fn entry_file_dump(
         file.add_property("type", entry_type.clone());
     }
 
-    println!("{:?}", file);
     Ok((entry_type, file))
 }
 

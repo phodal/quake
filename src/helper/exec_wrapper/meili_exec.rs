@@ -15,11 +15,13 @@ pub fn feed_documents(
 ) -> Result<(), Box<dyn Error>> {
     let url = format!("{:}/indexes/{:}/documents", server, index_name);
 
+    info!("try feed to {:?} with {:?} len", url, content.len());
     task::block_on(async {
         let client = reqwest::Client::new();
-        let req = client.post(url).json(content).send().await.unwrap();
+        let req = client.post(url).json(content).send();
+        let response = req.await.unwrap().text().await.unwrap();
 
-        info!("{:?}", req);
+        info!("{:?}", response);
     });
 
     Ok(())
