@@ -1,25 +1,28 @@
 use std::error::Error;
 
 use async_std::task;
+use json::JsonValue;
 use tracing::info;
 
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::EntryDefine;
 
-use crate::helper::exec_wrapper::exec_runner;
 use crate::helper::search_config::define_to_settings;
 
-pub fn feed_documents(server: &str, index_name: &str) -> Result<(), Box<dyn Error>> {
+pub fn feed_documents(
+    server: &str,
+    index_name: &str,
+    content: &Vec<EntryFile>,
+) -> Result<(), Box<dyn Error>> {
     let url = format!("{:}/indexes/{:}/documents", server, index_name);
-    let cmd_line = format!(
-        "curl -i -X POST '{:}' \
-  --header 'content-type: application/json' \
-  --data-binary @dump.json",
-        url
-    );
 
-    info!("{:?}", cmd_line);
-    exec_runner::cmd_runner(cmd_line)?;
+    task::block_on(async {
+        let client = reqwest::Client::new();
+        let req = client.post(url).json(content).send().await.unwrap();
+        // let response = req.text().await.unwrap();
+
+        info!("{:?}", req);
+    });
 
     Ok(())
 }

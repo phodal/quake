@@ -70,8 +70,6 @@ pub fn is_hidden(entry: &DirEntry) -> bool {
 
 fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
     let path = PathBuf::from(&conf.workspace);
-    let temp_file = "dump.json";
-
     let defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
 
     for entry in walk_in_path(path) {
@@ -93,16 +91,13 @@ fn feed_data(conf: &QuakeConfig) -> Result<(), Box<dyn Error>> {
             .find(&entry_type)
             .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
 
-        let map = Entrysets::jsonify_with_format_date(&paths.entry_path, &define)?.to_string();
-        fs::write(temp_file, map)?;
+        let map = Entrysets::jsonify_with_format_date(&paths.entry_path)?;
 
-        meili_exec::feed_documents(&conf.search_url, &entry_type)?;
+        meili_exec::feed_documents(&conf.search_url, &entry_type, &map)?;
         meili_exec::feed_settings(&conf.search_url, &define)?;
 
         info!("done '{:}' feed", &entry_type);
     }
-
-    fs::remove_file(temp_file)?;
 
     Ok(())
 }

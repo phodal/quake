@@ -3,16 +3,14 @@ use std::fs;
 use std::fs::File;
 use std::path::{Path, PathBuf};
 
+use crate::entry::entry_by_path::entry_file_by_path;
 use indexmap::IndexMap;
-use json::{array, object, JsonValue};
 use serde::Deserialize;
 use serde_derive::Serialize;
 use walkdir::{DirEntry, WalkDir};
 
 use crate::entry::entry_file::EntryFile;
 use crate::entry::EntryDefine;
-use crate::helper::quake_time;
-use crate::meta::MetaProperty;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 pub struct CsvTable {
@@ -92,67 +90,17 @@ impl Entrysets {
     }
 
     /// format json from define
-    pub fn jsonify_with_format_date(
-        path: &Path,
-        define: &EntryDefine,
-    ) -> Result<JsonValue, Box<dyn Error>> {
+    pub fn jsonify_with_format_date(path: &Path) -> Result<Vec<EntryFile>, Box<dyn Error>> {
         let files = Self::scan_files(path);
-        let mut index = 1;
 
-        let mut json: JsonValue = array![];
-        let type_maps = define.to_field_type();
+        let workspace = path.parent().unwrap();
+        let mut json = vec![];
         for file in files {
-            let element = Self::file_to_json(define, index, &type_maps, &file)?;
-            json.push(element)?;
-            index += 1;
+            let (_, entry_file) = entry_file_by_path(&file, &workspace)?;
+            json.push(entry_file);
         }
 
         Ok(json)
-    }
-
-    pub fn file_to_json(
-        define: &EntryDefine,
-        index: usize,
-        type_maps: &IndexMap<String, MetaProperty>,
-        file: &Path,
-    ) -> Result<JsonValue, Box<dyn Error>> {
-        let mut element = object! {};
-        let string = fs::read_to_string(&file)?;
-
-        let mut entry_file = EntryFile::from(&*string, index)?;
-        entry_file.name = (&file.file_name().unwrap().to_str().unwrap()).to_string();
-
-        let mut error = "".to_string();
-        let mut has_convert_date_issue = false;
-        for (k, v) in &entry_file.properties {
-            if let Some(MetaProperty::Date(_date)) = type_maps.get(k) {
-                let value = quake_time::string_date_to_unix(v);
-                match value.parse::<usize>() {
-                    Ok(time) => {
-                        element[k.clone()] = time.into();
-                        continue;
-                    }
-                    Err(err) => {
-                        if !has_convert_date_issue {
-                            error = format!("parse {:?} field: {:?},  error:{:?}", file, k, err);
-                        }
-                        has_convert_date_issue = true;
-                    }
-                }
-            }
-
-            element[k.clone()] = v.clone().into();
-        }
-
-        if has_convert_date_issue {
-            println!("{:?}", error);
-        }
-
-        element["id".to_string()] = entry_file.id.into();
-        element["content".to_string()] = entry_file.content.into();
-        element["type".to_string()] = define.entry_type.clone().into();
-
-        Ok(element)
     }
 
     /// scan all entries files, and rebuild indexes
@@ -344,9 +292,9 @@ mod tests {
     #[test]
     fn jsonify_todo_with_date() {
         let buf = PathBuf::from("..").join("examples").join("todo");
-        let json = Entrysets::jsonify_with_format_date(&buf, &todo_define()).unwrap();
+        let json = Entrysets::jsonify_with_format_date(&buf).unwrap();
 
         #[cfg(not(windows))]
-        assert_eq!(json.to_string(), "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\\n\\nahaha\\n\",\"created_date\":1637781250,\"updated_date\":1637781250,\"id\":1,\"type\":\"todo\"}]");
+        assert_eq!(serde_json::to_string(&json[0]).unwrap(), "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\\n\\nahaha\\n\",\"created_date\":1637781250,\"updated_date\":1637781250,\"id\":1,\"type\":\"todo\"}]");
     }
 }

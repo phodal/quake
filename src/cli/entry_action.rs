@@ -105,20 +105,15 @@ fn feed_by_path(
     entry_type: &str,
     conf: &QuakeConfig,
 ) -> Result<(), Box<dyn Error>> {
-    let temp_file = "dump.json";
-
     let defines = EntryDefines::from_path(&paths.entries_define);
     let define = defines
         .find(entry_type)
         .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
 
-    let map = Entrysets::jsonify_with_format_date(&paths.entry_path, &define)?.to_string();
-    fs::write(temp_file, map)?;
+    let map = Entrysets::jsonify_with_format_date(&paths.entry_path)?;
 
-    meili_exec::feed_documents(&conf.search_url, entry_type)?;
+    meili_exec::feed_documents(&conf.search_url, entry_type, &map)?;
     meili_exec::feed_settings(&conf.search_url, &define)?;
-
-    fs::remove_file(temp_file)?;
 
     Ok(())
 }
