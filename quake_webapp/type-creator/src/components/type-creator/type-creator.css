@@ -1,5 +1,5 @@
-@import "~@quakeworks/form-js-editor/dist/assets/dragula.css";
-@import "~@quakeworks/form-js-editor/dist/assets/form-js-editor.css";
+@import "~@quakeworks/form-js/dist/assets/dragula.css";
+@import "~@quakeworks/form-js/dist/assets/form-js-editor.css";
 @import "~@quakeworks/form-js/dist/assets/form-js.css";
 
 :host {

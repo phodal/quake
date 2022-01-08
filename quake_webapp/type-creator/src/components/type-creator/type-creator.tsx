@@ -4,7 +4,7 @@ import {FormEditor} from '@quakeworks/form-js-editor';
 @Component({
   tag: 'type-creator',
   styleUrl: 'type-creator.css',
-  shadow: true,
+  shadow: false,
 })
 export class TypeCreator {
   formEl: HTMLElement;
