@@ -5,7 +5,6 @@ use std::path::PathBuf;
 use quake_core::entry::entry_by_path::entry_file_by_path;
 use tracing::error;
 
-use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::entry::EntryDefines;
 use quake_core::usecases::entrysets::Entrysets;
@@ -65,9 +64,6 @@ fn dump_entries_data(conf: &QuakeConfig) {
 
     for define in &defines.entries {
         let entry_type = &*define.entry_type;
-        let define = defines
-            .find(entry_type)
-            .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
         let entry_path = path.join(&entry_type);
 
         let mut index = 1;
@@ -76,7 +72,7 @@ fn dump_entries_data(conf: &QuakeConfig) {
         fs::create_dir_all(&target_dir).unwrap();
 
         for path in &Entrysets::scan_files(&*entry_path) {
-            let (_, entry_file) = entry_file_by_path(&path, &path.parent().unwrap()).unwrap();
+            let (_, entry_file) = entry_file_by_path(path, path.parent().unwrap()).unwrap();
             let content = serde_json::to_string(&entry_file).unwrap();
 
             let file = target_dir.join(index.to_string());

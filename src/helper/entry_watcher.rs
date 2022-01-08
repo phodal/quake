@@ -1,5 +1,4 @@
 use std::error::Error;
-use std::fs;
 use std::path::Path;
 use std::time::Duration;
 
@@ -7,16 +6,9 @@ use futures::channel::mpsc::{channel, Receiver};
 use futures::{SinkExt, StreamExt};
 use notify::event::ModifyKind;
 use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
-use rocket::info;
 use tracing::{debug, error};
 
-use quake_core::entry::entry_file::EntryFile;
-use quake_core::entry::entry_paths::EntryPaths;
-use quake_core::entry::{entry_by_path, EntryDefines};
-use quake_core::errors::QuakeError;
-use quake_core::helper::file_filter::type_from_md_path;
-use quake_core::helper::quake_time;
-use quake_core::meta::MetaProperty;
+use quake_core::entry::entry_by_path;
 
 use crate::helper::exec_wrapper::meili_exec::feed_document;
 

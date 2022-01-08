@@ -1,7 +1,6 @@
 use std::error::Error;
 
 use async_std::task;
-use json::JsonValue;
 use tracing::info;
 
 use quake_core::entry::entry_file::EntryFile;
@@ -12,14 +11,13 @@ use crate::helper::search_config::define_to_settings;
 pub fn feed_documents(
     server: &str,
     index_name: &str,
-    content: &Vec<EntryFile>,
+    content: &[EntryFile],
 ) -> Result<(), Box<dyn Error>> {
     let url = format!("{:}/indexes/{:}/documents", server, index_name);
 
     task::block_on(async {
         let client = reqwest::Client::new();
         let req = client.post(url).json(content).send().await.unwrap();
-        // let response = req.text().await.unwrap();
 
         info!("{:?}", req);
     });

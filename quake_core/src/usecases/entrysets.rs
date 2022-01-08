@@ -96,7 +96,7 @@ impl Entrysets {
         let workspace = path.parent().unwrap();
         let mut json = vec![];
         for file in files {
-            let (_, entry_file) = entry_file_by_path(&file, &workspace)?;
+            let (_, entry_file) = entry_file_by_path(&file, workspace)?;
             json.push(entry_file);
         }
 
@@ -272,21 +272,6 @@ mod tests {
 
         #[cfg(not(windows))]
         assert_eq!(json, "[{\"title\":\"time support\",\"author\":\"\",\"content\":\"\",\"created_date\":\"2021-11-24 19:14:10\",\"updated_date\":\"2021-11-24 19:14:10\",\"id\":1,\"content\":\"\\n\\nahaha\\n\"}]");
-    }
-
-    fn todo_define() -> EntryDefine {
-        let yaml = "
-- type: todo
-  display: Todo
-  properties:
-    - title: Title
-    - author: Author
-    - created_date: Date
-    - updated_date: Date
-";
-
-        let entries: Vec<EntryDefine> = serde_yaml::from_str(yaml).unwrap();
-        entries[0].clone()
     }
 
     #[test]
