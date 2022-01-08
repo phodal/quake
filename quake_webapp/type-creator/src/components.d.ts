@@ -22,6 +22,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface TypeCreator {
+        "onSaveProps"?: (event: CustomEvent<any>) => void;
     }
     interface IntrinsicElements {
         "type-creator": TypeCreator;

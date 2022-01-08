@@ -3,4 +3,15 @@
 
 :host {
   display: block;
+  height: 100%;
+}
+
+.type-creator_form {
+  height: calc(100% - 56px) !important;
+}
+
+.type-creator_submit {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
 }

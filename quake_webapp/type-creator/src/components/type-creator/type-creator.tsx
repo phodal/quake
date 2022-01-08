@@ -1,4 +1,4 @@
-import {Component, h} from '@stencil/core';
+import {Component, Event, EventEmitter, h} from '@stencil/core';
 import {FormEditor} from '@quakeworks/form-js-editor';
 
 @Component({
@@ -10,6 +10,13 @@ export class TypeCreator {
   formEl: HTMLElement;
   formEditor: FormEditor
   schema: any
+
+  @Event({
+    eventName: 'saveProps',
+    composed: true,
+    cancelable: true,
+    bubbles: true,
+  }) saveProps: EventEmitter;
 
   async componentDidRender() {
     this.schema = {
@@ -51,13 +58,23 @@ export class TypeCreator {
   }
 
   submit() {
-    console.log(this.formEditor.getSchema());
+    let props = [];
+    let schema = this.formEditor.getSchema();
+    for (let component of schema.components) {
+      props.push({
+        property: component.key,
+        type: component.type
+      })
+    }
+
+    console.log(props);
+    this.saveProps.emit(props);
   }
 
   render() {
     return <div>
-      <button onClick={() => this.submit()}>Submit</button>
-      <div ref={(el) => this.formEl = el} />
+      <div class="type-creator_form" ref={(el) => this.formEl = el} />
+      <button class="type-creator_submit" onClick={() => this.submit()}>Submit</button>
     </div>;
   }
 }
