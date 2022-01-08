@@ -1,11 +1,174 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.4.0] - 2022-01-08
 
 ### Bug Fixes
 
 - Fix chart ERROR
+- Fix lint issue
+- Fix testings
+- Properties mix in entry content
+- Fix typo issue
+- Fix lint
+- Check markdown format before check id
+- Fix test
+- Add date convert for file change and fixed #37
+- Fix watch path issue
+- `entry.add` action autocomplete
+- Fix tests for serde error issues
+
+### Documentation
+
+- Update changelog
+- Addd first version design for filter
+- Add design for map and filter
+- Update design for transflow pipe
+- Add math design for math.js
+- Add content for biz viz analysis
+- Update refs
+- Add map samples
+- Udpate rEADME
+- Update README
+- Add samples for transflow
+- Add whiteboard for test
+- Add notes for transflow
+- Add flow syntax design process
+- Add link to whiteboard
+- Add whiteboard librs
+- Update README
+- Update type system
+- Update todo
+- Add first version for generate rule dsl
+- Update design for content processor
+- Rename generate_rules -> process_rules
+- Update refs
+- Rename processors
+- Add content to attachment
+- Fix typo
+- Add install guide
+- Add link for samples for papers
+- Add sample for processors
+- Add basic syntax for transflow
+- Add basic design for router engine
+- Add resources refs to rule engine
+- Update for build
+- Add story for parse pdf
+- Add samples for generate pdf
+- Update README to webapp for integration
+- Add log for document length
+
+### Features
+
+- Add simple map func code
+- Init map pipe struct
+- Add parser for map func
+- Add convert to quake libs
+- Make map pipe works
+- Add parser for source prop
+- Add genfunc for attribute
+- Add dump transflow map support
+- Add transflow api
+- Init map standard libs
+- Add display for transflow name
+- Make timeline enable
+- Make filter and map can be in different position
+- Init from file grammer
+- Add support for transflow decl
+- Fix auto generate issue & update content
+- Move generate rule to entry define
+- Init generate cmd
+- Try set engine
+- Init basic rule struct
+- Entry list selected
+- Quick action autocomplete
+- Init basic pdf content generate
+- Add check for is force
+- Add processor api export
+- Add support for loading pdf
+- Init cmd
+- Init generate
+- Add auto generate pdf support
+- Add generate csv & node info
+- Replace regex with ringrep
+- Init form
+- Add basic get schema support
+- Make prop events works
+
+### Miscellaneous Tasks
+
+- Release 0.3.0
+- Fix issue template typo
+- Move message to app's state
+
+### Refactor
+
+- Rename api for modify
+- Make filter in option
+- Rename function to operator
+- Extract vas
+- Rename map to mapping
+- Change flow map
+- Fix parameter issue
+- Remove unused code
+- Change parameter to parameterType
+- Replace duplicate code
+- Remove duplicate code
+- Extract param again
+- Move unused librs to dir
+- Create type creator
+- Add generate for entry node info
+- Reuse app's config for entry defines
+- Rename processors model
+- Rename package name
+- Update file to string
+- Update config to template
+- Rename create index
+- Rename content
+- Extract method
+- Move check file match to entry file
+- Rename entry object to entry action
+- Rename object -> entry for frontend
+- Move processor to engine
+- Invert if condition for rule
+- Move logic to prcessor usecases
+- Rename generate -> process
+- Remove unused entry path for processor
+- Extract start server & thinking in loading pdf
+- Clean build of projects
+- Change entry file set logic to main json
+
+### Styling
+
+- Format code
+- Inline style to creator
+- Fix styles issues
+- Use default for form-js
+
+### Testing
+
+- Add test for operators
+- Add test for seralizer
+- Add testcase for filter map random
+- Add test for file prop
+
+### Build
+
+- Init transflow graph
+- Remove unused deps
+- Reinit project of type creator
+- Replace with quakeworks/form js editor
+
+### Ci
+
+- Disable windows sqlite3 for temp
+
+### Lint
+
+- Fix lint
+- Fix lint
+- Fix lint
+- Fix lint
 
 ## [0.3.0] - 2021-12-23
 

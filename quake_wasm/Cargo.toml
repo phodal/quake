@@ -1,6 +1,6 @@
 [package]
 name = "quake_wasm"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 authors = ["Inherd Group <quake@inherd.org>"]
 description = """
@@ -13,7 +13,7 @@ license = "MIT"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-quake_core = { path = "../quake_core", version = "0.3.0" }
+quake_core = { path = "../quake_core", version = "0.4.0" }
 wasm-bindgen = "0.2"
 
 serde = "1.0"
