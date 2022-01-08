@@ -51,7 +51,6 @@ export class TypeCreator {
   }
 
   submit() {
-    console.log(this.schema);
     console.log(this.formEditor.getSchema());
   }
 

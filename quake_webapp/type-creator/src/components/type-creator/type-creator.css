@@ -1,3 +1,6 @@
+@import "~@quakeworks/form-js-editor/dist/assets/dragula.css";
+@import "~@quakeworks/form-js-editor/dist/assets/form-js-editor.css";
+
 :host {
   display: block;
 }
