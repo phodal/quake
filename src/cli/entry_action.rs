@@ -110,7 +110,7 @@ fn feed_by_path(
         .find(entry_type)
         .unwrap_or_else(|| panic!("lost entry define for: {:?}", &entry_type));
 
-    let map = Entrysets::jsonify_with_format_date(&paths.entry_path)?;
+    let map = Entrysets::entry_files_by_path(&paths.entry_path, &define)?;
 
     meili_exec::feed_documents(&conf.search_url, entry_type, &map)?;
     meili_exec::feed_settings(&conf.search_url, &define)?;

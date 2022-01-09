@@ -45,7 +45,7 @@ fn dump_entries_data_search(conf: &QuakeConfig) {
 
     for define in &defines.entries {
         let entry_path = path.join(&define.entry_type);
-        let vec = Entrysets::jsonify_with_format_date(&*entry_path).unwrap();
+        let vec = Entrysets::entry_files_by_path(&*entry_path, define).unwrap();
         let string = serde_json::to_string(&vec).unwrap();
 
         let path = PathBuf::from(DUMP_PATH)
