@@ -1,8 +1,7 @@
 import React from 'react';
-import {Document, Page, pdfjs} from "react-pdf";
 import styled from "styled-components";
-// issues from: https://github.com/wojtekmaj/react-pdf/issues/97
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+import {Document, Page} from 'react-pdf/dist/esm/entry.webpack';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 
 export type Props = {
   type: any,
@@ -14,7 +13,6 @@ function QuakeViewer(props: Props) {
   const [file, setFile] = React.useState(props.file);
 
   const [numPages, setNumPages] = React.useState(null);
-  const [pageNumber, setPageNumber] = React.useState(1);
 
   React.useEffect(() => {
     setType(props.type);
@@ -33,7 +31,17 @@ function QuakeViewer(props: Props) {
     <div>
       {type === "pdf" &&
         <StyleDocument file={file} onLoadSuccess={onLoadSuccess}>
-          <Page pageNumber={pageNumber} />
+          {
+            Array.from(
+              new Array(numPages),
+              (el, index) => (
+                <Page
+                  key={`page_${index + 1}`}
+                  pageNumber={index + 1}
+                />
+              ),
+            )
+          }
         </StyleDocument>
       }
     </div>
@@ -43,7 +51,6 @@ function QuakeViewer(props: Props) {
 const StyleDocument = styled(Document)`
   height: 100%;
   width: 100%;
-  min-height: 500px;
 `;
 
 export default QuakeViewer;
