@@ -21,7 +21,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "export PORT=4003 && react-app-rewired start",
+    "start": "export PORT=4004 && react-app-rewired start",
     "build": "react-app-rewired build && npm run rename:css",
     "rename:css": "cp build/static/css/*.css build/static/quake-timeline.min.css",
     "test": "react-app-rewired test",

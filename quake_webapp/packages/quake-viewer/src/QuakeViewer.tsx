@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from "styled-components";
 import {Document, Page} from 'react-pdf/dist/esm/entry.webpack';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 
@@ -30,7 +29,8 @@ function QuakeViewer(props: Props) {
   return (
     <div>
       {type === "pdf" &&
-        <StyleDocument file={file} onLoadSuccess={onLoadSuccess}>
+        <Document file={file}
+                  onLoadSuccess={onLoadSuccess}>
           {
             Array.from(
               new Array(numPages),
@@ -38,19 +38,17 @@ function QuakeViewer(props: Props) {
                 <Page
                   key={`page_${index + 1}`}
                   pageNumber={index + 1}
+                  renderAnnotationLayer={true}
+                  renderInteractiveForms={true}
                 />
               ),
             )
           }
-        </StyleDocument>
+        </Document>
       }
     </div>
   );
 }
 
-const StyleDocument = styled(Document)`
-  height: 100%;
-  width: 100%;
-`;
 
 export default QuakeViewer;
