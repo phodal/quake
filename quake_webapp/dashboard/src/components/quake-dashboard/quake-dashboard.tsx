@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 
 // only for: IDEA jump
 // @ts-ignore
-import {IonSearchbar} from "@ionic/core";
+// import {IonSearchbar} from "@ionic/core";
 import {createTransflow, init_wasm, parseAction} from "./quake-core-wrapper";
 
 export interface ActionDefine {
@@ -45,7 +45,7 @@ enum InputType {
 })
 export class QuakeDashboard {
   ionInputElement;
-  infiniteScroll: HTMLIonInfiniteScrollElement;
+  infiniteScroll: any;
 
   @Element() el: HTMLElement;
 
@@ -105,7 +105,7 @@ export class QuakeDashboard {
   }
 
   async loadingElement(type: string, params: object = {}, callback: any) {
-    const loading = document.createElement('ion-loading');
+    const loading: any = document.createElement('ion-loading');
     loading.cssClass = 'my-custom-class';
     loading.message = 'Please wait...';
     loading.duration = 500;
@@ -306,6 +306,7 @@ export class QuakeDashboard {
 
   async showPdf(entry: string, file_prop: string) {
     await fetch(`/processor/${entry}?file_prop=${file_prop}`)
+
   }
 
   editEntry(id: string, entry: string) {
@@ -325,7 +326,7 @@ export class QuakeDashboard {
   }
 
   async presentToast(msg: string) {
-    const toast = document.createElement('ion-toast');
+    const toast: any = document.createElement('ion-toast');
     toast.message = msg;
     toast.duration = 2000;
 
