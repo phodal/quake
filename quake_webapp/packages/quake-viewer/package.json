@@ -23,7 +23,7 @@
   "scripts": {
     "start": "export PORT=4004 && react-app-rewired start",
     "build": "react-app-rewired build && npm run rename:css",
-    "rename:css": "cp build/static/css/*.css build/static/quake-timeline.min.css",
+    "rename:css": "cp build/static/css/*.css build/static/quake-viewer.min.css",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },
