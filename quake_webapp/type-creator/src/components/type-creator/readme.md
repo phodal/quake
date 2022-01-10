@@ -5,13 +5,11 @@
 <!-- Auto Generated Below -->
 
 
-## Properties
+## Events
 
-| Property | Attribute | Description     | Type     | Default     |
-| -------- | --------- | --------------- | -------- | ----------- |
-| `first`  | `first`   | The first name  | `string` | `undefined` |
-| `last`   | `last`    | The last name   | `string` | `undefined` |
-| `middle` | `middle`  | The middle name | `string` | `undefined` |
+| Event       | Description | Type               |
+| ----------- | ----------- | ------------------ |
+| `saveProps` |             | `CustomEvent<any>` |
 
 
 ----------------------------------------------

@@ -305,8 +305,16 @@ export class QuakeDashboard {
   }
 
   async showPdf(entry: string, file_prop: string) {
-    await fetch(`/processor/${entry}?file_prop=${file_prop}`)
+    let url = `/processor/${entry}?file_prop=${file_prop}`;
+    const modal: any = document.createElement('ion-modal');
 
+    const viewer: any = document.createElement('quake-viewer');
+    viewer.setAttribute('url', url);
+
+    modal.appendChild(viewer);
+    document.body.appendChild(modal);
+
+    await modal.present();
   }
 
   editEntry(id: string, entry: string) {

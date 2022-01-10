@@ -1,7 +1,9 @@
 import React from 'react';
-import {Document, Page} from 'react-pdf/dist/esm/entry.webpack';
+import {Document, Page, pdfjs} from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import styled from "styled-components";
+
+pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
 
 export type Props = {
   type: any,
@@ -9,15 +11,10 @@ export type Props = {
 }
 
 function QuakeViewer(props: Props) {
-  const [type, setType] = React.useState(props.type);
   const [file, setFile] = React.useState(props.file);
 
   const [numPages, setNumPages] = React.useState(1);
   const [pageNumber, setPageNumber] = React.useState(1);
-
-  React.useEffect(() => {
-    setType(props.type);
-  }, [props])
 
   React.useEffect(() => {
     setFile(props.file);
@@ -29,35 +26,33 @@ function QuakeViewer(props: Props) {
 
   return (
     <div>
-      {type === "pdf" &&
-        <StyleDocument file={file}
-                       renderMode={'canvas'}
-                       onLoadSuccess={onLoadSuccess}>
-          <Page
-            pageNumber={pageNumber}
-            renderMode={'canvas'}
-            renderAnnotationLayer={true}
-            renderInteractiveForms={true}
-          />
+      <StyleDocument file={file}
+                     renderMode={'canvas'}
+                     onLoadSuccess={onLoadSuccess}>
+        <Page
+          pageNumber={pageNumber}
+          renderMode={'canvas'}
+          renderAnnotationLayer={true}
+          renderInteractiveForms={true}
+        />
 
-          <StylePageControls>
-            <button
-              disabled={pageNumber <= 1}
-              onClick={() => setPageNumber(pageNumber - 1)}
-              type="button"
-              aria-label="Previous page">
-              ‹
-            </button>
-            <span> {pageNumber}{' '}of{' '}{numPages}</span>
-            <button
-              disabled={pageNumber >= numPages}
-              onClick={() => setPageNumber(pageNumber + 1)}
-              type="button"
-              aria-label="Next page">›
-            </button>
-          </StylePageControls>
-        </StyleDocument>
-      }
+        <StylePageControls>
+          <button
+            disabled={pageNumber <= 1}
+            onClick={() => setPageNumber(pageNumber - 1)}
+            type="button"
+            aria-label="Previous page">
+            ‹
+          </button>
+          <span> {pageNumber}{' '}of{' '}{numPages}</span>
+          <button
+            disabled={pageNumber >= numPages}
+            onClick={() => setPageNumber(pageNumber + 1)}
+            type="button"
+            aria-label="Next page">›
+          </button>
+        </StylePageControls>
+      </StyleDocument>
     </div>
   );
 }
