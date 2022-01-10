@@ -1,16 +1,19 @@
+use std::fs;
+use std::path::PathBuf;
+
 use figment::providers::Yaml;
-use quake_core::entry::EntryDefines;
 use rocket::fairing::AdHoc;
 use rocket::figment::providers::{Env, Format, Serialized};
 use rocket::figment::{Figment, Profile};
 use rocket::fs::FileServer;
+use rocket::http::Method;
 use rocket::{routes, Build, Config, Rocket, State};
+use rocket_cors::{AllowedOrigins, CorsOptions};
 use serde_derive::{Deserialize, Serialize};
 
 use quake_core::entry::entry_paths::EntryPaths;
+use quake_core::entry::EntryDefines;
 use quake_core::QuakeConfig;
-use std::fs;
-use std::path::PathBuf;
 
 mod action_api;
 mod entry_api;
@@ -36,6 +39,16 @@ pub struct ApiSuccess {
 }
 
 pub fn quake_rocket() -> Rocket<Build> {
+    let cors = CorsOptions::default()
+        .allowed_origins(AllowedOrigins::all())
+        .allowed_methods(
+            vec![Method::Get, Method::Post, Method::Patch]
+                .into_iter()
+                .map(From::from)
+                .collect(),
+        )
+        .allow_credentials(true);
+
     let figment = Figment::from(rocket::Config::default())
         .merge(Serialized::defaults(Config::default()))
         .merge(Yaml::file(".quake.yaml"))
@@ -71,6 +84,7 @@ pub fn quake_rocket() -> Rocket<Build> {
         .mount("/processor", routes![processor_api::lookup_file])
         .mount("/layout", routes![layout_api::dashboard_layout])
         .attach(AdHoc::config::<QuakeConfig>())
+        .attach(cors.to_cors().unwrap())
 }
 
 pub fn defines(config: &State<QuakeConfig>) -> EntryDefines {

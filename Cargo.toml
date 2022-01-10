@@ -55,6 +55,7 @@ futures = "0.3" # To be able to block on async functions if you are not using an
 # WebServer
 figment = { version = "0.10", features = ["toml", "env", "yaml"] }
 rocket = { version = "0.5.0-rc.1", features = ["json"] }
+rocket_cors = { git = "https://github.com/lawliet89/rocket_cors", branch = "master" }
 reqwest = { version = "0.11.6", features = ["blocking", "json"] }
 
 # notify for dir
