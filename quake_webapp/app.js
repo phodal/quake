@@ -87,7 +87,7 @@ function create_editor_element(entry, params) {
 
   editor.setAttribute('id', entry.id);
   editor.setAttribute('title', entry.title);
-  editor.setAttribute('entry_type', params.type);
+  editor.setAttribute('entryType', params.type);
   editor.addEventListener("onSave", function (event) {
     let data = event.detail;
     update_entry(params.type, params.id, {

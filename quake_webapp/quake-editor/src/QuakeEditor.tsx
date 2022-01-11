@@ -7,15 +7,17 @@ export type Props = {
   id: number,
   title: string,
   value: string,
-  entryType: string,
+  entrytype: string,
   onSave: (content: object) => any
 }
 
 function QuakeEditor(props: Props) {
+  console.log(props);
   const [title, setTitle] = React.useState(props.title);
   const [value, setValue] = React.useState(props.value);
-  const [entryType] = React.useState(props.entryType);
+  const [entryType, setEntryType] = React.useState(props.entrytype);
 
+  console.log(entryType);
 
   const pattern = /[a-zA-Z0-9_\u00A0-\u02AF\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
   const wordCount = (data: string) => {
@@ -40,11 +42,13 @@ function QuakeEditor(props: Props) {
     setTitle(props.title);
   }, [props])
 
+  React.useEffect(() => {
+    setEntryType(props.entrytype);
+  }, [props])
 
   React.useEffect(() => {
     setValue(props.value);
   }, [props])
-
 
   const onSave = React.useCallback(() => {
     props.onSave({
@@ -59,10 +63,6 @@ function QuakeEditor(props: Props) {
 
   const saveEntry = () => {
     onSave();
-  }
-
-  const uploadFile = async (_file: File, _options: any) => {
-    return {} as any;
   }
 
   // https://github.com/outline/outline/blob/main/app/components/Editor.tsx
@@ -80,13 +80,12 @@ function QuakeEditor(props: Props) {
       }
       formData.append("name", file.name);
 
-      const uploadResponse = await fetch("/processor/todo/upload", {
+      const uploadResponse = await fetch(`/processor/${entryType}/upload`, {
         method: "post",
         body: formData,
       });
 
-      console.log(uploadResponse)
-      return "";
+      return uploadResponse.text();
     },
     [entryType, props]
   );
