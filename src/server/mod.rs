@@ -72,7 +72,10 @@ pub fn quake_rocket() -> Rocket<Build> {
             ],
         )
         .mount("/reference", routes![reference_api::reference_by_type])
-        .mount("/processor", routes![processor_api::lookup_file])
+        .mount(
+            "/processor",
+            routes![processor_api::lookup_file, processor_api::upload],
+        )
         .mount("/layout", routes![layout_api::dashboard_layout])
         .attach(AdHoc::config::<QuakeConfig>())
     // .attach(cors().to_cors().unwrap())

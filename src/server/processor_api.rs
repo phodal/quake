@@ -1,9 +1,11 @@
+use std::io;
 use std::path::PathBuf;
 
+use rocket::data::ToByteUnit;
 use rocket::fs::NamedFile;
 use rocket::response::status::NotFound;
 use rocket::serde::json::Json;
-use rocket::{get, State};
+use rocket::{get, post, Data, State};
 
 use quake_core::QuakeConfig;
 
@@ -27,6 +29,20 @@ pub(crate) async fn lookup_file(
 
     let file = NamedFile::open(path_buf);
     Ok(file.await.ok().unwrap())
+}
+
+#[post("/<entry_type>/upload", data = "<file>")]
+pub async fn upload(
+    entry_type: String,
+    file: Data<'_>,
+    config: &State<QuakeConfig>,
+) -> io::Result<String> {
+    let workspace = config.workspace.to_string();
+    let path_buf = PathBuf::from(&workspace).join(entry_type).join("demo");
+
+    println!("{:?}", path_buf.display());
+    file.open(128.kibibytes()).into_file(path_buf).await?;
+    Ok("".to_string())
 }
 
 #[cfg(test)]
