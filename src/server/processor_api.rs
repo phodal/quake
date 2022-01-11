@@ -35,6 +35,8 @@ pub(crate) async fn lookup_file(
     Ok(file.await.ok().unwrap())
 }
 
+static IMAGE_PATH: &str = "images";
+
 #[post("/<entry_type>/upload", data = "<data>")]
 pub async fn upload(
     entry_type: String,
@@ -64,21 +66,17 @@ pub async fn upload(
     };
 
     let image = multipart_form_data.raw.remove("file");
-
     let workspace = config.workspace.to_string();
 
     #[allow(unused_assignments)]
     let mut file_name = "".to_string();
-    let image_path = "image";
 
     match image {
         Some(mut image) => {
             let raw = image.remove(0);
 
             file_name = raw.file_name.unwrap_or("Image".to_string());
-            let path_buf = PathBuf::from(&workspace)
-                .join(&entry_type)
-                .join(&image_path);
+            let path_buf = PathBuf::from(&workspace).join(&entry_type).join(IMAGE_PATH);
 
             let _ = fs::create_dir_all(&path_buf);
 
@@ -91,7 +89,27 @@ pub async fn upload(
         None => return Err(status::BadRequest(Some("Please input a file.".to_string()))),
     }
 
-    Ok(format!("{:}/{:}/{:}", entry_type, image_path, file_name))
+    Ok(image_path(entry_type, file_name))
+}
+
+fn image_path(entry_type: String, file_name: String) -> String {
+    format!(
+        "/processor/{:}/{:}?file_name={:}",
+        entry_type, IMAGE_PATH, file_name
+    )
+}
+
+#[get("/<entry_type>/images?<file_name>")]
+pub async fn image_file(
+    entry_type: String,
+    file_name: String,
+    config: &State<QuakeConfig>,
+) -> Option<NamedFile> {
+    let workspace = PathBuf::from(&config.workspace);
+    let file_path = workspace.join(entry_type).join(IMAGE_PATH).join(file_name);
+
+    info!("get file {:?}", file_path);
+    NamedFile::open(file_path).await.ok()
 }
 
 #[cfg(test)]
