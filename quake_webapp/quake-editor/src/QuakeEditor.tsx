@@ -84,7 +84,7 @@ function QuakeEditor(props: Props) {
 
       return uploadResponse.text();
     },
-    [entryType, props]
+    [entryType]
   );
 
   return (
