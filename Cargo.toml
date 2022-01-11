@@ -54,9 +54,12 @@ futures = "0.3" # To be able to block on async functions if you are not using an
 
 # WebServer
 figment = { version = "0.10", features = ["toml", "env", "yaml"] }
+reqwest = { version = "0.11.6", features = ["blocking", "json"] }
+
 rocket = { version = "0.5.0-rc.1", features = ["json"] }
 rocket_cors = { git = "https://github.com/lawliet89/rocket_cors", branch = "master" }
-reqwest = { version = "0.11.6", features = ["blocking", "json"] }
+# file upload
+rocket-multipart-form-data = "0.10.0"
 
 # notify for dir
 crossbeam-channel = "0.4.0"

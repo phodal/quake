@@ -1,11 +1,15 @@
-use std::io;
+use std::fs;
 use std::path::PathBuf;
 
-use rocket::data::ToByteUnit;
 use rocket::fs::NamedFile;
+use rocket::http::ContentType;
+use rocket::response::status;
 use rocket::response::status::NotFound;
 use rocket::serde::json::Json;
-use rocket::{get, post, Data, State};
+use rocket::{get, info, post, Data, State};
+use rocket_multipart_form_data::{
+    mime, MultipartFormData, MultipartFormDataField, MultipartFormDataOptions,
+};
 
 use quake_core::QuakeConfig;
 
@@ -31,18 +35,63 @@ pub(crate) async fn lookup_file(
     Ok(file.await.ok().unwrap())
 }
 
-#[post("/<entry_type>/upload", data = "<file>")]
+#[post("/<entry_type>/upload", data = "<data>")]
 pub async fn upload(
     entry_type: String,
-    file: Data<'_>,
+    data: Data<'_>,
+    content_type: &ContentType,
     config: &State<QuakeConfig>,
-) -> io::Result<String> {
-    let workspace = config.workspace.to_string();
-    let path_buf = PathBuf::from(&workspace).join(entry_type).join("demo");
+) -> Result<String, status::BadRequest<String>> {
+    let options = MultipartFormDataOptions {
+        max_data_bytes: 33 * 1024 * 1024,
+        allowed_fields: vec![
+            MultipartFormDataField::text("name"),
+            MultipartFormDataField::raw("file")
+                .size_limit(32 * 1024 * 1024)
+                .content_type_by_string(Some(mime::IMAGE_STAR))
+                .unwrap(),
+        ],
+        ..MultipartFormDataOptions::default()
+    };
 
-    println!("{:?}", path_buf.display());
-    file.open(128.kibibytes()).into_file(path_buf).await?;
-    Ok("".to_string())
+    let mut multipart_form_data = match MultipartFormData::parse(content_type, data, options).await
+    {
+        Ok(multipart_form_data) => multipart_form_data,
+        Err(err) => {
+            info!("{:?}", err);
+            return Err(status::BadRequest(Some(format!("{:?}", err))));
+        }
+    };
+
+    let image = multipart_form_data.raw.remove("file");
+
+    let workspace = config.workspace.to_string();
+
+    #[allow(unused_assignments)]
+    let mut file_name = "".to_string();
+    let image_path = "image";
+
+    match image {
+        Some(mut image) => {
+            let raw = image.remove(0);
+
+            file_name = raw.file_name.unwrap_or("Image".to_string());
+            let path_buf = PathBuf::from(&workspace)
+                .join(&entry_type)
+                .join(&image_path);
+
+            let _ = fs::create_dir_all(&path_buf);
+
+            let file_path = path_buf.join(&file_name);
+
+            if let Err(err) = fs::write(file_path, raw.raw) {
+                return Err(status::BadRequest(Some(format!("{:?}", err))));
+            }
+        }
+        None => return Err(status::BadRequest(Some("Please input a file.".to_string()))),
+    }
+
+    Ok(format!("{:}/{:}/{:}", entry_type, image_path, file_name))
 }
 
 #[cfg(test)]
