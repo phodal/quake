@@ -75,7 +75,7 @@ pub async fn upload(
         Some(mut image) => {
             let raw = image.remove(0);
 
-            file_name = raw.file_name.unwrap_or("Image".to_string());
+            file_name = raw.file_name.unwrap_or_else(|| "Image".to_string());
             let path_buf = PathBuf::from(&workspace).join(&entry_type).join(IMAGE_PATH);
 
             let _ = fs::create_dir_all(&path_buf);
