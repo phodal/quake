@@ -15,10 +15,11 @@ function QuakeEditor(props: Props) {
   const [title, setTitle] = React.useState(props.title);
   const [value, setValue] = React.useState(props.value);
   const [entryType, setEntryType] = React.useState(props.entrytype);
+  const editor = React.createRef<Editor>();
 
   const pattern = /[a-zA-Z0-9_\u00A0-\u02AF\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
   const wordCount = (data: string) => {
-    if(!data  || (!!data && data.length < 0)) {
+    if (!data || (!!data && data.length < 0)) {
       return 0;
     }
 
@@ -54,17 +55,28 @@ function QuakeEditor(props: Props) {
     });
   }, [props, title, value])
 
+  function constructToc(headings: { title: string; level: number; id: string }[]) {
+    console.log(headings);
+  }
+
   const onChange = React.useCallback((getValue) => {
+    if (editor && editor.current) {
+      constructToc(editor.current.getHeadings());
+    }
+
     setValue(getValue())
-  }, [setValue]);
+  }, [setValue, editor]);
+
+  const changeTitle = React.useCallback((e) => {
+    setTitle(e.target.value)
+  }, [setTitle]);
 
   const saveEntry = () => {
     onSave();
   }
 
+  // custom editor: https://github.com/outline/outline/blob/main/app/scenes/Document/components/Editor.tsx
   // https://github.com/outline/outline/blob/main/app/components/Editor.tsx
-  // https://github.com/outline/outline/blob/main/app/utils/uploadFile.ts
-  // https://github.com/SergioBenitez/Rocket/blob/master/examples/pastebin/src/main.rs
   const onUploadImage = React.useCallback(
     async (file: File) => {
       const formData = new FormData();
@@ -91,12 +103,13 @@ function QuakeEditor(props: Props) {
     <div>
       <StyledTitle>
         <StyleLabel># {props.id}</StyleLabel>
-        <StyleInput type="text" value={title} onChange={(e) => { setTitle(e.target.value)}}/>
+        <StyleInput type="text" value={title} onChange={changeTitle}/>
         <StyleButton onClick={saveEntry}>Save</StyleButton>
         <StyleCount>words：{wordCount(value)}</StyleCount>
       </StyledTitle>
       <StyledEditor
         autoFocus={true}
+        ref={editor}
         defaultValue={props.value}
         onChange={onChange}
         onSave={onSave}
