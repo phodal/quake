@@ -29,11 +29,11 @@ class ReactElement extends HTMLElement {
       ...this.getEvents(),
       children: this.innerHTML,
       // todo: merge to auto event
-      onSave: (args: any) => {
-        this.dispatchEvent(new CustomEvent("onSave", {
-          detail: args
-        }))
-      }
+      // onSave: (args: any) => {
+      //   this.dispatchEvent(new CustomEvent("onSave", {
+      //     detail: args
+      //   }))
+      // }
     };
 
     if (typeof (props as any).value !== "string") {
