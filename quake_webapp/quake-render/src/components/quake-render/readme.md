@@ -29,6 +29,7 @@
 
 ### Depends on
 
+- [data-grid](../data-grid)
 - [graph-bar](../graph-bar)
 - [graph-line](../graph-line)
 - [graph-transflow](../graph-transflow)
@@ -36,6 +37,7 @@
 ### Graph
 ```mermaid
 graph TD;
+  quake-render --> data-grid
   quake-render --> graph-bar
   quake-render --> graph-line
   quake-render --> graph-transflow

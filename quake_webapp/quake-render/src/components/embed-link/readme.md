@@ -23,6 +23,7 @@
 ```mermaid
 graph TD;
   embed-link --> quake-render
+  quake-render --> data-grid
   quake-render --> graph-bar
   quake-render --> graph-line
   quake-render --> graph-transflow
