@@ -21,10 +21,6 @@ function QuakeBoard(props: Props) {
   const engine = React.useMemo(() => createEngine(), []);
   const model = React.useMemo(() => new DiagramModel(), []);
 
-  React.useLayoutEffect(() => {
-    // dagreEngine.redistribute(model);
-  });
-
   const data = React.useMemo(() => {
     let nodes = [];
     let links: any = [];
@@ -49,9 +45,13 @@ function QuakeBoard(props: Props) {
     };
   }, []);
 
-  model.addAll(...data.nodes.concat(data.links));
 
-  // console.log(model);
+  React.useLayoutEffect(() => {
+    model.addAll(...data.nodes.concat(data.links));
+    dagreEngine.redistribute(model);
+    engine.repaintCanvas();
+  }, [data, model, engine, dagreEngine]);
+
   engine.setModel(model);
 
   return (
