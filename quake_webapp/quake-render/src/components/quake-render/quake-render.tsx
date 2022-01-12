@@ -117,6 +117,12 @@ export class QuakeRender {
         out = this.renderGraph(code);
         break;
 
+      case CodeType.Data:
+        let data = this.tableToJson(code);
+        // @ts-ignore
+        out = <data-grid data={data}/>
+        break;
+
       case CodeType.Transflow:
         out = this.renderTransflow(code);
         break;

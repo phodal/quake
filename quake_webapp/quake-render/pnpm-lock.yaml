@@ -5,6 +5,7 @@ specifiers:
   '@types/d3': ^7.1.0
   '@types/jest': ^26.0.24
   '@types/marked': ^4.0.1
+  ag-grid-community: ^26.2.1
   d3: ^7.2.1
   echarts: ^5.2.2
   jest: ^26.6.3
@@ -16,6 +17,7 @@ specifiers:
 dependencies:
   '@stencil/core': 2.11.0
   '@types/d3': 7.1.0
+  ag-grid-community: 26.2.1
   d3: 7.2.1
   echarts: 5.2.2
   marked: 4.0.7
@@ -902,6 +904,10 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
     dev: true
+
+  /ag-grid-community/26.2.1:
+    resolution: {integrity: sha512-aChSGNdPkBda4BhOUUEAmAkRlIG7rFU8UTXx3NPStavrCOHKLDRV90djIKuiXfM6ONBqKmeqw2as0yuLnSN8dw==}
+    dev: false
 
   /agent-base/6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/agent-base/-/agent-base-6.0.2.tgz}

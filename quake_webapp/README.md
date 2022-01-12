@@ -2,6 +2,22 @@
 
 ## Docs
 
+### Mindmap
+
+https://github.com/felixhayashi/TW5-TiddlyMap
+
+Flow Component: https://github.com/alibaba/butterfly
+
+no actively
+
+Markdown mindmap: https://github.com/dundalek/markmap
+
+Samples: https://github.com/Jermolene/TiddlyWiki5
+
+https://github.com/hizzgdev/jsmind
+
+Mindmap: https://github.com/drichard/mindmaps  no
+
 ### Framework Spikes
 
 #### Form.js

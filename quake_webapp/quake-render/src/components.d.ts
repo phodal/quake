@@ -8,6 +8,9 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { QuakeDownType } from "./markdown/quake-down.type";
 import { Link } from "./components/quake-render/quake-render";
 export namespace Components {
+    interface DataGrid {
+        "data": QuakeDownType.Table;
+    }
     interface EmbedLink {
         "entryId": number;
         "entryType": string;
@@ -34,6 +37,12 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLDataGridElement extends Components.DataGrid, HTMLStencilElement {
+    }
+    var HTMLDataGridElement: {
+        prototype: HTMLDataGridElement;
+        new (): HTMLDataGridElement;
+    };
     interface HTMLEmbedLinkElement extends Components.EmbedLink, HTMLStencilElement {
     }
     var HTMLEmbedLinkElement: {
@@ -71,6 +80,7 @@ declare global {
         new (): HTMLQuakeRenderElement;
     };
     interface HTMLElementTagNameMap {
+        "data-grid": HTMLDataGridElement;
         "embed-link": HTMLEmbedLinkElement;
         "graph-bar": HTMLGraphBarElement;
         "graph-line": HTMLGraphLineElement;
@@ -80,6 +90,9 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface DataGrid {
+        "data"?: QuakeDownType.Table;
+    }
     interface EmbedLink {
         "entryId"?: number;
         "entryType"?: string;
@@ -107,6 +120,7 @@ declare namespace LocalJSX {
         "onClickPageLink"?: (event: CustomEvent<Link>) => void;
     }
     interface IntrinsicElements {
+        "data-grid": DataGrid;
         "embed-link": EmbedLink;
         "graph-bar": GraphBar;
         "graph-line": GraphLine;
@@ -119,6 +133,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "data-grid": LocalJSX.DataGrid & JSXBase.HTMLAttributes<HTMLDataGridElement>;
             "embed-link": LocalJSX.EmbedLink & JSXBase.HTMLAttributes<HTMLEmbedLinkElement>;
             "graph-bar": LocalJSX.GraphBar & JSXBase.HTMLAttributes<HTMLGraphBarElement>;
             "graph-line": LocalJSX.GraphLine & JSXBase.HTMLAttributes<HTMLGraphLineElement>;

@@ -6,6 +6,7 @@ export enum CodeType {
   Example = "Example",
   Repl = "Repl",
   Transflow = "Transflow",
+  Data = "Data",
   Run = "Run",
 }
 
@@ -23,6 +24,8 @@ export function CodeTypeFromStr(text: String) {
       return CodeType.Run;
     case "transflow":
       return CodeType.Transflow;
+    case "data":
+      return CodeType.Data;
     default:
       return CodeType.Unknown;
   }
