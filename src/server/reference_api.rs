@@ -54,7 +54,6 @@ mod test {
         let mut res = "".to_string();
         let _ = response.read_to_string(&mut res);
 
-        println!("{:}", res);
         assert_eq!(response.status(), Status::Ok);
     }
 }
