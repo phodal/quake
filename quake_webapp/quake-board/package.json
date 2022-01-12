@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": false,
   "dependencies": {
+    "@projectstorm/react-canvas-core": "^6.6.1",
+    "@projectstorm/react-diagrams": "^6.6.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -20,7 +22,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "export PORT=4002 && react-app-rewired start",
+    "start": "export PORT=4005 && react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
@@ -44,7 +46,16 @@
     ]
   },
   "devDependencies": {
+    "@projectstorm/react-diagrams": "^6.6.1",
+    "@projectstorm/react-diagrams-core": "^6.6.1",
+    "@projectstorm/react-diagrams-defaults": "^6.6.1",
+    "@projectstorm/react-diagrams-routing": "^6.6.1",
     "@types/styled-components": "^5.1.15",
-    "react-app-rewired": "^2.1.8"
+    "react-app-rewired": "^2.1.8",
+    "pathfinding": "^0.4.18",
+    "paths-js": "^0.4.11",
+    "dagre": "^0.8.5",
+    "@emotion/react": "^11.*",
+    "@emotion/styled": "^11.*"
   }
 }

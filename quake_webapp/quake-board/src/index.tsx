@@ -82,4 +82,4 @@ class ReactElement extends HTMLElement {
 
 }
 
-customElements.define('quake-editor', ReactElement);
+customElements.define('quake-board', ReactElement);

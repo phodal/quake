@@ -8,7 +8,7 @@ module.exports = {
 
     config.output = {
       ...config.output,
-      filename: `static/quake-editor.min.js`,
+      filename: `static/quake-board.min.js`,
     };
 
     config.optimization.runtimeChunk = false;
