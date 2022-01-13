@@ -3,6 +3,7 @@ import createEngine, {DagreEngine, DefaultNodeModel, DiagramModel} from '@projec
 import {Item, Menu, Separator, Submenu, useContextMenu} from "react-contexify";
 import {CanvasWidget} from "@projectstorm/react-canvas-core";
 import styled from "styled-components";
+import 'react-contexify/dist/ReactContexify.css';
 
 export type Props = {}
 
@@ -74,11 +75,8 @@ function QuakeBoard(props: Props) {
   );
 
   return (
-    <>
+    <StyledDiv onDoubleClick={handleContextMenu}>
       <StyledCanvasWidget engine={engine} />
-
-      <div onContextMenu={handleContextMenu} />
-
       <Menu id={MENU_ID}>
         <Item onClick={handleItemClick}>Item 1</Item>
         <Item onClick={handleItemClick}>Item 2</Item>
@@ -90,11 +88,16 @@ function QuakeBoard(props: Props) {
           <Item onClick={handleItemClick}>Sub Item 2</Item>
         </Submenu>
       </Menu>
-    </>
+    </StyledDiv>
   );
 }
 
 export default QuakeBoard;
+
+const StyledDiv = styled.div`
+  width: 100%;
+  height: 100%;
+`
 
 const StyledCanvasWidget = styled(CanvasWidget)`
   background: #333333;
