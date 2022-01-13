@@ -127,8 +127,6 @@ function QuakeBoard(props: Props) {
     }, [engine, model, props]
   );
 
-
-
   return (
     <StyledDiv onContextMenu={handleContextMenu}>
       <StyledCanvasWidget engine={engine}/>

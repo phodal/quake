@@ -31,6 +31,8 @@ pub struct EntryDefine {
     pub flows: Option<Vec<FlowProperty>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub states: Option<Vec<EntryState>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub target: Option<String>,
 }
 
 /// process file for file content

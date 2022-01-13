@@ -163,4 +163,13 @@ entries:
       - created_date: Date
       - updated_date: Date
     actions: ~
-
+  - type: graph
+    display: "Graph"
+    target: "quake-board"
+    properties:
+      - title: Title
+      - file: File
+      - content: String
+      - created_date: Date
+      - updated_date: Date
+    actions: ~
