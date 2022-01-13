@@ -4,6 +4,8 @@ import {Item, Menu, useContextMenu} from "react-contexify";
 import {CanvasWidget} from "@projectstorm/react-canvas-core";
 import styled from "styled-components";
 import 'react-contexify/dist/ReactContexify.css';
+import {DiamondNodeFactory} from "./components/base-model/DiamondNodeFactory";
+import {DiamondNodeModel} from "./components/base-model/DiamondNodeModel";
 
 export type Props = {
   model: any,
@@ -26,7 +28,13 @@ function QuakeBoard(props: Props) {
     includeLinks: false,
   }), []);
 
-  const engine = React.useMemo(() => createEngine(), []);
+  const engine = React.useMemo(() => {
+    let engine = createEngine();
+    engine.getNodeFactories().registerFactory(new DiamondNodeFactory() as any);
+
+    return engine
+  }, []);
+
   const model = React.useMemo(() => new DiagramModel(), []);
 
   const data = React.useMemo(() => {
@@ -58,8 +66,8 @@ function QuakeBoard(props: Props) {
     })
   }
 
-  function addNode(event: MouseEvent, engine: DiagramEngine, type: string) {
-    let node: DefaultNodeModel;
+  function createNode(event: MouseEvent, engine: DiagramEngine, type: string) {
+    let node: any;
     switch (type) {
       case 'out':
         node = new DefaultNodeModel('Source', 'rgb(0,192,255)');
@@ -70,6 +78,9 @@ function QuakeBoard(props: Props) {
         node = new DefaultNodeModel('Target', 'rgb(192,255,0)');
         node.addInPort('In');
         node.getOptions().extras = {"type": "in"};
+        break;
+      case 'filter':
+        node = new DiamondNodeModel();
         break;
       default:
         node = new DefaultNodeModel('default', 'rgb(0,192,192)');
@@ -87,29 +98,32 @@ function QuakeBoard(props: Props) {
 
   const addSource = React.useCallback(
     ({event}) => {
-      let node = addNode(event, engine, 'out');
+      let node = createNode(event, engine, 'out');
       model.addNode(node);
 
-      let serialize = model.serialize();
-      props.onChange(serialize);
+      props.onChange(model.serialize());
 
       engine.repaintCanvas();
     }, [engine, model, props]
   );
 
   const addFilter = React.useCallback(
-    (props: any) => {
-      console.log(props)
-    }, []
+    ({event}) => {
+      let node = createNode(event, engine, 'filter');
+      model.addNode(node);
+
+      props.onChange(model.serialize());
+
+      engine.repaintCanvas();
+    }, [engine, model, props]
   );
 
   const addLambda = React.useCallback(
     ({event}) => {
-      let node = addNode(event, engine, 'default');
+      let node = createNode(event, engine, 'default');
       model.addNode(node);
 
-      let serialize = model.serialize();
-      props.onChange(serialize);
+      props.onChange(model.serialize());
 
       engine.repaintCanvas();
     }, [engine, model, props]
@@ -117,11 +131,10 @@ function QuakeBoard(props: Props) {
 
   const addTarget = React.useCallback(
     ({event}) => {
-      let node = addNode(event, engine, 'in');
+      let node = createNode(event, engine, 'in');
       model.addNode(node);
 
-      let serialize = model.serialize();
-      props.onChange(serialize);
+      props.onChange(model.serialize());
 
       engine.repaintCanvas();
     }, [engine, model, props]

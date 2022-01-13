@@ -164,7 +164,7 @@ entries:
       - updated_date: Date
     actions: ~
   - type: graph
-    display: "Graph"
+    display: "Knowledge Graph"
     target: "quake-board"
     properties:
       - title: Title
@@ -172,4 +172,3 @@ entries:
       - content: String
       - created_date: Date
       - updated_date: Date
-    actions: ~
