@@ -26,12 +26,10 @@ function QuakeBoard(props: Props) {
     let links: any = [];
 
     const node1 = new DefaultNodeModel('Node 1', 'rgb(0,192,255)');
-    node1.setPosition(100, 100);
     const port1 = node1.addOutPort('Out');
     nodes.push(node1);
 
     const node2 = new DefaultNodeModel('Node 2', 'rgb(192,255,0)');
-    node2.setPosition(400, 100);
     const port2 = node2.addInPort('In');
     nodes.push(node2);
 
