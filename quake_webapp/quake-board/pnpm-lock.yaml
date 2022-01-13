@@ -22,6 +22,7 @@ specifiers:
   polished: ^4.1.3
   react: ^17.0.2
   react-app-rewired: ^2.1.8
+  react-contexify: ^5.0.0
   react-dom: ^17.0.2
   react-scripts: 4.0.3
   rich-markdown-editor: ^11.20.0
@@ -41,6 +42,7 @@ dependencies:
   '@types/react-dom': 17.0.11
   polished: 4.1.3
   react: 17.0.2
+  react-contexify: 5.0.0_react-dom@17.0.2+react@17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-scripts: 4.0.3_react@17.0.2+typescript@4.5.3
   rich-markdown-editor: 11.21.0_7a082f7d10047d47195aea793f958a14
@@ -4034,6 +4036,11 @@ packages:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 6.2.0
+    dev: false
+
+  /clsx/1.1.1:
+    resolution: {integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==}
+    engines: {node: '>=6'}
     dev: false
 
   /co/4.6.0:
@@ -10032,6 +10039,18 @@ packages:
       react-scripts: 4.0.3_react@17.0.2+typescript@4.5.3
       semver: 5.7.1
     dev: true
+
+  /react-contexify/5.0.0_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-2FIp7lxJ6dtfGr8EZ4uVV5p5TQjd0n2h/JU7PrejNIMiCeZWvSVPFh4lj1ZvjXosglBvP7q5JQQ8yUCdSaMSaw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      clsx: 1.1.1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
 
   /react-dev-utils/11.0.4:
     resolution: {integrity: sha512-dx0LvIGHcOPtKbeiSUM4jqpBl3TcY7CDjZdfOIcKeznE7BWr9dg0iPG90G5yfVQ+p/rGNMXdbfStvzQZEVEi4A==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-11.0.4.tgz}

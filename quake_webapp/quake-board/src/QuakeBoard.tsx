@@ -1,8 +1,12 @@
 import React from 'react';
 import createEngine, {DagreEngine, DefaultNodeModel, DiagramModel} from '@projectstorm/react-diagrams';
-import {BodyWidget} from "./BodyWidget";
+import {Item, Menu, Separator, Submenu, useContextMenu} from "react-contexify";
+import {CanvasWidget} from "@projectstorm/react-canvas-core";
+import styled from "styled-components";
 
 export type Props = {}
+
+const MENU_ID = 'blahblah';
 
 function QuakeBoard(props: Props) {
   const dagreEngine = React.useMemo(() => new DagreEngine({
@@ -52,11 +56,48 @@ function QuakeBoard(props: Props) {
 
   engine.setModel(model);
 
+  const {show} = useContextMenu({
+    id: MENU_ID,
+  });
+
+  function handleContextMenu(event: any) {
+    event.preventDefault();
+    show(event, {
+      props: {
+        key: 'value'
+      }
+    })
+  }
+
+  const handleItemClick = React.useCallback(
+    (props: any) => console.log(props), []
+  );
+
   return (
     <>
-      <BodyWidget engine={engine}/>
+      <StyledCanvasWidget engine={engine} />
+
+      <div onContextMenu={handleContextMenu} />
+
+      <Menu id={MENU_ID}>
+        <Item onClick={handleItemClick}>Item 1</Item>
+        <Item onClick={handleItemClick}>Item 2</Item>
+        <Separator/>
+        <Item disabled>Disabled</Item>
+        <Separator/>
+        <Submenu label="Foobar">
+          <Item onClick={handleItemClick}>Sub Item 1</Item>
+          <Item onClick={handleItemClick}>Sub Item 2</Item>
+        </Submenu>
+      </Menu>
     </>
   );
 }
 
 export default QuakeBoard;
+
+const StyledCanvasWidget = styled(CanvasWidget)`
+  background: #333333;
+  width: 100%;
+  height: 100%;
+`
