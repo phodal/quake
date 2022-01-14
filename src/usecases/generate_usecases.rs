@@ -23,9 +23,9 @@ pub fn generate_by_flow(flow: &str, config: &QuakeConfig) -> Result<(), Box<dyn 
     let node = QuakeTransflowNode::from_text(&flow)?;
     let route = &node.routes[0];
 
-    let define = lookup_define(&route, &workspace)?;
+    let define = lookup_define(route, &workspace)?;
 
-    let matcher = regex_from_filter(&route)?;
+    let matcher = regex_from_filter(route)?;
     let source_files = files_from_route(&route, &matcher)?;
 
     let entry_path = workspace.join(&define.entry_type);
@@ -47,7 +47,7 @@ pub fn generate_by_flow(flow: &str, config: &QuakeConfig) -> Result<(), Box<dyn 
     Ok(())
 }
 
-fn lookup_define(route: &&Route, workspace: &Path) -> Result<EntryDefine, Box<dyn Error>> {
+fn lookup_define(route: &Route, workspace: &Path) -> Result<EntryDefine, Box<dyn Error>> {
     let buf = workspace.join(EntryPaths::entries_define());
     let defines = EntryDefines::from_path(&buf);
     let define = match defines.find(&route.to) {
@@ -129,7 +129,7 @@ fn is_source_file_by_grep(entry: &DirEntry, matcher: &RegexMatcher) -> bool {
         .unwrap_or(false)
 }
 
-fn regex_from_filter(route: &&Route) -> Result<RegexMatcher, Box<dyn Error>> {
+fn regex_from_filter(route: &Route) -> Result<RegexMatcher, Box<dyn Error>> {
     let filter = match &route.filter {
         None => ".*",
         Some(filter) => filter,
