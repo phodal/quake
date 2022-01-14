@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize, Serializer};
 use serde_yaml::{Sequence, Value};
 
 use crate::entry::slug::slugify;
+use crate::entry::PropMap;
 use crate::errors::QuakeError;
 use crate::helper::date_now;
 use crate::meta::quake_change::QuakeChange;
@@ -23,7 +24,7 @@ pub struct EntryFile {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub path: Option<PathBuf>,
     pub name: String,
-    pub properties: IndexMap<String, String>,
+    pub properties: PropMap,
     pub content: String,
     pub changes: Vec<QuakeChange>,
 }
@@ -134,7 +135,7 @@ impl EntryFile {
 
         let (front_matter, content) = Self::split_markdown(text);
 
-        let mut fields: IndexMap<String, String> = IndexMap::new();
+        let mut fields: PropMap = IndexMap::new();
         let mut changes = vec![];
         for document in serde_yaml::Deserializer::from_str(&front_matter) {
             let value = match Value::deserialize(document) {
@@ -228,7 +229,7 @@ impl EntryFile {
         self.properties.insert(key.to_string(), value);
     }
 
-    pub fn set_properties(&mut self, fields: IndexMap<String, String>) {
+    pub fn set_properties(&mut self, fields: PropMap) {
         self.properties = fields;
     }
 

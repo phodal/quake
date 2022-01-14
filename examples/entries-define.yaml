@@ -165,10 +165,10 @@ entries:
     actions: ~
   - type: graph
     display: "Knowledge Graph"
-    target: "quake-board"
+    component: "quake-board"
     properties:
       - title: Title
-      - file: File
+      - source: Source
       - content: String
       - created_date: Date
       - updated_date: Date

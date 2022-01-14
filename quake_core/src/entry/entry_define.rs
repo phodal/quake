@@ -1,3 +1,4 @@
+use crate::entry::PropMap;
 use indexmap::IndexMap;
 use serde_derive::{Deserialize, Serialize};
 
@@ -7,11 +8,13 @@ use crate::meta::{EntryDefineProperties, MetaProperty};
 /// Define a new entry:
 /// - `entry_type`: the entry_type for operation in system, should be in letter or `_` use in `dir`, `storage` such as
 /// - `display`: the name for display
+/// - `custom_path`: custom entry path
 /// - `properties`: in yaml is a key-value list, need to be convert to HashMap
+/// - `processors`: define processors for files
 /// - `actions`: custom behavior action, can be use as API #TBD
 /// - `flows`: for a simple workflow like **kanban**
 /// - `states`: such as **filterable** condition
-/// - `generate_rules`: for auto generate content rule
+/// - `component`: display from source
 ///
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
 pub struct EntryDefine {
@@ -21,7 +24,7 @@ pub struct EntryDefine {
     /// custom path for entries
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_path: Option<String>,
-    pub properties: Vec<IndexMap<String, String>>,
+    pub properties: Vec<PropMap>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<String>>,
     /// file processors
@@ -32,7 +35,7 @@ pub struct EntryDefine {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub states: Option<Vec<EntryState>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub target: Option<String>,
+    pub component: Option<String>,
 }
 
 /// process file for file content
@@ -59,7 +62,7 @@ pub struct EntryState {
 impl EntryDefine {
     // todo: directly Deserialize to meta field
     pub fn to_field_type(&self) -> IndexMap<String, MetaProperty> {
-        let mut properties: IndexMap<String, String> = IndexMap::new();
+        let mut properties: PropMap = IndexMap::new();
         for map in &self.properties {
             for (key, value) in map {
                 properties.insert(key.to_string(), value.to_string());
@@ -70,8 +73,8 @@ impl EntryDefine {
     }
 
     /// set default flow value from first values
-    pub fn create_flows_and_states(&self) -> IndexMap<String, String> {
-        let mut map: IndexMap<String, String> = IndexMap::new();
+    pub fn create_flows_and_states(&self) -> PropMap {
+        let mut map: PropMap = IndexMap::new();
 
         if let Some(list) = &self.flows {
             for flow in list {
@@ -89,7 +92,7 @@ impl EntryDefine {
     }
 
     /// add `title`, `created_date`, `updated_date` value to system
-    pub fn create_title_and_date(&self, title: &str) -> IndexMap<String, String> {
+    pub fn create_title_and_date(&self, title: &str) -> PropMap {
         let date = quake_time::date_now();
 
         let mut map = IndexMap::new();
@@ -101,7 +104,7 @@ impl EntryDefine {
     }
 
     /// create default properties with title, date, flows, dates
-    pub fn create_default_properties(&self, title: &str) -> IndexMap<String, String> {
+    pub fn create_default_properties(&self, title: &str) -> PropMap {
         let basic_map = self.create_title_and_date(title);
         let mut properties = self.convert_to_properties(basic_map);
         let flows = self.create_flows_and_states();
@@ -111,11 +114,8 @@ impl EntryDefine {
     }
 
     /// merge custom yaml map list to Indexmap
-    pub fn convert_to_properties(
-        &self,
-        values: IndexMap<String, String>,
-    ) -> IndexMap<String, String> {
-        let mut result: IndexMap<String, String> = IndexMap::new();
+    pub fn convert_to_properties(&self, values: PropMap) -> PropMap {
+        let mut result: PropMap = IndexMap::new();
 
         for field_def in &self.properties {
             for (key, _field_type) in field_def {
