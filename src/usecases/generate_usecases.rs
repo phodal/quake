@@ -18,11 +18,10 @@ use quake_core::QuakeConfig;
 use quake_processor::process_engine::ProcessEngine;
 
 pub fn generate_by_flow(flow: &str, config: &QuakeConfig) -> Result<(), Box<dyn Error>> {
+    let workspace = PathBuf::from(&config.workspace);
     let flow = format!("transflow generate {{ {:} }}", flow);
     let node = QuakeTransflowNode::from_text(&flow)?;
     let route = &node.routes[0];
-
-    let workspace = PathBuf::from(&config.workspace);
 
     let define = lookup_define(&route, &workspace)?;
 
@@ -112,22 +111,22 @@ fn files_from_route(
             return Err(Box::new(error));
         }
 
-        fn is_source_file(entry: &DirEntry, matcher: &RegexMatcher) -> bool {
-            entry
-                .file_name()
-                .to_str()
-                .map(|s| grep_by_text(matcher, s).unwrap_or(false))
-                .unwrap_or(false)
-        }
-
         for entry in WalkDir::new(source_dir).into_iter().filter_map(|e| e.ok()) {
-            if is_source_file(&entry, matcher) {
+            if is_source_file_by_grep(&entry, matcher) {
                 source_files.push(entry.into_path());
             }
         }
     }
 
     Ok(source_files)
+}
+
+fn is_source_file_by_grep(entry: &DirEntry, matcher: &RegexMatcher) -> bool {
+    entry
+        .file_name()
+        .to_str()
+        .map(|s| grep_by_text(matcher, s).unwrap_or(false))
+        .unwrap_or(false)
 }
 
 fn regex_from_filter(route: &&Route) -> Result<RegexMatcher, Box<dyn Error>> {
@@ -179,7 +178,7 @@ mod tests {
 
         let flow_text = "from('examples').to('papers').filter('spike.md')";
         if let Err(err) = generate_by_flow(flow_text, &conf) {
-            println!("{:?}", err);
+            panic!("{:?}", err);
         }
     }
 

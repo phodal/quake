@@ -1,4 +1,4 @@
-import {NodeModel, NodeModelGenerics, PortModelAlignment} from '@projectstorm/react-diagrams';
+import {NodeModel, NodeModelGenerics, PortModel, PortModelAlignment} from '@projectstorm/react-diagrams';
 import {DiamondPortModel} from './DiamondPortModel';
 
 export interface DiamondNodeModelGenerics extends NodeModelGenerics {
@@ -10,6 +10,7 @@ export class DiamondNodeModel extends NodeModel<DiamondNodeModelGenerics> {
     super({
       type: 'diamond'
     });
+
     this.addPort(new DiamondPortModel(PortModelAlignment.TOP));
     this.addPort(new DiamondPortModel(PortModelAlignment.LEFT));
     this.addPort(new DiamondPortModel(PortModelAlignment.BOTTOM));

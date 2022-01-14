@@ -81,6 +81,7 @@ function QuakeBoard(props: Props) {
         break;
       case 'filter':
         node = new DiamondNodeModel();
+        node.getOptions().extras = {"type": "inout"};
         break;
       default:
         node = new DefaultNodeModel('default', 'rgb(0,192,192)');
