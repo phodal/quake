@@ -72,9 +72,10 @@ pub fn entry_file_by_path(path: &Path, define: &EntryDefine) -> Result<EntryFile
 
 #[cfg(test)]
 mod tests {
+    use std::path::PathBuf;
+
     use crate::entry::entry_by_path::{entry_file_by_path, entry_file_dump};
     use crate::entry::EntryDefine;
-    use std::path::PathBuf;
 
     #[test]
     fn entry_files_by_path_workspace() {

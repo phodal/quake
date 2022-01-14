@@ -1,7 +1,7 @@
-use crate::entry::PropMap;
 use indexmap::IndexMap;
 use serde_derive::{Deserialize, Serialize};
 
+use crate::entry::PropMap;
 use crate::helper::quake_time;
 use crate::meta::{EntryDefineProperties, MetaProperty};
 

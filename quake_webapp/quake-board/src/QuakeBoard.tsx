@@ -28,6 +28,8 @@ function QuakeBoard(props: Props) {
     includeLinks: false,
   }), []);
 
+  const [clickPosition, setClickPosition] = React.useState({clientX: 0, clientY: 0})
+
   const engine = React.useMemo(() => {
     let engine = createEngine();
     engine.getNodeFactories().registerFactory(new DiamondNodeFactory() as any);
@@ -57,16 +59,21 @@ function QuakeBoard(props: Props) {
     id: MENU_ID,
   });
 
-  function handleContextMenu(event: any) {
-    event.preventDefault();
-    show(event, {
-      props: {
-        key: 'value'
-      }
-    })
-  }
+  const handleContextMenu = React.useCallback(
+    (event: any) => {
+      event.preventDefault();
+      setClickPosition({
+        clientX: event.clientX,
+        clientY: event.clientY
+      });
+      show(event, {
+        props: {
+          key: 'value'
+        }
+      })
+    }, [setClickPosition, show]);
 
-  function createNode(event: MouseEvent, engine: DiagramEngine, type: string) {
+  function createNode(event: MouseEvent, engine: DiagramEngine, type: string, clickPosition: any) {
     let node: any;
     switch (type) {
       case 'out':
@@ -91,7 +98,7 @@ function QuakeBoard(props: Props) {
         break;
     }
 
-    const point = engine.getRelativeMousePoint(event);
+    const point = engine.getRelativeMousePoint(clickPosition);
     node.setPosition(point);
 
     return node;
@@ -106,38 +113,38 @@ function QuakeBoard(props: Props) {
 
   const addSource = React.useCallback(
     ({event}) => {
-      let node = createNode(event, engine, 'out');
+      let node = createNode(event, engine, 'out', clickPosition);
       model.addNode(node);
       sendChange();
       engine.repaintCanvas();
-    }, [engine, model, sendChange]
+    }, [engine, model, sendChange, clickPosition]
   );
 
   const addFilter = React.useCallback(
     ({event}) => {
-      let node = createNode(event, engine, 'filter');
+      let node = createNode(event, engine, 'filter', clickPosition);
       model.addNode(node);
       sendChange();
       engine.repaintCanvas();
-    }, [engine, model, sendChange]
+    }, [engine, model, sendChange, clickPosition]
   );
 
   const addLambda = React.useCallback(
     ({event}) => {
-      let node = createNode(event, engine, 'default');
+      let node = createNode(event, engine, 'default', clickPosition);
       model.addNode(node);
       sendChange();
       engine.repaintCanvas();
-    }, [engine, model, sendChange]
+    }, [engine, model, sendChange, clickPosition]
   );
 
   const addTarget = React.useCallback(
     ({event}) => {
-      let node = createNode(event, engine, 'in');
+      let node = createNode(event, engine, 'in', clickPosition);
       model.addNode(node);
       sendChange();
       engine.repaintCanvas();
-    }, [engine, model, sendChange]
+    }, [engine, model, sendChange, clickPosition]
   );
 
   return (
