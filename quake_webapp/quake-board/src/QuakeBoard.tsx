@@ -97,48 +97,47 @@ function QuakeBoard(props: Props) {
     return node;
   }
 
+  const sendChange = React.useCallback(
+    () => {
+      let serialize = model.serialize();
+      console.log(JSON.stringify(serialize));
+      props.onChange(serialize);
+    }, [props, model]);
+
   const addSource = React.useCallback(
     ({event}) => {
       let node = createNode(event, engine, 'out');
       model.addNode(node);
-
-      props.onChange(model.serialize());
-
+      sendChange();
       engine.repaintCanvas();
-    }, [engine, model, props]
+    }, [engine, model, sendChange]
   );
 
   const addFilter = React.useCallback(
     ({event}) => {
       let node = createNode(event, engine, 'filter');
       model.addNode(node);
-
-      props.onChange(model.serialize());
-
+      sendChange();
       engine.repaintCanvas();
-    }, [engine, model, props]
+    }, [engine, model, sendChange]
   );
 
   const addLambda = React.useCallback(
     ({event}) => {
       let node = createNode(event, engine, 'default');
       model.addNode(node);
-
-      props.onChange(model.serialize());
-
+      sendChange();
       engine.repaintCanvas();
-    }, [engine, model, props]
+    }, [engine, model, sendChange]
   );
 
   const addTarget = React.useCallback(
     ({event}) => {
       let node = createNode(event, engine, 'in');
       model.addNode(node);
-
-      props.onChange(model.serialize());
-
+      sendChange();
       engine.repaintCanvas();
-    }, [engine, model, props]
+    }, [engine, model, sendChange]
   );
 
   return (
