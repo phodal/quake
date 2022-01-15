@@ -105,3 +105,18 @@ processable content with `quake_processor`
   actions: ~
 ```
 
+## property type: `Raw`
+
+`Raw` is a raw file for content, can render to `component` field
+
+```yaml
+- type: graph
+  display: "Knowledge Graph"
+  component: "quake-board"
+  properties:
+    - title: Title
+    - source: Raw
+    - content: String
+    - created_date: Date
+    - updated_date: Date
+```

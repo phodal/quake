@@ -168,7 +168,7 @@ entries:
     component: "quake-board"
     properties:
       - title: Title
-      - source: Source
+      - source: Raw
       - content: String
       - created_date: Date
       - updated_date: Date

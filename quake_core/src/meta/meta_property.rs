@@ -29,6 +29,8 @@ pub enum MetaProperty {
     File(String),
     /// todo: add flowy
     Flow(String),
+    /// raw content
+    Raw(String),
     Unknown(String),
 }
 
@@ -47,7 +49,7 @@ impl Display for MetaProperty {
             MetaProperty::Title(title) => write!(f, "{}", title),
             MetaProperty::Author(author) => write!(f, "{:?}", author),
             MetaProperty::Searchable(str) => write!(f, "{}", str),
-            MetaProperty::Filterable(conds) => write!(f, "{:?}", conds),
+            MetaProperty::Filterable(cond) => write!(f, "{:?}", cond),
             MetaProperty::Unknown(str) => write!(f, "{}", str),
             MetaProperty::Date(date) => write!(f, "{}", date),
             MetaProperty::Content(body) => write!(f, "{}", body),
@@ -59,6 +61,7 @@ impl Display for MetaProperty {
             MetaProperty::Enum(array) => write!(f, "{:?}", array),
             MetaProperty::File(path) => write!(f, "{}", path),
             MetaProperty::Data(data) => write!(f, "{}", data),
+            MetaProperty::Raw(data) => write!(f, "{}", data),
         }
     }
 }
