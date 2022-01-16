@@ -25,6 +25,10 @@ impl EntryPaths {
         }
     }
 
+    pub fn quake() -> &'static str {
+        "_quake"
+    }
+
     pub fn entry_info() -> &'static str {
         "entry-node-info.yaml"
     }
@@ -39,10 +43,6 @@ impl EntryPaths {
 
     pub fn entries_csv() -> &'static str {
         "entries.csv"
-    }
-
-    pub fn quake() -> &'static str {
-        "_quake"
     }
 
     pub fn references() -> &'static str {
