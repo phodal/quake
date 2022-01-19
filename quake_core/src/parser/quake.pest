@@ -92,13 +92,15 @@ component_flow = {
 }
 
 sized_empty_comp = {
-    ("EMPTY" | "empty" | "Empty") ~ l_bracket ~ digits ~  ("x" | "X") ~ r_bracket
+    ("EMPTY" | "empty" | "Empty") ~ l_bracket ~ digits ~  ("x" | "X") ~ height? ~  r_bracket
 }
 
 call_flow = {
-    "flow" ~ l_bracket ~ string ~ r_bracket ~ ("," ~ digits ~ ("x" | "X"))?
-    | component_decl ~ ("," ~ digits ~ ("x" | "X"))?
+    "flow" ~ l_bracket ~ string ~ r_bracket ~ ("," ~ digits ~ ("x" | "X") ~ height?)?
+    | component_decl ~ ("," ~ digits ~ ("x" | "X") ~ height? )?
 }
+
+height = { digits }
 
 rest_request = {
     // get / post / put / delete
