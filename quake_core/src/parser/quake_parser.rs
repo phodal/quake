@@ -122,6 +122,9 @@ fn component_flow(component: &mut LayoutComponentNode, pair: Pair<Rule>) {
                         Rule::digits => {
                             component.size = flow_pair.as_str().parse().unwrap();
                         }
+                        Rule::height => {
+                            component.height = flow_pair.as_str().parse().unwrap();
+                        }
                         Rule::component_decl => {
                             for name in flow_pair.into_inner() {
                                 match name.as_rule() {

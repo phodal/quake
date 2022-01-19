@@ -28,6 +28,7 @@ pub struct LayoutComponentNode {
     pub(crate) is_empty: bool,
     pub(crate) flow: Option<String>,
     pub(crate) size: i32,
+    pub(crate) height: i32,
     pub(crate) is_pure_component: bool,
 }
 
