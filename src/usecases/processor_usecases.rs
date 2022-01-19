@@ -27,13 +27,14 @@ pub fn process_by_path(
         .into_iter()
         .filter_map(|e| e.ok());
 
+    let one_kb = 1024;
+
     for path in walk_paths {
         let name = path.file_name().to_str().unwrap();
         if !EntryFile::is_match(name) {
             continue;
         }
 
-        let one_kb = 1024;
         if is_force && path.metadata().unwrap().len() > one_kb {
             continue;
         }
