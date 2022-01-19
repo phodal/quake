@@ -11,10 +11,11 @@ export interface LayoutRow {
 
 export interface LayoutComponent {
   name: string,
+  flow: string,
+  size: number,
+  height: number
   is_empty: boolean,
   is_pure_component: boolean,
-  flow: string,
-  size: number
 }
 
 @Component({
@@ -100,6 +101,16 @@ export class SimpleLayout {
     this.flowMap[id].id = id;
   }
 
+  private countHeight(height: number) {
+    let height_style = "100%";
+
+    if (height > 0 && height <= 12) {
+      height_style = height * (screen.height / 12) + "px"
+    }
+
+    return height_style;
+  }
+
   render() {
     return (
       <Host ref={(el) => this.hostEl = el}>
@@ -109,6 +120,7 @@ export class SimpleLayout {
               <ion-row>
                 {row.columns.map((col, colId) =>
                   <ion-col class="quake-component" size={col.size.toString()}
+                           style={{height: this.countHeight(col.height)}}
                            ref={(el) => (this.addElementToMap(el, this.layoutId(rowId, colId)))}>
                   </ion-col>
                 )}
