@@ -33,8 +33,8 @@ pub fn entry_file_dump(
     if let Some(define) = defines.find(&*entry_type) {
         for (key, prop) in define.to_field_type() {
             if let MetaProperty::Date(_date) = prop {
-                let text = &*file.property(&key).unwrap();
-                let value = quake_time::string_date_to_unix(text);
+                let text = file.property(&key).unwrap_or("".to_string());
+                let value = quake_time::string_date_to_unix(&text);
                 file.update_property(&key, &value);
             }
         }
