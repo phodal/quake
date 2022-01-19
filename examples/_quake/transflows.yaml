@@ -33,9 +33,10 @@
           source_prop: story.content
           target_prop: content
           operators:
-            - operator: split
+            - operator: substring
               params:
-                - "\"。\""
+                - 1
+                - 150
         - source_type: story
           source_prop: story.created_date
           target_prop: date

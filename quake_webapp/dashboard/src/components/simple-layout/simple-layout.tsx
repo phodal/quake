@@ -102,13 +102,16 @@ export class SimpleLayout {
   }
 
   private countHeight(height: number) {
+    let styles = {};
     let height_style = "100%";
 
     if (height > 0 && height <= 12) {
       height_style = height * (screen.height / 12) + "px"
     }
 
-    return height_style;
+    styles['height'] = height_style;
+    styles['max-height'] = height_style;
+    return styles;
   }
 
   render() {
@@ -120,7 +123,7 @@ export class SimpleLayout {
               <ion-row>
                 {row.columns.map((col, colId) =>
                   <ion-col class="quake-component" size={col.size.toString()}
-                           style={{height: this.countHeight(col.height)}}
+                           style={this.countHeight(col.height)}
                            ref={(el) => (this.addElementToMap(el, this.layoutId(rowId, colId)))}>
                   </ion-col>
                 )}
