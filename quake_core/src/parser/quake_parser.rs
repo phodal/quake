@@ -89,12 +89,11 @@ fn component_use_decl(decl: Pair<Rule>) -> LayoutComponentNode {
     for pair in decl.into_inner() {
         match pair.as_rule() {
             Rule::sized_empty_comp => {
-                component.is_empty = true;
                 component.name = "Empty".to_string();
                 component.component_type = "flow".to_string();
                 for inner in pair.into_inner() {
                     if inner.as_rule() == Rule::digits {
-                        component.size = inner.as_str().parse().unwrap();
+                        component.width = inner.as_str().parse().unwrap();
                     }
                 }
             }
@@ -122,7 +121,7 @@ fn component_flow(component: &mut LayoutComponentNode, pair: Pair<Rule>) {
                             component.flow = Some(string_from_pair(flow_pair));
                         }
                         Rule::digits => {
-                            component.size = flow_pair.as_str().parse().unwrap();
+                            component.width = flow_pair.as_str().parse().unwrap();
                         }
                         Rule::height => {
                             component.height = flow_pair.as_str().parse().unwrap();
@@ -132,7 +131,6 @@ fn component_flow(component: &mut LayoutComponentNode, pair: Pair<Rule>) {
                                 match name.as_rule() {
                                     Rule::component_name => {
                                         component.component_type = "native".to_string();
-                                        component.is_pure_component = true;
                                         component.flow = Some(String::from(name.as_str()))
                                     }
                                     _ => {
@@ -605,13 +603,11 @@ mod tests {
             assert_eq!(1, layout.rows[0].len());
             assert_eq!("Calendar", &layout.rows[0][0].name);
             assert_eq!("show_calendar", layout.rows[0][0].flow.as_ref().unwrap());
-            assert_eq!(12, layout.rows[0][0].size);
-            assert!(!layout.rows[0][0].is_empty);
+            assert_eq!(12, layout.rows[0][0].width);
 
             assert_eq!(3, layout.rows[1].len());
             assert_eq!("Empty", &layout.rows[1][0].name);
-            assert!(layout.rows[1][0].is_empty);
-            assert_eq!(2, layout.rows[1][0].size);
+            assert_eq!(2, layout.rows[1][0].width);
         }
     }
 

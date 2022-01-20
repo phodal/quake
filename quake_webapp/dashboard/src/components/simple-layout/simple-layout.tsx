@@ -12,10 +12,9 @@ export interface LayoutRow {
 export interface LayoutComponent {
   name: string,
   flow: string,
-  size: number,
-  height: number
-  is_empty: boolean,
-  is_pure_component: boolean,
+  width: number,
+  height: number,
+  component_type: string
 }
 
 @Component({
@@ -48,11 +47,15 @@ export class SimpleLayout {
       let colId = 0;
       for (let component of row.columns) {
         let id = SimpleLayout.layoutId(rowId, colId);
-        // todo: add type check for component
-        if (component.is_pure_component) {
-          this.createPureComponent(component, that, id);
-        } else {
-          this.createFlowComponent(component, that, id);
+        switch (component.component_type) {
+          case "native":
+            this.createPureComponent(component, that, id);
+            break;
+          case "flow":
+            this.createFlowComponent(component, that, id);
+            break;
+          default:
+            console.log("not supported type: " + component.component_type);
         }
         colId = colId + 1;
       }
@@ -62,7 +65,6 @@ export class SimpleLayout {
 
   private createPureComponent(component: LayoutComponent, that: this, id: string) {
     let element = document.createElement(component.flow);
-    // todo: refactor flow map to add by field;
     if (!that.flowMap[id]) {
       that.flowMap[id] = {};
     }
@@ -122,7 +124,7 @@ export class SimpleLayout {
             {this.layout.rows.map((row, rowId) =>
               <ion-row>
                 {row.columns.map((col, colId) =>
-                  <ion-col class="quake-component" size={col.size.toString()}
+                  <ion-col class="quake-component" size={col.width.toString()}
                            style={SimpleLayout.countHeight(col.height)}
                            ref={(el) => (this.addElementToMap(el, SimpleLayout.layoutId(rowId, colId)))}>
                   </ion-col>

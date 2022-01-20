@@ -259,12 +259,10 @@ pub struct LayoutRow {
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, Default)]
 pub struct LayoutComponent {
     pub(crate) name: String,
-    pub(crate) is_empty: bool,
     pub(crate) flow: String,
-    pub(crate) size: i32,
+    pub(crate) width: i32,
     pub(crate) height: i32,
     pub(crate) component_type: String,
-    pub is_pure_component: bool,
 }
 
 /// parse pure text to `QuakeIt` collections which include all
@@ -307,10 +305,8 @@ fn build_simple_layout(decl: SimpleLayoutDecl) -> SimpleLayout {
         for node in column_node {
             row.columns.push(LayoutComponent {
                 name: node.name.to_string(),
-                is_empty: node.is_empty,
-                is_pure_component: node.is_pure_component,
                 flow: node.flow.unwrap_or_else(|| "".to_string()),
-                size: node.size,
+                width: node.width,
                 height: node.height,
                 component_type: node.component_type,
             });
@@ -572,7 +568,7 @@ mod tests {
 }";
         let layout = SimpleLayout::from_text(define).unwrap();
         let str = format!("{:?}", layout);
-        assert_eq!(str, "SimpleLayout { name: \"Dashboard\", rows: [LayoutRow { columns: [LayoutComponent { name: \"Calendar\", is_empty: false, flow: \"show_calendar\", size: 12, height: 0, component_type: \"flow\", is_pure_component: false }] }, LayoutRow { columns: [LayoutComponent { name: \"Empty\", is_empty: true, flow: \"\", size: 2, height: 0, component_type: \"flow\", is_pure_component: false }, LayoutComponent { name: \"Timeline\", is_empty: false, flow: \"show_timeline\", size: 8, height: 0, component_type: \"flow\", is_pure_component: false }, LayoutComponent { name: \"Empty\", is_empty: true, flow: \"\", size: 2, height: 0, component_type: \"flow\", is_pure_component: false }] }] }");
+        assert_eq!(str, "SimpleLayout { name: \"Dashboard\", rows: [LayoutRow { columns: [LayoutComponent { name: \"Calendar\", flow: \"show_calendar\", width: 12, height: 0, component_type: \"flow\" }] }, LayoutRow { columns: [LayoutComponent { name: \"Empty\", flow: \"\", width: 2, height: 0, component_type: \"flow\" }, LayoutComponent { name: \"Timeline\", flow: \"show_timeline\", size: 8, height: 0, component_type: \"flow\" }, LayoutComponent { name: \"Empty\", flow: \"\", size: 2, height: 0, component_type: \"flow\" }] }] }");
     }
 
     #[test]
@@ -586,7 +582,7 @@ mod tests {
 }";
         let layout = SimpleLayout::from_text(define).unwrap();
         let str = format!("{:?}", layout);
-        assert_eq!(str, "SimpleLayout { name: \"Dashboard\", rows: [LayoutRow { columns: [LayoutComponent { name: \"Calendar\", is_empty: false, flow: \"show_calendar\", size: 12, height: 12, component_type: \"flow\", is_pure_component: false }] }, LayoutRow { columns: [LayoutComponent { name: \"Empty\", is_empty: true, flow: \"\", size: 2, height: 0, component_type: \"flow\", is_pure_component: false }, LayoutComponent { name: \"Timeline\", is_empty: false, flow: \"show_timeline\", size: 8, height: 0, component_type: \"flow\", is_pure_component: false }, LayoutComponent { name: \"Empty\", is_empty: true, flow: \"\", size: 2, height: 0, component_type: \"flow\", is_pure_component: false }] }] }");
+        assert_eq!(str, "SimpleLayout { name: \"Dashboard\", rows: [LayoutRow { columns: [LayoutComponent { name: \"Calendar\", flow: \"show_calendar\", width: 12, height: 12, component_type: \"flow\" }] }, LayoutRow { columns: [LayoutComponent { name: \"Empty\", flow: \"\", width: 2, height: 0, component_type: \"flow\" }, LayoutComponent { name: \"Timeline\", flow: \"show_timeline\", size: 8, height: 0, component_type: \"flow\" }, LayoutComponent { name: \"Empty\", flow: \"\", size: 2, height: 0, component_type: \"flow\" }] }] }");
     }
 
     #[test]

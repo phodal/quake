@@ -25,11 +25,9 @@ pub type LayoutColumnNode = Vec<LayoutComponentNode>;
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct LayoutComponentNode {
     pub(crate) name: String,
-    pub(crate) is_empty: bool,
     pub(crate) flow: Option<String>,
-    pub(crate) size: i32,
+    pub(crate) width: i32,
     pub(crate) height: i32,
-    pub(crate) is_pure_component: bool,
     pub(crate) component_type: String,
 }
 
