@@ -156,8 +156,8 @@ impl Serialize for MapOperator {
                 }
             }
         }
-        map.serialize_entry("params", &vec)?;
 
+        map.serialize_entry("params", &vec)?;
         map.end()
     }
 }
@@ -568,7 +568,7 @@ mod tests {
 }";
         let layout = SimpleLayout::from_text(define).unwrap();
         let str = format!("{:?}", layout);
-        assert_eq!(str, "SimpleLayout { name: \"Dashboard\", rows: [LayoutRow { columns: [LayoutComponent { name: \"Calendar\", flow: \"show_calendar\", width: 12, height: 0, component_type: \"flow\" }] }, LayoutRow { columns: [LayoutComponent { name: \"Empty\", flow: \"\", width: 2, height: 0, component_type: \"flow\" }, LayoutComponent { name: \"Timeline\", flow: \"show_timeline\", size: 8, height: 0, component_type: \"flow\" }, LayoutComponent { name: \"Empty\", flow: \"\", size: 2, height: 0, component_type: \"flow\" }] }] }");
+        assert_eq!(str, "SimpleLayout { name: \"Dashboard\", rows: [LayoutRow { columns: [LayoutComponent { name: \"Calendar\", flow: \"show_calendar\", width: 12, height: 0, component_type: \"flow\" }] }, LayoutRow { columns: [LayoutComponent { name: \"Empty\", flow: \"\", width: 2, height: 0, component_type: \"flow\" }, LayoutComponent { name: \"Timeline\", flow: \"show_timeline\", width: 8, height: 0, component_type: \"flow\" }, LayoutComponent { name: \"Empty\", flow: \"\", width: 2, height: 0, component_type: \"flow\" }] }] }");
     }
 
     #[test]
@@ -582,7 +582,7 @@ mod tests {
 }";
         let layout = SimpleLayout::from_text(define).unwrap();
         let str = format!("{:?}", layout);
-        assert_eq!(str, "SimpleLayout { name: \"Dashboard\", rows: [LayoutRow { columns: [LayoutComponent { name: \"Calendar\", flow: \"show_calendar\", width: 12, height: 12, component_type: \"flow\" }] }, LayoutRow { columns: [LayoutComponent { name: \"Empty\", flow: \"\", width: 2, height: 0, component_type: \"flow\" }, LayoutComponent { name: \"Timeline\", flow: \"show_timeline\", size: 8, height: 0, component_type: \"flow\" }, LayoutComponent { name: \"Empty\", flow: \"\", size: 2, height: 0, component_type: \"flow\" }] }] }");
+        assert_eq!(str, "SimpleLayout { name: \"Dashboard\", rows: [LayoutRow { columns: [LayoutComponent { name: \"Calendar\", flow: \"show_calendar\", width: 12, height: 12, component_type: \"flow\" }] }, LayoutRow { columns: [LayoutComponent { name: \"Empty\", flow: \"\", width: 2, height: 0, component_type: \"flow\" }, LayoutComponent { name: \"Timeline\", flow: \"show_timeline\", width: 8, height: 0, component_type: \"flow\" }, LayoutComponent { name: \"Empty\", flow: \"\", width: 2, height: 0, component_type: \"flow\" }] }] }");
     }
 
     #[test]
