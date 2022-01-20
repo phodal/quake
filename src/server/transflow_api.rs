@@ -70,11 +70,6 @@ pub(crate) async fn translate(
     Ok(JavaScript(scripts))
 }
 
-/// todo: load transflow from yaml files
-/// 1. load yaml file with define
-/// 2. generate js scripts
-/// 3. create router
-/// as nocode
 #[get("/script/gen_code.js")]
 pub(crate) async fn transflow_gen_code(
     config: &State<QuakeConfig>,
@@ -91,8 +86,6 @@ pub(crate) async fn transflow_gen_code(
     Ok(JavaScript(scripts))
 }
 
-/// todo: load transflow from yaml files
-/// as lowcode
 #[get("/script/custom_transfuncs.js")]
 pub(crate) async fn load_custom_transfuncs(config: &State<QuakeConfig>) -> Option<NamedFile> {
     let path = PathBuf::from(config.workspace.clone());

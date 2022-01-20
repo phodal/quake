@@ -47,8 +47,8 @@ export class SimpleLayout {
     for (let row of this.layout.rows) {
       let colId = 0;
       for (let component of row.columns) {
-        let id = that.layoutId(rowId, colId);
-
+        let id = SimpleLayout.layoutId(rowId, colId);
+        // todo: add type check for component
         if (component.is_pure_component) {
           this.createPureComponent(component, that, id);
         } else {
@@ -89,7 +89,7 @@ export class SimpleLayout {
     }
   }
 
-  private layoutId(rowId: number, colId: number) {
+  private static layoutId(rowId: number, colId: number) {
     return 'layout-' + rowId + '-' + colId;
   }
 
@@ -101,7 +101,7 @@ export class SimpleLayout {
     this.flowMap[id].id = id;
   }
 
-  private countHeight(height: number) {
+  private static countHeight(height: number) {
     let styles = {};
     let height_style = "100%";
 
@@ -123,8 +123,8 @@ export class SimpleLayout {
               <ion-row>
                 {row.columns.map((col, colId) =>
                   <ion-col class="quake-component" size={col.size.toString()}
-                           style={this.countHeight(col.height)}
-                           ref={(el) => (this.addElementToMap(el, this.layoutId(rowId, colId)))}>
+                           style={SimpleLayout.countHeight(col.height)}
+                           ref={(el) => (this.addElementToMap(el, SimpleLayout.layoutId(rowId, colId)))}>
                   </ion-col>
                 )}
               </ion-row>
