@@ -63,14 +63,14 @@ fn lookup_define(route: &Route, workspace: &Path) -> Result<EntryDefine, Box<dyn
 
 fn process_entries(
     define: EntryDefine,
-    source_files: &Vec<PathBuf>,
+    source_files: &[PathBuf],
     target_path: &Path,
     index: &mut usize,
 ) -> Result<(), Box<dyn Error>> {
     for file in source_files {
         let ext = file.extension().unwrap().to_str().unwrap();
         let engine = ProcessEngine::engine(ext);
-        let content = match engine.content(&file) {
+        let content = match engine.content(file) {
             Ok(content) => content,
             Err(error) => {
                 error!("{:?}", error);
