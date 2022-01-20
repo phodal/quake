@@ -1,6 +1,89 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2022-01-20
+
+### Bug Fixes
+
+- Fix view error issue
+- Fix position issue
+- Fix unwrap issues
+- Fix tests for height
+
+### Documentation
+
+- Update config for cargo
+- Thinking in toc for editor
+- Update component intro
+- Add story for knowledge graph
+- Update prop define for raw
+- Add story to startup check
+- Remove some old docs
+
+### Features
+
+- Add pdf view demo
+- Add cors support
+- Add link to modal
+- Add file upload support
+- Add basic file upload api
+- Add file upload works
+- Make file upload works
+- Init data grid view
+- Support for data grid
+- Init quake boarD
+- Init basic drag
+- Links samples
+- Refactor links
+- Change contextmenu to items
+- Make context menu works
+- Add source & targe demo
+- Add define for demos
+- Add demo diamod node model and factory
+- Extract filter rules
+- Init json data for testing knowledge graph render
+- Add height for simple layout
+- Add height support for parse
+- Add height support for frontend
+- Add component type
+
+### Miscellaneous Tasks
+
+- Release 0.4.0
+
+### Refactor
+
+- Update type process logic
+- Change webpack loading method
+- Disable cors for use
+- Clean unused print
+- Inline map
+- Fix some typos to align api
+- Change layout styles
+
+### Styling
+
+- Remove unused styles
+- Add navigator for pdf
+- Enable board in auto engine
+- Add max-height
+
+### Build
+
+- Remove unused showcase docs
+- Init viewer
+- Fix build script error issue
+- Import quake component to webapp
+
+### Lint
+
+- Fix lint issue
+- Remove unused console.log
+- Fix lint
+- Fix lint
+- Fix lint
+- Fix lint
+
 ## [0.4.0] - 2022-01-08
 
 ### Bug Fixes
