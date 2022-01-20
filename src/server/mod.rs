@@ -6,9 +6,7 @@ use rocket::fairing::AdHoc;
 use rocket::figment::providers::{Env, Format, Serialized};
 use rocket::figment::{Figment, Profile};
 use rocket::fs::FileServer;
-use rocket::http::Method;
 use rocket::{routes, Build, Config, Rocket, State};
-use rocket_cors::{AllowedOrigins, CorsOptions};
 use serde_derive::{Deserialize, Serialize};
 
 use quake_core::entry::entry_paths::EntryPaths;
@@ -82,20 +80,6 @@ pub fn quake_rocket() -> Rocket<Build> {
         )
         .mount("/layout", routes![layout_api::dashboard_layout])
         .attach(AdHoc::config::<QuakeConfig>())
-    // .attach(cors().to_cors().unwrap())
-}
-
-#[allow(dead_code)]
-fn cors() -> CorsOptions {
-    CorsOptions::default()
-        .allowed_origins(AllowedOrigins::all())
-        .allowed_methods(
-            vec![Method::Get, Method::Post, Method::Patch]
-                .into_iter()
-                .map(From::from)
-                .collect(),
-        )
-        .allow_credentials(true)
 }
 
 pub fn defines(config: &State<QuakeConfig>) -> EntryDefines {
