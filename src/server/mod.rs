@@ -36,16 +36,17 @@ pub struct ApiSuccess {
     pub content: String,
 }
 
+const SERVER_LOCATION: &'static str = "server_location";
+
 pub fn quake_rocket() -> Rocket<Build> {
-    // let cors = cors();
     let figment = Figment::from(rocket::Config::default())
         .merge(Serialized::defaults(Config::default()))
-        .merge(Yaml::file(".quake.yaml"))
+        .merge(Yaml::file(EntryPaths::quake()))
         .merge(Env::prefixed("APP_").global())
         .select(Profile::from_env_or("workspace", "."))
-        .select(Profile::from_env_or("server_location", "web"));
+        .select(Profile::from_env_or(SERVER_LOCATION, "web"));
 
-    let server: String = figment.extract_inner("server_location").unwrap();
+    let server: String = figment.extract_inner(SERVER_LOCATION).unwrap();
     rocket::custom(figment)
         .mount("/", FileServer::from(server))
         .mount(

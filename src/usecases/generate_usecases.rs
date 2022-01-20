@@ -26,13 +26,13 @@ pub fn generate_by_flow(flow: &str, config: &QuakeConfig) -> Result<(), Box<dyn 
     let define = lookup_define(route, &workspace)?;
 
     let matcher = regex_from_filter(route)?;
-    let source_files = files_from_route(&route, &matcher)?;
+    let source_files = files_from_route(route, &matcher)?;
 
     let entry_path = workspace.join(&define.entry_type);
     fs::create_dir_all(&entry_path)?;
 
     let mut id = 1;
-    process_entries(define, source_files, &entry_path, &mut id)?;
+    process_entries(define, &source_files, &entry_path, &mut id)?;
 
     // update entry node info
     let entry_info_path = entry_path.join(EntryPaths::entry_info());
@@ -63,7 +63,7 @@ fn lookup_define(route: &Route, workspace: &Path) -> Result<EntryDefine, Box<dyn
 
 fn process_entries(
     define: EntryDefine,
-    source_files: Vec<PathBuf>,
+    source_files: &Vec<PathBuf>,
     target_path: &Path,
     index: &mut usize,
 ) -> Result<(), Box<dyn Error>> {
@@ -99,10 +99,7 @@ fn process_entries(
     Ok(())
 }
 
-fn files_from_route(
-    route: &&Route,
-    matcher: &RegexMatcher,
-) -> Result<Vec<PathBuf>, Box<dyn Error>> {
+fn files_from_route(route: &Route, matcher: &RegexMatcher) -> Result<Vec<PathBuf>, Box<dyn Error>> {
     let mut source_files = vec![];
     for source in &route.from {
         let source_dir = PathBuf::from(source);
