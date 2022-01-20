@@ -91,6 +91,7 @@ fn component_use_decl(decl: Pair<Rule>) -> LayoutComponentNode {
             Rule::sized_empty_comp => {
                 component.is_empty = true;
                 component.name = "Empty".to_string();
+                component.component_type = "flow".to_string();
                 for inner in pair.into_inner() {
                     if inner.as_rule() == Rule::digits {
                         component.size = inner.as_str().parse().unwrap();
@@ -116,7 +117,8 @@ fn component_flow(component: &mut LayoutComponentNode, pair: Pair<Rule>) {
             Rule::call_flow => {
                 for flow_pair in inner.into_inner() {
                     match flow_pair.as_rule() {
-                        Rule::string => {
+                        Rule::flow_string => {
+                            component.component_type = "flow".to_string();
                             component.flow = Some(string_from_pair(flow_pair));
                         }
                         Rule::digits => {
@@ -129,6 +131,7 @@ fn component_flow(component: &mut LayoutComponentNode, pair: Pair<Rule>) {
                             for name in flow_pair.into_inner() {
                                 match name.as_rule() {
                                     Rule::component_name => {
+                                        component.component_type = "native".to_string();
                                         component.is_pure_component = true;
                                         component.flow = Some(String::from(name.as_str()))
                                     }

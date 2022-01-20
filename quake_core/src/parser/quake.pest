@@ -96,9 +96,11 @@ sized_empty_comp = {
 }
 
 call_flow = {
-    "flow" ~ l_bracket ~ string ~ r_bracket ~ ("," ~ digits ~ ("x" | "X") ~ height?)?
+    "flow" ~ l_bracket ~ flow_string ~ r_bracket ~ ("," ~ digits ~ ("x" | "X") ~ height?)?
     | component_decl ~ ("," ~ digits ~ ("x" | "X") ~ height? )?
 }
+
+flow_string = { string }
 
 height = { digits }
 

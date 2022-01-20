@@ -30,6 +30,7 @@ pub struct LayoutComponentNode {
     pub(crate) size: i32,
     pub(crate) height: i32,
     pub(crate) is_pure_component: bool,
+    pub(crate) component_type: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
