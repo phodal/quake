@@ -32,7 +32,7 @@ Transflow 的设计起源于：[类型流（TypeFlow）——世俗化的函数�
 举个例子，当我们想有一个 calendar 来展示所有的 todo 和 blog 时，我们就需要从数据源中取得 todo 和 blog，对数据进行转换然后传输给 calendar 组件。用一句话来表达便是：
 
 ```javascript
-from('todo','blog').to(<quake-calendar>);
+    from('todo','blog').to(<quake-calendar>);
 ```
 
 这个 Transflow 的 DSL，最简模式下（即没有函数名、不添加数据映射（mapping）和过滤器（filter）、组件定义的情况下），它可以生成以下的 JavaScript  代码：
