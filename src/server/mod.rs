@@ -36,8 +36,9 @@ pub struct ApiSuccess {
     pub content: String,
 }
 
+const SERVER_LOCATION: &str = "server_location";
+
 pub fn quake_rocket() -> Rocket<Build> {
-    const SERVER_LOCATION: &'static str = "server_location";
     let figment = Figment::from(rocket::Config::default())
         .merge(Serialized::defaults(Config::default()))
         .merge(Yaml::file(EntryPaths::quake_config()))
