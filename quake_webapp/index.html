@@ -8,18 +8,9 @@
   <link rel="stylesheet" href="https://unpkg.com/@ionic/core/css/ionic.bundle.css"/>
   <style>
     body {
-      /* fix in ionic.css */
-      overflow: scroll;
-      position: relative;
       font-family: "Lato Medium", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-    }
-
-    .ion-page {
-      top: 20px;
-    }
-
-    #transflow-nav {
-      display: inline;
+      display: flex;
+      justify-content: space-between;
     }
 
     quake-render {
@@ -29,12 +20,37 @@
     #transflow-nav a {
       margin: 0 10px;
     }
+
+    #navigator {
+      width: 10%;
+      min-width: 200px;
+    }
+    #outlet {
+      width: 90%;
+    }
   </style>
 </head>
 <body>
 <div id="navigator">
-  <a href="/">Go Home</a>
-  <div id="transflow-nav"></div>
+  <div>
+    <button onclick="Quake.Router.go('/')">Home</button>
+  </div>
+  <div>
+    <h2>Transflow</h2>
+    <div id="transflow-nav"></div>
+  </div>
+  <div>
+    <h2>Creative</h2>
+  </div>
+
+  <div>
+    <h2>Knowledge by types</h2>
+  </div>
+
+  <div>
+    <h2>Config</h2>
+    <a href="#">System Config</a>
+  </div>
 </div>
 <div id="outlet"></div>
 </body>
@@ -43,7 +59,7 @@
 <script type="module" src="https://unpkg.com/@ionic/core/dist/ionic/ionic.esm.js"></script>
 <script nomodule src="https://unpkg.com/@ionic/core/dist/ionic/ionic.js"></script>
 
-<!--vaadin rotuer-->
+<!--vaadin router-->
 <script src="https://unpkg.com/@vaadin/router/dist/vaadin-router.umd.min.js"></script>
 
 <!--search engine-->
@@ -53,7 +69,7 @@
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
-<!-- By Stencilj.js -->
+<!-- By Stencil.js -->
 <script type="module" src="./dashboard/dist/dashboard/dashboard.esm.js"></script>
 <script type="module" src="./quake-render/dist/quake-render/quake-render.esm.js"></script>
 <script type="module" src="./type-creator/dist/type-creator/type-creator.esm.js"></script>

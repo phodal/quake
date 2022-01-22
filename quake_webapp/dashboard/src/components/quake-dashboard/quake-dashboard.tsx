@@ -365,7 +365,7 @@ export class QuakeDashboard {
   }
 
   render() {
-    return <ion-app>
+    return <div>
       <ion-header translucent>
         <ion-toolbar>
           <ion-item>
@@ -419,7 +419,7 @@ export class QuakeDashboard {
         </ion-grid>
         {this.showSimpleLayout && this.layout && <simple-layout layout={this.layout}/>}
       </ion-content>
-    </ion-app>;
+    </div>;
   }
 
   private renderFlowByKey(key: string) {

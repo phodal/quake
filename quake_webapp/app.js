@@ -32,6 +32,8 @@ const Quake = {
   client: is_pagedump ? new PageSearch() : new MeiliSearch({
     host: 'http://127.0.0.1:7700'
   }),
+  Router: Router,
+  // router is an instance
   router: router,
   transflow: {
     mapping: {},
@@ -64,6 +66,13 @@ const Quake = {
     return index.search(query, options).then((result) => {
       return result.hits
     })
+  },
+  theme: '',
+  // dark node ?
+  appearance: function () {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+      const newColorScheme = event.matches ? "dark" : "light";
+    });
   }
 }
 
