@@ -169,9 +169,16 @@ function handleAction(define) {
   }
 }
 
+const show_board = async (context, commands) => {
+  const board = document.createElement('quake-board');
+  return board
+}
+
+
 router.setRoutes([
   {path: '/', action: home},
   {path: '/entry/:type/new', action: create_entry},
   {path: '/edit/:type/:id', action: edit_entry},
   {path: '/show/:type/:id', action: show_entry},
+  {path: '/board', action: show_board},
 ]);
