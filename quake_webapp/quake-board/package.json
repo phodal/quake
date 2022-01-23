@@ -24,7 +24,8 @@
   },
   "scripts": {
     "start": "export PORT=4005 && react-app-rewired start",
-    "build": "react-app-rewired build",
+    "build": "react-app-rewired build && npm run rename:css",
+    "rename:css": "cp build/static/css/*.css build/static/quake-board.min.css",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },

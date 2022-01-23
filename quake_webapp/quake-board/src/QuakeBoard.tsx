@@ -3,16 +3,17 @@ import createEngine, {DagreEngine, DefaultNodeModel, DiagramEngine, DiagramModel
 import {Item, Menu, useContextMenu} from "react-contexify";
 import {CanvasWidget} from "@projectstorm/react-canvas-core";
 import styled from "styled-components";
-import 'react-contexify/dist/ReactContexify.css';
 import {DiamondNodeFactory} from "./components/base-model/DiamondNodeFactory";
 import {DiamondNodeModel} from "./components/base-model/DiamondNodeModel";
+
+import 'react-contexify/dist/ReactContexify.css';
 
 export type Props = {
   model: any,
   onChange: (model: any) => any
 }
 
-const MENU_ID = 'blahblah';
+const MENU_ID = 'quake-board';
 
 function QuakeBoard(props: Props) {
   const dagreEngine = React.useMemo(() => new DagreEngine({
@@ -61,7 +62,7 @@ function QuakeBoard(props: Props) {
 
   const handleContextMenu = React.useCallback(
     (event: any) => {
-      event.preventDefault();
+      console.log(event);
       setClickPosition({
         clientX: event.clientX,
         clientY: event.clientY
@@ -107,7 +108,6 @@ function QuakeBoard(props: Props) {
   const sendChange = React.useCallback(
     () => {
       let serialize = model.serialize();
-      console.log(JSON.stringify(serialize));
       props.onChange(serialize);
     }, [props, model]);
 
@@ -150,12 +150,12 @@ function QuakeBoard(props: Props) {
   return (
     <StyledDiv onContextMenu={handleContextMenu}>
       <StyledCanvasWidget engine={engine}/>
-      <Menu id={MENU_ID}>
+      <StyledMenu id={MENU_ID}>
         <Item onClick={addSource}>add Source</Item>
         <Item onClick={addFilter}>add Filter rule</Item>
         <Item onClick={addLambda}>add Lambda</Item>
         <Item onClick={addTarget}>add Target</Item>
-      </Menu>
+      </StyledMenu>
     </StyledDiv>
   );
 }
@@ -165,6 +165,10 @@ export default QuakeBoard;
 const StyledDiv = styled.div`
   width: 100%;
   height: 100%;
+`
+
+const StyledMenu = styled(Menu)`
+  position: absolute;
 `
 
 const StyledCanvasWidget = styled(CanvasWidget)`
