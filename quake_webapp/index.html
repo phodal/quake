@@ -19,6 +19,7 @@
 
     #transflow-nav a {
       display: block;
+      font-size: 16px;
     }
 
     #navigator {
@@ -30,6 +31,7 @@
     }
 
     .quake-home_button {
+      font-size: 16px;
       background: none;
       text-decoration: underline;
       color: #3880ff;
@@ -47,7 +49,7 @@
   </div>
   <div>
     <h2>Creative</h2>
-    <button class="quake-home_button" onclick="Quake.Router.go('/board')">Board</button>
+    <button class="quake-home_button" onclick="Quake.Router.go('/quake/board')">Board</button>
   </div>
 
   <div>
@@ -57,7 +59,7 @@
 
   <div>
     <h2>Config</h2>
-    <a href="#">System Config</a>
+    <button class="quake-home_button" onclick="Quake.Router.go('/quake/creator')">Type Creator</button>
   </div>
 </div>
 <div id="outlet"></div>
