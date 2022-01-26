@@ -172,6 +172,15 @@ function handleAction(define) {
 const show_board = async (context, commands) => {
   let element = document.createElement('quake-board');
 
+  let response = await fetch(`/entry/graph/1`)
+  const entry = await response.json();
+
+  let content = entry.content;
+  if(content.startsWith("\n\n")) {
+    content = content.substring(2);
+  }
+  element.setAttribute("model", content);
+
   element.addEventListener("onChange", async function (event) {
     console.log(event.detail);
     let data = event.detail;
@@ -181,6 +190,7 @@ const show_board = async (context, commands) => {
       content: JSON.stringify(data)
     })
   });
+
   return element
 }
 

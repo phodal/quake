@@ -38,7 +38,14 @@ function QuakeBoard(props: Props) {
     return engine
   }, []);
 
-  const model = React.useMemo(() => new DiagramModel(), []);
+  const model = React.useMemo(() => {
+    let defaultModel = new DiagramModel();
+    if (!!props.model) {
+      defaultModel.deserializeModel(props.model, engine);
+    }
+
+    return defaultModel
+  }, [props, engine]);
 
   const data = React.useMemo(() => {
     return {
