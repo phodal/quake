@@ -1,8 +1,8 @@
 ---
-title: init board data
+title: "title"
 file: board/0001.json
 created_date: 2022-01-14 08:32:51
-updated_date: 2022-01-14 08:32:51
+updated_date: 2022-01-26 13:44:42
 ---
 
-
+{"id":"838ba648-b8de-453d-adef-4385c973e0f0","offsetX":2.035666666666661,"offsetY":0.5528333333333244,"zoom":99.48333333333333,"gridSize":0,"layers":[{"id":"1ac1f4bc-f42a-4f8e-9f2f-dcb8750599a6","type":"diagram-links","isSvg":true,"transformed":true,"models":{}},{"id":"2168bb64-8c6d-4646-9c0c-9db9c2ba76e6","type":"diagram-nodes","isSvg":false,"transformed":true,"models":{"77397aa0-71a7-434d-b04a-dbafefab55a6":{"id":"77397aa0-71a7-434d-b04a-dbafefab55a6","type":"default","extras":{"type":"out"},"x":394,"y":107,"ports":[{"id":"55a253c2-9569-4b2f-a6fc-97c3d8970e08","type":"default","x":433.7218923749267,"y":131.49321698894812,"name":"Out","alignment":"right","parentNode":"77397aa0-71a7-434d-b04a-dbafefab55a6","links":[],"in":false,"label":"Out"}],"name":"Source","color":"rgb(0,192,255)","portsInOrder":[],"portsOutOrder":["55a253c2-9569-4b2f-a6fc-97c3d8970e08"]},"04b806c2-94a0-4abf-9c96-acc2a75d2e2c":{"id":"04b806c2-94a0-4abf-9c96-acc2a75d2e2c","type":"default","extras":{"type":"in"},"x":563.8777014575305,"y":192.44144747863965,"ports":[{"id":"f90d09e1-3180-4d73-b344-a12acfbe23ef","type":"default","x":null,"y":null,"name":"In","alignment":"left","parentNode":"04b806c2-94a0-4abf-9c96-acc2a75d2e2c","links":[],"in":true,"label":"In"}],"name":"Target","color":"rgb(192,255,0)","portsInOrder":["f90d09e1-3180-4d73-b344-a12acfbe23ef"],"portsOutOrder":[]}}}]}

@@ -170,7 +170,18 @@ function handleAction(define) {
 }
 
 const show_board = async (context, commands) => {
-  return document.createElement('quake-board')
+  let element = document.createElement('quake-board');
+
+  element.addEventListener("onChange", async function (event) {
+    console.log(event.detail);
+    let data = event.detail;
+
+    update_entry("graph", 1, {
+      title: "title",
+      content: JSON.stringify(data)
+    })
+  });
+  return element
 }
 
 const show_creator = async (context, commands) => {
