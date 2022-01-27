@@ -54,7 +54,6 @@ function QuakeBoard(props: Props) {
 
   const handleContextMenu = React.useCallback(
     (event: any) => {
-      console.log(event);
       setClickPosition({
         clientX: event.clientX,
         clientY: event.clientY
@@ -93,6 +92,13 @@ function QuakeBoard(props: Props) {
 
     const point = engine.getRelativeMousePoint(clickPosition);
     node.setPosition(point);
+
+    node.registerListener({
+      linksUpdated: (e: any) => {
+        console.log(e);
+        props.onChange(model.serialize());
+      },
+    });
 
     return node;
   }
