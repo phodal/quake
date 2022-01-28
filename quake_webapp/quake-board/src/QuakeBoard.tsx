@@ -16,19 +16,6 @@ export type Props = {
 const MENU_ID = 'quake-board';
 
 function QuakeBoard(props: Props) {
-  const dagreEngine = React.useMemo(() => new DagreEngine({
-    graph: {
-      rankdir: 'LR',
-      ranker: 'network-simplex',
-      marginx: 0,
-      marginy: 0,
-      nodesep: 35,
-      edgesep: 10,
-      ranksep: 75,
-    },
-    includeLinks: true,
-  }), []);
-
   const [clickPosition, setClickPosition] = React.useState({clientX: 0, clientY: 0})
   const engine = React.useMemo(() => {
     let engine = createEngine();
