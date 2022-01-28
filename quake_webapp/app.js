@@ -138,7 +138,7 @@ const update_entry = async (entry_type, id, properties) => {
   });
 
   let data = await response.json();
-  console.log(data);
+  // console.log(data);
 }
 
 const show_entry = async (context, commands) => {

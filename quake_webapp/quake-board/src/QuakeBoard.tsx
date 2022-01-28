@@ -43,6 +43,12 @@ function QuakeBoard(props: Props) {
       defaultModel.deserializeModel(props.model, engine);
     }
 
+    defaultModel.registerListener({
+      linksUpdated: (e: any) => {
+        props.onChange(model.serialize());
+      },
+    });
+
     return defaultModel
   }, [props, engine]);
 
@@ -93,13 +99,6 @@ function QuakeBoard(props: Props) {
     const point = engine.getRelativeMousePoint(clickPosition);
     node.setPosition(point);
 
-    node.registerListener({
-      linksUpdated: (e: any) => {
-        console.log(e);
-        props.onChange(model.serialize());
-      },
-    });
-
     return node;
   }
 
@@ -145,8 +144,12 @@ function QuakeBoard(props: Props) {
     }, [engine, model, sendChange, clickPosition]
   );
 
+  const onDrag = React.useCallback(({event}) => {
+    console.log(event);
+  }, []);
+
   return (
-    <StyledDiv onContextMenu={handleContextMenu}>
+    <StyledDiv onContextMenu={handleContextMenu} onDrag={onDrag}>
       <StyledCanvasWidget engine={engine}/>
       <StyledMenu id={MENU_ID}>
         <Item onClick={addSource}>add Source</Item>
