@@ -1,5 +1,10 @@
 import React from 'react';
-import createEngine, {DagreEngine, DefaultNodeModel, DiagramEngine, DiagramModel} from '@projectstorm/react-diagrams';
+import createEngine, {
+  DefaultNodeModel,
+  DiagramEngine,
+  DiagramModel,
+  PortModelAlignment
+} from '@projectstorm/react-diagrams';
 import {Item, Menu, useContextMenu} from "react-contexify";
 import {CanvasWidget} from "@projectstorm/react-canvas-core";
 import styled from "styled-components";
@@ -7,6 +12,8 @@ import {DiamondNodeFactory} from "./components/base-model/DiamondNodeFactory";
 import {DiamondNodeModel} from "./components/base-model/DiamondNodeModel";
 
 import 'react-contexify/dist/ReactContexify.css';
+import {SimplePortFactory} from "./components/SimplePortFactory";
+import {DiamondPortModel} from "./components/base-model/DiamondPortModel";
 
 export type Props = {
   model: any,
@@ -19,10 +26,15 @@ function QuakeBoard(props: Props) {
   const [clickPosition, setClickPosition] = React.useState({clientX: 0, clientY: 0})
   const engine = React.useMemo(() => {
     let engine = createEngine();
+
+    // register some other factories as well
+    engine
+      .getPortFactories()
+      .registerFactory(new SimplePortFactory('diamond', (config) => new DiamondPortModel(PortModelAlignment.LEFT)));
     engine.getNodeFactories().registerFactory(new DiamondNodeFactory() as any);
 
     return engine
-  }, [props]);
+  }, []);
 
   const model = React.useMemo(() => {
     let defaultModel = new DiagramModel();
