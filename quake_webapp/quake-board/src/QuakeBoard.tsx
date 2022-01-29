@@ -27,10 +27,10 @@ function QuakeBoard(props: Props) {
   const engine = React.useMemo(() => {
     let engine = createEngine();
 
-    // register some other factories as well
+    // if we don't config port factories will cause issue when deserialize
     engine
       .getPortFactories()
-      .registerFactory(new SimplePortFactory('diamond', (config) => new DiamondPortModel(PortModelAlignment.LEFT)));
+      .registerFactory(new SimplePortFactory('diamond', (_config) => new DiamondPortModel(PortModelAlignment.LEFT)));
     engine.getNodeFactories().registerFactory(new DiamondNodeFactory() as any);
 
     return engine
@@ -50,7 +50,6 @@ function QuakeBoard(props: Props) {
 
     return defaultModel
   }, [props, engine]);
-
   engine.setModel(model);
 
   const {show} = useContextMenu({
