@@ -29,13 +29,12 @@ export class SimpleLayout {
   @State() flowMap: any = {};
   @State() slots: any[] = [];
 
-  // build logic
-  // 1. collection element of layouts before render.
-  // 2. recursive layout and append element to node
   componentWillRender() {
     this.createFlows();
   }
 
+  // 1. collection element of layouts before render.
+  // 2. recursive layout and append element to node.
   private createFlows() {
     const that = this;
     if (!(this.layout.rows && this.layout.rows.length > 0)) {
@@ -57,6 +56,7 @@ export class SimpleLayout {
           default:
             console.log("not supported type: " + component.component_type);
         }
+
         colId = colId + 1;
       }
       rowId = rowId + 1;
@@ -124,9 +124,10 @@ export class SimpleLayout {
             {this.layout.rows.map((row, rowId) =>
               <ion-row>
                 {row.columns.map((col, colId) =>
-                  <ion-col class="quake-component" size={col.width.toString()}
-                           style={SimpleLayout.countHeight(col.height)}
-                           ref={(el) => (this.addElementToMap(el, SimpleLayout.layoutId(rowId, colId)))}>
+                  <ion-col
+                    class="quake-component" size={col.width.toString()}
+                    style={SimpleLayout.countHeight(col.height)}
+                    ref={(el) => (this.addElementToMap(el, SimpleLayout.layoutId(rowId, colId)))}>
                   </ion-col>
                 )}
               </ion-row>
