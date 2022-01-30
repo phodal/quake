@@ -210,9 +210,8 @@ const init = async() => {
   let response = await fetch(`/action/suggest`)
   const data = await response.json();
   for (let entry of data.entries) {
-    console.log(entry);
     const nav = document.createElement('p');
-    // nav.setAttribute("href", `#`);
+    nav.classList += 'entry-type'
     nav.innerText = entry.type;
 
     let navNode = document.getElementById("knowledge-type");
