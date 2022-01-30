@@ -139,6 +139,7 @@ const update_entry = async (entry_type, id, properties) => {
 
   let data = await response.json();
   // console.log(data);
+  // todo: add update success event
 }
 
 const show_entry = async (context, commands) => {
@@ -182,9 +183,7 @@ const show_board = async (context, commands) => {
   element.setAttribute("model", content);
 
   element.addEventListener("onChange", async function (event) {
-    console.log(event.detail);
     let data = event.detail;
-
     update_entry("graph", 1, {
       title: "title",
       content: JSON.stringify(data)
@@ -206,3 +205,19 @@ router.setRoutes([
   {path: '/quake/board', action: show_board},
   {path: '/quake/creator', action: show_creator},
 ]);
+
+const init = async() => {
+  let response = await fetch(`/action/suggest`)
+  const data = await response.json();
+  for (let entry of data.entries) {
+    console.log(entry);
+    const nav = document.createElement('p');
+    // nav.setAttribute("href", `#`);
+    nav.innerText = entry.type;
+
+    let navNode = document.getElementById("knowledge-type");
+    navNode.appendChild(nav);
+  }
+}
+
+init();
