@@ -2,6 +2,7 @@ import {lighten} from "polished";
 import React from 'react';
 import Editor from "rich-markdown-editor";
 import styled from "styled-components";
+import { useInterval } from 'ahooks';
 
 export type Props = {
   id: number,
@@ -15,6 +16,7 @@ function QuakeEditor(props: Props) {
   const [title, setTitle] = React.useState(props.title);
   const [value, setValue] = React.useState(props.value);
   const [entryType, setEntryType] = React.useState(props.entrytype);
+  const [autosaveInterval, setAutosaveInterval] = React.useState(1000);
   const editor = React.createRef<Editor>();
 
   const pattern = /[a-zA-Z0-9_\u00A0-\u02AF\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
@@ -75,6 +77,10 @@ function QuakeEditor(props: Props) {
     onSave();
   }
 
+  useInterval(() => {
+    saveEntry()
+  }, autosaveInterval)
+
   // custom editor: https://github.com/outline/outline/blob/main/app/scenes/Document/components/Editor.tsx
   // https://github.com/outline/outline/blob/main/app/components/Editor.tsx
   const onUploadImage = React.useCallback(
@@ -104,6 +110,15 @@ function QuakeEditor(props: Props) {
       <StyledTitle>
         <StyleLabel># {props.id}</StyleLabel>
         <StyleInput type="text" value={title} onChange={changeTitle}/>
+        <StyleLabel>Autosave interval</StyleLabel>
+        <StyleSelect
+          value={String(autosaveInterval)}
+          onChange={e => setAutosaveInterval(+e.target.value)}
+        >
+          <option value="1000">1000</option>
+          <option value="2000">2000</option>
+          <option value="3000">3000</option>
+        </StyleSelect>
         <StyleButton onClick={saveEntry}>Save</StyleButton>
         <StyleCount>words：{wordCount(value)}</StyleCount>
       </StyledTitle>
@@ -120,6 +135,10 @@ function QuakeEditor(props: Props) {
 }
 
 export default QuakeEditor;
+
+const StyleSelect = styled.select`
+  margin: 1em;
+`;
 
 const StyleCount = styled.span`
   margin-left: 1em;
@@ -144,7 +163,7 @@ const StyleInput = styled.input`
   border-radius: 4px;
   margin: 1em;
   padding: 1em;
-  width: 60%;
+  width: 50%;
 `;
 
 const StyleLabel = styled.label``;
