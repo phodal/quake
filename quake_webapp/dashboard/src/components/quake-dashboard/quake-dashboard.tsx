@@ -140,12 +140,14 @@ export class QuakeDashboard {
       return;
     }
 
-    if (this.query.startsWith("/")) {
-      this.inputType = InputType.Action
-      return;
-    } else if (this.query.startsWith(":")) {
-      this.inputType = InputType.Transflow;
-      return;
+    let first_char = this.query[0];
+    switch (first_char) {
+      case "/":
+        this.inputType = InputType.Action
+        return
+      case ":":
+        this.inputType = InputType.Transflow;
+        return
     }
 
     this.actionDefine = null;
