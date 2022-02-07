@@ -16,7 +16,8 @@ function QuakeEditor(props: Props) {
   const [title, setTitle] = React.useState(props.title);
   const [value, setValue] = React.useState(props.value);
   const [entryType, setEntryType] = React.useState(props.entrytype);
-  const [autosaveInterval, setAutosaveInterval] = React.useState(1000);
+  // todo: add config for reading
+  const [autosaveInterval, setAutosaveInterval] = React.useState(3000);
   const editor = React.createRef<Editor>();
 
   const pattern = /[a-zA-Z0-9_\u00A0-\u02AF\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
@@ -118,6 +119,9 @@ function QuakeEditor(props: Props) {
           <option value="1000">1000</option>
           <option value="2000">2000</option>
           <option value="3000">3000</option>
+          <option value="5000">5000</option>
+          <option value="8000">8000</option>
+          <option value="13000">13000</option>
         </StyleSelect>
         <StyleButton onClick={saveEntry}>Save</StyleButton>
         <StyleCount>words：{wordCount(value)}</StyleCount>
