@@ -15,6 +15,7 @@ export type Props = {
 function QuakeEditor(props: Props) {
   const [title, setTitle] = React.useState(props.title);
   const [value, setValue] = React.useState(props.value);
+  const [lastValue, setLastValue] = React.useState(props.value);
   const [entryType, setEntryType] = React.useState(props.entrytype);
   // todo: add config for reading
   const [autosaveInterval, setAutosaveInterval] = React.useState(3000);
@@ -56,10 +57,12 @@ function QuakeEditor(props: Props) {
       title: title,
       value: value,
     });
-  }, [props, title, value])
+    setLastValue(value)
+  }, [props, title, value, setLastValue])
 
   function constructToc(headings: { title: string; level: number; id: string }[]) {
-    console.log(headings);
+    // todo: add heading for navigator
+    // console.log(headings);
   }
 
   const onChange = React.useCallback((getValue) => {
@@ -74,12 +77,15 @@ function QuakeEditor(props: Props) {
     setTitle(e.target.value)
   }, [setTitle]);
 
-  const saveEntry = () => {
-    onSave();
-  }
+  const trySaveEntry = React.useCallback(()  => {
+    let hasChange = lastValue !== value;
+    if (hasChange) {
+      onSave();
+    }
+  }, [lastValue, props, value]);
 
   useInterval(() => {
-    saveEntry()
+    trySaveEntry()
   }, autosaveInterval)
 
   // custom editor: https://github.com/outline/outline/blob/main/app/scenes/Document/components/Editor.tsx
@@ -123,7 +129,7 @@ function QuakeEditor(props: Props) {
           <option value="8000">8000</option>
           <option value="13000">13000</option>
         </StyleSelect>
-        <StyleButton onClick={saveEntry}>Save</StyleButton>
+        <StyleButton onClick={trySaveEntry}>Save</StyleButton>
         <StyleCount>words：{wordCount(value)}</StyleCount>
       </StyledTitle>
       <StyledEditor
