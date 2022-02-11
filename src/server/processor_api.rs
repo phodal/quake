@@ -37,9 +37,10 @@ pub(crate) async fn lookup_file(
 
 static IMAGE_PATH: &str = "images";
 
-#[post("/<entry_type>/upload", data = "<data>")]
+#[post("/<entry_type>/upload?<file_name>", data = "<data>")]
 pub async fn upload(
     entry_type: String,
+    file_name: String,
     data: Data<'_>,
     content_type: &ContentType,
     config: &State<QuakeConfig>,
@@ -68,14 +69,10 @@ pub async fn upload(
     let image = multipart_form_data.raw.remove("file");
     let workspace = config.workspace.to_string();
 
-    #[allow(unused_assignments)]
-    let mut file_name = "".to_string();
-
     match image {
         Some(mut image) => {
             let raw = image.remove(0);
 
-            file_name = raw.file_name.unwrap_or_else(|| "Image".to_string());
             let path_buf = PathBuf::from(&workspace).join(&entry_type).join(IMAGE_PATH);
 
             let _ = fs::create_dir_all(&path_buf);

@@ -92,17 +92,24 @@ function QuakeEditor(props: Props) {
   // https://github.com/outline/outline/blob/main/app/components/Editor.tsx
   const onUploadImage = React.useCallback(
     async (file: File) => {
+      let currentType = entryType;
+      if (!entryType) {
+        currentType = (window as any).Quake.entry.type;
+      }
       const formData = new FormData();
+      let fileName = file.name;
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'blob' does not exist on type 'File | Blo... Remove this comment to see the full error message
       if (file.blob) {
         // @ts-expect-error ts-migrate(2339) FIXME: Property 'file' does not exist on type 'File | Blo... Remove this comment to see the full error message
         formData.append("file", file.file);
       } else {
+        fileName = new Date().toISOString() + ".png"
         formData.append("file", file);
       }
-      formData.append("name", file.name);
 
-      const uploadResponse = await fetch(`/processor/${entryType}/upload`, {
+      formData.append("name", fileName);
+
+      const uploadResponse = await fetch(`/processor/${currentType}/upload?file_name=${fileName}`, {
         method: "post",
         body: formData,
       });

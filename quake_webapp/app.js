@@ -34,6 +34,9 @@ const Quake = {
   }),
   Router: Router,
   // router is an instance
+  entry: {
+    type: ""
+  },
   router: router,
   transflow: {
     mapping: {},
@@ -90,6 +93,8 @@ const home = (context, commands) => {
 
 function create_editor_element(entry, params) {
   const editor = document.createElement('quake-editor');
+
+  Quake.entry.type = params.type;
 
   // todo: should set value first,?
   editor.setAttribute('value', entry.content);
