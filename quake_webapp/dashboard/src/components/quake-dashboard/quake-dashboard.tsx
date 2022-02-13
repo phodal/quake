@@ -5,8 +5,6 @@ import {MeiliSearch} from "meilisearch";
 // @ts-ignore
 // import {IonSearchbar} from "@ionic/core";
 import {createTransflow, init_wasm, parseAction} from "./quake-core-wrapper";
-import PadLeft from "../utils/PadLeft";
-import DateFormat from "../utils/DateFormat";
 
 export interface ActionDefine {
   entry: String,
@@ -299,19 +297,6 @@ export class QuakeDashboard {
     });
   }
 
-  async showPdf(entry: string, fileProp: string) {
-    let url = `/processor/${entry}?file_prop=${fileProp}`;
-    const modal: any = document.createElement('ion-modal');
-
-    const viewer: any = document.createElement('quake-viewer');
-    viewer.setAttribute('url', url);
-
-    modal.appendChild(viewer);
-    document.body.appendChild(modal);
-
-    await modal.present();
-  }
-
   editEntry(id: string, entry: string) {
     this.dispatchAction.emit({
       parameters: [id],
@@ -418,23 +403,16 @@ export class QuakeDashboard {
   }
 
   private renderFlowByKey(key: string) {
+    let type = this.selectedEntry.type;
     return <ion-col>
       <ion-text color="secondary">{key}</ion-text>
       <ion-list>
         {this.selectedFlowResult.get(key).map((item: any) =>
-          <ion-card>
-            <ion-card-header>
-              <ion-card-subtitle># {PadLeft(item.id, 4, '')}
-                <ion-icon name="book-outline" onClick={() => this.showEntry(item.id, this.selectedEntry.type)}/>
-                <ion-icon name="create-outline" onClick={() => this.editEntry(item.id, this.selectedEntry.type)}/>
-              </ion-card-subtitle>
-              <ion-card-title>{item.title}</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              {item.description && <p>{item.description}</p>}
-              <ion-badge slot="start">{DateFormat(item.created_date)}</ion-badge>
-            </ion-card-content>
-          </ion-card>
+          <entry-card
+            item={item}
+            type={type}
+            onTriggerShow={() => this.showEntry(item.id, type)}
+            onTriggerEdit={() => this.editEntry(item.id, type)}/>
         )}
       </ion-list>
     </ion-col>;
@@ -458,21 +436,5 @@ export class QuakeDashboard {
       type={type}
       onTriggerShow={() => this.showEntry(item.id, type)}
       onTriggerEdit={() => this.editEntry(item.id, type)}/>
-  }
-
-  // @ts-ignore
-  private renderConditionSearch() {
-    return <ion-item>
-      <select>
-        <option value="last_week">Last Week</option>
-        <option value="last_month">Last Month</option>
-        <option value="last_quarter">Last Quarter</option>
-        <option value="last_year">Last Year</option>
-      </select>
-      <ion-text>Created Date</ion-text>
-      <input type="date" id="created_date" name="trip-start"/>
-      <ion-text>Updated Date</ion-text>
-      <input type="date" id="end_date" name="trip-start"/>
-    </ion-item>;
   }
 }
