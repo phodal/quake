@@ -8,6 +8,8 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ActionDefine } from "./components/quake-dashboard/quake-dashboard";
 import { Layout } from "./components/simple-layout/simple-layout";
 export namespace Components {
+    interface EntryList {
+    }
     interface FetchApi {
         "entryType": string[];
         "searchEngine": boolean;
@@ -21,6 +23,12 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLEntryListElement extends Components.EntryList, HTMLStencilElement {
+    }
+    var HTMLEntryListElement: {
+        prototype: HTMLEntryListElement;
+        new (): HTMLEntryListElement;
+    };
     interface HTMLFetchApiElement extends Components.FetchApi, HTMLStencilElement {
     }
     var HTMLFetchApiElement: {
@@ -40,12 +48,15 @@ declare global {
         new (): HTMLSimpleLayoutElement;
     };
     interface HTMLElementTagNameMap {
+        "entry-list": HTMLEntryListElement;
         "fetch-api": HTMLFetchApiElement;
         "quake-dashboard": HTMLQuakeDashboardElement;
         "simple-layout": HTMLSimpleLayoutElement;
     }
 }
 declare namespace LocalJSX {
+    interface EntryList {
+    }
     interface FetchApi {
         "entryType"?: string[];
         "onFetchAllSuccess"?: (event: CustomEvent<any>) => void;
@@ -61,6 +72,7 @@ declare namespace LocalJSX {
         "layout"?: Layout;
     }
     interface IntrinsicElements {
+        "entry-list": EntryList;
         "fetch-api": FetchApi;
         "quake-dashboard": QuakeDashboard;
         "simple-layout": SimpleLayout;
@@ -70,6 +82,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "entry-list": LocalJSX.EntryList & JSXBase.HTMLAttributes<HTMLEntryListElement>;
             "fetch-api": LocalJSX.FetchApi & JSXBase.HTMLAttributes<HTMLFetchApiElement>;
             "quake-dashboard": LocalJSX.QuakeDashboard & JSXBase.HTMLAttributes<HTMLQuakeDashboardElement>;
             "simple-layout": LocalJSX.SimpleLayout & JSXBase.HTMLAttributes<HTMLSimpleLayoutElement>;
