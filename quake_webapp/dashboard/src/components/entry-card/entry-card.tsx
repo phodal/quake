@@ -1,4 +1,5 @@
 import {Component, Host, h, Prop} from '@stencil/core';
+import PadLeft from "../utils/PadLeft";
 
 @Component({
   tag: 'entry-card',
@@ -26,18 +27,13 @@ export class EntryCard {
 
   }
 
-  padLeft(nr, n, str) {
-    return Array(n - String(nr).length + 1).join(str || '0') + nr;
-  }
-
-
   render() {
     return (
       <Host>
         <div class="entry-show-list">
           <ion-card>
             <ion-card-header>
-              <ion-card-subtitle># {this.padLeft(this.item.id, 4, '')}
+              <ion-card-subtitle># {PadLeft(this.item.id, 4, '')}
                 {this.fileProp &&
                   <ion-icon name="document-outline" onClick={() => this.showPdf(this.type, this.item[this.fileProp])}/>
                 }

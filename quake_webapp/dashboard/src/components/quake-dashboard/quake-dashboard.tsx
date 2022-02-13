@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 // @ts-ignore
 // import {IonSearchbar} from "@ionic/core";
 import {createTransflow, init_wasm, parseAction} from "./quake-core-wrapper";
+import PadLeft from "../utils/PadLeft";
 
 export interface ActionDefine {
   entry: String,
@@ -182,10 +183,6 @@ export class QuakeDashboard {
 
   formatDate(str) {
     return dayjs(str * 1000).format('YYYY-MM-DD');
-  }
-
-  padLeft(nr, n, str) {
-    return Array(n - String(nr).length + 1).join(str || '0') + nr;
   }
 
   async selectType(_e: Event, info: EntryInfo) {
@@ -431,7 +428,7 @@ export class QuakeDashboard {
         {this.selectedFlowResult.get(key).map((item: any) =>
           <ion-card>
             <ion-card-header>
-              <ion-card-subtitle># {this.padLeft(item.id, 4, '')}
+              <ion-card-subtitle># {PadLeft(item.id, 4, '')}
                 <ion-icon name="book-outline" onClick={() => this.showEntry(item.id, this.selectedEntry.type)}/>
                 <ion-icon name="create-outline" onClick={() => this.editEntry(item.id, this.selectedEntry.type)}/>
               </ion-card-subtitle>
@@ -463,7 +460,7 @@ export class QuakeDashboard {
     return <div class="entry-show-list">
       <ion-card>
         <ion-card-header>
-          <ion-card-subtitle># {this.padLeft(item.id, 4, '')}
+          <ion-card-subtitle># {PadLeft(item.id, 4, '')}
             {entryFileProp &&
               <ion-icon name="document-outline" onClick={() => this.showPdf(type, item[entryFileProp])}/>
             }
