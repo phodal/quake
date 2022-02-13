@@ -82,7 +82,7 @@ function QuakeEditor(props: Props) {
     if (hasChange) {
       onSave();
     }
-  }, [lastValue, props, value, onSave]);
+  }, [lastValue, value, onSave]);
 
   useInterval(() => {
     trySaveEntry()
