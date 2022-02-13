@@ -59,15 +59,15 @@ export class QuakeDashboard {
   @State() query: string = "";
   @State() inputType: InputType = InputType.Empty;
   @State() actionDefine: ActionDefine = null;
-  @State() entries_info: EntryInfo[] = [];
-  @State() actions_list: string[] = [];
+  @State() entriesInfo: EntryInfo[] = [];
+  @State() actionsList: string[] = [];
 
-  @State() selected_entry: EntryInfo = null;
-  @State() selected_flow_result: Map<string, object[]> = new Map();
-  @State() selected_result: any[] = [];
-  @State() selected_entry_file_prop: string = "";
+  @State() selectedEntry: EntryInfo = null;
+  @State() selectedFlowResult: Map<string, object[]> = new Map();
+  @State() selectedResult: any[] = [];
+  @State() selectedEntryFileProp: string = "";
 
-  @State() is_flow: boolean = false;
+  @State() isFlow: boolean = false;
   @State() offset: object = {};
 
   @State() flow_index: number = 1;
@@ -93,8 +93,8 @@ export class QuakeDashboard {
 
     const that = this;
     this.loadingElement("suggest", {}, (res: any) => {
-      that.entries_info = res.data.entries;
-      that.actions_list = res.data.actions;
+      that.entriesInfo = res.data.entries;
+      that.actionsList = res.data.actions;
     }).then(() => {
     });
 
@@ -156,7 +156,7 @@ export class QuakeDashboard {
   }
 
   private createSearch(that: this) {
-    for (let info of this.entries_info) {
+    for (let info of this.entriesInfo) {
       this.search_item(that, info.type);
     }
   }
@@ -172,7 +172,7 @@ export class QuakeDashboard {
   }
 
   private queryItems(offset: number) {
-    const index = this.client.index(this.selected_entry.type)
+    const index = this.client.index(this.selectedEntry.type)
     return index.search('', {
       attributesToHighlight: ['overview'],
       limit: 40,
@@ -189,13 +189,13 @@ export class QuakeDashboard {
   }
 
   async selectType(_e: Event, info: EntryInfo) {
-    this.reset_input();
-    this.selected_entry = info;
-    this.selected_entry_file_prop = null;
-    for (let property of this.selected_entry.properties) {
+    this.resetInput();
+    this.selectedEntry = info;
+    this.selectedEntryFileProp = null;
+    for (let property of this.selectedEntry.properties) {
       for (let key in property) {
         if(property[key] == "File") {
-          this.selected_entry_file_prop = key;
+          this.selectedEntryFileProp = key;
         }
       }
     }
@@ -205,23 +205,23 @@ export class QuakeDashboard {
   }
 
   async addAction(_e: Event, action: string) {
-    this.reset_input();
+    this.resetInput();
     this.showSimpleLayout = false;
-    if (!this.selected_entry) {
+    if (!this.selectedEntry) {
       return;
     }
     if (action == 'show') {
-      let type = this.selected_entry.type;
+      let type = this.selectedEntry.type;
       this.offset[type] = 0;
       this.queryItems(this.offset[type]).then((result) => {
         this.offset[type] = this.offset[type] + 40;
 
         let parsed = result.hits;
-        this.is_flow = !!this.selected_entry.flows
-        if (this.is_flow) {
-          this.process_flow(parsed);
+        this.isFlow = !!this.selectedEntry.flows
+        if (this.isFlow) {
+          this.processFlow(parsed);
         } else {
-          this.selected_result = parsed;
+          this.selectedResult = parsed;
         }
       })
     }
@@ -232,10 +232,10 @@ export class QuakeDashboard {
     }
   }
 
-  private process_flow(parsed) {
-    this.is_flow = true;
+  private processFlow(parsed) {
+    this.isFlow = true;
     let results_map = new Map();
-    let flow = this.selected_entry.flows[0];
+    let flow = this.selectedEntry.flows[0];
     for (let item of flow.items) {
       results_map.set(item, []);
     }
@@ -244,12 +244,12 @@ export class QuakeDashboard {
       results_map.get(el.status)?.push(el);
     }
 
-    this.selected_flow_result = results_map;
+    this.selectedFlowResult = results_map;
   }
 
-  private reset_input() {
-    this.selected_result = [];
-    this.selected_flow_result = new Map();
+  private resetInput() {
+    this.selectedResult = [];
+    this.selectedFlowResult = new Map();
   }
 
   async createTransflow() {
@@ -349,7 +349,7 @@ export class QuakeDashboard {
       return "no more data";
     }
 
-    let type = this.selected_entry.type;
+    let type = this.selectedEntry.type;
     this.queryItems(this.offset[type]).then((result) => {
       this.offset[type] = this.offset[type] + 40;
       this.infiniteScroll.complete().then(_r => {
@@ -361,7 +361,7 @@ export class QuakeDashboard {
         return;
       }
 
-      this.selected_result = this.selected_result.concat(parsed);
+      this.selectedResult = this.selectedResult.concat(parsed);
     })
 
   }
@@ -387,10 +387,10 @@ export class QuakeDashboard {
             </form>
           </ion-item>
           <ion-item>
-            {this.entries_info.map((info) =>
+            {this.entriesInfo.map((info) =>
               <ion-button onClick={(e) => this.selectType(e, info)}>{info.type}</ion-button>
             )}
-            {this.actions_list.map((action) =>
+            {this.actionsList.map((action) =>
               <ion-button class="dark-button" onClick={(e) => this.addAction(e, action)}>{action}</ion-button>
             )}
           </ion-item>
@@ -400,16 +400,16 @@ export class QuakeDashboard {
         <ion-grid>
           <ion-row>
             {this.generated_code && <pre><code class="javascript">{this.generated_code}</code></pre>}
-            {this.entries_info.map((info) =>
+            {this.entriesInfo.map((info) =>
               this.list[info.type] && this.list[info.type].length > 0 ? this.renderSearchCol(info) : null
             )}
-            {this.is_flow && Array.from(this.selected_flow_result.keys()).map((key) =>
+            {this.isFlow && Array.from(this.selectedFlowResult.keys()).map((key) =>
               this.renderFlowByKey(key)
             )}
-            {!this.is_flow && this.selected_result && this.selected_result.map((item: any) =>
-              this.renderCards(item, this.selected_entry.type)
+            {!this.isFlow && this.selectedResult && this.selectedResult.map((item: any) =>
+              this.renderCard(item, this.selectedEntry.type)
             )}
-            {!this.is_flow && this.selected_result.length > 0 &&
+            {!this.isFlow && this.selectedResult.length > 0 &&
               <ion-infinite-scroll ref={(el) => (this.infiniteScroll = el)} onIonInfinite={(ev) => this.loadData(ev)}>
                 <ion-infinite-scroll-content
                   loadingSpinner="bubbles"
@@ -428,12 +428,12 @@ export class QuakeDashboard {
     return <ion-col>
       <ion-text color="secondary">{key}</ion-text>
       <ion-list>
-        {this.selected_flow_result.get(key).map((item: any) =>
+        {this.selectedFlowResult.get(key).map((item: any) =>
           <ion-card>
             <ion-card-header>
               <ion-card-subtitle># {this.padLeft(item.id, 4, '')}
-                <ion-icon name="book-outline" onClick={() => this.showEntry(item.id, this.selected_entry.type)}/>
-                <ion-icon name="create-outline" onClick={() => this.editEntry(item.id, this.selected_entry.type)}/>
+                <ion-icon name="book-outline" onClick={() => this.showEntry(item.id, this.selectedEntry.type)}/>
+                <ion-icon name="create-outline" onClick={() => this.editEntry(item.id, this.selectedEntry.type)}/>
               </ion-card-subtitle>
               <ion-card-title>{item.title}</ion-card-title>
             </ion-card-header>
@@ -451,19 +451,21 @@ export class QuakeDashboard {
     return <ion-col>
       <ion-text color="secondary">{info.type}</ion-text>
       {this.list[info.type] ? this.list[info.type].map((item: any) =>
-        <ion-list>{this.renderCards(item, info.type)}</ion-list>
+        <ion-list>{this.renderCard(item, info.type)}</ion-list>
       ) : null
       }
     </ion-col>;
   }
 
-  private renderCards(item: any, type: string) {
+  private renderCard(item: any, type: string) {
+    let entryFileProp = this.selectedEntryFileProp;
+
     return <div class="entry-show-list">
       <ion-card>
         <ion-card-header>
           <ion-card-subtitle># {this.padLeft(item.id, 4, '')}
-            {this.selected_entry_file_prop &&
-              <ion-icon name="document-outline" onClick={() => this.showPdf(type, item[this.selected_entry_file_prop])}/>
+            {entryFileProp &&
+              <ion-icon name="document-outline" onClick={() => this.showPdf(type, item[entryFileProp])}/>
             }
             <ion-icon name="book-outline" onClick={() => this.showEntry(item.id, type)}/>
             <ion-icon name="create-outline" onClick={() => this.editEntry(item.id, type)}/>

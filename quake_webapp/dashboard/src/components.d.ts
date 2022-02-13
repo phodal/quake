@@ -8,6 +8,11 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ActionDefine } from "./components/quake-dashboard/quake-dashboard";
 import { Layout } from "./components/simple-layout/simple-layout";
 export namespace Components {
+    interface EntryCard {
+        "fileProp": number;
+        "item": any;
+        "type": string;
+    }
     interface EntryList {
     }
     interface FetchApi {
@@ -23,6 +28,12 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLEntryCardElement extends Components.EntryCard, HTMLStencilElement {
+    }
+    var HTMLEntryCardElement: {
+        prototype: HTMLEntryCardElement;
+        new (): HTMLEntryCardElement;
+    };
     interface HTMLEntryListElement extends Components.EntryList, HTMLStencilElement {
     }
     var HTMLEntryListElement: {
@@ -48,6 +59,7 @@ declare global {
         new (): HTMLSimpleLayoutElement;
     };
     interface HTMLElementTagNameMap {
+        "entry-card": HTMLEntryCardElement;
         "entry-list": HTMLEntryListElement;
         "fetch-api": HTMLFetchApiElement;
         "quake-dashboard": HTMLQuakeDashboardElement;
@@ -55,6 +67,11 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface EntryCard {
+        "fileProp"?: number;
+        "item"?: any;
+        "type"?: string;
+    }
     interface EntryList {
     }
     interface FetchApi {
@@ -72,6 +89,7 @@ declare namespace LocalJSX {
         "layout"?: Layout;
     }
     interface IntrinsicElements {
+        "entry-card": EntryCard;
         "entry-list": EntryList;
         "fetch-api": FetchApi;
         "quake-dashboard": QuakeDashboard;
@@ -82,6 +100,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "entry-card": LocalJSX.EntryCard & JSXBase.HTMLAttributes<HTMLEntryCardElement>;
             "entry-list": LocalJSX.EntryList & JSXBase.HTMLAttributes<HTMLEntryListElement>;
             "fetch-api": LocalJSX.FetchApi & JSXBase.HTMLAttributes<HTMLFetchApiElement>;
             "quake-dashboard": LocalJSX.QuakeDashboard & JSXBase.HTMLAttributes<HTMLQuakeDashboardElement>;
