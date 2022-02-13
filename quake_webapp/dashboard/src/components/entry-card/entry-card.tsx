@@ -1,5 +1,6 @@
 import {Component, Host, h, Prop} from '@stencil/core';
 import PadLeft from "../utils/PadLeft";
+import DateFormat from "../utils/DateFormat";
 
 @Component({
   tag: 'entry-card',
@@ -23,10 +24,6 @@ export class EntryCard {
 
   }
 
-  formatDate(_date: string) {
-
-  }
-
   render() {
     return (
       <Host>
@@ -44,7 +41,7 @@ export class EntryCard {
             </ion-card-header>
             <ion-card-content>
               {this.item.description && <p>{this.item.description}</p>}
-              <ion-badge slot="start">{this.formatDate(this.item.created_date)}</ion-badge>
+              <ion-badge slot="start">{DateFormat(this.item.created_date)}</ion-badge>
             </ion-card-content>
           </ion-card>
         </div>

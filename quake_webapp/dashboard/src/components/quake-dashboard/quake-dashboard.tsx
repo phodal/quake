@@ -1,12 +1,12 @@
 import {Component, Element, Event, EventEmitter, h, Prop, State} from '@stencil/core';
 import {MeiliSearch} from "meilisearch";
-import dayjs from "dayjs";
 
 // only for: IDEA jump
 // @ts-ignore
 // import {IonSearchbar} from "@ionic/core";
 import {createTransflow, init_wasm, parseAction} from "./quake-core-wrapper";
 import PadLeft from "../utils/PadLeft";
+import DateFormat from "../utils/DateFormat";
 
 export interface ActionDefine {
   entry: String,
@@ -179,10 +179,6 @@ export class QuakeDashboard {
       limit: 40,
       offset
     })
-  }
-
-  formatDate(str) {
-    return dayjs(str * 1000).format('YYYY-MM-DD');
   }
 
   async selectType(_e: Event, info: EntryInfo) {
@@ -436,7 +432,7 @@ export class QuakeDashboard {
             </ion-card-header>
             <ion-card-content>
               {item.description && <p>{item.description}</p>}
-              <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
+              <ion-badge slot="start">{DateFormat(item.created_date)}</ion-badge>
             </ion-card-content>
           </ion-card>
         )}
@@ -471,7 +467,7 @@ export class QuakeDashboard {
         </ion-card-header>
         <ion-card-content>
           {item.description && <p>{item.description}</p>}
-          <ion-badge slot="start">{this.formatDate(item.created_date)}</ion-badge>
+          <ion-badge slot="start">{DateFormat(item.created_date)}</ion-badge>
         </ion-card-content>
       </ion-card>
     </div>;
