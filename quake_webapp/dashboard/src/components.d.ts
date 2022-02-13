@@ -9,7 +9,7 @@ import { ActionDefine } from "./components/quake-dashboard/quake-dashboard";
 import { Layout } from "./components/simple-layout/simple-layout";
 export namespace Components {
     interface EntryCard {
-        "fileProp": number;
+        "fileProp": string;
         "item": any;
         "type": string;
     }
@@ -68,8 +68,10 @@ declare global {
 }
 declare namespace LocalJSX {
     interface EntryCard {
-        "fileProp"?: number;
+        "fileProp"?: string;
         "item"?: any;
+        "onTriggerEdit"?: (event: CustomEvent<string>) => void;
+        "onTriggerShow"?: (event: CustomEvent<string>) => void;
         "type"?: string;
     }
     interface EntryList {

@@ -187,7 +187,7 @@ export class QuakeDashboard {
     this.selectedEntryFileProp = null;
     for (let property of this.selectedEntry.properties) {
       for (let key in property) {
-        if(property[key] == "File") {
+        if (property[key] == "File") {
           this.selectedEntryFileProp = key;
         }
       }
@@ -299,8 +299,8 @@ export class QuakeDashboard {
     });
   }
 
-  async showPdf(entry: string, file_prop: string) {
-    let url = `/processor/${entry}?file_prop=${file_prop}`;
+  async showPdf(entry: string, fileProp: string) {
+    let url = `/processor/${entry}?file_prop=${fileProp}`;
     const modal: any = document.createElement('ion-modal');
 
     const viewer: any = document.createElement('quake-viewer');
@@ -452,25 +452,12 @@ export class QuakeDashboard {
 
   private renderCard(item: any, type: string) {
     let entryFileProp = this.selectedEntryFileProp;
-
-    return <div class="entry-show-list">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-subtitle># {PadLeft(item.id, 4, '')}
-            {entryFileProp &&
-              <ion-icon name="document-outline" onClick={() => this.showPdf(type, item[entryFileProp])}/>
-            }
-            <ion-icon name="book-outline" onClick={() => this.showEntry(item.id, type)}/>
-            <ion-icon name="create-outline" onClick={() => this.editEntry(item.id, type)}/>
-          </ion-card-subtitle>
-          <ion-card-title>{item.title}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          {item.description && <p>{item.description}</p>}
-          <ion-badge slot="start">{DateFormat(item.created_date)}</ion-badge>
-        </ion-card-content>
-      </ion-card>
-    </div>;
+    return <entry-card
+      fileProp={entryFileProp}
+      item={item}
+      type={type}
+      onTriggerShow={() => this.showEntry(item.id, type)}
+      onTriggerEdit={() => this.editEntry(item.id, type)}/>
   }
 
   // @ts-ignore
