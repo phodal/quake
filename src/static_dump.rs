@@ -174,7 +174,7 @@ mod tests {
     use quake_core::QuakeConfig;
 
     use crate::page_dump;
-    use crate::pagedump::DUMP_PATH;
+    use crate::static_dump::DUMP_PATH;
 
     fn config() -> QuakeConfig {
         let path = PathBuf::from("_fixtures").join("demo_quake");

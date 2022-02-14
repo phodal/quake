@@ -7,7 +7,7 @@ use clap::Parser;
 use futures::executor::block_on;
 use futures::future;
 use helper::entry_watcher;
-use pagedump::page_dump;
+use static_dump::page_dump;
 use tracing::{debug, error};
 
 use quake_core::entry::entry_defines::EntryDefines;
@@ -21,8 +21,8 @@ use crate::usecases::generate_usecases::generate_by_flow;
 
 pub mod cli;
 pub mod helper;
-pub mod pagedump;
 pub mod server;
+pub mod static_dump;
 pub mod usecases;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
