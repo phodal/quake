@@ -183,6 +183,7 @@ mod tests {
             editor: "".to_string(),
             search_url: "http://127.0.0.1:7700".to_string(),
             server_location: "web".to_string(),
+            auto_feed: false,
             port: 8000,
         }
     }

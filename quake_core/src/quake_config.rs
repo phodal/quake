@@ -6,5 +6,7 @@ pub struct QuakeConfig {
     pub workspace: String,
     pub search_url: String,
     pub server_location: String,
+    #[serde(default)]
+    pub auto_feed: bool,
     pub port: u32,
 }

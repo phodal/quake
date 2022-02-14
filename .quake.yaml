@@ -4,6 +4,9 @@ server_location: "quake_webapp"
 editor: vim
 port: 9999
 
+# aut feed changes
+auto_feed: true
+
 components:
   quake_editor:
     autosave:
