@@ -7,7 +7,7 @@ use clap::Parser;
 use futures::executor::block_on;
 use futures::future;
 use helper::entry_watcher;
-use static_dump::page_dump;
+use static_dump::static_dump;
 use tracing::{debug, error};
 
 use quake_core::entry::entry_defines::EntryDefines;
@@ -45,7 +45,7 @@ pub enum SubCommand {
     /// terminal UI
     Tui(Terminal),
     /// dump page for web deploy
-    Pagedump(PageDump),
+    StaticDump(StaticDump),
     /// generate content and entry from source
     Generate(Generate),
 }
@@ -54,7 +54,7 @@ pub enum SubCommand {
 pub struct Terminal {}
 
 #[derive(Parser)]
-pub struct PageDump {
+pub struct StaticDump {
     #[clap(short, long, default_value = ".quake.yaml")]
     config: String,
 
@@ -134,9 +134,9 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
         SubCommand::Tui(_) => {
             tui_main_loop()?;
         }
-        SubCommand::Pagedump(dump) => {
+        SubCommand::StaticDump(dump) => {
             let config = load_config(&dump.config)?;
-            page_dump(config);
+            static_dump(config);
         }
         SubCommand::Generate(generate) => {
             let conf = load_config(&generate.config)?;

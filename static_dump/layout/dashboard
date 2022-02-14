@@ -1,0 +1,1 @@
+{"name":"Dashboard","rows":[{"columns":[{"name":"Calendar","flow":"show_calendar","width":12,"height":0,"component_type":"flow"}]},{"columns":[{"name":"Network","flow":"graph-network","width":4,"height":0,"component_type":"native"},{"name":"Timeline","flow":"show_timeline","width":8,"height":0,"component_type":"flow"}]}]}

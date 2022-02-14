@@ -14,10 +14,10 @@ use quake_core::QuakeConfig;
 use crate::usecases::reference_usecases::{create_entries_refs, EntryReference};
 use crate::usecases::suggest_usecases;
 
-static DUMP_PATH: &str = "pagedump";
+static DUMP_PATH: &str = "static_dump";
 
 // export data for GitHub pages as demo
-pub fn page_dump(conf: QuakeConfig) {
+pub fn static_dump(conf: QuakeConfig) {
     // init dir
     if PathBuf::from(DUMP_PATH).exists() {
         fs::remove_dir_all(DUMP_PATH).expect("dir not exists");
@@ -173,7 +173,7 @@ mod tests {
 
     use quake_core::QuakeConfig;
 
-    use crate::page_dump;
+    use crate::static_dump;
     use crate::static_dump::DUMP_PATH;
 
     fn config() -> QuakeConfig {
@@ -189,7 +189,7 @@ mod tests {
 
     #[test]
     fn should_dump_entries_define() {
-        page_dump(config());
+        static_dump(config());
         let defines = PathBuf::from(DUMP_PATH).join("entry").join("defines");
         assert!(defines.exists());
 
@@ -199,7 +199,7 @@ mod tests {
             .join("gen_code.js");
         assert!(transflow.exists());
 
-        page_dump(config());
+        static_dump(config());
         let layout = PathBuf::from(DUMP_PATH).join("layout").join("dashboard");
         assert!(layout.exists());
 
