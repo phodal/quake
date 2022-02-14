@@ -8,6 +8,7 @@ use rocket::serde::{Deserialize, Serialize};
 use rocket::State;
 use rocket::{get, post};
 
+use crate::helper::exec_wrapper::meili_exec::feed_document_async;
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::entry::EntryDefines;
@@ -32,13 +33,16 @@ struct EntryResponse {
 
 #[post("/<entry_type>?<text>")]
 pub(crate) async fn create_entry(
-    entry_type: String,
-    text: String,
+    entry_type: &str,
+    text: &str,
     config: &State<QuakeConfig>,
 ) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
     let workspace = config.workspace.to_string();
-    return match entry_usecases::create_entry(&workspace, &entry_type, &text) {
-        Ok((_path, file)) => Ok(Json(file)),
+    return match entry_usecases::create_entry(&workspace, entry_type, text) {
+        Ok((_path, file)) => {
+            let _ = feed_entry(&config.search_url, entry_type, &file);
+            Ok(Json(file))
+        }
         Err(err) => Err(NotFound(Json(ApiError {
             msg: err.to_string(),
         }))),
@@ -89,12 +93,20 @@ pub(crate) async fn update_entry(
     config: &State<QuakeConfig>,
 ) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
     let path = PathBuf::from(&config.workspace).join(entry_type);
+
     return match entry_usecases::update_entry_properties(path, entry_type, id, &entry.properties) {
-        Ok(file) => Ok(Json(file)),
+        Ok(file) => {
+            let _ = feed_entry(&config.search_url, entry_type, &file);
+            Ok(Json(file))
+        }
         Err(err) => Err(NotFound(Json(ApiError {
             msg: err.to_string(),
         }))),
     };
+}
+
+pub fn feed_entry(server_url: &str, index_name: &str, content: &EntryFile) {
+    let _ = feed_document_async(server_url, index_name, content);
 }
 
 #[cfg(test)]

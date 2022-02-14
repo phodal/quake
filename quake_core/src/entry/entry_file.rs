@@ -18,7 +18,7 @@ lazy_static! {
     static ref ENTRY_FILE: Regex = Regex::new(r#"(?P<index>\d{4})-(?P<name>.*).md"#).unwrap();
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct EntryFile {
     pub id: usize,
     #[serde(skip_serializing_if = "Option::is_none")]
