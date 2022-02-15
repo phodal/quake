@@ -18,4 +18,5 @@ dump.json
 quake_webapp/temp
 test_dir
 pagedump
+static_dump
 examples/demo_papers

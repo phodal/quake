@@ -45,7 +45,7 @@ pub enum SubCommand {
     /// terminal UI
     Tui(Terminal),
     /// dump page for web deploy
-    StaticDump(StaticDump),
+    Static(StaticDump),
     /// generate content and entry from source
     Generate(Generate),
 }
@@ -134,7 +134,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
         SubCommand::Tui(_) => {
             tui_main_loop()?;
         }
-        SubCommand::StaticDump(dump) => {
+        SubCommand::Static(dump) => {
             let config = load_config(&dump.config)?;
             static_dump(config);
         }
