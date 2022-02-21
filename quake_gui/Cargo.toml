@@ -1,7 +1,7 @@
 [package]
 name = "quake_gui"
 version = "0.1.0"
-edition = "2018"
+edition = "2021"
 authors = ["Inherd Group <quake@inherd.org>"]
 description = """
 Simple knowledge management tool for geek.
@@ -15,3 +15,4 @@ autoexamples = true
 keywords = ["knowledge", "dashboard"]
 
 [dependencies]
+dioxus = { version = "0.1.8", features = ["desktop"] }
