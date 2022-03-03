@@ -78,7 +78,7 @@ fn dump_entries_data(conf: &QuakeConfig) {
 
             let file = target_dir.join(index.to_string());
 
-            fs::write(file, content.to_string()).unwrap();
+            fs::write(file, &content).unwrap();
             index += 1;
         }
     }
