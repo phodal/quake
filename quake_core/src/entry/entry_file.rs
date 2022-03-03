@@ -36,7 +36,7 @@ impl Serialize for EntryFile {
     {
         let mut map = serializer.serialize_map(Some(self.properties.len()))?;
         for (k, v) in &self.properties {
-            map.serialize_entry(&k.to_string(), &v)?;
+            map.serialize_entry(k, &v)?;
         }
 
         map.serialize_entry("id", &self.id)?;

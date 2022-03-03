@@ -12,14 +12,14 @@ pub fn slugify(text: &str) -> String {
     let result = LEADING.replace_all(result.as_str(), "").to_string();
 
     result
-        .replace(",", "")
-        .replace("。", "")
-        .replace(" ", "-")
-        .replace("?", "-")
-        .replace("#", "-")
-        .replace(":", "-")
+        .replace(',', "")
+        .replace('。', "")
+        .replace(' ', "-")
+        .replace('?', "-")
+        .replace('#', "-")
+        .replace(':', "-")
         .replace("-/-", "")
-        .replace("/", "")
+        .replace('/', "")
         .replace("——", "-")
 }
 

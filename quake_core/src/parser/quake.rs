@@ -79,7 +79,7 @@ impl Route {
         self.name = format!(
             "from_{:}_to_{:}",
             self.from.join("_"),
-            self.to.replace("-", "_")
+            self.to.replace('-', "_")
         );
     }
 }

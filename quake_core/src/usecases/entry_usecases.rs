@@ -95,7 +95,7 @@ pub fn update_entry_properties(
     index_id: usize,
     update_map: &HashMap<String, String>,
 ) -> Result<EntryFile, Box<dyn Error>> {
-    let entry_path = find_entry_path(type_path, &entry_type.to_string(), index_id)?;
+    let entry_path = find_entry_path(type_path, entry_type, index_id)?;
     let string = fs::read_to_string(&entry_path)?;
     let mut entry_file = EntryFile::from(string.as_str(), index_id)?;
 
@@ -106,7 +106,7 @@ pub fn update_entry_properties(
     }
 
     if let Some(_val) = entry_file.properties.get("updated_date") {
-        entry_file.update_property(&"updated_date".to_string(), &date_now())
+        entry_file.update_property("updated_date", &date_now())
     }
 
     if let Some(val) = update_map.get("content") {
