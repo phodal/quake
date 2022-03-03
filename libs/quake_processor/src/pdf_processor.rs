@@ -35,7 +35,7 @@ impl Processor for PdfProcessor {
 
         string.push_str(text.as_str());
 
-        string = string.replace("\n\n", "<quake-br>").replace("\n", "");
+        string = string.replace("\n\n", "<quake-br>").replace('\n', "");
         string = string.replace("<quake-br>", "\n\n");
 
         Ok(string)
