@@ -38,7 +38,14 @@ const Quake = {
     type: ""
   },
   show_entry: function (type) {
-    window.dispatchEvent(new CustomEvent("quake:action", { detail: `/${type}.show` }))
+    if(document.querySelector('quake-dashboard') == null) {
+      Quake.Router.go('/');
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("quake:action", { detail: `/${type}.show` }))
+      }, 1000)
+    } else {
+      window.dispatchEvent(new CustomEvent("quake:action", { detail: `/${type}.show` }))
+    }
   },
   router: router,
   transflow: {
