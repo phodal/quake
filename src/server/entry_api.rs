@@ -8,7 +8,6 @@ use rocket::serde::{Deserialize, Serialize};
 use rocket::State;
 use rocket::{get, post};
 
-use crate::helper::exec_wrapper::meili_exec::feed_document;
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::entry::{entry_by_path, EntryDefines};
@@ -16,6 +15,7 @@ use quake_core::helper::file_filter;
 use quake_core::usecases::entry_usecases;
 use quake_core::QuakeConfig;
 
+use crate::helper::exec_wrapper::meili_exec::feed_document_async;
 use crate::server::ApiError;
 
 #[get("/defines")]
@@ -107,7 +107,7 @@ pub(crate) async fn update_entry(
 
 pub fn feed_entry(server_url: &str, index_name: &str, path: &Path, workspace: &str) {
     if let Ok((_typ, file)) = entry_by_path::entry_file_dump(path, &PathBuf::from(workspace)) {
-        let _ = feed_document(server_url, index_name, &file);
+        let _ = feed_document_async(server_url, index_name, &file);
     };
 }
 
