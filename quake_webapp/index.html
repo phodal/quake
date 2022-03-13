@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://unpkg.com/@ionic/core/css/ionic.bundle.css"/>
   <style>
     body {
-      font-family: "Lato Medium", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, apple color emoji, segoe ui emoji, Segoe UI Symbol, noto color emoji;
       display: flex;
       justify-content: space-between;
     }
@@ -22,20 +22,43 @@
       font-size: 16px;
     }
 
+    #navigator button,
+    #navigator a {
+      font-size: 16px;
+      text-decoration: none;
+      padding: 8px 0;
+    }
+
     #knowledge-type .entry-type {
       margin: 0;
-      padding: 0;
+      padding: 8px 0;
     }
 
     #navigator {
-      width: 10%;
+      width: 15%;
       min-width: 200px;
       border-right: #ddd 1px solid;
       overflow: scroll;
+      padding-left: 20px;
+    }
+
+    #navigator h3 {
+      font-size: 16px;
+      padding: 8px 0;
+      color: #00000073;
+    }
+
+    #navigator h3:after {
+      content: "";
+      position: relative;
+      top: 12px;
+      display: block;
+      height: 1px;
+      background: rgba(0, 0, 0, .06);
     }
 
     #outlet {
-      width: 90%;
+      width: 85%;
       height: 100%;
       overflow: scroll;
     }
