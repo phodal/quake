@@ -14,7 +14,7 @@ PageSearch.prototype.index = function (type) {
 
 PageSearch.prototype.search = function (options) {
   return new Promise(async (resolve, reject) => {
-    let response = await fetch(`/indexes/${this.type}/search`);
+    let response = await fetch(`/indexes/${ this.type }/search`);
     let data = await response.json();
     resolve({
       hits: data
@@ -37,12 +37,18 @@ const Quake = {
   entry: {
     type: ""
   },
+  show_entry: function (type) {
+    console.log(`todo: add show entry for ${type}`);
+    // handleAction({
+    //   entry: type,
+    // })
+  },
   router: router,
   transflow: {
     mapping: {},
     add: function (route) {
       let conf = {
-        path: `/transflow/custom/${route.name}`,
+        path: `/transflow/custom/${ route.name }`,
         action: route.action
       };
 
@@ -114,7 +120,7 @@ function create_editor_element(entry, params) {
 
 const edit_entry = async (context, commands) => {
   let params = context.params;
-  let response = await fetch(`/entry/${params.type}/${params.id}`)
+  let response = await fetch(`/entry/${ params.type }/${ params.id }`)
   const entry = await response.json();
 
   return create_editor_element(entry, params);
@@ -125,7 +131,7 @@ const create_entry = async (context, commands) => {
   let url_params = new URLSearchParams(context.search);
   let text = url_params.get('text');
 
-  let url = `/entry/${params.type}?text=${text}`
+  let url = `/entry/${ params.type }?text=${ text }`
   const response = await fetch(url, {
     method: 'POST'
   });
@@ -137,9 +143,9 @@ const create_entry = async (context, commands) => {
 }
 
 const update_entry = async (entry_type, id, properties) => {
-  let response = await fetch(`/entry/${entry_type}/${id}`, {
+  let response = await fetch(`/entry/${ entry_type }/${ id }`, {
     method: 'POST',
-    body: JSON.stringify({properties: properties})
+    body: JSON.stringify({ properties: properties })
   });
 
   let data = await response.json();
@@ -149,7 +155,7 @@ const update_entry = async (entry_type, id, properties) => {
 
 const show_entry = async (context, commands) => {
   let params = context.params;
-  let response = await fetch(`/entry/${params.type}/${params.id}`)
+  let response = await fetch(`/entry/${ params.type }/${ params.id }`)
   const entry = await response.json();
 
   const editor = document.createElement('quake-render');
@@ -157,7 +163,7 @@ const show_entry = async (context, commands) => {
 
   editor.addEventListener("clickPageLink", function (event) {
     let data = event.detail;
-    Router.go(`/show/${data.type}/${data.id}`);
+    Router.go(`/show/${ data.type }/${ data.id }`);
   });
 
   return editor
@@ -165,11 +171,11 @@ const show_entry = async (context, commands) => {
 
 function handleAction(define) {
   if (define.action === 'add') {
-    Router.go(`/entry/${define.entry}/new?text=${define.text}`)
+    Router.go(`/entry/${ define.entry }/new?text=${ define.text }`)
   } else if (define.action === 'show') {
-    Router.go(`/show/${define.entry}/${define.parameters[0]}`);
+    Router.go(`/show/${ define.entry }/${ define.parameters[ 0 ] }`);
   } else if (define.parameters.length > 0) {
-    Router.go(`/edit/${define.entry}/${define.parameters[0]}`);
+    Router.go(`/edit/${ define.entry }/${ define.parameters[ 0 ] }`);
   } else {
     console.log("some action");
   }
@@ -182,7 +188,7 @@ const show_board = async (context, commands) => {
   const entry = await response.json();
 
   let content = entry.content;
-  if(content.startsWith("\n\n")) {
+  if (content.startsWith("\n\n")) {
     content = content.substring(2);
   }
   element.setAttribute("model", content);
@@ -203,21 +209,25 @@ const show_creator = async (context, commands) => {
 }
 
 router.setRoutes([
-  {path: '/', action: home},
-  {path: '/entry/:type/new', action: create_entry},
-  {path: '/edit/:type/:id', action: edit_entry},
-  {path: '/show/:type/:id', action: show_entry},
-  {path: '/quake/board', action: show_board},
-  {path: '/quake/creator', action: show_creator},
+  { path: '/', action: home },
+  { path: '/entry/:type/new', action: create_entry },
+  { path: '/edit/:type/:id', action: edit_entry },
+  { path: '/show/:type/:id', action: show_entry },
+  { path: '/quake/board', action: show_board },
+  { path: '/quake/creator', action: show_creator },
 ]);
 
-const init = async() => {
+const init = async () => {
   let response = await fetch(`/action/suggest`)
   const data = await response.json();
   for (let entry of data.entries) {
-    const nav = document.createElement('p');
+    const nav = document.createElement('a');
     nav.classList += 'entry-type'
     nav.innerText = entry.type;
+
+    nav.onclick = function () {
+      Quake.show_entry(entry.type)
+    }
 
     let navNode = document.getElementById("knowledge-type");
     navNode.appendChild(nav);
