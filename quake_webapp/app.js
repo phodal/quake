@@ -38,10 +38,7 @@ const Quake = {
     type: ""
   },
   show_entry: function (type) {
-    console.log(`todo: add show entry for ${type}`);
-    // handleAction({
-    //   entry: type,
-    // })
+    window.dispatchEvent(new CustomEvent("quake:action", { detail: `/${type}.show` }))
   },
   router: router,
   transflow: {

@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Prop, State} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Prop, State} from '@stencil/core';
 import {MeiliSearch} from "meilisearch";
 
 // only for: IDEA jump
@@ -81,6 +81,13 @@ export class QuakeDashboard {
     cancelable: true,
     bubbles: true,
   }) dispatchAction: EventEmitter<ActionDefine>;
+
+  @Listen('quake:action', {target: 'window'})
+  handleScroll(ev) {
+    console.log(ev.detail)
+    this.query = ev.detail
+    this.processActionString(this)
+  }
 
   client = (window as any).Quake?.client ? (window as any).Quake.client : new MeiliSearch({
     host: 'http://127.0.0.1:7700'
@@ -170,8 +177,8 @@ export class QuakeDashboard {
     })
   }
 
-  private queryItems(offset: number) {
-    const index = this.client.index(this.selectedEntry.type)
+  private queryItems(offset: number, type: string) {
+    const index = this.client.index(type)
     return index.search('', {
       attributesToHighlight: ['overview'],
       limit: 40,
@@ -203,24 +210,29 @@ export class QuakeDashboard {
     }
     if (action == 'show') {
       let type = this.selectedEntry.type;
-      this.offset[type] = 0;
-      this.queryItems(this.offset[type]).then((result) => {
-        this.offset[type] = this.offset[type] + 40;
-
-        let parsed = result.hits;
-        this.isFlow = !!this.selectedEntry.flows
-        if (this.isFlow) {
-          this.processFlow(parsed);
-        } else {
-          this.selectedResult = parsed;
-        }
-      })
+      this.showSimpleLayout = false;
+      this.show_entries(type);
     }
 
     if (this.query.startsWith("/") && this.query.endsWith(".")) {
       this.query = this.query + action;
       this.handleQuery(this);
     }
+  }
+
+  private show_entries(type: string) {
+    this.offset[type] = 0;
+    this.queryItems(this.offset[type], type).then((result) => {
+      this.offset[type] = this.offset[type] + 40;
+
+      let parsed = result.hits;
+      this.isFlow = !!this.selectedEntry && !!this.selectedEntry.flows && this.selectedEntry.flows.length > 0
+      if (this.isFlow) {
+        this.processFlow(parsed);
+      } else {
+        this.selectedResult = parsed;
+      }
+    })
   }
 
   private processFlow(parsed) {
@@ -272,7 +284,11 @@ export class QuakeDashboard {
   async handleSubmit(e) {
     e.preventDefault()
 
-    if (this.query.startsWith(":")) {
+    await this.processActionString(this);
+  }
+
+  private async processActionString(that: this) {
+    if (that.query.startsWith(":")) {
       this.inputType = InputType.Transflow;
       await this.createTransflow();
       return;
@@ -283,10 +299,16 @@ export class QuakeDashboard {
       return;
     }
 
-    const that = this;
     parseAction(this.query.substring(1,)).then(data => {
       if (data.entry) {
+        this.selectedEntry = this.entriesInfo.filter(inf => inf.type == data.entry)[0];
         that.actionDefine = data
+        if (data.action == 'show') {
+          this.showSimpleLayout = false;
+          this.show_entries(data.entry)
+          return;
+        }
+
         that.dispatchAction.emit(data);
       } else {
         that.actionDefine = null;
@@ -328,7 +350,7 @@ export class QuakeDashboard {
     }
 
     let type = this.selectedEntry.type;
-    this.queryItems(this.offset[type]).then((result) => {
+    this.queryItems(this.offset[type], type).then((result) => {
       this.offset[type] = this.offset[type] + 40;
       this.infiniteScroll.complete().then(_r => {
       });
