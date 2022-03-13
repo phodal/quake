@@ -25,12 +25,14 @@
 
 - [fetch-api](../fetch-api)
 - [simple-layout](../simple-layout)
+- [entry-card](../entry-card)
 
 ### Graph
 ```mermaid
 graph TD;
   quake-dashboard --> fetch-api
   quake-dashboard --> simple-layout
+  quake-dashboard --> entry-card
   style quake-dashboard fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
