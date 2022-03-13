@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use rocket::response::status::NotFound;
 use rocket::serde::json::Json;
@@ -8,10 +8,10 @@ use rocket::serde::{Deserialize, Serialize};
 use rocket::State;
 use rocket::{get, post};
 
-use crate::helper::exec_wrapper::meili_exec::feed_document_async;
+use crate::helper::exec_wrapper::meili_exec::feed_document;
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::entry_paths::EntryPaths;
-use quake_core::entry::EntryDefines;
+use quake_core::entry::{entry_by_path, EntryDefines};
 use quake_core::helper::file_filter;
 use quake_core::usecases::entry_usecases;
 use quake_core::QuakeConfig;
@@ -39,8 +39,8 @@ pub(crate) async fn create_entry(
 ) -> Result<Json<EntryFile>, NotFound<Json<ApiError>>> {
     let workspace = config.workspace.to_string();
     return match entry_usecases::create_entry(&workspace, entry_type, text) {
-        Ok((_path, file)) => {
-            let _ = feed_entry(&config.search_url, entry_type, &file);
+        Ok((path, file)) => {
+            let _ = feed_entry(&config.search_url, entry_type, &path, &config.workspace);
             Ok(Json(file))
         }
         Err(err) => Err(NotFound(Json(ApiError {
@@ -95,8 +95,8 @@ pub(crate) async fn update_entry(
     let path = PathBuf::from(&config.workspace).join(entry_type);
 
     return match entry_usecases::update_entry_properties(path, entry_type, id, &entry.properties) {
-        Ok(file) => {
-            let _ = feed_entry(&config.search_url, entry_type, &file);
+        Ok((path, file)) => {
+            let _ = feed_entry(&config.search_url, entry_type, &path, &config.workspace);
             Ok(Json(file))
         }
         Err(err) => Err(NotFound(Json(ApiError {
@@ -105,8 +105,10 @@ pub(crate) async fn update_entry(
     };
 }
 
-pub fn feed_entry(server_url: &str, index_name: &str, content: &EntryFile) {
-    let _ = feed_document_async(server_url, index_name, content);
+pub fn feed_entry(server_url: &str, index_name: &str, path: &Path, workspace: &str) {
+    if let Ok((_typ, file)) = entry_by_path::entry_file_dump(path, &PathBuf::from(workspace)) {
+        let _ = feed_document(server_url, index_name, &file);
+    };
 }
 
 #[cfg(test)]

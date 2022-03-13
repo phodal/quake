@@ -1,8 +1,7 @@
 use std::error::Error;
 
 use async_std::task;
-use rocket::tokio;
-use tracing::{error, info};
+use tracing::info;
 
 use quake_core::entry::entry_file::EntryFile;
 use quake_core::entry::EntryDefine;
@@ -56,33 +55,6 @@ pub fn feed_document(
         let response = req.await.unwrap().text().await.unwrap();
 
         info!("{:?}", response);
-    });
-
-    Ok(())
-}
-
-pub fn feed_document_async(
-    server: &str,
-    index_name: &str,
-    file: &EntryFile,
-) -> Result<(), Box<dyn Error>> {
-    let url = format!("{:}/indexes/{:}/documents", server, index_name);
-
-    let content = file.clone();
-
-    tokio::spawn(async move {
-        info!("feed async: {:}", &url);
-        let cloned_url = url.clone();
-        let client = reqwest::Client::new();
-        match async move {
-            let res = client.post(url).json(&content).send().await?.text().await?;
-            Ok::<_, Box<dyn std::error::Error + Send + Sync>>(res)
-        }
-        .await
-        {
-            Ok(res) => info!("feed to {:?} with response: {:?}", &cloned_url, res),
-            Err(er) => error!("feed error to {:?} with error: {}", &cloned_url, er),
-        };
     });
 
     Ok(())

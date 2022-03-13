@@ -94,7 +94,7 @@ pub fn update_entry_properties(
     entry_type: &str,
     index_id: usize,
     update_map: &HashMap<String, String>,
-) -> Result<EntryFile, Box<dyn Error>> {
+) -> Result<(PathBuf, EntryFile), Box<dyn Error>> {
     let entry_path = find_entry_path(type_path, entry_type, index_id)?;
     let string = fs::read_to_string(&entry_path)?;
     let mut entry_file = EntryFile::from(string.as_str(), index_id)?;
@@ -115,7 +115,7 @@ pub fn update_entry_properties(
 
     fs::write(&entry_path, entry_file.to_string())?;
 
-    Ok(entry_file)
+    Ok((entry_path, entry_file))
 }
 
 #[cfg(test)]
