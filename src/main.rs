@@ -66,10 +66,9 @@ pub struct StaticDump {
 pub struct WebServer {
     #[clap(short, long, default_value = ".quake.yaml")]
     config: String,
-
-    #[clap(short, long)]
-    /// auto watch entry change, and feed to search engine
-    watch: bool,
+    // #[clap(short, long)]
+    // /// auto watch entry change, and feed to search engine
+    // watch: bool,
 }
 
 #[derive(Parser)]
@@ -148,21 +147,22 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
 }
 
 async fn run_server(server: WebServer, config: QuakeConfig) {
-    let workspace = config.workspace;
-    let search_url = config.search_url;
+    // let workspace = config.workspace;
+    // let search_url = config.search_url;
 
-    if server.watch {
-        block_on(async {
-            let (_s, _g) = future::join(
-                quake_rocket().launch(),
-                entry_watcher::async_watch(workspace, search_url),
-            )
-            .await;
-        });
-    } else {
-        #[allow(clippy::async_yields_async)]
-        let _ = block_on(async { quake_rocket().launch() }).await;
-    }
+    // if server.watch {
+    //     block_on(async {
+    //         let (_s, _g) = future::join(
+    //             quake_rocket().launch(),
+    //             entry_watcher::async_watch(workspace, search_url),
+    //         )
+    //         .await;
+    //     });
+    // } else {
+    // }
+
+    #[allow(clippy::async_yields_async)]
+    let _ = block_on(async { quake_rocket().launch() }).await;
 }
 
 fn setup_log() {
