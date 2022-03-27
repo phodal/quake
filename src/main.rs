@@ -5,9 +5,6 @@ use std::{env, fs};
 
 use clap::Parser;
 use futures::executor::block_on;
-use futures::future;
-use helper::entry_watcher;
-use static_dump::static_dump;
 use tracing::{debug, error};
 
 use quake_core::entry::entry_defines::EntryDefines;
@@ -15,6 +12,7 @@ use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::quake::QuakeActionNode;
 use quake_core::QuakeConfig;
 use quake_tui::tui_main_loop;
+use static_dump::static_dump;
 
 use crate::server::quake_rocket;
 use crate::usecases::generate_usecases::generate_by_flow;
@@ -146,7 +144,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-async fn run_server(server: WebServer, config: QuakeConfig) {
+async fn run_server(_server: WebServer, _config: QuakeConfig) {
     // let workspace = config.workspace;
     // let search_url = config.search_url;
 
@@ -356,10 +354,8 @@ mod tests {
             .await
             .unwrap();
 
-            let paths = EntryPaths::init(
-                &format!("{:}", PathBuf::from(test_dir).display()),
-                &"water".to_string(),
-            );
+            let paths =
+                EntryPaths::init(&format!("{:}", PathBuf::from(test_dir).display()), "water");
 
             let content = fs::read_to_string(paths.entry_path.join("0001-samples.md")).unwrap();
             let file = EntryFile::from(content.as_str(), 1).unwrap();
