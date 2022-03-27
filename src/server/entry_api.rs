@@ -150,7 +150,7 @@ mod test {
         assert!(res.contains("\"id\":1"));
         assert!(res.contains("\"title\":\"demo\""));
 
-        let paths = EntryPaths::init(&"examples".to_string(), &"test_quake".to_string());
+        let paths = EntryPaths::init("examples", "test_quake");
         fs::remove_dir_all(paths.entry_path).unwrap();
     }
 

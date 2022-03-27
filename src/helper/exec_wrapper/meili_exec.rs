@@ -116,6 +116,6 @@ mod tests {
     #[ignore]
     fn test_feed_settings() {
         let define = &get_define();
-        let _ = feed_settings(&"http://127.0.0.1:7700".to_string(), define);
+        let _ = feed_settings("http://127.0.0.1:7700", define);
     }
 }

@@ -392,17 +392,17 @@ mod tests {
     #[ignore]
     #[test]
     fn placeholder() {
-        let paths = EntryPaths::init(&"examples".to_string(), &"notes".to_string());
+        let paths = EntryPaths::init("examples", "notes");
         sync_in_path(&paths).unwrap();
 
-        let paths = EntryPaths::init(&"examples".to_string(), &"blog".to_string());
+        let paths = EntryPaths::init("examples", "blog");
         sync_in_path(&paths).unwrap();
     }
 
     #[ignore]
     #[test]
     fn sync_todo() {
-        let paths = EntryPaths::init(&"examples".to_string(), &"microsoft_todo".to_string());
+        let paths = EntryPaths::init("examples", "microsoft_todo");
         sync_in_path(&paths).unwrap();
     }
 }
