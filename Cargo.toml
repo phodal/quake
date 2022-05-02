@@ -20,7 +20,7 @@ quake_tui = { path = "quake_tui", version = "0.5.0" }
 quake_processor = { path = "libs/quake_processor", version = "0.4.0" }
 
 # cli parser
-clap = { version = "3.0.0-beta.5", features = ["derive"] }
+clap = { version = "3.1.14", features = ["derive"] }
 config = { version = "0.11", features = ["yaml"] }
 
 regex = "1.0"
