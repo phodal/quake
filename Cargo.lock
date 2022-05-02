@@ -2025,7 +2025,7 @@ dependencies = [
 
 [[package]]
 name = "quake"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "async-std",
  "chrono",
