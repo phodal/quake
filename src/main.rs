@@ -206,6 +206,7 @@ async fn init_projects(config: Init) -> Result<(), Box<dyn Error>> {
         editor: "".to_string(),
         search_url: "http://127.0.0.1:7700".to_string(),
         server_location: "web".to_string(),
+        // debug_level: "normal".to_string(),
         auto_feed: false,
         port: 8000,
     };

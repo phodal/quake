@@ -3,6 +3,7 @@ search_url: "http://127.0.0.1:7700"
 server_location: "quake_webapp"
 editor: vim
 port: 9999
+app_debug_level: debug
 
 # aut feed changes
 auto_feed: true

@@ -194,6 +194,7 @@ mod tests {
             workspace: "examples".to_string(),
             search_url: "".to_string(),
             server_location: "".to_string(),
+            // debug_level: "normal".to_string(),
             auto_feed: false,
             port: 0,
         };
