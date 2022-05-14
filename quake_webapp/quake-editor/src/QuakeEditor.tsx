@@ -88,22 +88,38 @@ function QuakeEditor(props: Props) {
     trySaveEntry()
   }, autosaveInterval)
 
+  function getExtension(path: String) {
+    var basename = path.split(/[\\/]/).pop() || path,  // extract file name from full path ...
+      // (supports `\\` and `/` separators)
+      pos = basename.lastIndexOf(".");       // get last position of `.`
+
+    if (basename === "" || pos < 1)            // if file name is empty or ...
+      return "";                             //  `.` not found (-1) or comes first (0)
+
+    return basename.slice(pos + 1);            // extract extension ignoring `.`
+  }
+
+  function fileNameByExt(filename: string) {
+    return new Date().toISOString() + "." + getExtension(filename)
+  }
+
   // custom editor: https://github.com/outline/outline/blob/main/app/scenes/Document/components/Editor.tsx
   // https://github.com/outline/outline/blob/main/app/components/Editor.tsx
   const onUploadImage = React.useCallback(
     async (file: File) => {
       let currentType = entryType;
+      let fileName = file.name;
+
       if (!entryType) {
         currentType = (window as any).Quake.entry.type;
       }
       const formData = new FormData();
-      let fileName = file.name;
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'blob' does not exist on type 'File | Blo... Remove this comment to see the full error message
       if (file.blob) {
         // @ts-expect-error ts-migrate(2339) FIXME: Property 'file' does not exist on type 'File | Blo... Remove this comment to see the full error message
         formData.append("file", file.file);
       } else {
-        fileName = new Date().toISOString() + ".png"
+        fileName = fileNameByExt(fileName);
         formData.append("file", file);
       }
 
