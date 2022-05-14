@@ -145,20 +145,6 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
 }
 
 async fn run_server(_server: WebServer, _config: QuakeConfig) {
-    // let workspace = config.workspace;
-    // let search_url = config.search_url;
-
-    // if server.watch {
-    //     block_on(async {
-    //         let (_s, _g) = future::join(
-    //             quake_rocket().launch(),
-    //             entry_watcher::async_watch(workspace, search_url),
-    //         )
-    //         .await;
-    //     });
-    // } else {
-    // }
-
     #[allow(clippy::async_yields_async)]
     let _ = block_on(async { quake_rocket().launch() }).await;
 }
