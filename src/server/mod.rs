@@ -15,7 +15,6 @@ use quake_core::QuakeConfig;
 
 mod action_api;
 mod entry_api;
-mod helper;
 mod layout_api;
 mod processor_api;
 mod reference_api;
