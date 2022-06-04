@@ -47,11 +47,11 @@ mod tests {
         let processor = ProcessEngine::engine("pdf");
         match processor.content(&file) {
             Err(err) => {
-                println!("{:?}", err);
+                info!("{:?}", err);
                 panic!();
             }
             Ok(some) => {
-                println!("{:?}", some);
+                info!("{:?}", some);
             }
         }
     }

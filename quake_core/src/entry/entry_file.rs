@@ -140,11 +140,7 @@ impl EntryFile {
         for document in serde_yaml::Deserializer::from_str(&front_matter) {
             let value = match Value::deserialize(document) {
                 Ok(value) => Ok(value),
-                Err(err) => {
-                    println!("{}", front_matter);
-                    println!("{:?}", err);
-                    Err(err)
-                }
+                Err(err) => Err(err),
             }?;
             if let Value::Mapping(mapping) = value {
                 for (v_key, v_value) in mapping {

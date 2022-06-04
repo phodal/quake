@@ -80,6 +80,7 @@ zip = "0.5"
 [workspace]
 members = [
     'quake_core',
+    'quake_log',
     'quake_gui',
     'quake_tui',
     'quake_wasm',

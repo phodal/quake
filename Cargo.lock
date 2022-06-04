@@ -2262,6 +2262,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "quake_log"
+version = "0.5.0"
+dependencies = [
+ "serde 1.0.130",
+ "serde_json",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "quake_microsoft_todo"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"

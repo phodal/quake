@@ -142,7 +142,6 @@ mod tests {
 
         let content = fs::read_to_string(path).unwrap();
         let flows: Vec<Transflow> = serde_yaml::from_str(&*content).unwrap();
-        println!("{:?}", flows);
     }
 
     #[test]
@@ -151,8 +150,6 @@ mod tests {
         let flow = QuakeTransflowNode::from_text(define).unwrap();
 
         let flow = Transflow::from(entry_defines(), flow);
-
-        println!("{:}", serde_yaml::to_string(&flow).unwrap());
 
         assert_eq!(2, flow.defines_map.unwrap().len());
         assert_eq!(1, flow.flows.len());

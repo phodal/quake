@@ -1,0 +1,22 @@
+[package]
+name = "quake_log"
+version = "0.5.0"
+edition = "2021"
+authors = ["Inherd Group <quake@inherd.org>"]
+description = """
+Simple knowledge management tool for geek.
+"""
+documentation = "https://github.com/phodal/quake"
+repository = "https://github.com/phodal/quake"
+readme = "README.md"
+license = "MIT"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+wasm-bindgen = "0.2"
+
+serde = "1.0"
+serde_json = "1.0"
+
+[lib]
+crate-type = ["cdylib"]

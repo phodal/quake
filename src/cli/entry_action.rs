@@ -127,7 +127,7 @@ fn show_entry_detail(expr: &QuakeActionNode, paths: &EntryPaths) -> Result<(), B
 
     highlight_content(format!("{:?}", file.properties).as_str(), "json");
 
-    println!("{:}", file.content);
+    info!("{:}", file.content);
 
     Ok(())
 }

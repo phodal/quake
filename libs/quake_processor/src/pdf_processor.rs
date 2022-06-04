@@ -19,8 +19,6 @@ impl Processor for PdfProcessor {
         let mut string = String::new();
         string.push_str("<quake-br>");
 
-        println!("processing file: {:}", path.display());
-
         let extract = panic::catch_unwind(|| extract_text(path));
         let text = match extract {
             Ok(t) => match t {

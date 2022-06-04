@@ -5,7 +5,7 @@ use std::{env, fs};
 
 use clap::Parser;
 use futures::executor::block_on;
-use tracing::{debug, error};
+use tracing::{debug, error, info};
 
 use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::entry::entry_paths::EntryPaths;
@@ -246,15 +246,15 @@ fn unzip_all(reader: Cursor<Vec<u8>>, workspace: &Path) -> Result<(), Box<dyn Er
         {
             let comment = file.comment();
             if !comment.is_empty() {
-                println!("Plugin {} comment: {}", i, comment);
+                debug!("Plugin {} comment: {}", i, comment);
             }
         }
 
         if (&*file.name()).ends_with('/') {
-            println!("File {} extracted to \"{}\"", i, out_path.display());
+            info!("File {} extracted to \"{}\"", i, out_path.display());
             fs::create_dir_all(&out_path)?;
         } else {
-            println!(
+            info!(
                 "File {} extracted to \"{}\" ({} bytes)",
                 i,
                 out_path.display(),
