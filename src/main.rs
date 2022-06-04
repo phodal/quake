@@ -151,7 +151,7 @@ async fn run_server(_server: WebServer, _config: QuakeConfig) {
 
 fn setup_log() {
     use tracing_subscriber::prelude::*;
-    let filter_layer = tracing_subscriber::filter::LevelFilter::DEBUG;
+    let filter_layer = tracing_subscriber::filter::LevelFilter::WARN;
     let fmt_layer = tracing_subscriber::fmt::layer().with_target(true);
 
     tracing_subscriber::registry()

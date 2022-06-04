@@ -78,7 +78,7 @@ will become:
     └── entry-node-info.yaml  # entry node infos
 ```
 
-### Markdown ecosystem: Frontmatter with markdown
+### Markdown ecosystem: FrontMatter with markdown
 
 a entry file will a front matter for meta-info, others will be `content`
 
@@ -172,4 +172,4 @@ License
 
 markdown parser based on: [https://github.com/zoni/obsidian-export](https://github.com/zoni/obsidian-export) with Apache and MIT
 
-@ 2021 This code is distributed under the MIT license. See `LICENSE` in this directory.
+@ 2021~2022 This code is distributed under the MIT license. See `LICENSE` in this directory.

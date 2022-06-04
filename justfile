@@ -18,6 +18,9 @@ release:
 coverage:
     cargo llvm-cov --all-features --workspace --html
 
+server:
+    cargo run server
+
 pages:
     cargo run -- static
     cargo build -p quake_wasm
