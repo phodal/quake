@@ -132,7 +132,7 @@ function QuakeEditor(props: Props) {
 
       return uploadResponse.text();
     },
-    [entryType]
+    [entryType, fileNameByExt]
   );
 
   return (
