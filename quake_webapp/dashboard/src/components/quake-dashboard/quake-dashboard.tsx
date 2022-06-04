@@ -84,7 +84,6 @@ export class QuakeDashboard {
 
   @Listen('quake:action', {target: 'window'})
   handleScroll(ev) {
-    console.log(ev.detail)
     this.query = ev.detail
     this.processActionString(this)
   }
@@ -426,8 +425,9 @@ export class QuakeDashboard {
 
   private renderFlowByKey(key: string) {
     let type = this.selectedEntry.type;
+    let display = this.selectedEntry.display;
     return <ion-col>
-      <ion-text color="secondary">{key}</ion-text>
+      <ion-text color="secondary">{display}</ion-text>
       <ion-list>
         {this.selectedFlowResult.get(key).map((item: any) =>
           <entry-card
@@ -442,7 +442,7 @@ export class QuakeDashboard {
 
   private renderSearchCol(info: EntryInfo) {
     return <ion-col>
-      <ion-text color="secondary">{info.type}</ion-text>
+      <ion-text color="secondary">{info.display}</ion-text>
       {this.list[info.type] ? this.list[info.type].map((item: any) =>
         <ion-list>{this.renderCard(item, info.type)}</ion-list>
       ) : null

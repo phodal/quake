@@ -1,7 +1,7 @@
 ---
 entries:
   - type: blog
-    display: ""
+    display: "Blog"
     properties:
       - keywords: String
       - title: Title
@@ -14,7 +14,7 @@ entries:
       - updated_date: Date
     actions: ~
   - type: bookmark
-    display: ""
+    display: "Bookmark"
     properties:
       - title: Title
       - created_date: Date
@@ -23,12 +23,12 @@ entries:
       - author: String
     actions: ~
   - type: code
-    display: ""
+    display: "Code"
     properties:
       - title: Title
     actions: ~
   - type: microsoft_todo
-    display: ""
+    display: "Todo"
     properties:
       - category: String
       - title: Title
@@ -41,7 +41,7 @@ entries:
       - status: String
     actions: ~
   - type: notes
-    display: ""
+    display: "Notes"
     properties:
       - title: Title
       - description: String
@@ -51,7 +51,7 @@ entries:
       - author: String
     actions: ~
   - type: todo
-    display: ""
+    display: "Todo"
     properties:
       - title: Title
       - author: String
@@ -60,7 +60,7 @@ entries:
       - updated_date: Date
     actions: ~
   - type: yiki
-    display: ""
+    display: "Yiki"
     properties:
       - title: Title
       - author: String
@@ -136,7 +136,7 @@ entries:
         items: ['Low', 'Medium', 'High']
     actions: ~
   - type: quake_book
-    display: ""
+    display: "Book"
     properties:
       - title: Title
       - created_date: Date
@@ -145,14 +145,14 @@ entries:
       - author: String
     actions: ~
   - type: testcases
-    display: ""
+    display: "TestCases"
     properties:
       - title: Title
       - created_date: Date
       - updated_date: Date
     actions: ~
   - type: papers
-    display: ""
+    display: "Papers"
     custom_path: "../../papers"
     processors:
       file_engines: ['pdf', 'md']
