@@ -46,13 +46,10 @@ mod tests {
         let file = PathBuf::from("_fixtures").join("Test_PDF.pdf");
         let processor = ProcessEngine::engine("pdf");
         match processor.content(&file) {
-            Err(err) => {
-                info!("{:?}", err);
+            Err(_err) => {
                 panic!();
             }
-            Ok(some) => {
-                info!("{:?}", some);
-            }
+            Ok(_some) => {}
         }
     }
 }

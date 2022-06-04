@@ -1,3 +1,3 @@
 trait Logger {
-    fn info(str: String) {}
+    fn info(_str: String) {}
 }

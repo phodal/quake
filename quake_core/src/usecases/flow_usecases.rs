@@ -57,6 +57,6 @@ mod tests {
     #[test]
     fn dump_flows_test() {
         let quake_path = PathBuf::from("..").join("examples").join("");
-        let str = dump_flows(quake_path).unwrap();
+        let _str = dump_flows(quake_path).unwrap();
     }
 }
