@@ -293,7 +293,7 @@ mod tests {
     use quake_core::entry::entry_paths::EntryPaths;
     use quake_core::usecases::entry_usecases::sync_in_path;
 
-    use crate::{process_cmd, Command, Init, Opts, SubCommand};
+    use crate::{init_projects, process_cmd, Command, Init, Opts, SubCommand};
 
     #[test]
     fn should_throw_not_exist_cmds() {
@@ -391,5 +391,18 @@ mod tests {
     fn sync_todo() {
         let paths = EntryPaths::init("examples", "microsoft_todo");
         sync_in_path(&paths).unwrap();
+    }
+
+    #[ignore]
+    #[test]
+    fn test_init() {
+        task::block_on(async {
+            init_projects(Init {
+                path: "sample".to_string(),
+                download: true,
+            })
+            .await
+            .unwrap()
+        })
     }
 }

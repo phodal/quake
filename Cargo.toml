@@ -67,7 +67,7 @@ crossbeam-channel = "0.4.0"
 notify = "5.0.0-pre.15"
 
 # for testing
-async-std = "1.10.0"
+async-std = { version = "1", features = ["attributes", "tokio1"] }
 
 # logger
 tracing = "0.1"
