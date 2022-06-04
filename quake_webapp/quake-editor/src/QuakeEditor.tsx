@@ -1,4 +1,4 @@
-import {lighten} from "polished";
+import { lighten } from "polished";
 import React from 'react';
 import Editor from "rich-markdown-editor";
 import styled from "styled-components";
@@ -99,10 +99,6 @@ function QuakeEditor(props: Props) {
     return basename.slice(pos + 1);            // extract extension ignoring `.`
   }
 
-  function fileNameByExt(filename: string) {
-    return new Date().toISOString() + "." + getExtension(filename)
-  }
-
   // custom editor: https://github.com/outline/outline/blob/main/app/scenes/Document/components/Editor.tsx
   // https://github.com/outline/outline/blob/main/app/components/Editor.tsx
   const onUploadImage = React.useCallback(
@@ -119,7 +115,7 @@ function QuakeEditor(props: Props) {
         // @ts-expect-error ts-migrate(2339) FIXME: Property 'file' does not exist on type 'File | Blo... Remove this comment to see the full error message
         formData.append("file", file.file);
       } else {
-        fileName = fileNameByExt(fileName);
+        fileName = new Date().toISOString() + "." + getExtension(fileName);
         formData.append("file", file);
       }
 
@@ -132,7 +128,7 @@ function QuakeEditor(props: Props) {
 
       return uploadResponse.text();
     },
-    [entryType, fileNameByExt]
+    [entryType]
   );
 
   return (
