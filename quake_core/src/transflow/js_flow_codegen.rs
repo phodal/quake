@@ -67,7 +67,6 @@ impl JsFlowCodegen {
 
             // from normal map
             if flow.map.is_some() {
-                println!("{:?}", &flow.map);
                 let string = Self::gen_flow_map(&flow, element);
                 func.push_str(&*string);
             }
