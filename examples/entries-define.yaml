@@ -13,6 +13,9 @@ entries:
       - created_date: Date
       - updated_date: Date
     actions: ~
+    # todo: add quake builtin functions
+    autofuncs:
+      - gen_description
   - type: bookmark
     display: "Bookmark"
     properties:
