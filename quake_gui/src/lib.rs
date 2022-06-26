@@ -1,4 +1,5 @@
 use dioxus::prelude::*;
+use quake_core::entry::{entry_paths::EntryPaths, EntryDefines};
 use std::path::PathBuf;
 
 pub fn launch(workspace: PathBuf) {
@@ -8,15 +9,20 @@ pub fn launch(workspace: PathBuf) {
 }
 
 fn app(cx: Scope<AppProps>) -> Element {
-    cx.render(rsx!(
-        div {
-            class: "relative",
-            button {
-                class: "h-60 w-60 border-2 border-dashed absolute top-1/2 left-1/2 transform -translate-x-1/2 translate-y-1/2",
-                "Open workspace"
-            }
+    let defines = EntryDefines::from_path(&cx.props.workspace.join(EntryPaths::entries_define()));
+
+    rsx!(cx, div {
+        main {
+            defines.entries.iter().map(|define| {
+                rsx!(
+                    div {
+                        key: "{define.entry_type}",
+                        "{define.entry_type}"
+                    }
+                )
+            })
         }
-    ))
+    })
 }
 
 struct AppProps {

@@ -17,3 +17,5 @@ keywords = ["knowledge", "dashboard"]
 [dependencies]
 dioxus = { git = "https://github.com/DioxusLabs/dioxus", features = ["desktop"] }
 native-dialog = "0.6.3"
+
+quake_core = { path = "../quake_core" }
