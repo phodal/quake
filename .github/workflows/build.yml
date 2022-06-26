@@ -32,5 +32,11 @@ jobs:
           sudo apt install libx11-dev libpango1.0-dev libxkbcommon-dev libxkbcommon-x11-dev
         if: contains(matrix.os, 'ubuntu')
 
+      - name: install dioxus dependencies
+        run: |
+          sudo apt update
+          sudo apt install libwebkit2gtk-4.0-dev libayatana-appindicator3-dev
+        if: contains(matrix.os, 'ubuntu')
+
       - name: Run unit tests
         run: ${{matrix.ENV_VARS}} cargo test --all
