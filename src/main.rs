@@ -148,9 +148,7 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
             let conf = load_config(&generate.config)?;
             generate_by_flow(&generate.flow, &conf)?;
         }
-        SubCommand::Gui(gui) => {
-            launch_gui(gui.path)
-        }
+        SubCommand::Gui(gui) => launch_gui(gui.path),
     }
 
     Ok(())
