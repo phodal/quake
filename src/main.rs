@@ -11,6 +11,7 @@ use quake_core::entry::entry_defines::EntryDefines;
 use quake_core::entry::entry_paths::EntryPaths;
 use quake_core::quake::QuakeActionNode;
 use quake_core::QuakeConfig;
+use quake_gui::launch as launch_gui;
 use quake_tui::tui_main_loop;
 use static_dump::static_dump;
 
@@ -42,6 +43,8 @@ pub enum SubCommand {
     Server(WebServer),
     /// terminal UI
     Tui(Terminal),
+    /// GUI
+    Gui(Gui),
     /// dump page for web deploy
     Static(StaticDump),
     /// generate content and entry from source
@@ -103,6 +106,12 @@ pub struct Command {
     editor: String,
 }
 
+#[derive(Parser, Debug)]
+pub struct Gui {
+    #[clap(required = true, value_parser)]
+    path: PathBuf,
+}
+
 #[rocket::main]
 async fn main() {
     let opts: Opts = Opts::parse();
@@ -138,6 +147,9 @@ pub async fn process_cmd(opts: Opts) -> Result<(), Box<dyn Error>> {
         SubCommand::Generate(generate) => {
             let conf = load_config(&generate.config)?;
             generate_by_flow(&generate.flow, &conf)?;
+        }
+        SubCommand::Gui(gui) => {
+            launch_gui(gui.path)
         }
     }
 
