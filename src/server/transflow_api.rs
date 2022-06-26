@@ -3,7 +3,7 @@ use std::option::Option::None;
 use std::path::PathBuf;
 
 use rocket::fs::NamedFile;
-use rocket::response::content::JavaScript;
+use rocket::response::content::RawJavaScript;
 use rocket::serde::json::Json;
 use rocket::serde::{Deserialize, Serialize};
 use rocket::State;
@@ -33,7 +33,7 @@ pub(crate) async fn translate(
     name: String,
     flow: Json<FlowRequest>,
     config: &State<QuakeConfig>,
-) -> Result<JavaScript<String>, Json<ApiError>> {
+) -> Result<RawJavaScript<String>, Json<ApiError>> {
     let format = format!("transflow {:} {{ {:} }}", name, flow.flow);
     let node = match QuakeTransflowNode::from_text(format.as_str()) {
         Ok(node) => node,
@@ -67,13 +67,13 @@ pub(crate) async fn translate(
 
     let scripts = format!("{:} \n{:}", trans.join("\n"), elements.join("\n"));
 
-    Ok(JavaScript(scripts))
+    Ok(RawJavaScript(scripts))
 }
 
 #[get("/script/gen_code.js")]
 pub(crate) async fn transflow_gen_code(
     config: &State<QuakeConfig>,
-) -> Result<JavaScript<String>, Json<ApiError>> {
+) -> Result<RawJavaScript<String>, Json<ApiError>> {
     let path = PathBuf::from(config.workspace.clone());
     let scripts = match flow_usecases::dump_flows(path) {
         Ok(scripts) => scripts,
@@ -83,7 +83,7 @@ pub(crate) async fn transflow_gen_code(
             }))
         }
     };
-    Ok(JavaScript(scripts))
+    Ok(RawJavaScript(scripts))
 }
 
 #[get("/script/custom_transfuncs.js")]
