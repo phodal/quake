@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+
 use dioxus::prelude::*;
 use quake_core::entry::{entry_paths::EntryPaths, EntryDefines};
 use std::path::PathBuf;
@@ -13,18 +15,34 @@ fn app(cx: Scope<AppProps>) -> Element {
 
     rsx!(cx, div {
         main {
-            defines.entries.iter().map(|define| {
-                rsx!(
-                    div {
-                        key: "{define.entry_type}",
-                        "{define.entry_type}"
-                    }
-                )
-            })
+            class: "grid grid-cols-3",
+            EntryList {
+                defines: defines,
+            }
         }
     })
 }
 
 struct AppProps {
     workspace: PathBuf,
+}
+
+#[derive(Props, PartialEq)]
+struct EntryListProps {
+    defines: EntryDefines,
+}
+
+fn EntryList(cx: Scope<EntryListProps>) -> Element {
+    rsx!(cx, ul {
+        class: "flex flex-col gap-y-1 col-span-1",
+        cx.props.defines.entries.iter().map(|define| {
+            rsx!(
+                li {
+                    key: "{define.entry_type}",
+                    class: "hover:bg-blue-100 rounded-lg px-2",
+                    "{define.entry_type}"
+                }
+            )
+        })
+    })
 }
