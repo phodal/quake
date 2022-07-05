@@ -52,7 +52,22 @@ struct EntryListItemProps<'a> {
 }
 
 fn EntryListItem<'a>(cx: Scope<'a, EntryListItemProps<'a>>) -> Element {
+    let api = format!(
+        "http://127.0.0.1:7700/indexes/{:}/search",
+        cx.props.define.entry_type
+    );
     rsx!(cx, li {
+        onclick: move |_event| {
+            let api = api.clone();
+            cx.spawn(async move {
+                let resp = reqwest::Client::new()
+                    .get(api)
+                    .send()
+                    .await;
+                let text = resp.unwrap().text().await.unwrap();
+                println!("{:?}", text);
+            });
+        },
         class: "hover:bg-blue-100 rounded-lg px-2",
         "{cx.props.define.entry_type}"
     })

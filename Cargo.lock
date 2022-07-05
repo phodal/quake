@@ -3306,6 +3306,7 @@ dependencies = [
  "dioxus",
  "native-dialog",
  "quake_core",
+ "reqwest",
 ]
 
 [[package]]
