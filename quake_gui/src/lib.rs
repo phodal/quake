@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
-use quake_core::entry::{entry_paths::EntryPaths, EntryDefines};
+use quake_core::entry::{entry_paths::EntryPaths, EntryDefine, EntryDefines};
 use std::path::PathBuf;
 
 pub fn launch(workspace: PathBuf) {
@@ -37,12 +37,23 @@ fn EntryList(cx: Scope<EntryListProps>) -> Element {
         class: "flex flex-col gap-y-1 col-span-1",
         cx.props.defines.entries.iter().map(|define| {
             rsx!(
-                li {
+                EntryListItem {
                     key: "{define.entry_type}",
-                    class: "hover:bg-blue-100 rounded-lg px-2",
-                    "{define.entry_type}"
+                    define: define,
                 }
             )
         })
+    })
+}
+
+#[derive(Props, PartialEq)]
+struct EntryListItemProps<'a> {
+    define: &'a EntryDefine,
+}
+
+fn EntryListItem<'a>(cx: Scope<'a, EntryListItemProps<'a>>) -> Element {
+    rsx!(cx, li {
+        class: "hover:bg-blue-100 rounded-lg px-2",
+        "{cx.props.define.entry_type}"
     })
 }
