@@ -15,6 +15,7 @@ import 'react-contexify/dist/ReactContexify.css';
 import {SimplePortFactory} from "./components/SimplePortFactory";
 import {DiamondPortModel} from "./components/base-model/DiamondPortModel";
 import { ConceptNodeFactory } from "./components/concept/ConceptNodeFactory";
+import { ConceptNodeModel } from "./components/concept/ConceptNodeModel";
 
 export type Props = {
   model: any,
@@ -32,9 +33,8 @@ function QuakeBoard(props: Props) {
     engine
       .getPortFactories()
       .registerFactory(new SimplePortFactory('diamond', (_config) => new DiamondPortModel(PortModelAlignment.LEFT)));
-
     engine.getNodeFactories().registerFactory(new DiamondNodeFactory() as any);
-    engine.getPortFactories().registerFactory(new ConceptNodeFactory() as any);
+    engine.getNodeFactories().registerFactory(new ConceptNodeFactory() as any);
 
     return engine
   }, []);
@@ -87,6 +87,10 @@ function QuakeBoard(props: Props) {
         break;
       case 'filter':
         node = new DiamondNodeModel();
+        node.getOptions().extras = {"type": "inout"};
+        break;
+      case 'concept':
+        node = new ConceptNodeModel();
         node.getOptions().extras = {"type": "inout"};
         break;
       default:

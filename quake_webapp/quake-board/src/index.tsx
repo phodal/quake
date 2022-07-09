@@ -68,6 +68,7 @@ class ReactElement extends HTMLElement {
 
   convert(attrName: any, attrValue: any) {
     let value = attrValue;
+
     if (attrValue === 'true' || attrValue === 'false')
       value = attrValue === 'true';
     else if (!isNaN(attrValue) && attrValue !== '')
