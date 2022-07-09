@@ -170,6 +170,7 @@ const StyledMenu = styled(Menu)`
   position: absolute;
 `
 
+// @ts-ignore
 const StyledCanvasWidget = styled(CanvasWidget)`
   width: 100%;
   height: 100%;
