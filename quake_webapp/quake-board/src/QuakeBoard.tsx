@@ -14,6 +14,7 @@ import {DiamondNodeModel} from "./components/base-model/DiamondNodeModel";
 import 'react-contexify/dist/ReactContexify.css';
 import {SimplePortFactory} from "./components/SimplePortFactory";
 import {DiamondPortModel} from "./components/base-model/DiamondPortModel";
+import { ConceptNodeFactory } from "./components/concept/ConceptNodeFactory";
 
 export type Props = {
   model: any,
@@ -31,7 +32,9 @@ function QuakeBoard(props: Props) {
     engine
       .getPortFactories()
       .registerFactory(new SimplePortFactory('diamond', (_config) => new DiamondPortModel(PortModelAlignment.LEFT)));
+
     engine.getNodeFactories().registerFactory(new DiamondNodeFactory() as any);
+    engine.getPortFactories().registerFactory(new ConceptNodeFactory() as any);
 
     return engine
   }, []);
@@ -115,6 +118,15 @@ function QuakeBoard(props: Props) {
     }, [engine, model, sendChange, clickPosition]
   );
 
+  const addConcept = React.useCallback(
+    ({event}) => {
+      let node = createNode(event, engine, 'concept', clickPosition);
+      model.addNode(node);
+      sendChange();
+      engine.repaintCanvas();
+    }, [engine, model, sendChange, clickPosition]
+  );
+
   const addFilter = React.useCallback(
     ({event}) => {
       let node = createNode(event, engine, 'filter', clickPosition);
@@ -150,6 +162,7 @@ function QuakeBoard(props: Props) {
     <StyledDiv onContextMenu={handleContextMenu} onDrag={onDrag}>
       <StyledCanvasWidget engine={engine}/>
       <StyledMenu id={MENU_ID}>
+        <Item onClick={addConcept}>add Concept</Item>
         <Item onClick={addSource}>add Source</Item>
         <Item onClick={addFilter}>add Filter rule</Item>
         <Item onClick={addLambda}>add Lambda</Item>

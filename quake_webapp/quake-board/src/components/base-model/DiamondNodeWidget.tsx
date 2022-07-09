@@ -36,7 +36,11 @@ export class DiamondNodeWidget extends React.Component<DiamondNodeWidgetProps> {
 					position: 'relative',
 					width: this.props.size,
 					height: this.props.size
-				}}>
+				}}
+        onDoubleClick={ () => {
+         console.log("sample")
+        }}
+      >
 				<svg
 					width={this.props.size}
 					height={this.props.size}
