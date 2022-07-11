@@ -2,7 +2,6 @@ import * as React from "react";
 import { DiagramEngine, PortWidget } from "@projectstorm/react-diagrams-core";
 import { ConceptNodeModel } from "./ConceptNodeModel";
 import styled from "styled-components";
-import { Resizable } from 'react-resizable';
 
 export interface ConceptNodeWidgetProps {
   node: ConceptNodeModel;
@@ -36,51 +35,43 @@ export class ConceptNodeWidget extends React.Component<ConceptNodeWidgetProps,
     this.setState({ toggle })
   }
 
-  onResize(event: any, { element, size, handle }: any) {
-    this.setState({ width: size.width, height: size.height });
-  }
-
   render() {
     return (
-      <Resizable height={ this.state.height } width={ this.state.width } onResize={ this.onResize.bind(this) }>
-        <StyledConceptNodeWidget style={ {
-          width: this.state.width + 'px',
-          height: this.state.height + 'px',
-          backgroundColor: this.props.node.color
-        } }>
-          <StyledPorts>
-            <PortWidget
-              engine={ this.props.engine }
-              port={ this.props.node.getPort("in") as any }
-            >
-              <StyledCirclePort/>
-            </PortWidget>
+      <StyledConceptNodeWidget style={ {
+        backgroundColor: this.props.node.color
+      } }>
+        <StyledPorts>
+          <PortWidget
+            engine={ this.props.engine }
+            port={ this.props.node.getPort("in") as any }
+          >
+            <StyledCirclePort/>
+          </PortWidget>
 
-            <PortWidget
-              engine={ this.props.engine }
-              port={ this.props.node.getPort("out") as any }
-            >
-              <StyledCirclePort/>
-            </PortWidget>
-          </StyledPorts>
+          <PortWidget
+            engine={ this.props.engine }
+            port={ this.props.node.getPort("out") as any }
+          >
+            <StyledCirclePort/>
+          </PortWidget>
+        </StyledPorts>
 
-          <StyledNodeColor>
-            <StyleInputBox
-              value={ this.state.value }
-              onChange={ (event) => {
-                this.setText(event.target.value)
-              } }
-              onKeyDown={ (event) => {
-                if (event.key === 'Enter' || event.key === 'Escape') {
-                  this.setToggle(true)
-                  event.preventDefault()
-                  event.stopPropagation()
-                }
-              } }
-            />
-          </StyledNodeColor>
-        </StyledConceptNodeWidget>
-      </Resizable>
+        <StyledNodeColor>
+          <StyleInputBox
+            value={ this.state.value }
+            onChange={ (event) => {
+              this.setText(event.target.value)
+            } }
+            onKeyDown={ (event) => {
+              if (event.key === 'Enter' || event.key === 'Escape') {
+                this.setToggle(true)
+                event.preventDefault()
+                event.stopPropagation()
+              }
+            } }
+          />
+        </StyledNodeColor>
+      </StyledConceptNodeWidget>
     );
   }
 }
