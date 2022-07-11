@@ -12,6 +12,8 @@ import {DiamondNodeFactory} from "./components/base-model/DiamondNodeFactory";
 import {DiamondNodeModel} from "./components/base-model/DiamondNodeModel";
 
 import 'react-contexify/dist/ReactContexify.css';
+import 'react-resizable/css/styles.css';
+
 import {SimplePortFactory} from "./components/SimplePortFactory";
 import {DiamondPortModel} from "./components/base-model/DiamondPortModel";
 import { ConceptNodeFactory } from "./components/concept/ConceptNodeFactory";

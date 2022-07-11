@@ -2,6 +2,7 @@ import * as React from "react";
 import { DiagramEngine, PortWidget } from "@projectstorm/react-diagrams-core";
 import { ConceptNodeModel } from "./ConceptNodeModel";
 import styled from "styled-components";
+import { Resizable } from 'react-resizable';
 
 export interface ConceptNodeWidgetProps {
   node: ConceptNodeModel;
@@ -9,8 +10,10 @@ export interface ConceptNodeWidgetProps {
 }
 
 export interface ConceptNodeWidgetState {
-  name: string,
-  toggle: boolean
+  value: string,
+  toggle: boolean,
+  width: number,
+  height: number
 }
 
 export class ConceptNodeWidget extends React.Component<ConceptNodeWidgetProps,
@@ -19,63 +22,80 @@ export class ConceptNodeWidget extends React.Component<ConceptNodeWidgetProps,
     super(props);
     this.state = {
       toggle: false,
-      name: ""
+      value: "text",
+      width: 100,
+      height: 100,
     };
   }
 
-  setName(name: string) {
-    // Changing state
-    this.setState({ name })
+  setText(value: string) {
+    this.setState({ value })
   }
 
   setToggle(toggle: boolean) {
     this.setState({ toggle })
   }
 
+  onResize(event: any, { element, size, handle }: any) {
+    this.setState({ width: size.width, height: size.height });
+  }
+
   render() {
     return (
-      <StyledConceptNodeWidget  style={ { backgroundColor: this.props.node.color } }>
-        <PortWidget
-          engine={ this.props.engine }
-          port={ this.props.node.getPort("in") as any }
-        >
-          <StyledCirclePort/>
-        </PortWidget>
+      <Resizable height={ this.state.height } width={ this.state.width } onResize={ this.onResize.bind(this) }>
+        <StyledConceptNodeWidget style={ {
+          width: this.state.width + 'px',
+          height: this.state.height + 'px',
+          backgroundColor: this.props.node.color
+        } }>
+          <StyledPorts>
+            <PortWidget
+              engine={ this.props.engine }
+              port={ this.props.node.getPort("in") as any }
+            >
+              <StyledCirclePort/>
+            </PortWidget>
 
-        <StyledNodeColor>
-          <StyleInputBox type="text" value={ this.state.name }
-                 onChange={ (event) => {
-                   this.setName(event.target.value)
-                 } }
-                 onKeyDown={ (event) => {
-                   if (event.key === 'Enter' || event.key === 'Escape') {
-                     this.setToggle(true)
-                     event.preventDefault()
-                     event.stopPropagation()
-                   }
-                 } }
-          />
-        </StyledNodeColor>
+            <PortWidget
+              engine={ this.props.engine }
+              port={ this.props.node.getPort("out") as any }
+            >
+              <StyledCirclePort/>
+            </PortWidget>
+          </StyledPorts>
 
-        <PortWidget
-          engine={ this.props.engine }
-          port={ this.props.node.getPort("out") as any }
-        >
-          <StyledCirclePort/>
-        </PortWidget>
-      </StyledConceptNodeWidget>
+          <StyledNodeColor>
+            <StyleInputBox
+              value={ this.state.value }
+              onChange={ (event) => {
+                this.setText(event.target.value)
+              } }
+              onKeyDown={ (event) => {
+                if (event.key === 'Enter' || event.key === 'Escape') {
+                  this.setToggle(true)
+                  event.preventDefault()
+                  event.stopPropagation()
+                }
+              } }
+            />
+          </StyledNodeColor>
+        </StyledConceptNodeWidget>
+      </Resizable>
     );
   }
 }
+
+const StyledPorts = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
 
 const StyledConceptNodeWidget = styled.div`
   border: solid 2px gray;
   border-radius: 5px;
   width: 100%;
-  min-height: 50px;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-direction: column;
   position: relative;
 `
 
@@ -89,20 +109,13 @@ const StyledCirclePort = styled.div`
 `
 
 const StyledNodeColor = styled.div`
-  top: 15px;
-  position: relative;
   width: 100%;
-  height: 20px;
   justify-content: center;
-  border-radius: 10px;
+  padding: 2px;
 `
 
-const StyleInputBox = styled.input`
+const StyleInputBox = styled.textarea`
   background: transparent;
+  width: 100%;
   border: none;
-
-
-  :hover {
-    border: none;
-  }
 `
