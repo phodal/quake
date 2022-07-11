@@ -9,6 +9,8 @@ export interface ConceptNodeWidgetProps {
 }
 
 export interface ConceptNodeWidgetState {
+  name: string,
+  toggle: boolean
 }
 
 export class ConceptNodeWidget extends React.Component<ConceptNodeWidgetProps,
@@ -16,8 +18,18 @@ export class ConceptNodeWidget extends React.Component<ConceptNodeWidgetProps,
   constructor(props: ConceptNodeWidgetProps) {
     super(props);
     this.state = {
-      name: "ConceptNodeWidget"
+      toggle: false,
+      name: ""
     };
+  }
+
+  setName(name: string) {
+    // Changing state
+    this.setState({ name })
+  }
+
+  setToggle(toggle: boolean) {
+    this.setState({ toggle })
   }
 
   render() {
@@ -27,20 +39,29 @@ export class ConceptNodeWidget extends React.Component<ConceptNodeWidgetProps,
           engine={ this.props.engine }
           port={ this.props.node.getPort("in") as any }
         >
-          <StyledCirclePort />
+          <StyledCirclePort/>
         </PortWidget>
 
-        <StyledNodeColor
-          style={ { backgroundColor: this.props.node.color } }
-        >
-          <p>ConceptNodeWidget</p>
+        <StyledNodeColor style={ { backgroundColor: this.props.node.color } }>
+          <input type="text" value={ this.state.name }
+                 onChange={ (event) => {
+                   this.setName(event.target.value)
+                 } }
+                 onKeyDown={ (event) => {
+                   if (event.key === 'Enter' || event.key === 'Escape') {
+                     this.setToggle(true)
+                     event.preventDefault()
+                     event.stopPropagation()
+                   }
+                 } }
+          />
         </StyledNodeColor>
 
         <PortWidget
           engine={ this.props.engine }
           port={ this.props.node.getPort("out") as any }
         >
-          <StyledCirclePort />
+          <StyledCirclePort/>
         </PortWidget>
       </StyledConceptNodeWidget>
     );
