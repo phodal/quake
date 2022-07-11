@@ -2,6 +2,7 @@ import * as React from "react";
 import { DiagramEngine, PortWidget } from "@projectstorm/react-diagrams-core";
 import { ConceptNodeModel } from "./ConceptNodeModel";
 import styled from "styled-components";
+import Editor from "./Editor";
 
 export interface ConceptNodeWidgetProps {
   node: ConceptNodeModel;
@@ -57,6 +58,7 @@ export class ConceptNodeWidget extends React.Component<ConceptNodeWidgetProps,
         </StyledPorts>
 
         <StyledNodeColor>
+          <Editor />
           <StyleInputBox
             value={ this.state.value }
             onChange={ (event) => {
