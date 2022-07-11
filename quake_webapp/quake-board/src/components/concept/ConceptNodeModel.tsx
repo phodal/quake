@@ -13,7 +13,7 @@ export class ConceptNodeModel extends NodeModel {
       ...options,
       type: "concept"
     });
-    this.color = options.color || "red";
+    this.color = options.color || "rgb(0,192,255)";
 
     // setup an in and out port
     this.addPort(

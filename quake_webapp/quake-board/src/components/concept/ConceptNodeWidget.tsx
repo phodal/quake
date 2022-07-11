@@ -34,7 +34,7 @@ export class ConceptNodeWidget extends React.Component<ConceptNodeWidgetProps,
 
   render() {
     return (
-      <StyledConceptNodeWidget>
+      <StyledConceptNodeWidget  style={ { backgroundColor: this.props.node.color } }>
         <PortWidget
           engine={ this.props.engine }
           port={ this.props.node.getPort("in") as any }
@@ -42,8 +42,8 @@ export class ConceptNodeWidget extends React.Component<ConceptNodeWidgetProps,
           <StyledCirclePort/>
         </PortWidget>
 
-        <StyledNodeColor style={ { backgroundColor: this.props.node.color } }>
-          <input type="text" value={ this.state.name }
+        <StyledNodeColor>
+          <StyleInputBox type="text" value={ this.state.name }
                  onChange={ (event) => {
                    this.setName(event.target.value)
                  } }
@@ -84,7 +84,7 @@ const StyledCirclePort = styled.div`
   height: 12px;
   margin: 2px;
   border-radius: 4px;
-  background: darkgray;
+  background: greenyellow;
   cursor: pointer;
 `
 
@@ -95,4 +95,14 @@ const StyledNodeColor = styled.div`
   height: 20px;
   justify-content: center;
   border-radius: 10px;
+`
+
+const StyleInputBox = styled.input`
+  background: transparent;
+  border: none;
+
+
+  :hover {
+    border: none;
+  }
 `
