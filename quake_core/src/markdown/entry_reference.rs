@@ -48,7 +48,7 @@ impl PageReference {
     }
 }
 
-impl<'a> fmt::Display for PageReference {
+impl fmt::Display for PageReference {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let label = self
             .label
