@@ -50,10 +50,16 @@ export class ConceptNodeWidget extends React.Component<ConceptNodeWidgetProps,
         </StyledPorts>
 
         <StyledNodeColor>
-          <Editor />
+          <Editor  onChange={this.onChange}/>
         </StyledNodeColor>
       </StyledConceptNodeWidget>
     );
+  }
+
+  private onChange() {
+    this.setState({
+      value: "text"
+    });
   }
 }
 
