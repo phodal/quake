@@ -28,14 +28,6 @@ export class ConceptNodeWidget extends React.Component<ConceptNodeWidgetProps,
     };
   }
 
-  setText(value: string) {
-    this.setState({ value })
-  }
-
-  setToggle(toggle: boolean) {
-    this.setState({ toggle })
-  }
-
   render() {
     return (
       <StyledConceptNodeWidget style={ {
@@ -59,19 +51,6 @@ export class ConceptNodeWidget extends React.Component<ConceptNodeWidgetProps,
 
         <StyledNodeColor>
           <Editor />
-          <StyleInputBox
-            value={ this.state.value }
-            onChange={ (event) => {
-              this.setText(event.target.value)
-            } }
-            onKeyDown={ (event) => {
-              if (event.key === 'Enter' || event.key === 'Escape') {
-                this.setToggle(true)
-                event.preventDefault()
-                event.stopPropagation()
-              }
-            } }
-          />
         </StyledNodeColor>
       </StyledConceptNodeWidget>
     );
@@ -105,10 +84,4 @@ const StyledNodeColor = styled.div`
   width: 100%;
   justify-content: center;
   padding: 2px;
-`
-
-const StyleInputBox = styled.textarea`
-  background: transparent;
-  width: 100%;
-  border: none;
 `
