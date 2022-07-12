@@ -40,7 +40,7 @@ pub(crate) async fn create_entry(
     let workspace = config.workspace.to_string();
     return match entry_usecases::create_entry(&workspace, entry_type, text) {
         Ok((path, file)) => {
-            let _ = feed_entry(&config.search_url, entry_type, &path, &config.workspace);
+            feed_entry(&config.search_url, entry_type, &path, &config.workspace);
             Ok(Json(file))
         }
         Err(err) => Err(NotFound(Json(ApiError {
@@ -96,7 +96,7 @@ pub(crate) async fn update_entry(
 
     return match entry_usecases::update_entry_properties(path, entry_type, id, &entry.properties) {
         Ok((path, file)) => {
-            let _ = feed_entry(&config.search_url, entry_type, &path, &config.workspace);
+            feed_entry(&config.search_url, entry_type, &path, &config.workspace);
             Ok(Json(file))
         }
         Err(err) => Err(NotFound(Json(ApiError {
