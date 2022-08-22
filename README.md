@@ -14,6 +14,7 @@ Quake is a knowledge management meta-framework for geeks. It can:
 - construct a knowledge network system. customized markdown link
 - fleeting inspiration.support quick start (CLI, TUI, Web, GUI) and global search
 - freely present the canvas. DSL and free Sketchpad
+- graph engine with [feakin](https://github.com/feakin)
 
 Examples：
 
