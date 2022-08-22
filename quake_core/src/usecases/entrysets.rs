@@ -59,7 +59,7 @@ impl Entrysets {
         wtr.write_record(&header).unwrap();
 
         for column in &body {
-            if let Err(err) = wtr.write_record(&*column) {
+            if let Err(err) = wtr.write_record(column) {
                 return Err(Box::new(err));
             };
         }
