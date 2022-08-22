@@ -11,7 +11,7 @@ lazy_static! {
     .unwrap();
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Deserialize, Debug, PartialEq, Eq, Clone)]
 pub struct QuakeChange {
     pub from: String,
     pub to: String,

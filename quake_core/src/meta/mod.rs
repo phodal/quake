@@ -5,7 +5,7 @@ pub use meta_property::MetaProperty;
 pub mod meta_property;
 pub mod quake_change;
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Default)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Default)]
 pub struct Author {
     name: String,
     email: String,

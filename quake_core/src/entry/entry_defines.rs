@@ -3,7 +3,7 @@ use std::path::Path;
 
 use crate::entry::EntryDefine;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Default)]
 pub struct EntryDefines {
     pub entries: Vec<EntryDefine>,
 }

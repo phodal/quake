@@ -2,7 +2,7 @@ use std::fmt::{Display, Formatter};
 
 use crate::meta::Author;
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub enum MetaProperty {
     Enum(Vec<String>),
     /// title of content, will be default
@@ -66,7 +66,7 @@ impl Display for MetaProperty {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub enum MetaType {
     Summary,
     Note,

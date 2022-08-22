@@ -260,7 +260,7 @@ fn unzip_all(reader: Cursor<Vec<u8>>, workspace: &Path) -> Result<(), Box<dyn Er
             }
         }
 
-        if (&*file.name()).ends_with('/') {
+        if (file.name()).ends_with('/') {
             info!("File {} extracted to \"{}\"", i, out_path.display());
             fs::create_dir_all(&out_path)?;
         } else {

@@ -16,7 +16,7 @@ use crate::meta::{EntryDefineProperties, MetaProperty};
 /// - `states`: such as **filterable** condition
 /// - `component`: display from source
 ///
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone, Default)]
 pub struct EntryDefine {
     #[serde(rename = "type")]
     pub entry_type: String,
@@ -39,7 +39,7 @@ pub struct EntryDefine {
 }
 
 /// process file for file content
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone)]
 pub struct FileProcessor {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_engines: Option<Vec<String>>,
@@ -47,13 +47,13 @@ pub struct FileProcessor {
     pub file_flows: Option<Vec<String>>,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone)]
 pub struct FlowProperty {
     pub property: String,
     pub items: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone)]
 pub struct EntryState {
     pub property: String,
     pub items: Vec<String>,

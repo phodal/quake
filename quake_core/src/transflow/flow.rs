@@ -5,7 +5,7 @@ use crate::parser::quake::{QuakeTransflowNode, Route};
 use crate::quake::MapStream;
 
 /// Transflow defines the data process flow
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Default)]
 pub struct Transflow {
     pub name: String,
     pub display: String,
@@ -70,14 +70,14 @@ impl Transflow {
     }
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone)]
 pub struct Mapping {
     pub entry: String,
     pub source: Vec<String>,
     pub target: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug)]
 pub struct Flow {
     pub name: String,
     pub from: Vec<String>,

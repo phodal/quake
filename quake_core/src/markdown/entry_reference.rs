@@ -8,7 +8,7 @@ lazy_static! {
 }
 
 /// one markdown file link to other markdown file
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Default, Clone)]
 pub struct PageReference {
     pub(crate) entry_type: String,
     pub(crate) entry_id: String,

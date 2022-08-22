@@ -12,15 +12,14 @@ use crate::usecases::suggest_usecases::ActionSuggest;
 #[get("/query?<input>")]
 pub fn parse_query(input: String) -> String {
     let result = QuakeActionNode::from_text(input.as_str());
-    let output = match result {
+
+    match result {
         Ok(value) => serde_json::to_string(&value).unwrap(),
         Err(err) => serde_json::to_string(&ApiError {
             msg: format!("{:?}", err),
         })
         .unwrap(),
-    };
-
-    output
+    }
 }
 
 #[get("/suggest")]

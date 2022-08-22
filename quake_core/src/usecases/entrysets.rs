@@ -12,7 +12,7 @@ use crate::entry::entry_by_path::entry_file_by_path;
 use crate::entry::entry_file::EntryFile;
 use crate::entry::EntryDefine;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Default)]
 pub struct CsvTable {
     pub header: Vec<String>,
     pub body: Vec<Vec<String>>,

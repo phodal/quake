@@ -13,7 +13,7 @@ use quake_core::markdown::md_processor::MdProcessor;
 use quake_core::usecases::entrysets::Entrysets;
 
 /// one entry type's refs
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Default, Clone)]
 pub struct EntryReference {
     pub source_type: String,
     pub source_id: String,

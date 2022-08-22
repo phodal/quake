@@ -23,7 +23,7 @@ pub fn create_suggest(workspace: &str) -> ActionSuggest {
     suggest
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Default)]
 pub struct ActionSuggest {
     pub entries: Vec<EntryDefine>,
     pub actions: Vec<String>,

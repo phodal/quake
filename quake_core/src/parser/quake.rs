@@ -47,21 +47,21 @@ impl QuakeTransflowNode {
     }
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Eq, Deserialize, Clone)]
 pub struct RouteSource {
     pub url: String,
     /// GET, POST
     pub method: String,
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Eq, Deserialize, Clone)]
 pub enum RouteTarget {
     Empty,
     Component(String),
     Temp(String),
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
+#[derive(Debug, Serialize, PartialEq, Eq, Deserialize, Clone, Default)]
 pub struct Route {
     pub name: String,
     pub from: Vec<String>,
@@ -84,7 +84,7 @@ impl Route {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Clone, Default)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Default)]
 pub struct MapStream {
     pub source_type: String,
     pub source_prop: String,
@@ -131,7 +131,7 @@ impl Display for MapStream {
     }
 }
 
-#[derive(Debug, Deserialize, PartialEq, Clone, Default)]
+#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Default)]
 pub struct MapOperator {
     pub operator: String,
     pub params: Vec<ParamType>,
@@ -180,7 +180,7 @@ impl MapOperator {
     }
 }
 
-#[derive(Debug, Serialize, PartialEq, Clone)]
+#[derive(Debug, Serialize, PartialEq, Eq, Clone)]
 pub enum ParamType {
     String(String),
     Number(usize),

@@ -3,7 +3,7 @@ use std::path::Path;
 
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Default)]
 pub struct EntryNodeInfo {
     pub index: usize,
 }

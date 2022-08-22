@@ -7,7 +7,7 @@ use tui::widgets::{Block, Borders, List, ListItem, Paragraph, StatefulWidget, Wi
 
 use crate::app::AppState;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum MainWidget {
     Home,
     EntryTypes(Vec<EntryDefine>),

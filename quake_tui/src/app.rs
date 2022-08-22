@@ -243,7 +243,7 @@ impl Default for AppState {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Mode {
     Command,
     Normal,

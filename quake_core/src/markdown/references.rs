@@ -24,7 +24,7 @@
 // IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 /// RefParserState enumerates all the possible parsing states [RefParser] may enter.
 pub enum RefParserState {
     NoState,

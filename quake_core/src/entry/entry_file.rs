@@ -18,7 +18,7 @@ lazy_static! {
     static ref ENTRY_FILE: Regex = Regex::new(r#"(?P<index>\d{4})-(?P<name>.*).md"#).unwrap();
 }
 
-#[derive(Deserialize, PartialEq, Debug, Clone)]
+#[derive(Deserialize, PartialEq, Eq, Debug, Clone)]
 pub struct EntryFile {
     pub id: usize,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -68,7 +68,7 @@ impl Default for EntryFile {
     }
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone)]
 pub struct EntryFileChange {
     pub quake_change: Vec<QuakeChange>,
 }
@@ -108,7 +108,7 @@ impl EntryFile {
     }
 
     pub fn is_match(file_name: &str) -> bool {
-        ENTRY_FILE.is_match(&*file_name)
+        ENTRY_FILE.is_match(file_name)
     }
 
     pub fn id_from_name(file_name: &str) -> Result<usize, Box<dyn Error>> {

@@ -18,7 +18,7 @@ pub fn filter_element_define(defines: &[ElementDefine], key: &str) -> Option<Ele
     }
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Default, Clone)]
 pub struct ElementDefine {
     /// element id, such as `<quake-dashboard>`
     pub name: String,
@@ -80,7 +80,7 @@ impl ElementDefine {
     }
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone)]
 pub struct Attribute {
     #[serde(rename = "type")]
     pub typ: Option<String>,
@@ -99,7 +99,7 @@ pub enum AttributeType {
 
 pub type EventValue = Attribute;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone)]
 pub struct EventListener {
     pub event_name: String,
     /// to get `event.detail`
