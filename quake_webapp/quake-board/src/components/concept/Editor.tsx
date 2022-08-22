@@ -8,22 +8,22 @@ export interface EditorProps {
 
 const Editor = (props: EditorProps) => {
   const [value, setValue] = useState("text");
-  const [editable, setEditable] = useState(false);
+  // const [editable, setEditable] = useState(false);
 
   const onChange = useCallback((event) => {
     setValue(event.target.value)
   }, [setValue]);
-
-  const toggleEditable = useCallback((enable: boolean) => {
-    setEditable(enable)
-  }, [setEditable]);
+  //
+  // const toggleEditable = useCallback((enable: boolean) => {
+  //   setEditable(enable)
+  // }, [setEditable]);
 
   return <StyleInputBox
     value={ value }
     onChange={ onChange }
     onKeyDown={ (event) => {
       if (event.key === 'Enter' || event.key === 'Escape') {
-        toggleEditable(true)
+        // toggleEditable(true)
         event.preventDefault()
         event.stopPropagation()
       }
