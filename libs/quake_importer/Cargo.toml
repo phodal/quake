@@ -8,7 +8,7 @@ edition = "2018"
 [dependencies]
 quake_core = { path = "../../quake_core", version = "0.5.0" }
 
-clap = "3.0.0-beta.5"
+clap = { version = "4.0.18", features = ["derive"] }
 
 quake_microsoft_todo = "0.1.1"
 

@@ -11,7 +11,7 @@ pub mod sqlite_to_file;
 pub mod todo_to_file;
 
 #[derive(Parser)]
-#[clap(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
+#[command(version = "0.0.1", author = "Phodal HUANG<h@phodal.com>")]
 struct Opts {
     #[clap(subcommand)]
     cmd: ImportCmd,

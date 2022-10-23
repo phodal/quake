@@ -569,21 +569,6 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "3.2.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f1fe12880bae935d142c8702d500c63a4e8634b6c3c57ad72bf978fc7b6249a"
-dependencies = [
- "atty",
- "bitflags",
- "clap_lex 0.2.3",
- "indexmap",
- "strsim 0.10.0",
- "termcolor",
- "textwrap",
-]
-
-[[package]]
-name = "clap"
 version = "4.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "335867764ed2de42325fafe6d18b8af74ba97ee0c590fa016f157535b42ab04b"
@@ -591,7 +576,7 @@ dependencies = [
  "atty",
  "bitflags",
  "clap_derive",
- "clap_lex 0.3.0",
+ "clap_lex",
  "once_cell",
  "strsim 0.10.0",
  "termcolor",
@@ -608,15 +593,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "clap_lex"
-version = "0.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87eba3c8c7f42ef17f6c659fc7416d0f4758cd3e58861ee63c5fa4a4dde649e4"
-dependencies = [
- "os_str_bytes",
 ]
 
 [[package]]
@@ -3306,7 +3282,7 @@ version = "0.5.1"
 dependencies = [
  "async-std",
  "chrono",
- "clap 4.0.18",
+ "clap",
  "comfy-table",
  "config",
  "crossbeam-channel",
@@ -3372,7 +3348,7 @@ dependencies = [
 name = "quake_importer"
 version = "0.1.0"
 dependencies = [
- "clap 3.2.6",
+ "clap",
  "quake_core",
  "quake_microsoft_todo",
  "rusqlite",
@@ -4358,12 +4334,6 @@ checksum = "bab24d30b911b2376f3a13cc2cd443142f0c81dda04c118693e35b3835757755"
 dependencies = [
  "winapi-util",
 ]
-
-[[package]]
-name = "textwrap"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1141d4d61095b28419e22cb0bbf02755f5e54e0526f97f1e3d1d160e60885fb"
 
 [[package]]
 name = "thiserror"

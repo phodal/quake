@@ -6,7 +6,7 @@ use rocket::fairing::AdHoc;
 use rocket::figment::providers::{Env, Format, Serialized};
 use rocket::figment::{Figment, Profile};
 use rocket::fs::FileServer;
-use rocket::{routes, Build, Config, Rocket, State};
+use rocket::{info, routes, Build, Config, Rocket, State};
 use serde_derive::{Deserialize, Serialize};
 
 use quake_core::entry::entry_paths::EntryPaths;
@@ -47,9 +47,10 @@ pub fn quake_rocket() -> Rocket<Build> {
 
     let port: usize = figment.extract_inner("port").unwrap();
     let url = format!("http://localhost:{}", port);
-    if webbrowser::open(&url).is_ok() {
-        // ...
-    }
+    // if webbrowser::open(&url).is_ok() {
+    //     // ...
+    // }
+    info!("Quake server is running at {}", url);
 
     let server: String = figment.extract_inner(SERVER_LOCATION).unwrap();
     rocket::custom(figment)
