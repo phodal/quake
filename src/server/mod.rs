@@ -45,6 +45,12 @@ pub fn quake_rocket() -> Rocket<Build> {
         .select(Profile::from_env_or("workspace", "."))
         .select(Profile::from_env_or(SERVER_LOCATION, "web"));
 
+    let port: usize = figment.extract_inner("port").unwrap();
+    let url = format!("http://localhost:{}", port);
+    if webbrowser::open(&url).is_ok() {
+        // ...
+    }
+
     let server: String = figment.extract_inner(SERVER_LOCATION).unwrap();
     rocket::custom(figment)
         .mount("/", FileServer::from(server))
