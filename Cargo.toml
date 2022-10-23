@@ -20,11 +20,11 @@ quake_tui = { path = "quake_tui", version = "0.5.0" }
 quake_gui = { path = "quake_gui" }
 quake_processor = { path = "libs/quake_processor", version = "0.4.0" }
 
-webbrowser = "0.7.1"
+webbrowser = "0.8.0"
 
 # cli parser
-clap = { version = "3.1.14", features = ["derive"] }
-config = { version = "0.11", features = ["yaml"] }
+clap = { version = "4.0.18", features = ["derive"] }
+config = { version = "0.13.2", features = ["yaml"] }
 
 regex = "1.0"
 lazy_static = "1.4.0"
@@ -43,7 +43,7 @@ chrono = "0.4"
 # Termnial ui
 comfy-table = "4.1.1"
 
-serde_yaml = "0.8"
+serde_yaml = "0.9.14"
 serde = "1.0"
 serde_json = "1.0"
 serde_derive = "1.0"
@@ -64,7 +64,7 @@ rocket = { version = "0.5.0-rc.1", features = ["json"] }
 rocket-multipart-form-data = "0.10.0"
 
 # notify for dir
-crossbeam-channel = "0.4.0"
+crossbeam-channel = "0.5.6"
 notify = "5.0.0-pre.15"
 
 # for testing
@@ -76,7 +76,7 @@ tracing-subscriber = "0.2"
 
 syntect = { version = "4.2", default-features = false, features = ["default-fancy"] }
 
-zip = "0.5"
+zip = "0.6.3"
 
 [workspace]
 members = [
