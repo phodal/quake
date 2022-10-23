@@ -145,7 +145,7 @@ fn highlight_content(string: &str, lang: &str) {
     let syntax = ps.find_syntax_by_extension(lang).unwrap();
     let mut h = HighlightLines::new(syntax, &ts.themes["base16-ocean.dark"]);
     for line in LinesWithEndings::from(string) {
-        let ranges: Vec<(Style, &str)> = h.highlight(line, &ps);
+        let ranges: Vec<(Style, &str)> = h.highlight_line(line, &ps).unwrap();
         let escaped = as_24_bit_terminal_escaped(&ranges[..], true);
         println!("{}", escaped);
     }

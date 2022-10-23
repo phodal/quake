@@ -41,7 +41,7 @@ walkdir = "2"
 chrono = "0.4"
 
 # Termnial ui
-comfy-table = "4.1.1"
+comfy-table = "6.1.1"
 
 serde_yaml = "0.9.14"
 serde = "1.0"
@@ -59,7 +59,7 @@ futures = "0.3" # To be able to block on async functions if you are not using an
 figment = { version = "0.10", features = ["toml", "env", "yaml"] }
 reqwest = { version = "0.11.6", features = ["blocking", "json"] }
 
-rocket = { version = "0.5.0-rc.1", features = ["json"] }
+rocket = { version = "0.5.0-rc.2", features = ["json"] }
 # file upload
 rocket-multipart-form-data = "0.10.0"
 
@@ -72,9 +72,9 @@ async-std = { version = "1", features = ["attributes", "tokio1"] }
 
 # logger
 tracing = "0.1"
-tracing-subscriber = "0.2"
+tracing-subscriber = "0.3.16"
 
-syntect = { version = "4.2", default-features = false, features = ["default-fancy"] }
+syntect = { version = "5.0.0", default-features = false, features = ["default-fancy"] }
 
 zip = "0.6.3"
 
