@@ -47,10 +47,14 @@ pub fn quake_rocket() -> Rocket<Build> {
 
     let port: usize = figment.extract_inner("port").unwrap();
     let url = format!("http://localhost:{}", port);
-    // if webbrowser::open(&url).is_ok() {
-    //     // ...
-    // }
-    info!("Quake server is running at {}", url);
+
+    if cfg!(test) {
+        info!("Quake server is running at {}", url);
+    } else {
+        if webbrowser::open(&url).is_ok() {
+            info!("Quake server is running at {}", url);
+        }
+    }
 
     let server: String = figment.extract_inner(SERVER_LOCATION).unwrap();
     rocket::custom(figment)
