@@ -1,5 +1,5 @@
 [package]
-name = "quake_gui"
+name = "quake_gui_old"
 version = "0.1.0"
 edition = "2021"
 authors = ["Inherd Group <quake@inherd.org>"]

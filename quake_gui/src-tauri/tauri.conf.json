@@ -7,12 +7,17 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "quake_gui",
+    "productName": "Quake",
     "version": "0.0.0"
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": false,
+      "dialog": {
+        "all": true,
+        "open": true,
+        "save": true
+      }
     },
     "bundle": {
       "active": true,

@@ -1,5 +1,5 @@
 [package]
-name = "quake_gui-ui"
+name = "quake_gui"
 version = "0.0.0"
 edition = "2021"
 
@@ -13,5 +13,5 @@ wasm-bindgen-futures = "0.4.32"
 web-sys = "0.3.59"
 yew = { version="0.20.0", features = ["csr"] }
 
-[workspace]
-members = ["src-tauri"]
+#[workspace]
+#members = ["src-tauri"]
