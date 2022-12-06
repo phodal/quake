@@ -1,0 +1,21 @@
+[package]
+name = "quake_gui"
+version = "0.1.0"
+edition = "2021"
+authors = ["Inherd Group <quake@inherd.org>"]
+description = """
+Simple knowledge management tool for geek.
+"""
+documentation = "https://github.com/phodal/quake"
+repository = "https://github.com/phodal/quake"
+readme = "README.md"
+license = "MIT"
+exclude = ["_fixtures/*"]
+autoexamples = true
+keywords = ["knowledge", "dashboard"]
+
+[dependencies]
+dioxus = { git = "https://github.com/DioxusLabs/dioxus", features = ["desktop"] }
+native-dialog = "0.6.3"
+
+quake_core = { path = "../quake_core" }

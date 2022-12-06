@@ -1,21 +1,17 @@
 [package]
-name = "quake_gui"
-version = "0.1.0"
+name = "quake_gui-ui"
+version = "0.0.0"
 edition = "2021"
-authors = ["Inherd Group <quake@inherd.org>"]
-description = """
-Simple knowledge management tool for geek.
-"""
-documentation = "https://github.com/phodal/quake"
-repository = "https://github.com/phodal/quake"
-readme = "README.md"
-license = "MIT"
-exclude = ["_fixtures/*"]
-autoexamples = true
-keywords = ["knowledge", "dashboard"]
 
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-dioxus = { git = "https://github.com/DioxusLabs/dioxus", features = ["desktop"] }
-native-dialog = "0.6.3"
+serde-wasm-bindgen = "0.4.3"
+js-sys = "0.3.59"
+serde = { version = "1.0.140", features = ["derive"] }
+wasm-bindgen = { version = "0.2.82", features = ["serde-serialize"] }
+wasm-bindgen-futures = "0.4.32"
+web-sys = "0.3.59"
+yew = { version="0.20.0", features = ["csr"] }
 
-quake_core = { path = "../quake_core" }
+[workspace]
+members = ["src-tauri"]
