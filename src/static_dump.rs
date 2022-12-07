@@ -45,7 +45,7 @@ fn dump_entries_data_search(conf: &QuakeConfig) {
 
     for define in &defines.entries {
         let entry_path = path.join(&define.entry_type);
-        let vec = Entrysets::entry_files_by_path(&*entry_path, define).unwrap();
+        let vec = Entrysets::entry_files_by_path(&entry_path, define).unwrap();
         let string = serde_json::to_string(&vec).unwrap();
 
         let path = PathBuf::from(DUMP_PATH)
@@ -63,7 +63,7 @@ fn dump_entries_data(conf: &QuakeConfig) {
     let defines = EntryDefines::from_path(&path.join(EntryPaths::entries_define()));
 
     for define in &defines.entries {
-        let entry_type = &*define.entry_type;
+        let entry_type = &define.entry_type;
         let entry_path = path.join(&entry_type);
 
         let mut index = 1;
@@ -72,7 +72,7 @@ fn dump_entries_data(conf: &QuakeConfig) {
         fs::create_dir_all(&target_dir).unwrap();
 
         let workspace = entry_path.parent().unwrap();
-        for path in &Entrysets::scan_files(&*entry_path) {
+        for path in &Entrysets::scan_files(&entry_path) {
             let (_, entry_file) = entry_file_dump(path, workspace).unwrap();
             let content = serde_json::to_string(&entry_file).unwrap();
 
@@ -134,7 +134,7 @@ fn dump_links(conf: &QuakeConfig) {
     fs::create_dir_all(&out_dir).unwrap();
 
     for define in &defines.entries {
-        let entry_type = &*define.entry_type;
+        let entry_type = &define.entry_type;
 
         // yaml to links structs
         let path = &link_dir.join(format!("{:}.yml", entry_type));

@@ -54,7 +54,7 @@ fn create_entry_reference(
 ) -> Result<HashMap<String, EntryReference>, Box<dyn Error>> {
     let mut index = 1;
     let mut refs_map: HashMap<String, EntryReference> = HashMap::new();
-    for path in &Entrysets::scan_files(&*entry_path) {
+    for path in &Entrysets::scan_files(&entry_path) {
         let string = fs::read_to_string(path)?;
 
         let mut entry_link = EntryReference::default();

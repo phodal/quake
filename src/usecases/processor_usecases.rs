@@ -40,7 +40,7 @@ pub fn process_by_path(
         }
 
         let content = fs::read_to_string(path.path())?;
-        let mut entry_file = EntryFile::from(&*content, 1)?;
+        let mut entry_file = EntryFile::from(&content, 1)?;
 
         if let Some(value) = entry_file.property(&file_prop) {
             let file_path = get_file_property_path(&value, entry_path);

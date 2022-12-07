@@ -47,7 +47,7 @@ impl Rule {
 // 2. match file for engine?
 // generate
 pub fn event_to_rule(change: &mut FileChangeEvent) {
-    if EntryFile::is_match(&*change.file_name) {
+    if EntryFile::is_match(&change.file_name) {
         change.is_entry_file = true;
     }
     // check is generate content when pdf join to path

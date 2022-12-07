@@ -53,7 +53,7 @@ pub(crate) async fn translate(
 
     let wc = match fs::read_to_string(el_path) {
         Ok(content) => {
-            let el_def: ElementDefines = serde_yaml::from_str(&*content).unwrap();
+            let el_def: ElementDefines = serde_yaml::from_str(&content).unwrap();
             element_define::filter_element_define(&el_def, &flow.target)
         }
         Err(err) => {

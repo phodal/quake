@@ -93,7 +93,7 @@ pub fn quake_rocket() -> Rocket<Build> {
 
 pub fn defines(config: &State<QuakeConfig>) -> EntryDefines {
     let path = PathBuf::from(config.workspace.clone()).join(EntryPaths::entries_define());
-    let defines: EntryDefines = serde_yaml::from_str(&*fs::read_to_string(path).unwrap()).unwrap();
+    let defines: EntryDefines = serde_yaml::from_str(&fs::read_to_string(path).unwrap()).unwrap();
     defines
 }
 
