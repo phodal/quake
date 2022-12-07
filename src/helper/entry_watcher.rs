@@ -14,13 +14,17 @@ use crate::helper::exec_wrapper::meili_exec::feed_document;
 
 fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
     let (mut tx, rx) = channel(1);
-    let mut watcher = RecommendedWatcher::new(move |res| {
+    let mut watcher = notify::recommended_watcher(move |res| {
         futures::executor::block_on(async {
             tx.send(res).await.unwrap();
         })
     })?;
 
-    let _ = watcher.configure(notify::Config::OngoingEvents(Some(Duration::from_secs(2))));
+    let _ = watcher.configure(
+        notify::Config::default()
+            .with_poll_interval(Duration::from_secs(2))
+            .with_compare_contents(true),
+    );
 
     Ok((watcher, rx))
 }

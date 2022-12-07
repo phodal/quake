@@ -11,7 +11,8 @@ pub fn create_suggest(workspace: &str) -> ActionSuggest {
     let define_path = EntryPaths::entries_define();
     let path = PathBuf::from(workspace).join(define_path);
 
-    let entries_str = fs::read_to_string(path).expect(&format!("cannot read {:}", define_path));
+    let entries_str =
+        fs::read_to_string(path).unwrap_or_else(|_| panic!("cannot read {:}", define_path));
     let entries: EntryDefines = serde_yaml::from_str(&entries_str).unwrap();
     suggest.entries = entries.entries;
 

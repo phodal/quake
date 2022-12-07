@@ -21,7 +21,7 @@ pub fn process_by_path(
         return Err(Box::new(QuakeError("cannot find entry".to_string())));
     }
 
-    let walk_paths = WalkDir::new(&entry_path)
+    let walk_paths = WalkDir::new(entry_path)
         .max_depth(1)
         .min_depth(1)
         .into_iter()
@@ -51,7 +51,7 @@ pub fn process_by_path(
                 info!("call {:?} engine from {:?}", ext, file_path);
 
                 entry_file.content = content;
-                fs::write(&path.path(), entry_file.to_string()).unwrap();
+                fs::write(path.path(), entry_file.to_string()).unwrap();
             } else {
                 return Err(Box::new(QuakeError("cannot entry file".to_string())));
             }

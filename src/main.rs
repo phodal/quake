@@ -274,7 +274,7 @@ fn unzip_all(reader: Cursor<Vec<u8>>, workspace: &Path) -> Result<(), Box<dyn Er
             );
             if let Some(p) = out_path.parent() {
                 if !p.exists() {
-                    fs::create_dir_all(&p)?;
+                    fs::create_dir_all(p)?;
                 }
             }
             let mut outfile = fs::File::create(&out_path)?;

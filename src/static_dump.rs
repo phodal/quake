@@ -64,7 +64,7 @@ fn dump_entries_data(conf: &QuakeConfig) {
 
     for define in &defines.entries {
         let entry_type = &define.entry_type;
-        let entry_path = path.join(&entry_type);
+        let entry_path = path.join(entry_type);
 
         let mut index = 1;
 

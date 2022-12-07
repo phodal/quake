@@ -83,14 +83,14 @@ pub fn string_date_to_unix(text: &str) -> String {
     for caps in ISO8601_DATE_REGEX.captures_iter(text) {
         let time = &caps["time"];
         let naive_date = NaiveDate::parse_from_str(time, DATE_FORMAT).unwrap();
-        let naive_datetime = naive_date.and_hms(0, 0, 0);
+        let naive_datetime = naive_date.and_hms_opt(0, 0, 0).unwrap();
         result = result.replace(time, naive_datetime.timestamp().to_string().as_str());
     }
 
     for caps in SIMPLE_DATE_REGEX.captures_iter(text) {
         let time = &caps["time"];
         let naive_date = NaiveDate::parse_from_str(time, SIMPLE_DATE_FORMAT).unwrap();
-        let naive_datetime = naive_date.and_hms(0, 0, 0);
+        let naive_datetime = naive_date.and_hms_opt(0, 0, 0).unwrap();
         result = result.replace(time, naive_datetime.timestamp().to_string().as_str());
     }
 
