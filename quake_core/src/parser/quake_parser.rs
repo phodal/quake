@@ -24,7 +24,7 @@ pub fn parse(text: &str) -> Result<SourceUnit, Box<dyn Error>> {
         Ok(pairs) => pairs,
         Err(e) => {
             let string = format!("{:}", e);
-            return Err(Box::new(QuakeParserError::new(&*string)));
+            return Err(Box::new(QuakeParserError::new(&string)));
         }
     };
 

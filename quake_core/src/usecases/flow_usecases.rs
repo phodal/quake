@@ -9,13 +9,13 @@ use crate::transflow::Transflow;
 
 pub fn dump_flows(path: PathBuf) -> Result<String, Box<dyn Error>> {
     let flow_path = path.join(EntryPaths::quake()).join(EntryPaths::transflow());
-    let flows: Vec<Transflow> = serde_yaml::from_str(&*fs::read_to_string(flow_path)?).unwrap();
+    let flows: Vec<Transflow> = serde_yaml::from_str(&fs::read_to_string(flow_path)?).unwrap();
 
     let elements_define = path
         .join(EntryPaths::quake())
         .join(EntryPaths::element_define());
     let element_defines: Vec<ElementDefine> =
-        serde_yaml::from_str(&*fs::read_to_string(elements_define)?)?;
+        serde_yaml::from_str(&fs::read_to_string(elements_define)?)?;
 
     let mut scripts = vec![];
     for flow in flows {

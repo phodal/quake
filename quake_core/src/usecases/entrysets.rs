@@ -78,7 +78,7 @@ impl Entrysets {
         for file in files {
             let string = fs::read_to_string(&file)?;
 
-            let mut entry_file = EntryFile::from(&*string, index)?;
+            let mut entry_file = EntryFile::from(&string, index)?;
             entry_file.name = file.file_name().unwrap().to_str().unwrap().to_string();
 
             entry_sets.push(entry_file);
@@ -117,7 +117,7 @@ impl Entrysets {
         for file in files {
             let string = fs::read_to_string(&file)?;
 
-            let mut entry_file = match EntryFile::from(&*string, index) {
+            let mut entry_file = match EntryFile::from(&string, index) {
                 Ok(file) => file,
                 Err(err) => {
                     println!("create entry file error: {:?}", file.display());

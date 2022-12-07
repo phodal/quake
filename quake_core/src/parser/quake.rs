@@ -305,7 +305,7 @@ fn build_simple_layout(decl: SimpleLayoutDecl) -> SimpleLayout {
         for node in column_node {
             row.columns.push(LayoutComponent {
                 name: node.name.to_string(),
-                flow: node.flow.unwrap_or_else(|| "".to_string()),
+                flow: node.flow.unwrap_or_default(),
                 width: node.width,
                 height: node.height,
                 component_type: node.component_type,

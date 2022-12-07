@@ -68,7 +68,7 @@ impl JsFlowCodegen {
             // from normal map
             if flow.map.is_some() {
                 let string = Self::gen_flow_map(&flow, element);
-                func.push_str(&*string);
+                func.push_str(&string);
             }
 
             // for from yaml mapping
@@ -109,10 +109,10 @@ impl JsFlowCodegen {
                 }
             };
 
-            string.push_str(&*str);
+            string.push_str(&str);
 
             string.push_str("\n    })\n  }\n");
-            output.push_str(&*string);
+            output.push_str(&string);
         }
         output
     }
