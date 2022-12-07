@@ -3646,7 +3646,6 @@ dependencies = [
  "lazy_static",
  "notify",
  "quake_core",
- "quake_gui",
  "quake_processor",
  "quake_tui",
  "regex",
