@@ -37,11 +37,8 @@ pub fn app() -> Html {
                     }
 
                     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-                    let new_msg = invoke(
-                        "greet",
-                        to_value(&GreetArgs { name: &*name }).unwrap(),
-                    )
-                    .await;
+                    let new_msg =
+                        invoke("greet", to_value(&GreetArgs { name: &*name }).unwrap()).await;
                     log(&new_msg.as_string().unwrap());
                     greet_msg.set(new_msg.as_string().unwrap());
                 });
@@ -56,7 +53,12 @@ pub fn app() -> Html {
         let name = name.clone();
         let greet_input_ref = greet_input_ref.clone();
         Callback::from(move |_| {
-            name.set(greet_input_ref.cast::<web_sys::HtmlInputElement>().unwrap().value());
+            name.set(
+                greet_input_ref
+                    .cast::<web_sys::HtmlInputElement>()
+                    .unwrap()
+                    .value(),
+            );
         })
     };
 
