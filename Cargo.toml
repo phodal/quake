@@ -82,8 +82,8 @@ zip = "0.6.3"
 members = [
     'quake_core',
     'quake_log',
-    'quake_gui',
-    'quake_gui/src-tauri',
+#    'quake_gui',
+#    'quake_gui/src-tauri',
 
     'quake_tui',
     'quake_wasm',

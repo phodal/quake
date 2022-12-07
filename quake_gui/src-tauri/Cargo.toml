@@ -2,7 +2,7 @@
 name = "quake_gui-tauri"
 version = "0.0.0"
 description = "A Tauri App"
-authors = ["you"]
+authors = ["h@phodal.com"]
 license = ""
 repository = ""
 edition = "2021"
