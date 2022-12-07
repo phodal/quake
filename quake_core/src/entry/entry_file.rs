@@ -92,7 +92,7 @@ impl ToString for EntryFile {
         }
 
         output.push_str("---");
-        output.push_str(&*self.content);
+        output.push_str(&self.content);
 
         output
     }

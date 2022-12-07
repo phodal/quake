@@ -25,11 +25,11 @@ pub fn entry_info_from_path(entry_info_path: &Path) -> EntryNodeInfo {
         return info;
     }
 
-    let text = fs::read_to_string(&entry_info_path).expect("cannot read entry-info.yaml");
-    serde_yaml::from_str(&*text).unwrap()
+    let text = fs::read_to_string(entry_info_path).expect("cannot read entry-info.yaml");
+    serde_yaml::from_str(&text).unwrap()
 }
 
 pub fn save_entry_info(entry_info_path: &Path, entry_info: &mut EntryNodeInfo) {
     let result = serde_yaml::to_string(&entry_info).expect("cannot convert to yaml");
-    fs::write(&entry_info_path, result).expect("cannot write to file");
+    fs::write(entry_info_path, result).expect("cannot write to file");
 }

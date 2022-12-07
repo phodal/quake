@@ -25,15 +25,15 @@ pub fn entry_file_dump(
     }
 
     let id = EntryFile::id_from_name(file_name.to_str().unwrap().to_string().as_str())?;
-    let content = fs::read_to_string(&path)?;
+    let content = fs::read_to_string(path)?;
 
     let mut file = EntryFile::from(content.as_str(), id)?;
-    let defines = EntryDefines::from_path(&*workspace.join(EntryPaths::entries_define()));
+    let defines = EntryDefines::from_path(&workspace.join(EntryPaths::entries_define()));
 
-    if let Some(define) = defines.find(&*entry_type) {
+    if let Some(define) = defines.find(&entry_type) {
         for (key, prop) in define.to_field_type() {
             if let MetaProperty::Date(_date) = prop {
-                let text = file.property(&key).unwrap_or_else(|| "".to_string());
+                let text = file.property(&key).unwrap_or_default();
                 let value = quake_time::string_date_to_unix(&text);
                 file.update_property(&key, &value);
             }
@@ -53,7 +53,7 @@ pub fn entry_file_by_path(path: &Path, define: &EntryDefine) -> Result<EntryFile
     }
 
     let id = EntryFile::id_from_name(file_name.to_str().unwrap().to_string().as_str())?;
-    let content = fs::read_to_string(&path)?;
+    let content = fs::read_to_string(path)?;
 
     let mut file = EntryFile::from(content.as_str(), id)?;
 

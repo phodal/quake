@@ -22,7 +22,7 @@ impl EntryDefines {
             }
         };
 
-        serde_yaml::from_str(&*entries_str).expect("cannot serde entries-define.yaml")
+        serde_yaml::from_str(&entries_str).expect("cannot serde entries-define.yaml")
     }
 
     pub fn find(&self, target_entry: &str) -> Option<EntryDefine> {
@@ -44,7 +44,7 @@ impl EntryDefines {
 
 pub fn from_path(config_path: &Path) -> Vec<EntryDefine> {
     let entries_str = fs::read_to_string(config_path).expect("cannot read entries-define.yaml");
-    let entries: EntryDefines = serde_yaml::from_str(&*entries_str).unwrap();
+    let entries: EntryDefines = serde_yaml::from_str(&entries_str).unwrap();
 
     entries.entries
 }
