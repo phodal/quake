@@ -1,0 +1,62 @@
+{
+  "name": "@quakeworks/kbar",
+  "version": "0.1.0",
+  "private": false,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "kbar": "0.1.0-beta.39",
+    "polished": "^4.1.3",
+    "prop-types": "^15.8.1",
+    "react": "^17.0.2",
+    "react-contexify": "^5.0.0",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "react-to-webcomponent": "2.0.0-alpha.0",
+    "styled-components": "^5.3.3"
+  },
+  "scripts": {
+    "start": "export PORT=4005 && react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@emotion/react": "^11.*",
+    "@emotion/styled": "^11.*",
+    "@projectstorm/react-diagrams": "^6.6.1",
+    "@projectstorm/react-diagrams-core": "^6.6.1",
+    "@projectstorm/react-diagrams-defaults": "^6.6.1",
+    "@projectstorm/react-diagrams-routing": "^6.6.1",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/prop-types": "^15.7.5",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/styled-components": "^5.1.15",
+    "dagre": "^0.8.5",
+    "pathfinding": "^0.4.18",
+    "paths-js": "^0.4.11",
+    "react-app-rewired": "^2.1.8",
+    "typescript": "^4.1.2"
+  }
+}
