@@ -27,8 +27,8 @@ pub struct ProcessEngine {}
 impl ProcessEngine {
     pub fn engine(text: &str) -> Box<dyn Processor> {
         let processor: Box<dyn Processor> = match text {
-            "pdf" => Box::new(PdfProcessor::default()),
-            _ => Box::new(EmptyProcessor::default()),
+            "pdf" => Box::<PdfProcessor>::default(),
+            _ => Box::<EmptyProcessor>::default(),
         };
 
         processor

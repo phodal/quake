@@ -63,7 +63,7 @@ pub fn create_entry_file(
 ) -> EntryFile {
     let mut entry_file = EntryFile::default();
     entry_file.set_properties(entry_define.create_default_properties(entry_text));
-    fs::write(&target_file, entry_file.to_string()).expect("cannot write to file");
+    fs::write(target_file, entry_file.to_string()).expect("cannot write to file");
     entry_file
 }
 
